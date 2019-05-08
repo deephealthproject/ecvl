@@ -1,2 +1,1 @@
-# ECV
-European Computer Vision Library
+# ECVL - European Computer Vision Library
