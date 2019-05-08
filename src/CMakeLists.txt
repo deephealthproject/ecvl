@@ -1,0 +1,11 @@
+target_sources(ECVL
+	PRIVATE
+core.cpp
+core.h
+datatype.cpp
+datatype.h
+datatype_tuples.h
+filesystem.cc
+filesystem.h
+imgcodecs.h
+)
