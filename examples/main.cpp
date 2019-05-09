@@ -42,7 +42,7 @@ Image MatToImage(cv::Mat& m)
         case CV_32F: img.elemtype_ = DataType::float32; break;
         case CV_64F: img.elemtype_ = DataType::float64; break;
         default:
-            throw std::exception("Unsupported OpenCV Depth");
+            throw std::runtime_error("Unsupported OpenCV Depth");
         }
         img.elemsize_ = DataTypeSize(img.elemtype_);
 
@@ -69,6 +69,7 @@ Image MatToImage(cv::Mat& m)
         }
     }
     else {
+        throw std::runtime_error("Not implemented");
         throw std::exception("Not implemented");
     }
 
