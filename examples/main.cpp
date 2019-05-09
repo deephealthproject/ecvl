@@ -70,7 +70,6 @@ Image MatToImage(cv::Mat& m)
     }
     else {
         throw std::runtime_error("Not implemented");
-        throw std::exception("Not implemented");
     }
 
     return img;
