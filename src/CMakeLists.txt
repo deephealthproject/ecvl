@@ -4,7 +4,7 @@ core.cpp
 core.h
 datatype.cpp
 datatype.h
-datatype_tuples.h
+datatype_tuples.inc
 filesystem.cc
 filesystem.h
 imgcodecs.h
