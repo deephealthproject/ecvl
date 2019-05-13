@@ -28,8 +28,9 @@ struct BaseImage {
     MetaData* meta_ = nullptr;
 
     BaseImage() {}
-    BaseImage(std::initializer_list<int> dims, DataType elemtype) : dims_{ dims }, strides_{ elemsize_ }, elemtype_{ elemtype } {
+    BaseImage(std::initializer_list<int> dims, DataType elemtype) : dims_{ dims }, elemtype_{ elemtype } {
         elemsize_ = DataTypeSize(elemtype);
+        strides_.push_back(elemsize_);
         int dsize = dims_.size();
         for (int i = 0; i < dsize - 1; ++i) {
             strides_.push_back(strides_[i] * dims_[i]);
@@ -87,11 +88,18 @@ struct Image : public BaseImage {
 };
 
 struct ImageView : public BaseImage {
-    ImageView(Image& img) : BaseImage(img) 
-    {
-        data_ = img.data_;
+    ImageView(Image& img) : BaseImage(img) {}
+};
+
+template <typename T>
+struct Img : public BaseImage {
+    Img(Image& img) : BaseImage(img) {}
+
+    T& operator()(int x, int y) {
+        return *reinterpret_cast<T*>(data_ + x*strides_[0] + y * strides_[1]);
     }
 };
+
 
 /*
 template<typename T>

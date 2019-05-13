@@ -85,6 +85,12 @@ cv::Mat ImageToMat(const Image& i) {
 
 int main(void)
 {
+    Image test(5, 5, DataType::uint16);
+    Img<uint16_t> t(test);
+    t(0, 0) = 1;
+    t(1, 0) = 2;
+    t(2, 0) = 3;
+
     cv::Mat3b m(3, 2);
     m << cv::Vec3b(1, 1, 1), cv::Vec3b(2, 2, 2),
         cv::Vec3b(3, 3, 3), cv::Vec3b(4, 4, 4),
