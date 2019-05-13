@@ -81,7 +81,7 @@ endif()
 # The following commands should be removed when pthread linux 
 # specific calls will be replaced by thread c++ standard calls 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-	set(ECVL_PTHREADS_INSTALL_PATH "" CACHE PATH "")
+	set(ECVL_PTHREADS_INSTALL_PATH "$ENV{PTHREADS_ROOT}" CACHE PATH "")
 	
 	if(ECVL_PTHREADS_INSTALL_PATH STREQUAL "")
 		message(ERROR " pthreds install path must be specified under Windows")
