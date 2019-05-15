@@ -28,14 +28,11 @@ Image MatToImage(cv::Mat& m)
         // Dims
         img.dims_ = std::vector<int>(m.dims);
         std::reverse_copy(m.size.p, m.size.p + m.dims, begin(img.dims_)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
-        if (m.channels() > 1) {
-            img.dims_.push_back(m.channels());
-        }
 
         // Type
         switch (m.depth()) {
-        case CV_8U: img.elemtype_ = DataType::uint8; break;
-        case CV_8S: img.elemtype_ = DataType::int8; break;
+        case CV_8U:  img.elemtype_ = DataType::uint8; break;
+        case CV_8S:  img.elemtype_ = DataType::int8; break;
         case CV_16U: img.elemtype_ = DataType::uint16; break;
         case CV_16S: img.elemtype_ = DataType::int16; break;
         case CV_32S: img.elemtype_ = DataType::int32; break;
@@ -46,6 +43,39 @@ Image MatToImage(cv::Mat& m)
         }
         img.elemsize_ = DataTypeSize(img.elemtype_);
 
+        // Channels and colors
+        if (m.dims < 2) {
+            throw std::runtime_error("Unsupported OpenCV dims");
+        }
+        else if (m.dims == 2) {
+            img.channels_ = "xy";
+        }
+        else if (m.dims == 3) {
+            img.channels_ = "xyz";
+        }
+        else {
+            throw std::runtime_error("Unsupported OpenCV dims");
+        }
+
+        if (m.type() == CV_8UC1) { // Guess this is a gray level image
+            img.channels_ += "c";
+            img.dims_.push_back(1); // Add another dim for color planes (but it is one dimensional)
+            img.colortype_ = ColorType::GRAY;
+        }
+        else if (m.type() == CV_8UC3) { // Guess this is a BGR image
+            img.channels_ += "c";
+            img.dims_.push_back(3); // Add another dim for color planes
+            img.colortype_ = ColorType::BGR;
+        }
+        else if (m.channels() == 1) {
+            img.colortype_ = ColorType::none;
+        }
+        else {
+            img.channels_ += "o";
+            img.dims_.push_back(m.channels()); // Add another dim for color planes
+            img.colortype_ = ColorType::none;
+        }
+
         // Strides
         img.strides_.push_back(img.elemsize_);
         int dsize = img.dims_.size();
@@ -55,7 +85,7 @@ Image MatToImage(cv::Mat& m)
 
         // Data
         img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.elemsize_, std::multiplies<int>());
-        img.data_ = new uint8_t[img.datasize_];
+        img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
         cv::split(m, ch);
@@ -65,7 +95,7 @@ Image MatToImage(cv::Mat& m)
             const cv::Mat& c = ch[i];
             coords.back() = i;
             //memcpy(img.data_ + (c.dataend - c.datastart) * i, c.data, c.dataend - c.datastart);
-            memcpy(img.ptr(coords), c.data, c.dataend - c.datastart);
+            memcpy(img.Ptr(coords), c.data, c.dataend - c.datastart);
         }
     }
     else {
@@ -75,17 +105,44 @@ Image MatToImage(cv::Mat& m)
     return img;
 }
 
-/*
-cv::Mat ImageToMat(const Image& i) {
+cv::Mat ImageToMat(const Image& i) 
+{
+    if (!i.contiguous_) 
+        throw std::runtime_error("Not implemented");
+    
+    cv::Mat m;
+    if (i.channels_ == "xyc") {
+        int type;
+        switch (i.elemtype_)
+        {
+        case DataType::uint8: type = CV_MAKETYPE(CV_8U, i.dims_[2]); break;
+        case DataType::int8: type = CV_MAKETYPE(CV_8S, i.dims_[2]); break;
+        case DataType::uint16: type = CV_MAKETYPE(CV_16U, i.dims_[2]); break;
+        case DataType::int16: type = CV_MAKETYPE(CV_16S, i.dims_[2]); break;
+        case DataType::int32: type = CV_MAKETYPE(CV_32S, i.dims_[2]); break;
+        case DataType::float32: type = CV_MAKETYPE(CV_32F, i.dims_[2]); break;
+        case DataType::float64: type = CV_MAKETYPE(CV_64F, i.dims_[2]); break;
+        default:
+            break;
+        }
 
+        std::vector<cv::Mat> channels;
+        for (int c = 0; c < i.dims_[2]; ++c)
+            channels.emplace_back(i.dims_.size() - 1, i.dims_.data(), type, i.Ptr({ 0,0,c }));
+        cv::merge(channels, m);
+    }
+    else {
+        throw std::runtime_error("Not implemented");
+    }
+
+    return m;
 }
-*/
 
 #include <iostream>
 
 int main(void)
 {
-    Image test(5, 5, DataType::uint16);
+    Image test({ 5, 5 }, DataType::uint16, "xy", ColorType::none);
     Img<uint16_t> t(test);
     t(0, 0) = 1;
     t(1, 0) = 2;

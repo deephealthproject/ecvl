@@ -13,9 +13,10 @@ TEST(Core, CreateEmptyImage) {
 
 TEST(Core, CreateImageWithFiveDims) {
 
-	Image img({ 1, 2, 3, 4, 5 }, DataType::uint8);
+	Image img({ 1, 2, 3, 4, 5 }, DataType::uint8, "xyzoo", ColorType::none);
 	EXPECT_EQ(img.dims_.size(), 5);
-	for (int i = 0; i < img.dims_.size(); i++) {
+    int sdims = img.dims_.size();
+	for (int i = 0; i < sdims; i++) {
 		EXPECT_EQ(img.dims_[i], i + 1);
 	}
 	EXPECT_EQ(img.strides_.size(), 5);
