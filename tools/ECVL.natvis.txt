@@ -1,0 +1,5 @@
+Copy this file in:
+
+C:\Users\<!!username!!>\Documents\Visual Studio 2017\Visualizers
+
+in order to get ImageWatch working with ecvl::Image.

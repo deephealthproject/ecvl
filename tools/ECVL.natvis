@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" MenuName="Add to Image Watch"/>
+
+  <Type Name="ecvl::Image">
+    <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" />
+  </Type>
+
+  <Type Name="ecvl::Image">
+    <DisplayString>{{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {colortype_}}}</DisplayString>
+    
+    <Expand>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::uint8">
+        <DisplayString>UINT8</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::int8">
+        <DisplayString>INT8</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::uint16">
+        <DisplayString>UINT16</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::int16">
+        <DisplayString>INT16</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::int32">
+        <DisplayString>INT32</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::float32">
+        <DisplayString>FLOAT32</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[type]" Condition="elemtype_==DataType::float64">
+        <DisplayString>FLOAT64</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[channels]" Condition="colortype_==ColorType::BGR">
+        <DisplayString>BGR</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[channels]" Condition="colortype_==ColorType::RGB">
+        <DisplayString>RGB</DisplayString>
+      </Synthetic>
+      <Item Name="[width]">dims_[0]</Item>
+      <Item Name="[height]">dims_[1]</Item>
+      <Item Name="[planes]">dims_[2]</Item>
+      <Item Name="[data]">data_</Item>
+      <Item Name="[stride]">strides_[1]</Item>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>
