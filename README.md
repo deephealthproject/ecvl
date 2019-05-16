@@ -1,3 +1,5 @@
+
+![ECVL](doc/logo/DEEPHEALTH_doxygen_logo_reduced.png)
 # ECVL - European Computer Vision Library
 
 ## Documentation
