@@ -7,10 +7,12 @@ datatype.h
 datatype_tuples.inc
 filesystem.cc
 filesystem.h
+imgcodecs.cpp
 imgcodecs.h
+imgproc.h
+imgproc.cpp
 memorymanager.cpp
 memorymanager.h
-imgcodecs.cpp
 support_opencv.cpp
 support_opencv.h
 )
