@@ -53,6 +53,45 @@ public:
     MetaData* meta_ = nullptr;
     MemoryManager* mem_ = DefaultMemoryManager::GetInstance();
 
+    template <typename T>
+    struct Iterator {
+        std::vector<int> pos_;
+        Image& img_;
+
+        explicit Iterator(Image& img, std::vector<int> pos = {}) : img_{ img }, pos_{ move(pos) } {
+            if (pos_.empty()) {
+                pos_.resize(img_.dims_.size(), 0);
+            }
+            if (pos_.size() != img_.dims_.size()) {
+                throw std::runtime_error("Iterator starting pos has a wrong size");
+            }
+        }
+        Iterator& operator++() /* prefix */ { return IncrementPos(); }
+        T& operator* () const { return *reinterpret_cast<T*>(img_.Ptr(pos_)); }
+        T* operator-> () const { return reinterpret_cast<T*>(img_.Ptr(pos_)); }
+        bool operator==(const Iterator& rhs) const { return pos_ == rhs.pos_; }
+        bool operator!=(const Iterator& rhs) const { return pos_ != rhs.pos_; }
+    private:
+        Iterator& IncrementPos() 
+        {
+            int spos = pos_.size();
+            int dim;
+            for (dim = 0; dim < spos; ++dim) {
+                if (++pos_[dim] != img_.dims_[dim])
+                    break;
+                pos_[dim] = 0;
+            }
+            if (dim == spos)
+                pos_ = img_.dims_;
+            return *this;
+        }
+    };
+
+    template<typename T>
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+    template<typename T>
+    Iterator<T> End() { return Iterator<T>(*this, dims_); }
+
     Image() {}
     Image(std::initializer_list<int> dims, DataType elemtype, std::string channels, ColorType colortype) : 
         elemtype_{ elemtype },
