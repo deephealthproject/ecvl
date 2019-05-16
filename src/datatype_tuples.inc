@@ -1,3 +1,4 @@
+TUPLE(none, 0)
 TUPLE(uint8, 1)
 TUPLE(uint16, 2)
 TUPLE(uint32, 4)
