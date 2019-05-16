@@ -76,7 +76,16 @@ int main(void)
     cropped.meta_ = img.meta_;
     cropped.mem_ = ShallowMemoryManager::GetInstance();
 
-    if (!ImWrite("test.jpg", img)) {
+    Image img1, img2;
+    ImRead("../data/Kodak/img0003.png", img1);
+    ImRead("../data/Kodak/img0015.png", img2);
+
+    ResizeScale(img1, img1, { 0.3, 0.3 });
+    for (auto it = img1.Begin<uint8_t>(); it != img1.End<uint8_t>(); ++it) {
+        *it = static_cast<uint8_t>(*it * 0.5);
+    }
+
+    if (!ImWrite("test.jpg", img1)) {
         return EXIT_FAILURE;
     }
 
