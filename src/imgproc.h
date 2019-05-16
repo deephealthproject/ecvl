@@ -16,7 +16,8 @@ enum class InterpolationType {
 
 static int GetOpenCVInterpolation(InterpolationType interp);
 
-void Resize(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp = InterpolationType::linear);
+void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp = InterpolationType::linear);
+void ResizeScale(const ecvl::Image& src, ecvl::Image& dst, const std::vector<double>& scales, InterpolationType interp = InterpolationType::linear);
 
 void Flip2D(const ecvl::Image& src, ecvl::Image& dst);
 
