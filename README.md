@@ -8,6 +8,7 @@ The ecvl documentation is available online [here](http://imagelab.ing.unimore.it
 
 ## Requirements
 
+- C++ Compiler with C++11 support
 - OpenCV 3.0 or later
 
 ## ImageWatch plugin for Microsof Visual Studio
