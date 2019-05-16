@@ -10,4 +10,7 @@ filesystem.h
 imgcodecs.h
 memorymanager.cpp
 memorymanager.h
+imgcodecs.cpp
+support_opencv.cpp
+support_opencv.h
 )
