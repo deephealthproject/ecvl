@@ -14,7 +14,7 @@ The function ImRead loads an image from the specified file. If the image cannot
 be read for any reason, the function creates an empty Image and returns false.
 
 @param[in] filename A std::string identifying the file name. In order to be platform
-independent consider to use @ref imread_path.
+independent consider to use @ref imread_path "ImRead(const filesystem::path& filename, Image& dst)" .
 @param[out] dst Image in which data will be stored.
 
 @return true if the image is correctly read, false otherwise.
@@ -43,7 +43,7 @@ The following sample shows how to create a BGR image and save it to the PNG file
 @include ../snippets/imgcodecs_imwrite.cpp
 
 @param[in] filename A std::string identifying the output file name. In order to be platform
-independent consider to use @ref imwrite_path.
+independent consider to use @ref imwrite_path "ImWrite(const filesystem::path& filename, const Image& src)".
 @param[in] src Image to be saved.
 
 @return true if the image is correctly write, false otherwise.
