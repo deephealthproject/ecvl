@@ -6,6 +6,12 @@
 
 namespace ecvl {
 
+/* @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
+
+@param[in] interp Interpolation type, see @ref InterpolationType.
+
+@return Associated OpenCV enum value.
+*/
 static int GetOpenCVInterpolation(InterpolationType interp) {
     switch (interp) {
     case InterpolationType::nearest:    return cv::INTER_NEAREST;

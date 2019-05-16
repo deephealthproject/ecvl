@@ -22,27 +22,30 @@ enum class InterpolationType {
     lanczos4    /**< Lanczos interpolation over 8x8 neighborhood */
 };
 
-/* @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
-
-@param[in] interp Interpolation type, see @ref InterpolationType.
-
-@return Associated OpenCV enum value.
-*/
-static int GetOpenCVInterpolation(InterpolationType interp);
-
-/* @brief Resizes an Image
+/* @brief Resizes an Image to a new dimension
 
 The function resizes Image src and outputs the result in dst.
 
 @param[in] src The input Image.
 @param[out] dst The output resized Image.
 @param[in] newdims std::vector<int> that specifies the new size of each dimension.
-            The vector size must match the src Image size.
+            The vector size must match the src Image dimentions, excluding the color channel
 @param[in] interp InterpolationType to be used. See @ref InterpolationType.
 
 */
-void Resize(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp = InterpolationType::linear);
 void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp = InterpolationType::linear);
+
+/* @brief Resizes an Image by scaling the dimentions to a given scale factor
+
+The function resizes Image src and outputs the result in dst.
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] scales std::vector<double> that specifies the scale to apply to each dimension.
+            The vector size must match the src Image dimentions, excluding the color channel.
+@param[in] interp InterpolationType to be used. See @ref InterpolationType.
+
+*/
 void ResizeScale(const ecvl::Image& src, ecvl::Image& dst, const std::vector<double>& scales, InterpolationType interp = InterpolationType::linear);
 
 /* @brief Flips an Image

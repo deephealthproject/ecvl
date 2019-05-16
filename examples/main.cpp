@@ -81,6 +81,8 @@ int main(void)
     ImRead("../data/Kodak/img0015.png", img2);
 
     ResizeScale(img1, img1, { 0.3, 0.3 });
+
+    // A painfully slow idea for iterators
     for (auto it = img1.Begin<uint8_t>(); it != img1.End<uint8_t>(); ++it) {
         *it = static_cast<uint8_t>(*it * 0.5);
     }
