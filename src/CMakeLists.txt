@@ -8,4 +8,6 @@ datatype_tuples.inc
 filesystem.cc
 filesystem.h
 imgcodecs.h
+memorymanager.cpp
+memorymanager.h
 )
