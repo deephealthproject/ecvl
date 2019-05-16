@@ -224,4 +224,18 @@ gtest_discover_tests(ECVL_TESTS)
 #--------------------------------------------------------------------------------------------------------
 
 
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: snippets
+#--------------------------------------------------------------------------------------------------------
+include(snippets/CMakeLists.txt)
+FOREACH(cur_file ${snippets_sources})
+    get_filename_component(exe_name ${cur_file} NAME_WE)
+    set(cur_file "snippets/${cur_file}")
+    #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
+    add_executable(${exe_name} ${cur_file})
+    target_link_libraries(${exe_name} ECVL)
+ENDFOREACH()
+#--------------------------------------------------------------------------------------------------------
+# END: snippets
+#--------------------------------------------------------------------------------------------------------
 
