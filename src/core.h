@@ -40,15 +40,15 @@ class Image {
     }
 
 public:
-    DataType            elemtype_;
-    uint8_t             elemsize_;
+    DataType            elemtype_    = DataType::none;
+    uint8_t             elemsize_    = 0;
     std::vector<int>    dims_;      /**< Member description */
     std::vector<int>    strides_;
     std::string         channels_;
-    ColorType           colortype_;
-    uint8_t*            data_       = nullptr;
-    size_t              datasize_   = 0;
-    bool                contiguous_ = true;
+    ColorType           colortype_   = ColorType::none;
+    uint8_t*            data_        = nullptr;
+    size_t              datasize_    = 0;
+    bool                contiguous_  = true;
 
     MetaData* meta_ = nullptr;
     MemoryManager* mem_ = DefaultMemoryManager::GetInstance();
@@ -131,6 +131,8 @@ public:
     ~Image() {
         mem_->Deallocate(data_);
     }
+
+    bool IsEmpty() const { return data_ == nullptr; }
 
     uint8_t* Ptr(const std::vector<int>& coords) {
         assert(coords.size() == strides_.size());
