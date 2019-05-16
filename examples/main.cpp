@@ -1,6 +1,8 @@
 #include "../src/core.h"
 #include "../src/imgcodecs.h"
 
+#include <opencv2/highgui/highgui.hpp>
+
 using namespace ecvl;
 using namespace filesystem;
 
@@ -22,6 +24,9 @@ Complete description of the function/procedure
 Image MatToImage(cv::Mat& m)
 {
     Image img;
+
+    if (m.empty())
+        return img;
     
     // https://stackoverflow.com/questions/7701921/free-cvmat-without-releasing-memory
     if (m.isContinuous()) {
@@ -84,7 +89,8 @@ Image MatToImage(cv::Mat& m)
         }
 
         // Data
-        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.elemsize_, std::multiplies<int>());
+        img.datasize_ = img.elemsize_;
+        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.datasize_, std::multiplies<int>());
         img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
@@ -105,30 +111,32 @@ Image MatToImage(cv::Mat& m)
     return img;
 }
 
-cv::Mat ImageToMat(const Image& i) 
+cv::Mat ImageToMat(const Image& img) 
 {
-    if (!i.contiguous_) 
+    if (!img.contiguous_)
         throw std::runtime_error("Not implemented");
     
     cv::Mat m;
-    if (i.channels_ == "xyc") {
+    if (img.channels_ == "xyc") {
         int type;
-        switch (i.elemtype_)
+        switch (img.elemtype_)
         {
-        case DataType::uint8: type = CV_MAKETYPE(CV_8U, i.dims_[2]); break;
-        case DataType::int8: type = CV_MAKETYPE(CV_8S, i.dims_[2]); break;
-        case DataType::uint16: type = CV_MAKETYPE(CV_16U, i.dims_[2]); break;
-        case DataType::int16: type = CV_MAKETYPE(CV_16S, i.dims_[2]); break;
-        case DataType::int32: type = CV_MAKETYPE(CV_32S, i.dims_[2]); break;
-        case DataType::float32: type = CV_MAKETYPE(CV_32F, i.dims_[2]); break;
-        case DataType::float64: type = CV_MAKETYPE(CV_64F, i.dims_[2]); break;
+        case DataType::uint8:   type = CV_MAKETYPE(CV_8U,  img.dims_[2]); break;
+        case DataType::int8:    type = CV_MAKETYPE(CV_8S,  img.dims_[2]); break;
+        case DataType::uint16:  type = CV_MAKETYPE(CV_16U, img.dims_[2]); break;
+        case DataType::int16:   type = CV_MAKETYPE(CV_16S, img.dims_[2]); break;
+        case DataType::int32:   type = CV_MAKETYPE(CV_32S, img.dims_[2]); break;
+        case DataType::float32: type = CV_MAKETYPE(CV_32F, img.dims_[2]); break;
+        case DataType::float64: type = CV_MAKETYPE(CV_64F, img.dims_[2]); break;
         default:
             break;
         }
 
         std::vector<cv::Mat> channels;
-        for (int c = 0; c < i.dims_[2]; ++c)
-            channels.emplace_back(i.dims_.size() - 1, i.dims_.data(), type, i.Ptr({ 0,0,c }));
+        for (int c = 0; c < img.dims_[2]; ++c) {
+            int tmp[] = { img.dims_[1], img.dims_[0] }; // Swap dimensions to have rows, cols
+            channels.emplace_back(2, tmp, CV_MAT_DEPTH(type), (void*)(img.Ptr({ 0,0,c })));
+        }
         cv::merge(channels, m);
     }
     else {
@@ -142,6 +150,7 @@ cv::Mat ImageToMat(const Image& i)
 
 int main(void)
 {
+    /*
     Image test({ 5, 5 }, DataType::uint16, "xy", ColorType::none);
     Img<uint16_t> t(test);
     t(0, 0) = 1;
@@ -155,9 +164,12 @@ int main(void)
     Image img = MatToImage(m);
 
     std::cout << m;
+    */
+    cv::Mat m = cv::imread("test.jpg");
+    Image img = MatToImage(m);
 
-    m = cv::imread("test.jpg");
-    img = MatToImage(m);
+    cv::Mat m2 = ImageToMat(img);
+    cv::imwrite("out.png", m2);
 
     //Image j = ecvl::ImRead(path("test.jpg"));
     return 0;
