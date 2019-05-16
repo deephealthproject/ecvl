@@ -1,0 +1,94 @@
+\section{Shallow\+Memory\+Manager Class Reference}
+\label{class_shallow_memory_manager}\index{ShallowMemoryManager@{ShallowMemoryManager}}
+
+
+{\ttfamily \#include $<$memorymanager.\+h$>$}
+
+Inheritance diagram for Shallow\+Memory\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_shallow_memory_manager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual uint8\+\_\+t $\ast$ \textbf{ Allocate} (size\+\_\+t nbytes) override
+\item 
+virtual void \textbf{ Deallocate} (uint8\+\_\+t $\ast$data) override
+\item 
+virtual uint8\+\_\+t $\ast$ \textbf{ Allocate\+And\+Copy} (size\+\_\+t nbytes, uint8\+\_\+t $\ast$src) override
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ Shallow\+Memory\+Manager} $\ast$ \textbf{ Get\+Instance} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 30 of file memorymanager.\+h.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{class_shallow_memory_manager_a07aa8b3214e92c6d9ed9f2b87afd2707}} 
+\index{ShallowMemoryManager@{ShallowMemoryManager}!Allocate@{Allocate}}
+\index{Allocate@{Allocate}!ShallowMemoryManager@{ShallowMemoryManager}}
+\subsubsection{Allocate()}
+{\footnotesize\ttfamily virtual uint8\+\_\+t$\ast$ Shallow\+Memory\+Manager\+::\+Allocate (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{nbytes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \textbf{ Memory\+Manager} \doxyref{}{p.}{class_memory_manager_a0fb84636bf748292c53ab75bd9514c65}.
+
+
+
+Definition at line 32 of file memorymanager.\+h.
+
+\mbox{\label{class_shallow_memory_manager_aab507854292754ca81c92c77cf718272}} 
+\index{ShallowMemoryManager@{ShallowMemoryManager}!AllocateAndCopy@{AllocateAndCopy}}
+\index{AllocateAndCopy@{AllocateAndCopy}!ShallowMemoryManager@{ShallowMemoryManager}}
+\subsubsection{AllocateAndCopy()}
+{\footnotesize\ttfamily virtual uint8\+\_\+t$\ast$ Shallow\+Memory\+Manager\+::\+Allocate\+And\+Copy (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{nbytes,  }\item[{uint8\+\_\+t $\ast$}]{src }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \textbf{ Memory\+Manager} \doxyref{}{p.}{class_memory_manager_ad284855bb61b330a1094174ecba72563}.
+
+
+
+Definition at line 36 of file memorymanager.\+h.
+
+\mbox{\label{class_shallow_memory_manager_af618343b5ade01c01bef967413726ce7}} 
+\index{ShallowMemoryManager@{ShallowMemoryManager}!Deallocate@{Deallocate}}
+\index{Deallocate@{Deallocate}!ShallowMemoryManager@{ShallowMemoryManager}}
+\subsubsection{Deallocate()}
+{\footnotesize\ttfamily virtual void Shallow\+Memory\+Manager\+::\+Deallocate (\begin{DoxyParamCaption}\item[{uint8\+\_\+t $\ast$}]{data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \textbf{ Memory\+Manager} \doxyref{}{p.}{class_memory_manager_a755648ace8c3f18302104a6e232ee83d}.
+
+
+
+Definition at line 35 of file memorymanager.\+h.
+
+\mbox{\label{class_shallow_memory_manager_a4ca468454dfd24f68288d4c6199f4100}} 
+\index{ShallowMemoryManager@{ShallowMemoryManager}!GetInstance@{GetInstance}}
+\index{GetInstance@{GetInstance}!ShallowMemoryManager@{ShallowMemoryManager}}
+\subsubsection{GetInstance()}
+{\footnotesize\ttfamily \textbf{ Shallow\+Memory\+Manager} $\ast$ Shallow\+Memory\+Manager\+::\+Get\+Instance (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Definition at line 10 of file memorymanager.\+cpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ memorymanager.\+h}\item 
+\textbf{ memorymanager.\+cpp}\end{DoxyCompactItemize}

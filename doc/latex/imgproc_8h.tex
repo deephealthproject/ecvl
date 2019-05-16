@@ -1,0 +1,34 @@
+\section{imgproc.\+h File Reference}
+\label{imgproc_8h}\index{imgproc.h@{imgproc.h}}
+{\ttfamily \#include \char`\"{}core.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}support\+\_\+opencv.\+h\char`\"{}}\newline
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \textbf{ ecvl}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ ecvl\+::\+Interpolation\+Type} \{ \newline
+\textbf{ ecvl\+::\+Interpolation\+Type\+::nearest}, 
+\textbf{ ecvl\+::\+Interpolation\+Type\+::linear}, 
+\textbf{ ecvl\+::\+Interpolation\+Type\+::area}, 
+\textbf{ ecvl\+::\+Interpolation\+Type\+::cubic}, 
+\newline
+\textbf{ ecvl\+::\+Interpolation\+Type\+::lanczos4}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \textbf{ ecvl\+::\+Resize} (const \textbf{ ecvl\+::\+Image} \&src, \textbf{ ecvl\+::\+Image} \&dst, const std\+::vector$<$ int $>$ \&newdims, Interpolation\+Type interp)
+\item 
+void \textbf{ ecvl\+::\+Flip2D} (const \textbf{ ecvl\+::\+Image} \&src, \textbf{ ecvl\+::\+Image} \&dst)
+\item 
+void \textbf{ ecvl\+::\+Mirror2D} (const \textbf{ ecvl\+::\+Image} \&src, \textbf{ ecvl\+::\+Image} \&dst)
+\item 
+void \textbf{ ecvl\+::\+Rotate2D} (const \textbf{ ecvl\+::\+Image} \&src, \textbf{ ecvl\+::\+Image} \&dst, double angle, const std\+::vector$<$ double $>$ \&center, double scale, Interpolation\+Type interp)
+\item 
+void \textbf{ ecvl\+::\+Rotate\+Full\+Image2D} (const \textbf{ ecvl\+::\+Image} \&src, \textbf{ ecvl\+::\+Image} \&dst, double angle, double scale, Interpolation\+Type interp)
+\end{DoxyCompactItemize}
