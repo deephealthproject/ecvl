@@ -9,143 +9,8 @@
 #include "../src/support_opencv.h"
 #include "../src/imgcodecs.h"
 #include "../src/filesystem.h"
+#include "../src/imgproc.h"
 
-namespace ecvl {
-
-enum class InterpolationType {
-    nearest,
-    linear,
-    area,
-    cubic,
-    lanczos4
-};
-static int GetOpenCVInterpolation(InterpolationType interp) {
-    switch (interp) {
-    case InterpolationType::nearest:    return cv::INTER_NEAREST;
-    case InterpolationType::linear:     return cv::INTER_LINEAR;
-    case InterpolationType::area:       return cv::INTER_AREA;
-    case InterpolationType::cubic:      return cv::INTER_CUBIC;
-    case InterpolationType::lanczos4:   return cv::INTER_LANCZOS4;
-    default:
-        throw std::runtime_error("Should not happen");
-    }
-}
-void Resize(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp = InterpolationType::linear)
-{
-    if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
-    }
-
-    if (src.channels_ == "xyc") {
-        if (newdims.size() != 2) {
-            throw std::runtime_error("Number of dimensions specified doesn't match image dimensions");
-        }
-
-        cv::Mat m;
-        cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        throw std::runtime_error("Not implemented");
-    }
-}
-
-void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
-{
-    if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
-    }
-
-    if (src.channels_ == "xyc") {
-        cv::Mat m;
-        cv::flip(ImageToMat(src), m, 0);
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        throw std::runtime_error("Not implemented");
-    }
-}
-
-void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
-{
-    if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
-    }
-
-    if (src.channels_ == "xyc") {
-        cv::Mat m;
-        cv::flip(ImageToMat(src), m, 1);
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        throw std::runtime_error("Not implemented");
-    }
-}
-
-void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center = {}, double scale = 1.0, InterpolationType interp = InterpolationType::linear)
-{
-    if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
-    }
-    
-    cv::Point2f pt;
-    if (center.empty()) {
-        pt = { src.dims_[0] / 2.0f, src.dims_[1] / 2.0f };
-    }
-    else if (center.size() != 2) {
-        throw std::runtime_error("Rotation center must have two dimensions");
-    }
-    else {
-        pt = { float(center[0]), float(center[1]) };
-    }    
-
-    if (src.channels_ == "xyc") {
-        cv::Mat rot_matrix;
-        rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
-        cv::Mat m;
-        cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        throw std::runtime_error("Not implemented");
-    }
-}
-
-void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale = 1.0, InterpolationType interp = InterpolationType::linear)
-{
-    if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
-    }
-
-    if (src.channels_ == "xyc") {
-        cv::Point2f pt;
-        pt = { src.dims_[0] / 2.0f, src.dims_[1] / 2.0f };
-
-        cv::Mat1d rot_matrix;
-        rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
-
-        int w = src.dims_[0];
-        int h = src.dims_[1];
-        
-        double cos = abs(rot_matrix(0, 0));
-        double sin = abs(rot_matrix(0, 1));
-
-        int nw = lround((h * sin) + (w * cos));
-        int nh = lround((h * cos) + (w * sin));
-
-        rot_matrix(0, 2) += (nw / 2) - pt.x;
-        rot_matrix(1, 2) += (nh / 2) - pt.y;
-
-        cv::Mat m;
-        cv::warpAffine(ImageToMat(src), m, rot_matrix, { nw, nh }, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        throw std::runtime_error("Not implemented");
-    }
-}
-
-} // namespace ecvl
 
 int main(void)
 {
@@ -172,13 +37,18 @@ int main(void)
         return EXIT_FAILURE;
     }
 
-    //Resize(img, img, { 500,500 });
+    //Image rot1, rot2, rot3, rot4, rot5;
+    //Rotate2D(img, rot5, 30, {});
+    //Rotate2D(img, rot1, 30, {}, 0.5);
+    //Rotate2D(img, rot2, 30, {}, 0.5, InterpolationType::cubic);
+    //RotateFullImage2D(img, rot3, 30);
+    //RotateFullImage2D(img, rot4, 30, 0.5, InterpolationType::cubic);
 
-    /*
-    Image out1, out2;
-    Flip2D(img, out1);
-    Mirror2D(img, out2);
-    */
+    //Resize(img, img, { 500,500 });
+    //
+    //Image out1, out2;
+    //Flip2D(img, out1);
+    //Mirror2D(img, out2);  
 
     Image cropped;
     std::vector<int> start{ 100, 100, 2 };
@@ -205,16 +75,6 @@ int main(void)
     cropped.contiguous_ = false;
     cropped.meta_ = img.meta_;
     cropped.mem_ = ShallowMemoryManager::GetInstance();
-
-
-
-    /*
-    Image rot1, rot2, rot3, rot4;
-    Rotate2D(img, rot1, 30, {}, 0.5);
-    Rotate2D(img, rot2, 30, {}, 0.5, InterpolationType::cubic);
-    RotateFullImage2D(img, rot3, 30, 0.5);
-    RotateFullImage2D(img, rot4, 30, 0.5, InterpolationType::cubic);
-    */
 
     if (!ImWrite("test.jpg", img)) {
         return EXIT_FAILURE;
