@@ -1,0 +1,108 @@
+.TH "ecvl::Image" 3 "Thu May 16 2019" "ECVL" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ecvl::Image
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBecvl::Img< T >\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBImage\fP (std::initializer_list< int > dims, DataType elemtype, std::string channels, ColorType colortype)"
+.br
+.ti -1c
+.RI "\fBImage\fP (const \fBImage\fP &img)"
+.br
+.RI "Copy constructor: Deep Copy\&. "
+.ti -1c
+.RI "\fBImage\fP (\fBImage\fP &&img)"
+.br
+.RI "Move constructor\&. "
+.ti -1c
+.RI "\fBImage\fP & \fBoperator=\fP (\fBImage\fP rhs)"
+.br
+.ti -1c
+.RI "bool \fBIsEmpty\fP () const"
+.br
+.ti -1c
+.RI "uint8_t * \fBPtr\fP (const std::vector< int > &coords)"
+.br
+.ti -1c
+.RI "const uint8_t * \fBPtr\fP (const std::vector< int > &coords) const"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "DataType \fBelemtype_\fP = DataType::none"
+.br
+.ti -1c
+.RI "uint8_t \fBelemsize_\fP = 0"
+.br
+.ti -1c
+.RI "std::vector< int > \fBdims_\fP"
+.br
+.ti -1c
+.RI "std::vector< int > \fBstrides_\fP"
+.br
+.ti -1c
+.RI "std::string \fBchannels_\fP"
+.br
+.ti -1c
+.RI "ColorType \fBcolortype_\fP = ColorType::none"
+.br
+.ti -1c
+.RI "uint8_t * \fBdata_\fP = nullptr"
+.br
+.ti -1c
+.RI "size_t \fBdatasize_\fP = 0"
+.br
+.ti -1c
+.RI "bool \fBcontiguous_\fP = true"
+.br
+.ti -1c
+.RI "\fBMetaData\fP * \fBmeta_\fP = nullptr"
+.br
+.ti -1c
+.RI "\fBMemoryManager\fP * \fBmem_\fP = DefaultMemoryManager::GetInstance()"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "void \fBswap\fP (\fBImage\fP &lhs, \fBImage\fP &rhs)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 30 of file core\&.h\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ecvl::Image::Image (const \fBImage\fP & img)\fC [inline]\fP"
+
+.PP
+Copy constructor: Deep Copy\&. Copy constructor: Deep Copy 
+.PP
+Definition at line 75 of file core\&.h\&.
+.SS "ecvl::Image::Image (\fBImage\fP && img)\fC [inline]\fP"
+
+.PP
+Move constructor\&. Move constructor 
+.PP
+Definition at line 95 of file core\&.h\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "std::vector<int> ecvl::Image::dims_"
+Member description 
+.PP
+Definition at line 45 of file core\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ECVL from the source code\&.

@@ -23,7 +23,7 @@ bool ImRead(const std::string& filename, Image& dst);
 
 /** @overload
 
-This variant is platform independent.
+This variant of ImRead is platform independent.
 
 @anchor imread_path
 
@@ -39,30 +39,27 @@ bool ImRead(const filesystem::path& filename, Image& dst);
 The function ImWrite saves the input image into a specified file. The image format is
 chosen based on the filename extension.
 
-The following sample shows how to create a BGR image and save it to a PNG file.
-@include snippets/imgcodecs_imwrite.cpp
+The following sample shows how to create a BGR image and save it to the PNG file "test.png".
+@include ../snippets/imgcodecs_imwrite.cpp
 
-@param[in] filename A std::string identifying the file name. In order to be platform
-independent consider to use @ref imread_path.
-@param[out] dst Image in which data will be stored.
+@param[in] filename A std::string identifying the output file name. In order to be platform
+independent consider to use @ref imwrite_path.
+@param[in] src Image to be saved.
 
-@return true if the image is correctly read, false otherwise.
+@return true if the image is correctly write, false otherwise.
 */
 bool ImWrite(const std::string& filename, const Image& src);
 
-/** @brief Brief description of the function/procedure.
+/** @overload
 
-@anchor value -> to set an invisible link that can be referred to inside the documentation using @ref value command
+This variant of ImWrite is platform independent.
 
-Complete description of the function/procedure
+@anchor imwrite_path
 
-@note Here you can write special notes that will be displayed differently inside the final documentation (yellow bar on the left)
+@param[in] filename A filesystem::path identifying the output file name. 
+@param[in] src Image to be saved.
 
-@param[in] m Description starting with capital letter
-@param[out]
-@param[in,out]
-
-@return Description of the return value, None if void.
+@return true if the image is correctly write, false otherwise.
 */
 bool ImWrite(const filesystem::path& filename, const Image& src);
 

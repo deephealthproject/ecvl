@@ -1,0 +1,30 @@
+.TH "MemoryManager" 3 "Thu May 16 2019" "ECVL" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+MemoryManager
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherited by \fBDefaultMemoryManager\fP, and \fBShallowMemoryManager\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual uint8_t * \fBAllocate\fP (size_t nbytes)=0"
+.br
+.ti -1c
+.RI "virtual void \fBDeallocate\fP (uint8_t *data)=0"
+.br
+.ti -1c
+.RI "virtual uint8_t * \fBAllocateAndCopy\fP (size_t nbytes, uint8_t *src)=0"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 7 of file memorymanager\&.h\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ECVL from the source code\&.
