@@ -1,6 +1,8 @@
 #include "../src/core.h"
 #include "../src/imgcodecs.h"
 
+#include "../src/filesystem.h"
+
 using namespace ecvl;
 using namespace filesystem;
 
@@ -84,7 +86,7 @@ Image MatToImage(cv::Mat& m)
         }
 
         // Data
-        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.elemsize_, std::multiplies<int>());
+        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), static_cast<int>(img.elemsize_), std::multiplies<int>());
         img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
@@ -105,7 +107,21 @@ Image MatToImage(cv::Mat& m)
     return img;
 }
 
-cv::Mat ImageToMat(const Image& i) 
+/** @brief Convert an ECVL Image into OpenCV Mat. 
+
+@anchor value -> to set an invisible link that can be referred to inside the documentation using @ref value command
+
+Complete description of the function/procedure
+
+@note Here you can write special notes that will be displayed differently inside the final documentation (yellow bar on the left)
+
+@param[in] m Description starting with capital letter
+@param[out]
+@param[in,out]
+
+@return Description of the return value, None if void.
+*/
+cv::Mat ImageToMat(Image& i) 
 {
     if (!i.contiguous_) 
         throw std::runtime_error("Not implemented");
@@ -126,9 +142,11 @@ cv::Mat ImageToMat(const Image& i)
             break;
         }
 
+        std::vector<int> new_dims(i.dims_.size() - 1);
+        std::reverse_copy(begin(i.dims_), begin(i.dims_) + new_dims.size(), begin(new_dims));
         std::vector<cv::Mat> channels;
         for (int c = 0; c < i.dims_[2]; ++c)
-            channels.emplace_back(i.dims_.size() - 1, i.dims_.data(), type, i.Ptr({ 0,0,c }));
+            channels.emplace_back(new_dims, CV_MAKETYPE(type, 1), i.Ptr({ 0,0,c }));
         cv::merge(channels, m);
     }
     else {
@@ -154,10 +172,12 @@ int main(void)
         cv::Vec3b(5, 5, 5), cv::Vec3b(6, 6, 6);
     Image img = MatToImage(m);
 
-    std::cout << m;
+    /*std::cout << m;*/
 
-    m = cv::imread("test.jpg");
+    m = cv::imread(path("../data/test.jpg").string());
     img = MatToImage(m);
+    m = ImageToMat(img);
+
 
     //Image j = ecvl::ImRead(path("test.jpg"));
     return 0;
