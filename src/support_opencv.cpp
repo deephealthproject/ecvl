@@ -1,9 +1,9 @@
 #include "support_opencv.h"
 
-ecvl::Image MatToImage(const cv::Mat& m)
-{
-    using namespace ecvl;
+namespace ecvl {
 
+Image MatToImage(const cv::Mat& m)
+{
     Image img;
 
     if (m.empty())
@@ -92,10 +92,8 @@ ecvl::Image MatToImage(const cv::Mat& m)
     return img;
 }
 
-cv::Mat ImageToMat(const ecvl::Image& img)
+cv::Mat ImageToMat(const Image& img)
 {
-    using namespace ecvl;
-
     if (!img.contiguous_)
         throw std::runtime_error("Not implemented");
 
@@ -129,3 +127,5 @@ cv::Mat ImageToMat(const ecvl::Image& img)
 
     return m;
 }
+
+} // namespace ecvl 

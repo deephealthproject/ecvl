@@ -2,6 +2,8 @@
 
 #include "core.h"
 
+namespace ecvl {
+
 /** @brief Brief description of the function/procedure.
 
 @anchor value -> to set an invisible link that can be referred to inside the documentation using @ref value command
@@ -32,4 +34,6 @@ Complete description of the function/procedure
 
 @return Description of the return value, None if void.
 */
-cv::Mat ImageToMat(const ecvl::Image& img);
+cv::Mat ImageToMat(const Image& img);
+
+} // namespace ecvl 
