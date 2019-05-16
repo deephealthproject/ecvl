@@ -68,9 +68,9 @@ public:
 //    Image(int width, int height, DataType elemtype) :
 //        Image({ width, height }, elemtype) {}
 
-    /** @brief Copy constructor: Shallow Copy
+    /** @brief Copy constructor: Deep Copy
 
-        Copy constructor: Shallow Copy
+        Copy constructor: Deep Copy
     */
     Image(const Image& img) :
         elemtype_{ img.elemtype_ },
@@ -83,7 +83,7 @@ public:
         datasize_{ img.datasize_ },
         contiguous_{ img.contiguous_ },
         meta_{ img.meta_ },
-        mem_{ ShallowMemoryManager::GetInstance() }
+        mem_{ img.mem_ }
     {
         data_ = mem_->AllocateAndCopy(datasize_, img.data_);
     }
