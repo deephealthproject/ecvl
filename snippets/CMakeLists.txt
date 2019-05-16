@@ -1,3 +1,3 @@
 set(snippets_sources
-  imgproc_imwrite.cpp
+  imgcodecs_imwrite.cpp
 )
