@@ -31,6 +31,7 @@
       <Synthetic Name="[type]" Condition="elemtype_==DataType::float64">
         <DisplayString>FLOAT64</DisplayString>
       </Synthetic>
+      <Item Name="[channels]" Condition="colortype_==ColorType::GRAY">1</Item>
       <Synthetic Name="[channels]" Condition="colortype_==ColorType::BGR">
         <DisplayString>BGR</DisplayString>
       </Synthetic>
@@ -40,7 +41,16 @@
       <Item Name="[width]">dims_[0]</Item>
       <Item Name="[height]">dims_[1]</Item>
       <Item Name="[planes]">dims_[2]</Item>
-      <Item Name="[data]">data_</Item>
+      <Item Name="[data]" Condition="colortype_==ColorType::GRAY">data_</Item>
+      <!--
+      <Item Name="[data]" Condition="colortype_==ColorType::BGR">data_;data_+strides_[2];data_+2*strides_[2]</Item>
+      <Item Name="[data]" Condition="colortype_==ColorType::RGB">data_;data_+strides_[2];data_+2*strides_[2]</Item>
+      -->
+      <Synthetic Name="[data]" Condition="colortype_==ColorType::BGR || colortype_==ColorType::RGB">
+	<DisplayString>
+	  {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
+	</DisplayString>
+      </Synthetic>
       <Item Name="[stride]">strides_[1]</Item>
     </Expand>
   </Type>
