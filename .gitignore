@@ -1,2 +1,6 @@
 /[Bb]uild*
 /[Bb]in*
+
+/doc/html*
+/doc/latex*
+/doc/man*
