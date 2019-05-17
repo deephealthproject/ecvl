@@ -74,7 +74,7 @@ ContiguousIterator<T>::ContiguousIterator(Image& img, std::vector<int> pos) : im
     }
 }
 template <typename T>
-ConstContiguousIterator<T>::ConstContiguousIterator(const Image& img, std::vector<int>) : img_{ &img }
+ConstContiguousIterator<T>::ConstContiguousIterator(const Image& img, std::vector<int> pos) : img_{ &img }
 {
     if (!img_->contiguous_) {
         throw std::runtime_error("ConstContiguousIterator used on a non contiguous Image");

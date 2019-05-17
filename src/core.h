@@ -44,26 +44,25 @@ public:
     MetaData* meta_;
     MemoryManager* mem_;
 
+    template<typename T>
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+    template<typename T>
+    Iterator<T> End() { return Iterator<T>(*this, dims_); }
 
     template<typename T>
-    auto Begin() { return Iterator<T>(*this); }
+    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }
     template<typename T>
-    auto End() { return Iterator<T>(*this, dims_); }
+    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }
 
     template<typename T>
-    auto Begin() const { return ConstIterator<T>(*this); }
+    ContiguousIterator<T> ContiguousBegin() { return ContiguousIterator<T>(*this); }
     template<typename T>
-    auto End() const { return ConstIterator<T>(*this, dims_); }
+    ContiguousIterator<T> ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
 
     template<typename T>
-    auto ContiguousBegin() { return ContiguousIterator<T>(*this); }
+    ConstContiguousIterator<T> ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
     template<typename T>
-    auto ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
-
-    template<typename T>
-    auto ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
-    template<typename T>
-    auto ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
+    ConstContiguousIterator<T> ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
 
     /** @brief Default constructor
 
