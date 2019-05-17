@@ -208,8 +208,8 @@ public:
         return *reinterpret_cast<T*>(Ptr(coords));
     }
 
-    auto Begin() { return Iterator<T>(*this); }
-    auto End() { return Iterator<T>(*this, dims_); }
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+    Iterator<T> End() { return Iterator<T>(*this, dims_); }
 };
 
 template <typename T>
@@ -233,8 +233,8 @@ public:
         return *reinterpret_cast<const T*>(Ptr(coords));
     }
 
-    auto Begin() { return ConstIterator<T>(*this); }
-    auto End() { return ConstIterator<T>(*this, dims_); }
+    ConstIterator<T> Begin() { return ConstIterator<T>(*this); }
+    ConstIterator<T> End() { return ConstIterator<T>(*this, dims_); }
 };
 
 template <typename T>
@@ -258,8 +258,8 @@ public:
         return *reinterpret_cast<T*>(Ptr(coords));
     }
 
-    auto Begin() { return ContiguousIterator<T>(*this); }
-    auto End() { return ContiguousIterator<T>(*this, dims_); }
+    ContiguousIterator<T> Begin() { return ContiguousIterator<T>(*this); }
+    ContiguousIterator<T> End() { return ContiguousIterator<T>(*this, dims_); }
 };
 
 
