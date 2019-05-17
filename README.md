@@ -2,6 +2,11 @@
 ![ECVL](doc/logo/DEEPHEALTH_doxygen_logo_reduced.png)
 # ECVL - European Computer Vision Library
 
+| System  |        | 
+|:-------:|:------:|
+| Windows |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ECVL/job/master/windows_end)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ECVL/job/master/)        |
+| Linux   |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ECVL/job/master/linux_end)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ECVL/job/master/)        |
+
 ## Documentation
 
 The ecvl documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/) or in the doc folder of the GitHub repository.
