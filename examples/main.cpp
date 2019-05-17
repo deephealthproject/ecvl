@@ -51,7 +51,7 @@ int main(void)
     //Mirror2D(img, out2);  
 
     Image cropped;
-    std::vector<int> start{ 100, 100, 2 };
+    std::vector<int> start{ 100, 100, 0 };
     std::vector<int> size{ 200, 200, -1 };
     cropped.elemtype_ = img.elemtype_;
     cropped.elemsize_ = img.elemsize_;
@@ -68,13 +68,15 @@ int main(void)
         }
     }
     cropped.strides_ = img.strides_;
-    cropped.channels_ = 1;
-    cropped.colortype_ = ColorType::GRAY;
+    cropped.channels_ = img.channels_;
+    cropped.colortype_ = ColorType::BGR;
     cropped.data_ = img.Ptr(start);
     cropped.datasize_ = 0;
     cropped.contiguous_ = false;
     cropped.meta_ = img.meta_;
     cropped.mem_ = ShallowMemoryManager::GetInstance();
+
+    ImWrite("cropped.png", cropped);
 
     Image img1, img2;
     ImRead("../data/Kodak/img0003.png", img1);
@@ -82,14 +84,38 @@ int main(void)
 
     ResizeScale(img1, img1, { 0.3, 0.3 });
 
-    // A painfully slow idea for iterators
-    for (auto it = img1.Begin<uint8_t>(); it != img1.End<uint8_t>(); ++it) {
-        *it = static_cast<uint8_t>(*it * 0.5);
-    }
+    cv::TickMeter tm;
 
-    if (!ImWrite("test.jpg", img1)) {
+    tm.reset();
+    tm.start();
+    for (auto i = img1.Begin<uint8_t>(), e = img1.End<uint8_t>(); i != e; ++i) {
+        auto& p = *i;
+        p = static_cast<uint8_t>(p * 0.5);
+    }
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
+    tm.reset();
+    tm.start();
+    for (auto i = img1.ContiguousBegin<uint8_t>(), e = img1.ContiguousEnd<uint8_t>(); i != e; ++i) {
+        auto& p = *i;
+        p = static_cast<uint8_t>(p * 0.5);
+    }
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
+    ContiguousView<uint8_t> view1(img1);
+    tm.reset();
+    tm.start();
+    for (auto i = view1.Begin(), e = view1.End(); i != e; ++i) {
+        auto& p = *i;
+        p = static_cast<uint8_t>(p * 0.5);
+    }
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
+    /*if (!ImWrite("test.jpg", img1)) {
         return EXIT_FAILURE;
-    }
-
+    }*/
     return EXIT_SUCCESS;
 }
