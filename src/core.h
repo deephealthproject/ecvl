@@ -9,6 +9,7 @@
 
 #include "datatype.h"
 #include "memorymanager.h"
+#include "iterators.h"
 
 namespace ecvl {
 
@@ -28,88 +29,88 @@ enum class ColorType {
 };
 
 class Image {
+public:
+    DataType            elemtype_;
+    uint8_t             elemsize_;
+    std::vector<int>    dims_;      /**< Member description */
+    std::vector<int>    strides_;
+    std::string         channels_;
+    ColorType           colortype_;
+    uint8_t*            data_;
+    size_t              datasize_;
+    bool                contiguous_;
 
-    void InitInformation() {
-        strides_.push_back(elemsize_);
+    MetaData* meta_;
+    MemoryManager* mem_;
+
+
+    template<typename T>
+    auto Begin() { return Iterator<T>(*this); }
+    template<typename T>
+    auto End() { return Iterator<T>(*this, dims_); }
+
+    template<typename T>
+    auto Begin() const { return ConstIterator<T>(*this); }
+    template<typename T>
+    auto End() const { return ConstIterator<T>(*this, dims_); }
+
+    template<typename T>
+    auto ContiguousBegin() { return ContiguousIterator<T>(*this); }
+    template<typename T>
+    auto ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
+
+    template<typename T>
+    auto ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
+    template<typename T>
+    auto ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
+
+    /** @brief Default constructor
+
+        The default constructor creates an empty image without any data.
+    */
+    Image() :
+        elemtype_{ DataType::none },
+        elemsize_{ DataTypeSize(elemtype_) },
+        dims_{},
+        strides_{},
+        channels_{},
+        colortype_{ ColorType::none },
+        data_{ nullptr },
+        datasize_{ 0 },
+        contiguous_{ true },
+        meta_{ nullptr },
+        mem_{ nullptr }
+    {
+    }
+
+    /** @brief Initializing constructor
+
+        This constructor creates a proper image and allocates the data.
+    */
+    Image(std::initializer_list<int> dims, DataType elemtype, std::string channels, ColorType colortype) :
+        elemtype_{ elemtype },
+        elemsize_{ DataTypeSize(elemtype_) },
+        dims_{dims},
+        strides_{ elemsize_ },
+        channels_{ move(channels) },
+        colortype_{ colortype },
+        data_{ nullptr },
+        datasize_{ 0 },
+        contiguous_{ true },
+        meta_{ nullptr },
+        mem_{ DefaultMemoryManager::GetInstance() }
+    {
+        // Compute strides of dimensions after 0
         int dsize = dims_.size();
         for (int i = 0; i < dsize - 1; ++i) {
             strides_.push_back(strides_[i] * dims_[i]);
         }
         datasize_ = elemsize_;
         datasize_ = std::accumulate(begin(dims_), end(dims_), datasize_, std::multiplies<size_t>());
-    }
-
-public:
-    DataType            elemtype_    = DataType::none;
-    uint8_t             elemsize_    = 0;
-    std::vector<int>    dims_;      /**< Member description */
-    std::vector<int>    strides_;
-    std::string         channels_;
-    ColorType           colortype_   = ColorType::none;
-    uint8_t*            data_        = nullptr;
-    size_t              datasize_    = 0;
-    bool                contiguous_  = true;
-
-    MetaData* meta_ = nullptr;
-    MemoryManager* mem_ = DefaultMemoryManager::GetInstance();
-
-    template <typename T>
-    struct Iterator {
-        std::vector<int> pos_;
-        Image& img_;
-
-        explicit Iterator(Image& img, std::vector<int> pos = {}) : img_{ img }, pos_{ move(pos) } {
-            if (pos_.empty()) {
-                pos_.resize(img_.dims_.size(), 0);
-            }
-            if (pos_.size() != img_.dims_.size()) {
-                throw std::runtime_error("Iterator starting pos has a wrong size");
-            }
-        }
-        Iterator& operator++() /* prefix */ { return IncrementPos(); }
-        T& operator* () const { return *reinterpret_cast<T*>(img_.Ptr(pos_)); }
-        T* operator-> () const { return reinterpret_cast<T*>(img_.Ptr(pos_)); }
-        bool operator==(const Iterator& rhs) const { return pos_ == rhs.pos_; }
-        bool operator!=(const Iterator& rhs) const { return pos_ != rhs.pos_; }
-    private:
-        Iterator& IncrementPos() 
-        {
-            int spos = pos_.size();
-            int dim;
-            for (dim = 0; dim < spos; ++dim) {
-                if (++pos_[dim] != img_.dims_[dim])
-                    break;
-                pos_[dim] = 0;
-            }
-            if (dim == spos)
-                pos_ = img_.dims_;
-            return *this;
-        }
-    };
-
-    template<typename T>
-    Iterator<T> Begin() { return Iterator<T>(*this); }
-    template<typename T>
-    Iterator<T> End() { return Iterator<T>(*this, dims_); }
-
-    Image() {}
-    Image(std::initializer_list<int> dims, DataType elemtype, std::string channels, ColorType colortype) : 
-        elemtype_{ elemtype },
-        elemsize_{ DataTypeSize(elemtype_) },
-        dims_{dims},
-        channels_{ move(channels) }, 
-        colortype_{ colortype }
-    {
-        InitInformation();
         data_ = mem_->Allocate(datasize_);
     }
 
-//    Image(int width, int height, DataType elemtype) :
-//        Image({ width, height }, elemtype) {}
-
     /** @brief Copy constructor: Deep Copy
-
-        Copy constructor: Deep Copy
     */
     Image(const Image& img) :
         elemtype_{ img.elemtype_ },
@@ -168,7 +169,8 @@ public:
     }
 
     ~Image() {
-        mem_->Deallocate(data_);
+        if (mem_)
+            mem_->Deallocate(data_);
     }
 
     bool IsEmpty() const { return data_ == nullptr; }
@@ -184,45 +186,81 @@ public:
 };
 
 template <typename T>
-class Img : public Image {
+class View : public Image {
 public:
-    Img(Image& img) : Image(img) {}
-
-    T& operator()(int x, int y) {
-        return *reinterpret_cast<T*>(data_ + x*strides_[0] + y * strides_[1]);
+    View(Image& img) {
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        mem_ = ShallowMemoryManager::GetInstance();
     }
+
+    T& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<T*>(Ptr(coords));
+    }
+
+    auto Begin() { return Iterator<T>(*this); }
+    auto End() { return Iterator<T>(*this, dims_); }
+};
+
+template <typename T>
+class ConstView : public Image {
+public:
+    ConstView(const Image& img) {
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        mem_ = ShallowMemoryManager::GetInstance();
+    }
+
+    const T& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<const T*>(Ptr(coords));
+    }
+
+    auto Begin() { return ConstIterator<T>(*this); }
+    auto End() { return ConstIterator<T>(*this, dims_); }
+};
+
+template <typename T>
+class ContiguousView : public Image {
+public:
+    ContiguousView(Image& img) {
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        mem_ = ShallowMemoryManager::GetInstance();
+    }
+
+    T& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<T*>(Ptr(coords));
+    }
+
+    auto Begin() { return ContiguousIterator<T>(*this); }
+    auto End() { return ContiguousIterator<T>(*this, dims_); }
 };
 
 
-/*
-template<typename T>
-struct Image_ : Image {
-    //std::vector<int> dims_;
-    //std::vector<int> strides_;
-    //T* data_ = nullptr;
-    //bool owned_ = true;
-    //
-    //MetaData* meta_ = nullptr;
-
-    //Image() {}
-    //Image(int width, int height) : 
-    //    dims_{ width, height }, 
-    //    strides_{ 1, width }, 
-    //    data_{ new T[width*height] }
-    //    {}
-    //// Come distinguiamo depth da spectrum (canali)? 
-    //Image(int width, int height, int depth) :
-    //    dims_{ width, height, depth },
-    //    strides_{ 1, width, width*height },
-    //    data_{ new T[width*height*depth] }
-    //{}
-    //Image(std::initializer_list<int> dims) : dims_(dims), strides_{1} {
-    //    for (int i = 0; i < dims_.size() - 1; ++i) {
-    //        strides_.push_back(strides_[i] * dims_[i]);
-    //    }
-    //}
-};
-*/
 } // namespace ecvl
 
 #endif // !ECVL_CORE_H_
