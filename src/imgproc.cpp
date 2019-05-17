@@ -6,6 +6,12 @@
 
 namespace ecvl {
 
+/* @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
+
+@param[in] interp Interpolation type, see @ref InterpolationType.
+
+@return Associated OpenCV enum value.
+*/
 static int GetOpenCVInterpolation(InterpolationType interp) {
     switch (interp) {
     case InterpolationType::nearest:    return cv::INTER_NEAREST;
@@ -18,7 +24,7 @@ static int GetOpenCVInterpolation(InterpolationType interp) {
     }
 }
 
-void Resize(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
+void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
     if (src.IsEmpty()) {
         throw std::runtime_error("Empty image provided");
@@ -31,6 +37,29 @@ void Resize(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& ne
 
         cv::Mat m;
         cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
+        dst = ecvl::MatToImage(m);
+    }
+    else {
+        throw std::runtime_error("Not implemented");
+    }
+}
+
+void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
+{
+    if (src.IsEmpty()) {
+        throw std::runtime_error("Empty image provided");
+    }
+
+    if (src.channels_ == "xyc") {
+        if (scales.size() != 2) {
+            throw std::runtime_error("Number of dimensions specified doesn't match image dimensions");
+        }
+
+        int nw = lround(src.dims_[0] * scales[0]);
+        int nh = lround(src.dims_[1] * scales[1]);
+
+        cv::Mat m;
+        cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
         dst = ecvl::MatToImage(m);
     }
     else {

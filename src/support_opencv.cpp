@@ -72,6 +72,7 @@ Image MatToImage(const cv::Mat& m)
         // Data
         img.datasize_ = img.elemsize_;
         img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.datasize_, std::multiplies<int>());
+        img.mem_ = DefaultMemoryManager::GetInstance();
         img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
@@ -94,9 +95,6 @@ Image MatToImage(const cv::Mat& m)
 
 cv::Mat ImageToMat(const Image& img)
 {
-    if (!img.contiguous_)
-        throw std::runtime_error("Not implemented");
-
     cv::Mat m;
     if (img.channels_ == "xyc") {
         int type;
@@ -117,7 +115,16 @@ cv::Mat ImageToMat(const Image& img)
 
         std::vector<cv::Mat> channels;
         for (int c = 0; c < img.dims_[2]; ++c) {
-            channels.emplace_back(2, tmp, type, (void*)(img.Ptr({ 0,0,c })));
+            if (img.contiguous_) {
+                channels.emplace_back(2, tmp, type, (void*)(img.Ptr({ 0,0,c })));
+            }
+            else {
+                channels.emplace_back(2, tmp, type);
+                channels.back().data;
+                for (int r = 0; r < img.dims_[1]; ++r) {
+                    memcpy(channels[c].ptr<uint8_t>(r), img.Ptr({ 0, r, c }), img.dims_[0] * img.elemsize_);
+                }
+            }
         }
         cv::merge(channels, m);
     }

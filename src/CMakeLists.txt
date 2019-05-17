@@ -11,6 +11,7 @@ imgcodecs.cpp
 imgcodecs.h
 imgproc.h
 imgproc.cpp
+iterators.h
 memorymanager.cpp
 memorymanager.h
 support_opencv.cpp
