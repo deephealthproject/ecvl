@@ -185,6 +185,8 @@ public:
     }
 };
 
+#include "iterators_impl.h"
+
 template <typename T>
 class View : public Image {
 public:
