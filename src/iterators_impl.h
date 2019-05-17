@@ -51,7 +51,50 @@ ConstIterator<T>::ConstIterator(const Image& img, std::vector<int> pos) : img_{ 
         }
     }
 }
+template <typename T>
+ContiguousIterator<T>::ContiguousIterator(Image& img, std::vector<int> pos) : img_{ &img }
+{
+    if (!img_->contiguous_) {
+        throw std::runtime_error("ContiguousIterator used on a non contiguous Image");
+    }
 
+    if (pos.empty()) { // Begin
+        ptr_ = img.data_;
+    }
+    else {
+        if (pos.size() != img_->dims_.size()) {
+            throw std::runtime_error("ContiguousIterator starting pos has a wrong size");
+        }
+        if (pos == img_->dims_) { // End 
+            ptr_ = img_->data_ + img_->datasize_;
+        }
+        else {
+            ptr_ = img_->Ptr(pos);
+        }
+    }
+}
+template <typename T>
+ConstContiguousIterator<T>::ConstContiguousIterator(const Image& img, std::vector<int>) : img_{ &img }
+{
+    if (!img_->contiguous_) {
+        throw std::runtime_error("ConstContiguousIterator used on a non contiguous Image");
+    }
+
+    if (pos.empty()) { // Begin
+        ptr_ = img.data_;
+    }
+    else {
+        if (pos.size() != img_->dims_.size()) {
+            throw std::runtime_error("ConstContiguousIterator starting pos has a wrong size");
+        }
+        if (pos == img_->dims_) { // End 
+            ptr_ = img_->data_ + img_->datasize_;
+        }
+        else {
+            ptr_ = img_->Ptr(pos);
+        }
+    }
+}
 
 template <typename T>
 Iterator<T>& Iterator<T>::IncrementPos()
@@ -90,6 +133,7 @@ ConstIterator<T>& ConstIterator<T>::IncrementPos()
     return *this;
 }
 
+
 template <typename T>
 Iterator<T>& Iterator<T>::ContiguousIncrementPos()
 {
@@ -102,4 +146,15 @@ ConstIterator<T>& ConstIterator<T>::ContiguousIncrementPos()
     ptr_ += img_->elemsize_;
     return *this;
 }
-
+template <typename T>
+ContiguousIterator<T>& ContiguousIterator<T>::ContiguousIncrementPos()
+{
+    ptr_ += img_->elemsize_;
+    return *this;
+}
+template <typename T>
+ConstContiguousIterator<T>& ConstContiguousIterator<T>::ContiguousIncrementPos()
+{
+    ptr_ += img_->elemsize_;
+    return *this;
+}

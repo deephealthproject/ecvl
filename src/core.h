@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 #include <vector>
 
 #include <opencv2/core.hpp>

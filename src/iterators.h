@@ -15,7 +15,7 @@ struct Iterator {
     Image* img_;
 
     typedef Iterator& (Iterator::*IncrementMemFn)();
-    IncrementMemFn incrementor = &Iterator::IncrementPos;
+    IncrementMemFn incrementor = &Iterator<T>::IncrementPos;
 
     Iterator(Image& img, std::vector<int> pos = {});
     Iterator& operator++() /* prefix */ { return (this->*incrementor)(); }
@@ -35,7 +35,7 @@ struct ConstIterator {
     const Image* img_;
 
     typedef ConstIterator& (ConstIterator::*IncrementMemFn)();
-    IncrementMemFn incrementor = &Iterator::IncrementPos;
+    IncrementMemFn incrementor = &Iterator<T>::IncrementPos;
 
     ConstIterator(const Image& img, std::vector<int> pos = {});
     ConstIterator& operator++() /* prefix */ { return (this->*incrementor)(); }
@@ -54,38 +54,14 @@ struct ContiguousIterator {
     uint8_t* ptr_;
     Image* img_;
 
-    explicit ContiguousIterator(Image& img, std::vector<int> pos = {}) : img_{ &img }
-    {
-        if (!img_->contiguous_) {
-            throw std::runtime_error("ContiguousIterator used on a non contiguous Image");
-        }
-
-        if (pos.empty()) { // Begin
-            ptr_ = img.data_;
-        }
-        else {
-            if (pos.size() != img_->dims_.size()) {
-                throw std::runtime_error("ContiguousIterator starting pos has a wrong size");
-            }
-            if (pos == img_->dims_) { // End 
-                ptr_ = img_->data_ + img_->datasize_;
-            }
-            else {
-                ptr_ = img_->Ptr(pos);
-            }
-        }
-    }
+    ContiguousIterator(Image& img, std::vector<int> pos = {});
     ContiguousIterator& operator++() /* prefix */ { return ContiguousIncrementPos(); }
     T& operator* () const { return *reinterpret_cast<T*>(ptr_); }
     T* operator-> () const { return reinterpret_cast<T*>(ptr_); }
     bool operator==(const ContiguousIterator& rhs) const { return ptr_ == rhs.ptr_; }
     bool operator!=(const ContiguousIterator& rhs) const { return ptr_ != rhs.ptr_; }
 private:
-    ContiguousIterator& ContiguousIncrementPos()
-    {
-        ptr_ += img_->elemsize_;
-        return *this;
-    }
+    ContiguousIterator & ContiguousIncrementPos();
 };
 
 template <typename T>
@@ -93,38 +69,14 @@ struct ConstContiguousIterator {
     uint8_t* ptr_;
     const Image* img_;
 
-    explicit ConstContiguousIterator(const Image& img, std::vector<int> pos = {}) : img_{ &img }
-    {
-        if (!img_->contiguous_) {
-            throw std::runtime_error("ConstContiguousIterator used on a non contiguous Image");
-        }
-
-        if (pos.empty()) { // Begin
-            ptr_ = img.data_;
-        }
-        else {
-            if (pos.size() != img_->dims_.size()) {
-                throw std::runtime_error("ConstContiguousIterator starting pos has a wrong size");
-            }
-            if (pos == img_->dims_) { // End 
-                ptr_ = img_->data_ + img_->datasize_;
-            }
-            else {
-                ptr_ = img_->Ptr(pos);
-            }
-        }
-    }
+    ConstContiguousIterator(const Image& img, std::vector<int> pos = {});
     ConstContiguousIterator& operator++() /* prefix */ { return ContiguousIncrementPos(); }
     const T& operator* () const { return *reinterpret_cast<const T*>(ptr_); }
     const T* operator-> () const { return reinterpret_cast<const T*>(ptr_); }
     bool operator==(const ConstContiguousIterator& rhs) const { return ptr_ == rhs.ptr_; }
     bool operator!=(const ConstContiguousIterator& rhs) const { return ptr_ != rhs.ptr_; }
 private:
-    ConstContiguousIterator& ContiguousIncrementPos()
-    {
-        ptr_ += img_->elemsize_;
-        return *this;
-    }
+    ConstContiguousIterator & ContiguousIncrementPos();
 };
 
 } // namespace ecvl
