@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 #include <vector>
 
 #include <opencv2/core.hpp>
@@ -43,26 +44,25 @@ public:
     MetaData* meta_;
     MemoryManager* mem_;
 
+    template<typename T>
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+    template<typename T>
+    Iterator<T> End() { return Iterator<T>(*this, dims_); }
 
     template<typename T>
-    auto Begin() { return Iterator<T>(*this); }
+    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }
     template<typename T>
-    auto End() { return Iterator<T>(*this, dims_); }
+    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }
 
     template<typename T>
-    auto Begin() const { return ConstIterator<T>(*this); }
+    ContiguousIterator<T> ContiguousBegin() { return ContiguousIterator<T>(*this); }
     template<typename T>
-    auto End() const { return ConstIterator<T>(*this, dims_); }
+    ContiguousIterator<T> ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
 
     template<typename T>
-    auto ContiguousBegin() { return ContiguousIterator<T>(*this); }
+    ConstContiguousIterator<T> ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
     template<typename T>
-    auto ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
-
-    template<typename T>
-    auto ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
-    template<typename T>
-    auto ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
+    ConstContiguousIterator<T> ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
 
     /** @brief Default constructor
 
@@ -185,6 +185,8 @@ public:
     }
 };
 
+#include "iterators_impl.h"
+
 template <typename T>
 class View : public Image {
 public:
@@ -206,8 +208,8 @@ public:
         return *reinterpret_cast<T*>(Ptr(coords));
     }
 
-    auto Begin() { return Iterator<T>(*this); }
-    auto End() { return Iterator<T>(*this, dims_); }
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+    Iterator<T> End() { return Iterator<T>(*this, dims_); }
 };
 
 template <typename T>
@@ -231,8 +233,8 @@ public:
         return *reinterpret_cast<const T*>(Ptr(coords));
     }
 
-    auto Begin() { return ConstIterator<T>(*this); }
-    auto End() { return ConstIterator<T>(*this, dims_); }
+    ConstIterator<T> Begin() { return ConstIterator<T>(*this); }
+    ConstIterator<T> End() { return ConstIterator<T>(*this, dims_); }
 };
 
 template <typename T>
@@ -256,8 +258,8 @@ public:
         return *reinterpret_cast<T*>(Ptr(coords));
     }
 
-    auto Begin() { return ContiguousIterator<T>(*this); }
-    auto End() { return ContiguousIterator<T>(*this, dims_); }
+    ContiguousIterator<T> Begin() { return ContiguousIterator<T>(*this); }
+    ContiguousIterator<T> End() { return ContiguousIterator<T>(*this, dims_); }
 };
 
 

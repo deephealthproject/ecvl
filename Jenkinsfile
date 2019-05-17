@@ -7,7 +7,7 @@ pipeline {
                     agent {
                         docker { 
                             label 'docker'
-                            image 'stal12/opencv'
+                            image 'stal12/opencv:3.4.6'
                         }
                     }
                     stages {
@@ -21,6 +21,11 @@ pipeline {
                             steps {
                                 echo 'Testing..'
                                 ctest arguments: '-C Debug -VV', installation: 'InSearchPath', workingDir: 'build'
+                            }
+                        }
+                        stage('linux_end') {
+                            steps {
+                                echo 'Success!'
                             }
                         }
                     }
@@ -40,6 +45,11 @@ pipeline {
                             steps {
                                 echo 'Testing..'
                                 bat 'cd build && ctest -C Debug -VV'
+                            }
+                        }
+                        stage('windows_end') {
+                            steps {
+                                echo 'Success!'
                             }
                         }
                     }
