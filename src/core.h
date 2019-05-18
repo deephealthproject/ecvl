@@ -87,7 +87,7 @@ public:
 
         This constructor creates a proper image and allocates the data.
     */
-    Image(std::initializer_list<int> dims, DataType elemtype, std::string channels, ColorType colortype) :
+    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{dims},

@@ -51,7 +51,7 @@ int main(void)
     //Mirror2D(img, out2);  
 
     Image cropped;
-    std::vector<int> start{ 100, 100, 0 };
+    std::vector<int> start{ 100, 100, 2 };
     std::vector<int> size{ 200, 200, -1 };
     cropped.elemtype_ = img.elemtype_;
     cropped.elemsize_ = img.elemsize_;
@@ -69,7 +69,7 @@ int main(void)
     }
     cropped.strides_ = img.strides_;
     cropped.channels_ = img.channels_;
-    cropped.colortype_ = ColorType::BGR;
+    cropped.colortype_ = ColorType::GRAY;
     cropped.data_ = img.Ptr(start);
     cropped.datasize_ = 0;
     cropped.contiguous_ = false;
@@ -82,9 +82,30 @@ int main(void)
     ImRead("../data/Kodak/img0003.png", img1);
     ImRead("../data/Kodak/img0015.png", img2);
 
-    ResizeScale(img1, img1, { 0.3, 0.3 });
+    //ResizeScale(img1, img1, { 0.3, 0.3 });
 
     cv::TickMeter tm;
+
+    tm.reset();
+    tm.start();
+    Image add(img1.dims_, DataType::float64, "xyc", ColorType::none);
+    ContiguousView<double> v(add);
+    ContiguousView<uint8_t> v1(img1);
+    ContiguousView<uint8_t> v2(img2);
+    {
+        auto i = v.Begin(), e = v.End();
+        auto i1 = v1.Begin(), e1 = v1.End();
+        auto i2 = v2.Begin(), e2 = v2.End();
+        for (; i1 != e1 && i2 != e2; ++i, ++i1, ++i2) {
+            auto &p = *i;
+            auto &p1 = *i1;
+            auto &p2 = *i2;
+            p = p1/2.0 + p2 / 2.0;
+        }
+    }
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
 
     tm.reset();
     tm.start();

@@ -106,7 +106,7 @@ struct ConstIterator {
             }
         }
     }
-    ConstIterator& operator++() /* prefix */ { return std::invoke(incrementor, this); }
+    ConstIterator& operator++() /* prefix */ { return (this->*incrementor)(); }
     const T& operator* () const { return *reinterpret_cast<const T*>(ptr_); }
     const T* operator-> () const { return reinterpret_cast<const T*>(ptr_); }
     bool operator==(const ConstIterator& rhs) const { return ptr_ == rhs.ptr_; }
