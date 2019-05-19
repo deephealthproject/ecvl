@@ -42,7 +42,7 @@ struct Iterator {
             }
         }
     }
-    Iterator& operator++() /* prefix */ { return std::invoke(incrementor, this); }
+    Iterator& operator++() /* prefix */ { return (this->*incrementor)(); }
     T& operator* () const { return *reinterpret_cast<T*>(ptr_); }
     T* operator-> () const { return reinterpret_cast<T*>(ptr_); }
     bool operator==(const Iterator& rhs) const { return ptr_ == rhs.ptr_; }
