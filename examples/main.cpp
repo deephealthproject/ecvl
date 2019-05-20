@@ -21,7 +21,7 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
     auto i = v.Begin(), e = v.End();
     for (; i != e; ++i) {
         auto &p = *i;
-        p = static_cast<ViewType::basetype>(p * d);
+        p = static_cast<typename ViewType::basetype>(p * d);
     }
     return img;
 }
