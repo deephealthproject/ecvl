@@ -9,7 +9,7 @@
 
 ## Documentation
 
-The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/) or in the doc folder of the GitHub repository.
+The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/). It will be automatically updated at each commit/push to the master branch.
 
 ## Requirements
 
