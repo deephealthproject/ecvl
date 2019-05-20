@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 #include <vector>
 
 #include <opencv2/core.hpp>
@@ -43,26 +44,25 @@ public:
     MetaData* meta_;
     MemoryManager* mem_;
 
+    template<typename T>
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+    template<typename T>
+    Iterator<T> End() { return Iterator<T>(*this, dims_); }
 
     template<typename T>
-    auto Begin() { return Iterator<T>(*this); }
+    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }
     template<typename T>
-    auto End() { return Iterator<T>(*this, dims_); }
+    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }
 
     template<typename T>
-    auto Begin() const { return ConstIterator<T>(*this); }
+    ContiguousIterator<T> ContiguousBegin() { return ContiguousIterator<T>(*this); }
     template<typename T>
-    auto End() const { return ConstIterator<T>(*this, dims_); }
+    ContiguousIterator<T> ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
 
     template<typename T>
-    auto ContiguousBegin() { return ContiguousIterator<T>(*this); }
+    ConstContiguousIterator<T> ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
     template<typename T>
-    auto ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
-
-    template<typename T>
-    auto ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
-    template<typename T>
-    auto ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
+    ConstContiguousIterator<T> ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
 
     /** @brief Default constructor
 
@@ -185,6 +185,7 @@ public:
     }
 };
 
+#include "iterators_impl.h"
 template <DataType DT>
 class View : public Image {
 public:
@@ -210,8 +211,8 @@ public:
         return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    auto Begin() { return Iterator<basetype>(*this); }
-    auto End() { return Iterator<basetype>(*this, dims_); }
+    Iterator<basetype> Begin() { return Iterator<basetype>(*this); }
+    Iterator<basetype> End() { return Iterator<basetype>(*this, dims_); }
 };
 
 template <DataType DT>
@@ -237,8 +238,8 @@ public:
         return *reinterpret_cast<const basetype*>(Ptr(coords));
     }
 
-    auto Begin() { return ConstIterator<basetype>(*this); }
-    auto End() { return ConstIterator<basetype>(*this, dims_); }
+    ConstIterator<basetype> Begin() { return ConstIterator<basetype>(*this); }
+    ConstIterator<basetype> End() { return ConstIterator<basetype>(*this, dims_); }
 };
 
 template <DataType DT>
@@ -264,8 +265,8 @@ public:
         return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    auto Begin() { return ContiguousIterator<basetype>(*this); }
-    auto End() { return ContiguousIterator<basetype>(*this, dims_); }
+    ContiguousIterator<basetype> Begin() { return ContiguousIterator<basetype>(*this); }
+    ContiguousIterator<basetype> End() { return ContiguousIterator<basetype>(*this, dims_); }
 };
 
 

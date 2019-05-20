@@ -14,8 +14,8 @@ int main()
     for (int r = 0; r < img.dims_[1]; ++r) {
         for (int c = 0; c < img.dims_[0]; ++c) {
             *img.Ptr({ c, r, 0 }) = 255;
-            *img.Ptr({ c, r, 1 }) = r % 255;
-            *img.Ptr({ c, r, 2 }) = c % 255;
+            *img.Ptr({ c, r, 1 }) = (r / 2) % 255;
+            *img.Ptr({ c, r, 2 }) = (r / 2) % 255;
         }
     }
 
