@@ -11,6 +11,33 @@
 #include "../src/filesystem.h"
 #include "../src/imgproc.h"
 
+template<typename T> 
+ecvl::Image& Mul(ecvl::Image& img, double d) 
+{
+    using namespace ecvl;
+    ContiguousView<T> v(img);
+    auto i = v.Begin(), e = v.End();
+    for (; i != e; ++i) {
+        auto &p = *i;
+        p = static_cast<T>(p * d);
+    }
+    return img;
+}
+
+ecvl::Image& Mul(ecvl::Image& img, double d)
+{
+    using namespace ecvl;
+    if (!img.contiguous_)
+        throw std::runtime_error("Not implemented");
+    switch (img.elemtype_)
+    {
+    case DataType::uint8: return Mul<uint8_t>(img, d);
+    case DataType::float64: return Mul<double>(img, d);
+    case DataType::float32: return Mul<float>(img, d);
+    default:
+        throw std::runtime_error("Not implemented");
+    }
+}
 
 int main(void)
 {
@@ -84,6 +111,8 @@ int main(void)
 
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
+    Mul(img1, 0.5);
+
     cv::TickMeter tm;
 
     tm.reset();
@@ -100,7 +129,7 @@ int main(void)
             auto &p = *i;
             auto &p1 = *i1;
             auto &p2 = *i2;
-            p = p1/2.0 + p2 / 2.0;
+            p = p1 / 2.0 + p2 / 2.0;
         }
     }
     tm.stop();
