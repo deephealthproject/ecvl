@@ -11,15 +11,17 @@
 #include "../src/filesystem.h"
 #include "../src/imgproc.h"
 
-template<typename T> 
-ecvl::Image& Mul(ecvl::Image& img, double d) 
+namespace ecvl {
+
+template<typename ViewType>
+ecvl::Image& Mul(ecvl::Image& img, double d)
 {
     using namespace ecvl;
-    ContiguousView<T> v(img);
+    ViewType v(img);
     auto i = v.Begin(), e = v.End();
     for (; i != e; ++i) {
         auto &p = *i;
-        p = static_cast<T>(p * d);
+        p = static_cast<ViewType::basetype>(p * d);
     }
     return img;
 }
@@ -27,22 +29,39 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
 ecvl::Image& Mul(ecvl::Image& img, double d)
 {
     using namespace ecvl;
-    if (!img.contiguous_)
-        throw std::runtime_error("Not implemented");
-    switch (img.elemtype_)
-    {
-    case DataType::uint8: return Mul<uint8_t>(img, d);
-    case DataType::float64: return Mul<double>(img, d);
-    case DataType::float32: return Mul<float>(img, d);
-    default:
-        throw std::runtime_error("Not implemented");
+    if (img.contiguous_) {
+        switch (img.elemtype_)
+        {
+#define TUPLE(name, ...) case DataType::##name: return Mul<ContiguousView<DataType::##name>>(img, d);
+#include "../src/datatype_existing_tuples.inc"
+#undef TUPLE
+        default:
+            throw std::runtime_error("Not implemented");
+        }
+    }
+    else {
+        switch (img.elemtype_)
+        {
+#define TUPLE(name, ...) case DataType::##name: return Mul<View<DataType::##name>>(img, d);
+#include "../src/datatype_existing_tuples.inc"
+#undef TUPLE
+        default:
+            throw std::runtime_error("Not implemented");
+        }
     }
 }
+
+} // namespace ecvl
 
 int main(void)
 {
     using namespace ecvl;
     using namespace filesystem;
+
+    Image x({ 5, 5, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
+    View<DataType::uint8> y(x);
+    y({ 0,0,0 }) = 5;
+
 
     /*
     Image test({ 5, 5 }, DataType::uint16, "xy", ColorType::none);
@@ -118,9 +137,9 @@ int main(void)
     tm.reset();
     tm.start();
     Image add(img1.dims_, DataType::float64, "xyc", ColorType::none);
-    ContiguousView<double> v(add);
-    ContiguousView<uint8_t> v1(img1);
-    ContiguousView<uint8_t> v2(img2);
+    ContiguousView<DataType::float64> v(add);
+    ContiguousView<DataType::uint8> v1(img1);
+    ContiguousView<DataType::uint8> v2(img2);
     {
         auto i = v.Begin(), e = v.End();
         auto i1 = v1.Begin(), e1 = v1.End();
@@ -154,7 +173,7 @@ int main(void)
     tm.stop();
     std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    ContiguousView<uint8_t> view1(img1);
+    ContiguousView<DataType::uint8> view1(img1);
     tm.reset();
     tm.start();
     for (auto i = view1.Begin(), e = view1.End(); i != e; ++i) {

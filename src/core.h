@@ -185,10 +185,14 @@ public:
     }
 };
 
-template <typename T>
+template <DataType DT>
 class View : public Image {
 public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
     View(Image& img) {
+        if (DT != img.elemtype_)
+            throw std::runtime_error("View type is different from Image type");
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
@@ -202,17 +206,19 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    T& operator()(const std::vector<int>& coords) {
-        return *reinterpret_cast<T*>(Ptr(coords));
+    basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    auto Begin() { return Iterator<T>(*this); }
-    auto End() { return Iterator<T>(*this, dims_); }
+    auto Begin() { return Iterator<basetype>(*this); }
+    auto End() { return Iterator<basetype>(*this, dims_); }
 };
 
-template <typename T>
+template <DataType DT>
 class ConstView : public Image {
 public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
     ConstView(const Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
@@ -227,17 +233,19 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    const T& operator()(const std::vector<int>& coords) {
-        return *reinterpret_cast<const T*>(Ptr(coords));
+    const basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<const basetype*>(Ptr(coords));
     }
 
-    auto Begin() { return ConstIterator<T>(*this); }
-    auto End() { return ConstIterator<T>(*this, dims_); }
+    auto Begin() { return ConstIterator<basetype>(*this); }
+    auto End() { return ConstIterator<basetype>(*this, dims_); }
 };
 
-template <typename T>
+template <DataType DT>
 class ContiguousView : public Image {
 public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
     ContiguousView(Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
@@ -252,12 +260,12 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    T& operator()(const std::vector<int>& coords) {
-        return *reinterpret_cast<T*>(Ptr(coords));
+    basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    auto Begin() { return ContiguousIterator<T>(*this); }
-    auto End() { return ContiguousIterator<T>(*this, dims_); }
+    auto Begin() { return ContiguousIterator<basetype>(*this); }
+    auto End() { return ContiguousIterator<basetype>(*this, dims_); }
 };
 
 

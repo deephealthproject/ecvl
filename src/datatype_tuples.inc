@@ -1,11 +1,2 @@
-TUPLE(none, 0)
-TUPLE(uint8, 1)
-TUPLE(uint16, 2)
-TUPLE(uint32, 4)
-TUPLE(uint64, 8)
-TUPLE(int8, 1)
-TUPLE(int16, 2)
-TUPLE(int32, 4)
-TUPLE(int64, 8)
-TUPLE(float32, 4)
-TUPLE(float64, 8)
+TUPLE(none,    0, void)
+#include "datatype_existing_tuples.inc"
