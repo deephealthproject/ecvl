@@ -1,0 +1,11 @@
+TUPLE(uint8,   1, uint8_t)
+TUPLE(uint16,  2, uint16_t)
+TUPLE(uint32,  4, uint32_t)
+TUPLE(uint64,  8, uint64_t)
+TUPLE(int8,    1, int8_t)
+TUPLE(int16,   2, int16_t)
+TUPLE(int32,   4, int32_t)
+TUPLE(int64,   8, int64_t)
+TUPLE(float32, 4, float)
+TUPLE(float64, 8, double)
+

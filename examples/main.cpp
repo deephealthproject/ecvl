@@ -11,11 +11,57 @@
 #include "../src/filesystem.h"
 #include "../src/imgproc.h"
 
+namespace ecvl {
+
+template<typename ViewType>
+ecvl::Image& Mul(ecvl::Image& img, double d)
+{
+    using namespace ecvl;
+    ViewType v(img);
+    auto i = v.Begin(), e = v.End();
+    for (; i != e; ++i) {
+        auto &p = *i;
+        p = static_cast<typename ViewType::basetype>(p * d);
+    }
+    return img;
+}
+
+ecvl::Image& Mul(ecvl::Image& img, double d)
+{
+    using namespace ecvl;
+    if (img.contiguous_) {
+        switch (img.elemtype_)
+        {
+#define TUPLE(name, ...) case DataType::name: return Mul<ContiguousView<DataType::name>>(img, d);
+#include "../src/datatype_existing_tuples.inc"
+#undef TUPLE
+        default:
+            throw std::runtime_error("Not implemented");
+        }
+    }
+    else {
+        switch (img.elemtype_)
+        {
+#define TUPLE(name, ...) case DataType::name: return Mul<View<DataType::name>>(img, d);
+#include "../src/datatype_existing_tuples.inc"
+#undef TUPLE
+        default:
+            throw std::runtime_error("Not implemented");
+        }
+    }
+}
+
+} // namespace ecvl
 
 int main(void)
 {
     using namespace ecvl;
     using namespace filesystem;
+
+    Image x({ 5, 5, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
+    View<DataType::uint8> y(x);
+    y({ 0,0,0 }) = 5;
+
 
     /*
     Image test({ 5, 5 }, DataType::uint16, "xy", ColorType::none);
@@ -51,7 +97,7 @@ int main(void)
     //Mirror2D(img, out2);  
 
     Image cropped;
-    std::vector<int> start{ 100, 100, 0 };
+    std::vector<int> start{ 100, 100, 2 };
     std::vector<int> size{ 200, 200, -1 };
     cropped.elemtype_ = img.elemtype_;
     cropped.elemsize_ = img.elemsize_;
@@ -69,7 +115,7 @@ int main(void)
     }
     cropped.strides_ = img.strides_;
     cropped.channels_ = img.channels_;
-    cropped.colortype_ = ColorType::BGR;
+    cropped.colortype_ = ColorType::GRAY;
     cropped.data_ = img.Ptr(start);
     cropped.datasize_ = 0;
     cropped.contiguous_ = false;
@@ -82,9 +128,32 @@ int main(void)
     ImRead("../data/Kodak/img0003.png", img1);
     ImRead("../data/Kodak/img0015.png", img2);
 
-    ResizeScale(img1, img1, { 0.3, 0.3 });
+    //ResizeScale(img1, img1, { 0.3, 0.3 });
+
+    Mul(img1, 0.5);
 
     cv::TickMeter tm;
+
+    tm.reset();
+    tm.start();
+    Image add(img1.dims_, DataType::float64, "xyc", ColorType::none);
+    ContiguousView<DataType::float64> v(add);
+    ContiguousView<DataType::uint8> v1(img1);
+    ContiguousView<DataType::uint8> v2(img2);
+    {
+        auto i = v.Begin(), e = v.End();
+        auto i1 = v1.Begin(), e1 = v1.End();
+        auto i2 = v2.Begin(), e2 = v2.End();
+        for (; i1 != e1 && i2 != e2; ++i, ++i1, ++i2) {
+            auto &p = *i;
+            auto &p1 = *i1;
+            auto &p2 = *i2;
+            p = p1 / 2.0 + p2 / 2.0;
+        }
+    }
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
 
     tm.reset();
     tm.start();
@@ -104,7 +173,7 @@ int main(void)
     tm.stop();
     std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    ContiguousView<uint8_t> view1(img1);
+    ContiguousView<DataType::uint8> view1(img1);
     tm.reset();
     tm.start();
     for (auto i = view1.Begin(), e = view1.End(); i != e; ++i) {

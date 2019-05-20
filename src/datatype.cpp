@@ -3,7 +3,7 @@
 namespace ecvl {
 
 static uint8_t aDataTypeSize[] = {
-#define TUPLE(name, size) size,
+#define TUPLE(name, size, ...) size,
 #include "datatype_tuples.inc"
 #undef TUPLE
 };

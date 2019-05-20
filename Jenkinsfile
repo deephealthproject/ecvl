@@ -54,6 +54,24 @@ pipeline {
                         }
                     }
                 }
+                stage('documentation') {
+                    when { 
+                        branch 'master' 
+                        beforeAgent true
+                    }
+                    agent {
+                        label 'windows && ecvl_doxygen'
+                    }
+                    stages {
+                        stage('Update documentation') {
+                            steps {
+                                bat 'cd doc\\doxygen && doxygen'
+                                bat 'powershell -Command "(gc %ECVL_DOXYGEN_INPUT_COMMANDS%) -replace \'@local_dir\', \'doc\\html\' | Out-File commands_out.txt"'
+                                bat 'winscp /ini:nul /script:commands_out.txt'
+                            }
+                        }
+                    }
+                }
             }
         }
     }

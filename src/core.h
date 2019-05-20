@@ -87,7 +87,7 @@ public:
 
         This constructor creates a proper image and allocates the data.
     */
-    Image(std::initializer_list<int> dims, DataType elemtype, std::string channels, ColorType colortype) :
+    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{dims},
@@ -186,11 +186,14 @@ public:
 };
 
 #include "iterators_impl.h"
-
-template <typename T>
+template <DataType DT>
 class View : public Image {
 public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
     View(Image& img) {
+        if (DT != img.elemtype_)
+            throw std::runtime_error("View type is different from Image type");
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
@@ -204,17 +207,19 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    T& operator()(const std::vector<int>& coords) {
-        return *reinterpret_cast<T*>(Ptr(coords));
+    basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    Iterator<T> Begin() { return Iterator<T>(*this); }
-    Iterator<T> End() { return Iterator<T>(*this, dims_); }
+    Iterator<basetype> Begin() { return Iterator<basetype>(*this); }
+    Iterator<basetype> End() { return Iterator<basetype>(*this, dims_); }
 };
 
-template <typename T>
+template <DataType DT>
 class ConstView : public Image {
 public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
     ConstView(const Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
@@ -229,17 +234,19 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    const T& operator()(const std::vector<int>& coords) {
-        return *reinterpret_cast<const T*>(Ptr(coords));
+    const basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<const basetype*>(Ptr(coords));
     }
 
-    ConstIterator<T> Begin() { return ConstIterator<T>(*this); }
-    ConstIterator<T> End() { return ConstIterator<T>(*this, dims_); }
+    ConstIterator<basetype> Begin() { return ConstIterator<basetype>(*this); }
+    ConstIterator<basetype> End() { return ConstIterator<basetype>(*this, dims_); }
 };
 
-template <typename T>
+template <DataType DT>
 class ContiguousView : public Image {
 public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
     ContiguousView(Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
@@ -254,12 +261,12 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    T& operator()(const std::vector<int>& coords) {
-        return *reinterpret_cast<T*>(Ptr(coords));
+    basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    ContiguousIterator<T> Begin() { return ContiguousIterator<T>(*this); }
-    ContiguousIterator<T> End() { return ContiguousIterator<T>(*this, dims_); }
+    ContiguousIterator<basetype> Begin() { return ContiguousIterator<basetype>(*this); }
+    ContiguousIterator<basetype> End() { return ContiguousIterator<basetype>(*this, dims_); }
 };
 
 
