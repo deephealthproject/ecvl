@@ -4,6 +4,7 @@ core.cpp
 core.h
 datatype.cpp
 datatype.h
+datatype_existing_tuples.inc
 datatype_tuples.inc
 filesystem.cc
 filesystem.h

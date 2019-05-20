@@ -32,9 +32,9 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
     if (img.contiguous_) {
         switch (img.elemtype_)
         {
-#define TUPLE(name, ...) case DataType::name: return Mul<ContiguousView<DataType::name>>(img, d);
+#define ECVL_TUPLE(name, ...) case DataType::name: return Mul<ContiguousView<DataType::name>>(img, d);
 #include "../src/datatype_existing_tuples.inc"
-#undef TUPLE
+#undef ECVL_TUPLE
         default:
             throw std::runtime_error("Not implemented");
         }
@@ -42,9 +42,9 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
     else {
         switch (img.elemtype_)
         {
-#define TUPLE(name, ...) case DataType::name: return Mul<View<DataType::name>>(img, d);
+#define ECVL_TUPLE(name, ...) case DataType::name: return Mul<View<DataType::name>>(img, d);
 #include "../src/datatype_existing_tuples.inc"
-#undef TUPLE
+#undef ECVL_TUPLE
         default:
             throw std::runtime_error("Not implemented");
         }
