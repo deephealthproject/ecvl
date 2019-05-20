@@ -15,7 +15,7 @@ enum class DataType {
 uint8_t DataTypeSize(DataType dt);
 
 template<ecvl::DataType> struct TypeInfo { using basetype = void; };
-#define TUPLE(name, size, type, ...) template<> struct TypeInfo<ecvl::DataType::##name> { using basetype = type; };
+#define TUPLE(name, size, type, ...) template<> struct TypeInfo<ecvl::DataType::name> { using basetype = type; };
 #include "datatype_tuples.inc"
 #undef TUPLE
 

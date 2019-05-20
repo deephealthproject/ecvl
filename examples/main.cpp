@@ -32,7 +32,7 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
     if (img.contiguous_) {
         switch (img.elemtype_)
         {
-#define TUPLE(name, ...) case DataType::##name: return Mul<ContiguousView<DataType::##name>>(img, d);
+#define TUPLE(name, ...) case DataType::name: return Mul<ContiguousView<DataType::name>>(img, d);
 #include "../src/datatype_existing_tuples.inc"
 #undef TUPLE
         default:
@@ -42,7 +42,7 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
     else {
         switch (img.elemtype_)
         {
-#define TUPLE(name, ...) case DataType::##name: return Mul<View<DataType::##name>>(img, d);
+#define TUPLE(name, ...) case DataType::name: return Mul<View<DataType::name>>(img, d);
 #include "../src/datatype_existing_tuples.inc"
 #undef TUPLE
         default:
