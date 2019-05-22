@@ -31,6 +31,9 @@ cmake_minimum_required (VERSION 3.13)
 
 project (ECVL CXX)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
+
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Check for c++11 support
 #--------------------------------------------------------------------------------------------------------
@@ -65,10 +68,6 @@ message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 #--------------------------------------------------------------------------------------------------------
 # END: Check for c++11 support
 #--------------------------------------------------------------------------------------------------------
-
-add_library(ECVL "")
-
-add_subdirectory(src)
 
 if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -165,20 +164,15 @@ endif()
 set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc" CACHE STRING "OpenCV required packages")
 FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 include_directories(${OpenCV_INCLUDE_DIRS})
-
-target_link_libraries (ECVL  ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
 # END: OpenCV 	
 #--------------------------------------------------------------------------------------------------------
-
-add_executable(EXAMPLES "")
-add_subdirectory(examples/)
-target_link_libraries(EXAMPLES ECVL)
 
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: download and install GTest
 #--------------------------------------------------------------------------------------------------------
+set(CMAKE_FOLDER GTest)
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
   RESULT_VARIABLE result
@@ -210,22 +204,38 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-add_executable(ECVL_TESTS "")
-add_subdirectory(src/test)
-
-target_link_libraries(ECVL_TESTS ECVL gtest_main)
-
-enable_testing()
-
 include(GoogleTest)
-gtest_discover_tests(ECVL_TESTS)
+set(CMAKE_FOLDER "")
 #--------------------------------------------------------------------------------------------------------
 # END: download and install GTest
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: snippets
+# BEGIN: ECVL library, examples and tests
+#--------------------------------------------------------------------------------------------------------
+add_library(ECVL "")
+add_subdirectory(src)
+target_link_libraries (ECVL  ${OpenCV_LIBS})
+
+add_executable(EXAMPLES "")
+add_subdirectory(examples/)
+target_link_libraries(EXAMPLES ECVL)
+
+add_executable(ECVL_TESTS "")
+add_subdirectory(src/test)
+target_link_libraries(ECVL_TESTS ECVL gtest_main)
+
+enable_testing()
+
+gtest_discover_tests(ECVL_TESTS)
+#--------------------------------------------------------------------------------------------------------
+# END: ECVL library, examples and tests
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Snippets
 #--------------------------------------------------------------------------------------------------------
 include(snippets/CMakeLists.txt)
 FOREACH(cur_file ${snippets_sources})
@@ -233,9 +243,10 @@ FOREACH(cur_file ${snippets_sources})
     set(cur_file "snippets/${cur_file}")
     #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
     add_executable(${exe_name} ${cur_file})
+	set_target_properties(${exe_name} PROPERTIES FOLDER "Snippets")
     target_link_libraries(${exe_name} ECVL)
 ENDFOREACH()
 #--------------------------------------------------------------------------------------------------------
-# END: snippets
+# END: Snippets
 #--------------------------------------------------------------------------------------------------------
 
