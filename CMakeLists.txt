@@ -73,49 +73,6 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: pthreads setup for windows os												
-#--------------------------------------------------------------------------------------------------------
-#
-## The following commands should be removed when pthread linux 
-## specific calls will be replaced by thread c++ standard calls 
-#if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-#	set(ECVL_PTHREADS_INSTALL_PATH "$ENV{PTHREADS_ROOT}" CACHE PATH "")
-#	
-#	if(ECVL_PTHREADS_INSTALL_PATH STREQUAL "")
-#		message(ERROR " pthreds install path must be specified under Windows")
-#	endif()
-#	
-#	target_link_libraries(ECVL debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3d.lib"
-#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
-#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
-#								 
-#	target_link_libraries(ECVL optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3.lib"
-#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
-#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
-#								 
-#	include_directories("${ECVL_PTHREADS_INSTALL_PATH}/include")
-#	
-#	# The following command should be moved elsewhere
-#	if(MSVC)
-#		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-#	endif()
-#endif()
-#--------------------------------------------------------------------------------------------------------
-# END: pthreads setup for windows os												
-#--------------------------------------------------------------------------------------------------------
-
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: pthreads setup for linux os												
-#--------------------------------------------------------------------------------------------------------
-if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    find_package(Threads REQUIRED)
-    target_link_libraries(ECVL Threads::Threads)
-endif()
-#--------------------------------------------------------------------------------------------------------
-# END: pthreads setup for linux os												
-#--------------------------------------------------------------------------------------------------------
-
 # Removed to allow automatic tests without EDDLL
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: add EDDLL dependency (still Windows specific)												
@@ -231,6 +188,50 @@ enable_testing()
 gtest_discover_tests(ECVL_TESTS)
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL library, examples and tests
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: pthreads setup for windows os												
+#--------------------------------------------------------------------------------------------------------
+#
+## The following commands should be removed when pthread linux 
+## specific calls will be replaced by thread c++ standard calls 
+#if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+#	set(ECVL_PTHREADS_INSTALL_PATH "$ENV{PTHREADS_ROOT}" CACHE PATH "")
+#	
+#	if(ECVL_PTHREADS_INSTALL_PATH STREQUAL "")
+#		message(ERROR " pthreds install path must be specified under Windows")
+#	endif()
+#	
+#	target_link_libraries(ECVL debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3d.lib"
+#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
+#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
+#								 
+#	target_link_libraries(ECVL optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3.lib"
+#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
+#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
+#								 
+#	include_directories("${ECVL_PTHREADS_INSTALL_PATH}/include")
+#	
+#	# The following command should be moved elsewhere
+#	if(MSVC)
+#		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+#	endif()
+#endif()
+#--------------------------------------------------------------------------------------------------------
+# END: pthreads setup for windows os												
+#--------------------------------------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: pthreads setup for linux os												
+#--------------------------------------------------------------------------------------------------------
+#if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+#    find_package(Threads REQUIRED)
+#    target_link_libraries(ECVL Threads::Threads)
+#endif()
+#--------------------------------------------------------------------------------------------------------
+# END: pthreads setup for linux os												
 #--------------------------------------------------------------------------------------------------------
 
 
