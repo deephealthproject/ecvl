@@ -24,7 +24,7 @@ int main()
     // (non contiguous), but performance is worse. 
     
 
-    // Write the otput image
+    // Write the output image
     ImWrite(path("./test.png"), img);
 
     return EXIT_SUCCESS;

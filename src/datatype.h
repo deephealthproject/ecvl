@@ -7,17 +7,17 @@ namespace ecvl {
 
 // enum class DataType { uint8, uint16, ... };
 enum class DataType {
-#define TUPLE(name, ...) name,
+#define ECVL_TUPLE(name, ...) name,
 #include "datatype_tuples.inc"
-#undef TUPLE
+#undef ECVL_TUPLE
 };
 
 uint8_t DataTypeSize(DataType dt);
 
 template<ecvl::DataType> struct TypeInfo { using basetype = void; };
-#define TUPLE(name, size, type, ...) template<> struct TypeInfo<ecvl::DataType::name> { using basetype = type; };
+#define ECVL_TUPLE(name, size, type, ...) template<> struct TypeInfo<ecvl::DataType::name> { using basetype = type; };
 #include "datatype_tuples.inc"
-#undef TUPLE
+#undef ECVL_TUPLE
 
 } // namespace ecvl
 
