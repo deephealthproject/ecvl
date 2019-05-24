@@ -53,15 +53,83 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
 
 } // namespace ecvl
 
+namespace ecvl{
+
+void RearrangeChannels(const Image& in, Image& out, const std::string& channels)
+{
+    // Check if rearranging is required
+    if (in.channels_ == channels) {
+        // if not, check if out==in
+        if (&in != &out) { // if no, copy            
+            out = in;
+        }
+        return;
+    }
+    Image tmp;
+    // Check if rearranging is possible, else throw
+    if (in.channels_ == "xyc" && channels == "cxy") {
+        tmp = Image({ in.dims_[2], in.dims_[0], in.dims_[1] }, in.elemtype_, channels, in.colortype_);
+        auto i = in.Begin<uint8_t>();
+        auto plane_elems = in.dims_[0] * in.dims_[1];
+        for (int ch = 0; ch < in.dims_[2]; ++ch) {
+            auto ptr = tmp.data_ + ch;
+            for (int el = 0; el < plane_elems; ++el) {
+                memcpy(ptr, i.ptr_, tmp.elemsize_);
+                ++i;
+                ptr += tmp.strides_[1];
+            }
+        }
+    }
+    else if(in.channels_ == "cxy" && channels == "xyc")
+    {
+        tmp = Image({ in.dims_[1], in.dims_[2], in.dims_[0] }, in.elemtype_, channels, in.colortype_);
+        auto i = in.Begin<uint8_t>();
+        auto plane_elems = in.dims_[0] * in.dims_[1];
+        for (int el = 0; el < plane_elems; ++el) {
+            auto ptr = tmp.data_ + el;
+            for (int ch = 0; ch < in.dims_[2]; ++ch) {
+                memcpy(ptr, i.ptr_, tmp.elemsize_);
+                ++i;
+                ptr += tmp.strides_[2];
+            }
+        }
+    }
+    else {
+        throw std::runtime_error("Not implemented");
+    }
+    
+    out = std::move(tmp);
+}
+
+} // namespace ecvl
+
 int main(void)
 {
     using namespace ecvl;
     using namespace filesystem;
-
-    Image x({ 5, 5, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
+    
+    Image x({ 5, 5, 3 }, DataType::uint8, "xyc", ColorType::RGB);
     View<DataType::uint8> y(x);
-    y({ 0,0,0 }) = 5;
+    y({ 0,0,0 }) = 15; y({ 1,0,0 }) = 16; y({ 2,0,0 }) = 17; y({ 3,0,0 }) = 18; y({ 4,0,0 }) = 19;
+    y({ 0,1,0 }) = 25; y({ 1,1,0 }) = 26; y({ 2,1,0 }) = 27; y({ 3,1,0 }) = 28; y({ 4,1,0 }) = 29;
+    y({ 0,2,0 }) = 35; y({ 1,2,0 }) = 36; y({ 2,2,0 }) = 37; y({ 3,2,0 }) = 38; y({ 4,2,0 }) = 39;
+    y({ 0,3,0 }) = 45; y({ 1,3,0 }) = 46; y({ 2,3,0 }) = 47; y({ 3,3,0 }) = 48; y({ 4,3,0 }) = 49;
+    y({ 0,4,0 }) = 55; y({ 1,4,0 }) = 56; y({ 2,4,0 }) = 57; y({ 3,4,0 }) = 58; y({ 4,4,0 }) = 59;
 
+    y({ 0,0,1 }) = 17; y({ 1,0,1 }) = 16; y({ 2,0,1 }) = 10; y({ 3,0,1 }) = 17; y({ 4,0,1 }) = 19;
+    y({ 0,1,1 }) = 27; y({ 1,1,1 }) = 26; y({ 2,1,1 }) = 20; y({ 3,1,1 }) = 27; y({ 4,1,1 }) = 29;
+    y({ 0,2,1 }) = 37; y({ 1,2,1 }) = 36; y({ 2,2,1 }) = 30; y({ 3,2,1 }) = 37; y({ 4,2,1 }) = 39;
+    y({ 0,3,1 }) = 47; y({ 1,3,1 }) = 46; y({ 2,3,1 }) = 40; y({ 3,3,1 }) = 47; y({ 4,3,1 }) = 49;
+    y({ 0,4,1 }) = 57; y({ 1,4,1 }) = 56; y({ 2,4,1 }) = 50; y({ 3,4,1 }) = 57; y({ 4,4,1 }) = 59;
+
+    y({ 0,0,2 }) = 15; y({ 1,0,2 }) = 17; y({ 2,0,2 }) = 17; y({ 3,0,2 }) = 18; y({ 4,0,2 }) = 17;
+    y({ 0,1,2 }) = 25; y({ 1,1,2 }) = 27; y({ 2,1,2 }) = 27; y({ 3,1,2 }) = 28; y({ 4,1,2 }) = 27;
+    y({ 0,2,2 }) = 35; y({ 1,2,2 }) = 37; y({ 2,2,2 }) = 37; y({ 3,2,2 }) = 38; y({ 4,2,2 }) = 37;
+    y({ 0,3,2 }) = 45; y({ 1,3,2 }) = 47; y({ 2,3,2 }) = 47; y({ 3,3,2 }) = 48; y({ 4,3,2 }) = 47;
+    y({ 0,4,2 }) = 55; y({ 1,4,2 }) = 57; y({ 2,4,2 }) = 57; y({ 3,4,2 }) = 58; y({ 4,4,2 }) = 57;
+
+    Image k;
+    RearrangeChannels(x, k, "cxy");
 
     /*
     Image test({ 5, 5 }, DataType::uint16, "xy", ColorType::none);
