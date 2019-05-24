@@ -29,14 +29,47 @@ enum class ColorType {
     YCbCr,
 };
 
+/** @brief Image class
+
+
+
+*/
 class Image {
 public:
-    DataType            elemtype_;
-    uint8_t             elemsize_;
-    std::vector<int>    dims_;      /**< Member description */
-    std::vector<int>    strides_;
-    std::string         channels_;
-    ColorType           colortype_;
+    DataType            elemtype_;  /**< Type of Image pixels, must be one of the 
+                                         values available in @ref DataType.        */
+    uint8_t             elemsize_;  /**< Size (in bytes) of Image pixels.          */
+    std::vector<int>    dims_;      /**< Vector of Image dimensions. Each dimension 
+                                         is given in pixels/voxels. */
+    std::vector<int>    strides_;   /**< Vector of Image strides. Strides represent
+                                         the number of bytes the pointer on data 
+                                         has to move to reach the next pixel/voxel 
+                                         on the correspondent size. */
+    std::string         channels_;  /**< String which describes how Image planes 
+                                         are organized. A single character provides
+                                         the information related to the corresponding
+                                         channel. The possible values are:
+                                            - 'x': horizontal spatial dimension
+                                            - 'y': vertical spatial dimension
+                                            - 'z': depth spatial dimension
+                                            - 'c': color dimension
+                                            - 't': temporal dimension
+                                            - 'o': any other dimension
+                                         For example, "xyc" describes a 2-dimensional
+                                         Image structured in color planes. This could
+                                         be for example a ColorType::GRAY Image with 
+                                         dims_[2] = 1 or a ColorType::RGB Image with
+                                         dims_[2] = 3 an so on. The ColorType constrains
+                                         the value of the dimension corresponding to 
+                                         the color channel. 
+                                         Another example is "cxy" with dims_[0] = 3 and
+                                         ColorType::BGR. In this case the color dimension
+                                         is the one which changes faster as it is done 
+                                         in other libraries such as OpenCV. */
+    ColorType           colortype_; /**< Image ColorType. If this is different from ColorType::none
+                                         the channels_ string must contain a 'c' and the
+                                         corresponding dimension must have the appropriate
+                                         value. See @ref ColorType for the possible values. */
     uint8_t*            data_;
     size_t              datasize_;
     bool                contiguous_;
@@ -91,7 +124,7 @@ public:
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{dims},
-        strides_{ elemsize_ },
+        strides_{},
         channels_{ move(channels) },
         colortype_{ colortype },
         data_{ nullptr },
@@ -100,11 +133,13 @@ public:
         meta_{ nullptr },
         mem_{ DefaultMemoryManager::GetInstance() }
     {
-        // Compute strides of dimensions after 0
+        // Compute strides
+        strides_ = { elemsize_ };
         int dsize = dims_.size();
         for (int i = 0; i < dsize - 1; ++i) {
             strides_.push_back(strides_[i] * dims_[i]);
         }
+        // Compute datasize
         datasize_ = elemsize_;
         datasize_ = std::accumulate(begin(dims_), end(dims_), datasize_, std::multiplies<size_t>());
         data_ = mem_->Allocate(datasize_);
@@ -113,19 +148,49 @@ public:
     /** @brief Copy constructor: Deep Copy
     */
     Image(const Image& img) :
-        elemtype_{ img.elemtype_ },
-        elemsize_{ img.elemsize_ },
-        dims_{ img.dims_ },
-        strides_{ img.strides_ },
-        channels_{ img.channels_ }, 
-        colortype_{ img.colortype_ }, 
-        data_{},
-        datasize_{ img.datasize_ },
-        contiguous_{ img.contiguous_ },
-        meta_{ img.meta_ },
+        elemtype_{ img.elemtype_ },//
+        elemsize_{ img.elemsize_ },//
+        dims_{ img.dims_ },//
+        strides_{ img.strides_ },//
+        channels_{ img.channels_ },// 
+        colortype_{ img.colortype_ },//
+        data_{},//
+        datasize_{ img.datasize_ },//
+        contiguous_{ img.contiguous_ },//
+        meta_{ img.meta_ },//
         mem_{ img.mem_ }
     {
-        data_ = mem_->AllocateAndCopy(datasize_, img.data_);
+        if (mem_ == ShallowMemoryManager::GetInstance()) {
+            // When copying from non owning memory we become owners of the original data.
+            mem_ = DefaultMemoryManager::GetInstance();
+        }
+        if (mem_ == DefaultMemoryManager::GetInstance()) {
+            if (contiguous_) {
+                data_ = mem_->AllocateAndCopy(datasize_, img.data_);
+            }
+            else {
+                // When copying a non contiguous image, we make it contiguous
+                contiguous_ = true;
+                // Compute strides
+                strides_ = { elemsize_ };
+                int dsize = dims_.size();
+                for (int i = 0; i < dsize - 1; ++i) {
+                    strides_.push_back(strides_[i] * dims_[i]);
+                }
+                // Compute datasize
+                datasize_ = elemsize_;
+                datasize_ = std::accumulate(begin(dims_), end(dims_), datasize_, std::multiplies<size_t>());
+                data_ = mem_->Allocate(datasize_);
+                // Copy with iterators
+                // TODO: optimize so that we can memcpy one block at a time on the first dimension
+                // This will require Iterators to increment more than one
+                auto p = data_;
+                auto i = Begin<uint8_t>(), e = End<uint8_t>();
+                for (; i != e; ++i) {
+                    memcpy(p++, i.ptr_, elemsize_);
+                }
+            }
+        }
     }
 
     /** @brief Move constructor
@@ -269,6 +334,32 @@ public:
     ContiguousIterator<basetype> End() { return ContiguousIterator<basetype>(*this, dims_); }
 };
 
+template <DataType DT>
+class ConstContiguousView : public Image {
+public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
+    ConstContiguousView(Image& img) {
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        mem_ = ShallowMemoryManager::GetInstance();
+    }
+
+    const basetype& operator()(const std::vector<int>& coords) {
+        return *reinterpret_cast<const basetype*>(Ptr(coords));
+    }
+
+    ConstContiguousIterator<basetype> Begin() { return ConstContiguousIterator<basetype>(*this); }
+    ConstContiguousIterator<basetype> End() { return ConstContiguousIterator<basetype>(*this, dims_); }
+};
 
 } // namespace ecvl
 
