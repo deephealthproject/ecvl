@@ -105,6 +105,8 @@ void RearrangeChannels(const Image& in, Image& out, const std::string& channels)
 
 int main(void)
 {
+    std::vector<int> test{ 1,2,3 };
+
     using namespace ecvl;
     using namespace filesystem;
     
