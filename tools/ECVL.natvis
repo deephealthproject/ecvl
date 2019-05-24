@@ -45,6 +45,7 @@
       <!-- END: set channels for known ColorType Images -->
       
       <!-- BEGIN: to handle "xyc" Images -->
+      <!-- Works with both xyc contiguous and non contiguous ecvl::Images-->
       <Item Name="[width]"  Condition="channels_[2]=='c'">dims_[0]</Item>
       <Item Name="[height]" Condition="channels_[2]=='c'">dims_[1]</Item>
       <Item Name="[planes]" Condition="channels_[2]=='c'">dims_[2]</Item>
@@ -58,6 +59,7 @@
       <!-- END: to handle "xyc" Images -->
       
       <!-- BEGIN: to handle "cxy" Images -->
+      <!-- cxy non contiguous ecvl::Images cannot be visualized with ImageWatch-->
       <Item Name="[width]"  Condition="channels_[0]=='c'">dims_[1]</Item>
       <Item Name="[height]" Condition="channels_[0]=='c'">dims_[2]</Item>
       <Item Name="[stride]" Condition="channels_[0]=='c'">strides_[2]</Item>
