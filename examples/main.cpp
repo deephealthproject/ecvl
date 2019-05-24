@@ -55,8 +55,6 @@ ecvl::Image& Mul(ecvl::Image& img, double d)
 
 int main(void)
 {
-    std::vector<int> test{ 1,2,3 };
-
     using namespace ecvl;
     using namespace filesystem;
 

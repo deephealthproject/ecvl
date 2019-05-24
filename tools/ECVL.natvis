@@ -7,9 +7,9 @@
   </Type>
 
   <Type Name="ecvl::Image">
-    <Intrinsic Name="size" Expression="dims_._Mypair._Myval2._Mylast - dims_._Mypair._Myval2._Myfirst" />
+    <Intrinsic Name="dims_size" Expression="dims_._Mypair._Myval2._Mylast - dims_._Mypair._Myval2._Myfirst" />
   
-    <DisplayString>{{{elemtype_}, dims={size()}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {colortype_}}}</DisplayString>
+    <DisplayString>{{{elemtype_}, dims={dims_size()}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {colortype_}}}</DisplayString>
     
     <Expand>
       <Synthetic Name="[type]" Condition="elemtype_==DataType::uint8">
@@ -45,7 +45,6 @@
       <!-- END: set channels for known ColorType Images -->
       
       <!-- BEGIN: to handle "xyc" Images -->
-      <!-- Works with both xyc contiguous and non contiguous ecvl::Images-->
       <Item Name="[width]"  Condition="channels_[2]=='c'">dims_[0]</Item>
       <Item Name="[height]" Condition="channels_[2]=='c'">dims_[1]</Item>
       <Item Name="[planes]" Condition="channels_[2]=='c'">dims_[2]</Item>
@@ -59,7 +58,6 @@
       <!-- END: to handle "xyc" Images -->
       
       <!-- BEGIN: to handle "cxy" Images -->
-      <!-- cxy non contiguous ecvl::Images cannot be visualized with ImageWatch-->
       <Item Name="[width]"  Condition="channels_[0]=='c'">dims_[1]</Item>
       <Item Name="[height]" Condition="channels_[0]=='c'">dims_[2]</Item>
       <Item Name="[stride]" Condition="channels_[0]=='c'">strides_[2]</Item>
@@ -68,17 +66,14 @@
       <!-- END: to handle "cxy" Images -->
 
       <!-- BEGIN: to handle Images with no color information ColorType::none -->
-      <!-- N x N : must be before the other ColorType::none cases -->
-      <!-- TODO!!!
-      <Item Name="[channels]" Condition="colortype_==ColorType::none">1</Item>
-      <Item Name="[width]"    Condition="colortype_==ColorType::none">dims_[0]</Item>
-      <Item Name="[height]"   Condition="colortype_==ColorType::none">dims_[1]</Item>
-      <Item Name="[planes]"   Condition="colortype_==ColorType::none">1</Item>
-      <Item Name="[stride]"   Condition="colortype_==ColorType::none">strides_[1]</Item>
-      <Item Name="[data]"     Condition="colortype_==ColorType::none">data_</Item>
-      -->
+      <Item Name="[channels]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">1</Item>
+      <Item Name="[width]"    Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">dims_[0]</Item>
+      <Item Name="[height]"   Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">dims_[1]</Item>
+      <Item Name="[planes]"   Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">1</Item>
+      <Item Name="[stride]"   Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">strides_[1]</Item>
+      <Item Name="[data]"     Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">data_</Item>
+
       <!-- N x N x 3 -->
-      <!-- TODO!!!
       <Item Name="[channels]"  Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[2]</Item>
       <Item Name="[width]"     Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[0]</Item>
       <Item Name="[height]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[1]</Item>
@@ -89,7 +84,6 @@
           {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
         </DisplayString>
       </Synthetic>
-      -->
       <!-- 3 x N x N -->
       <!-- TODO!!!
       -->
