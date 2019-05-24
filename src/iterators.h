@@ -31,11 +31,11 @@ private:
 template <typename T>
 struct ConstIterator {
     std::vector<int> pos_;
-    uint8_t* ptr_;
+    const uint8_t* ptr_;
     const Image* img_;
 
     typedef ConstIterator& (ConstIterator::*IncrementMemFn)();
-    IncrementMemFn incrementor = &Iterator<T>::IncrementPos;
+    IncrementMemFn incrementor = &ConstIterator<T>::IncrementPos;
 
     ConstIterator(const Image& img, std::vector<int> pos = {});
     ConstIterator& operator++() /* prefix */ { return (this->*incrementor)(); }
