@@ -31,34 +31,66 @@
       <Synthetic Name="[type]" Condition="elemtype_==DataType::float64">
         <DisplayString>FLOAT64</DisplayString>
       </Synthetic>
-      <Item Name="[channels]" Condition="colortype_==ColorType::none">dims_[2]</Item>
-      <Item Name="[channels]" Condition="colortype_==ColorType::GRAY">1</Item>
+
+      <!-- BEGIN: set channels for known ColorType Images -->
+      <Item      Name="[channels]" Condition="colortype_==ColorType::GRAY">1</Item>
       <Synthetic Name="[channels]" Condition="colortype_==ColorType::BGR">
         <DisplayString>BGR</DisplayString>
       </Synthetic>
       <Synthetic Name="[channels]" Condition="colortype_==ColorType::RGB">
         <DisplayString>RGB</DisplayString>
       </Synthetic>
-      <Item Name="[width]">dims_[0]</Item>
-      <Item Name="[height]">dims_[1]</Item>
-      <Item Name="[planes]">dims_[2]</Item>
-      <Item Name="[data]" Condition="colortype_==ColorType::GRAY">data_</Item>
-      <!--
-      <Item Name="[data]" Condition="colortype_==ColorType::BGR">data_;data_+strides_[2];data_+2*strides_[2]</Item>
-      <Item Name="[data]" Condition="colortype_==ColorType::RGB">data_;data_+strides_[2];data_+2*strides_[2]</Item>
-      -->
-      <Synthetic Name="[data]" Condition="colortype_==ColorType::BGR || colortype_==ColorType::RGB">
-	<DisplayString>
-	  {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
-	</DisplayString>
+      <!-- END: set channels for known ColorType Images -->
+      
+      <!-- BEGIN: to handle "xyc" Images -->
+      <Item Name="[width]"  Condition="channels_[2]=='c'">dims_[0]</Item>
+      <Item Name="[height]" Condition="channels_[2]=='c'">dims_[1]</Item>
+      <Item Name="[planes]" Condition="channels_[2]=='c'">dims_[2]</Item>
+      <Item Name="[stride]" Condition="channels_[2]=='c'">strides_[1]</Item>
+      <Synthetic Name="[data]" Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[2]=='c'">
+        <DisplayString>
+	      {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
+	    </DisplayString>
       </Synthetic>
-      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">
-	<DisplayString>
-	  {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
-	</DisplayString>
-      </Synthetic>
+      <Item Name="[data]" Condition="colortype_==ColorType::GRAY &amp;&amp; channels_[2]=='c'">data_</Item>
+      <!-- END: to handle "xyc" Images -->
+      
+      <!-- BEGIN: to handle "cxy" Images -->
+      <Item Name="[width]"  Condition="channels_[0]=='c'">dims_[1]</Item>
+      <Item Name="[height]" Condition="channels_[0]=='c'">dims_[2]</Item>
+      <Item Name="[stride]" Condition="channels_[0]=='c'">strides_[2]</Item>
+      <Item Name="[data]"   Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[0]=='c'">data_</Item>
+      <Item Name="[data]"   Condition="colortype_==ColorType::GRAY &amp;&amp; channels_[0]=='c'">data_</Item>
+      <!-- END: to handle "cxy" Images -->
 
-      <Item Name="[stride]">strides_[1]</Item>
+      <!-- BEGIN: to handle Images with no color information ColorType::none -->
+      <!-- N x N : must be before the other ColorType::none cases -->
+      <!-- TODO!!!
+      <Item Name="[channels]" Condition="colortype_==ColorType::none">1</Item>
+      <Item Name="[width]"    Condition="colortype_==ColorType::none">dims_[0]</Item>
+      <Item Name="[height]"   Condition="colortype_==ColorType::none">dims_[1]</Item>
+      <Item Name="[planes]"   Condition="colortype_==ColorType::none">1</Item>
+      <Item Name="[stride]"   Condition="colortype_==ColorType::none">strides_[1]</Item>
+      <Item Name="[data]"     Condition="colortype_==ColorType::none">data_</Item>
+      -->
+      <!-- N x N x 3 -->
+      <!-- TODO!!!
+      <Item Name="[channels]"  Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[2]</Item>
+      <Item Name="[width]"     Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[0]</Item>
+      <Item Name="[height]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[1]</Item>
+      <Item Name="[planes]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[2]</Item>
+      <Item Name="[stride]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">strides_[1]</Item>
+      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">
+        <DisplayString>
+          {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
+        </DisplayString>
+      </Synthetic>
+      -->
+      <!-- 3 x N x N -->
+      <!-- TODO!!!
+      -->
+      <!-- END: to handle Images with no color information ColorType::none -->      
+     
     </Expand>
   </Type>
 
