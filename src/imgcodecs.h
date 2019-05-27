@@ -36,11 +36,9 @@ bool ImRead(const filesystem::path& filename, Image& dst);
 
 /** @brief Saves an image into a specified file.
 
-The function ImWrite saves the input image into a specified file. The image format is
-chosen based on the filename extension.
-
-The following sample shows how to create a BGR image and save it to the PNG file "test.png".
-@include ../snippets/imgcodecs_imwrite.cpp
+The function ImWrite saves the input image into a specified file. The image format is chosen based on the 
+filename extension. The following sample shows how to create a BGR image and save it to the PNG file "test.png":
+@include "../snippets/imgcodecs_imwrite.cpp"
 
 @param[in] filename A std::string identifying the output file name. In order to be platform
 independent consider to use @ref imwrite_path "ImWrite(const filesystem::path& filename, const Image& src)".

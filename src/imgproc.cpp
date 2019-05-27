@@ -254,4 +254,20 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     throw std::runtime_error("How did you get here?");
 }
 
+void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type) {
+    cv::Mat m;
+
+    int t_type;
+    switch (thresh_type)
+    {
+    case ecvl::ThresholdingType::BINARY:        t_type = cv::THRESH_BINARY;      break;
+    case ecvl::ThresholdingType::BINARY_INV:    t_type = cv::THRESH_BINARY_INV;  break;
+    default:
+        throw std::runtime_error("How did you get here?");
+    }
+
+    cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
+    dst = MatToImage(m);
+}
+
 } // namespace ecvl

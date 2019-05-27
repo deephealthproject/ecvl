@@ -4,35 +4,19 @@
 
 namespace ecvl {
 
-/** @brief Brief description of the function/procedure.
+/** @brief Convert a cv::Mat into an ecvl::Image.
 
-@anchor value -> to set an invisible link that can be referred to inside the documentation using @ref value command
+@param[in] m Input OpenCV Mat.
 
-Complete description of the function/procedure
-
-@note Here you can write special notes that will be displayed differently inside the final documentation (yellow bar on the left)
-
-@param[in] m Description starting with capital letter
-@param[out]
-@param[in,out]
-
-@return Description of the return value, None if void.
+@return ECVL image.
 */
 ecvl::Image MatToImage(const cv::Mat& m);
 
 /** @brief Convert an ECVL Image into OpenCV Mat.
 
-@anchor value -> to set an invisible link that can be referred to inside the documentation using @ref value command
+@param[in] img Input ECVL Image.
 
-Complete description of the function/procedure
-
-@note Here you can write special notes that will be displayed differently inside the final documentation (yellow bar on the left)
-
-@param[in] m Description starting with capital letter
-@param[out]
-@param[in,out]
-
-@return Description of the return value, None if void.
+@return Output OpenCV Mat.
 */
 cv::Mat ImageToMat(const Image& img);
 

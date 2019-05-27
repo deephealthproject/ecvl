@@ -20,6 +20,11 @@ public:
     virtual ~MetaData() {}
 };
 
+/** @anchor ColorType
+
+   Enum class representing the ECVL supported color spaces.
+
+*/
 enum class ColorType {
     none,
     GRAY,
@@ -30,8 +35,6 @@ enum class ColorType {
 };
 
 /** @brief Image class
-
-
 
 */
 class Image {
@@ -398,7 +401,18 @@ public:
     ConstContiguousIterator<basetype> End() { return ConstContiguousIterator<basetype>(*this, dims_); }
 };
 
+/** @brief Changes the order of the Image dimensions.
 
+The RearrangeChannels procedure changes the order of the input Image dimensions saving 
+the result into the output Image. The new order of dimensions can be specified as a 
+string through the "channels" parameter. Input and output Images can be the same. The
+number of channels of the input Image must be the same of required channels.
+
+@param[in] src Input Image on which to rearrange dimensions.
+@param[out] dst The output rearranged Image. Can be the src Image.
+@param[in] channels Desired order of Image channels.
+
+*/
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels);
 
 } // namespace ecvl

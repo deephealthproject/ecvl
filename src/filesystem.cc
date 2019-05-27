@@ -9,14 +9,15 @@
 
 using namespace std;
 
-const char filesystem::path::separator_ =
+namespace filesystem {
+const char path::separator_ =
 #ifdef ECVL_WINDOWS
 '\\';
 #else
 '/';
 #endif
 
-bool filesystem::exists(const path& p)
+bool exists(const path& p)
 {
     struct stat info;
     string s = p.string();
@@ -34,12 +35,12 @@ bool filesystem::exists(const path& p)
     return true; // is file
 }
 
-bool filesystem::exists(const path& p, error_code& ec)
+bool exists(const path& p, error_code& ec)
 {
-    return filesystem::exists(p);
+    return exists(p);
 }
 
-bool filesystem::create_directories(const path& p)
+bool create_directories(const path& p)
 {
     string s(p.string());
     string parameters = "";
@@ -57,12 +58,12 @@ bool filesystem::create_directories(const path& p)
     return true;
 }
 
-bool filesystem::create_directories(const path& p, error_code& ec)
+bool create_directories(const path& p, error_code& ec)
 {
-    return filesystem::create_directories(p);
+    return create_directories(p);
 }
 
-void filesystem::path::NormalizePath()
+void path::NormalizePath()
 {
 #if defined(ECVL_UNIX) || defined(ECVL_LINUX) || defined(ECVL_APPLE)
     std::replace(path_.begin(), path_.end(), '\\', '/');
@@ -73,14 +74,14 @@ void filesystem::path::NormalizePath()
     return;
 }
 
-void filesystem::copy(const path& from, const path& to)
+void copy(const path& from, const path& to)
 {
-    if (!filesystem::exists(from)) {
+    if (!exists(from)) {
         return;
     }
 
-    if (!filesystem::exists(to)) {
-        if (filesystem::create_directories(to.parent_path())) {
+    if (!exists(to)) {
+        if (create_directories(to.parent_path())) {
             ifstream src(from.string());
             ofstream dst(to.string());
 
@@ -89,7 +90,9 @@ void filesystem::copy(const path& from, const path& to)
     }
 }
 
-void filesystem::copy(const path& from, const path& to, error_code& ec)
+void copy(const path& from, const path& to, error_code& ec)
 {
-    filesystem::copy(from, to);
+    copy(from, to);
 }
+
+} // namespace filesystem
