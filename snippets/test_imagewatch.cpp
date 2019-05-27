@@ -16,8 +16,10 @@ int main()
     Image e({ 3, 5, 5 }, DataType::uint8, "cxy", ColorType::RGB);
     Image f({ 3, 5, 5 }, DataType::uint8, "cxy", ColorType::BGR);
 
-    Image g({ 5, 5, 3 }, DataType::uint8, "xyz", ColorType::none);
-    Image h({ 5, 5 }, DataType::uint8, "xy", ColorType::none);
-    
+    Image g({ 5, 5 }, DataType::uint8, "xy", ColorType::none);
+    Image h({ 5, 5, 2 }, DataType::uint8, "xyz", ColorType::none);
+    Image i({ 5, 5, 3 }, DataType::uint8, "xyz", ColorType::none);
+    Image j({ 5, 5, 4 }, DataType::uint8, "xyz", ColorType::none);
+
     return EXIT_SUCCESS;
 }

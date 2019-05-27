@@ -5,11 +5,22 @@
   <Type Name="ecvl::Image">
     <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" />
   </Type>
+  <Type Name="ecvl::View">
+    <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" />
+  </Type>
 
   <Type Name="ecvl::Image">
     <Intrinsic Name="dims_size" Expression="dims_._Mypair._Myval2._Mylast - dims_._Mypair._Myval2._Myfirst" />
   
-    <DisplayString>{{{elemtype_}, dims={dims_size()}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {colortype_}}}</DisplayString>
+    <DisplayString Condition="dims_size()==1">
+	{{{elemtype_}, {dims_[0]}, {channels_}, {colortype_}}}
+    </DisplayString>
+    <DisplayString Condition="dims_size()==2">
+	{{{elemtype_}, {dims_[0]} x {dims_[1]}, {channels_}, {colortype_}}}
+    </DisplayString>
+    <DisplayString Condition="dims_size()==3">
+	{{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {channels_}, {colortype_}}}
+    </DisplayString>
     
     <Expand>
       <Synthetic Name="[type]" Condition="elemtype_==DataType::uint8">
@@ -67,30 +78,41 @@
 
       <!-- BEGIN: to handle Images with no color information ColorType::none -->
       <!-- N x N -->
-      <!-- TODO: This works only with continuous data, but it could be extendend with non contiguous! -->
-      <Item Name="[channels]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">1</Item>
       <Item Name="[width]"    Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">dims_[0]</Item>
       <Item Name="[height]"   Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">dims_[1]</Item>
+      <Item Name="[channels]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">1</Item>
       <Item Name="[planes]"   Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">1</Item>
       <Item Name="[stride]"   Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">strides_[1]</Item>
       <Item Name="[data]"     Condition="colortype_==ColorType::none &amp;&amp; dims_size()==2">data_</Item>
 
-      <!-- N x N x 3 -->
-      <Item Name="[channels]"  Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[2]</Item>
-      <Item Name="[width]"     Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[0]</Item>
-      <Item Name="[height]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[1]</Item>
-      <Item Name="[planes]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">dims_[2]</Item>
-      <Item Name="[stride]"    Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">strides_[1]</Item>
-      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_[2]==3">
+      <!-- N x N x X -->
+      <!-- X can be at most 4 -->
+      <Item Name="[width]"     Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3">dims_[0]</Item>
+      <Item Name="[height]"    Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3">dims_[1]</Item>
+      <Item Name="[channels]"  Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3">dims_[2]</Item>
+      <Item Name="[planes]"    Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3">dims_[2]</Item>
+      <Item Name="[stride]"    Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3">strides_[1]</Item>
+      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3 &amp;&amp; dims_[2]==1">
+        <DisplayString>
+          {(void*)(data_+0*strides_[2])}
+        </DisplayString>
+      </Synthetic>
+      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3 &amp;&amp; dims_[2]==2">
+        <DisplayString>
+          {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])}
+        </DisplayString>
+      </Synthetic>
+      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3 &amp;&amp; dims_[2]==3">
         <DisplayString>
           {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
         </DisplayString>
       </Synthetic>
-      <!-- 3 x N x N -->
-      <!-- TODO 
-      -->
-      <!-- END: to handle Images with no color information ColorType::none -->      
-     
+      <Synthetic Name="[data]" Condition="colortype_==ColorType::none &amp;&amp; dims_size()==3 &amp;&amp; dims_[2]==4">
+        <DisplayString>
+          {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])};{(void*)(data_+3*strides_[2])}
+        </DisplayString>
+      </Synthetic>
+
     </Expand>
   </Type>
 

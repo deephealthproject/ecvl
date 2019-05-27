@@ -103,6 +103,9 @@ An optional scale parameter can be provided. Different interpolation types are a
 */
 void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale = 1.0, InterpolationType interp = InterpolationType::linear);
 
+
+void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type);
+
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_

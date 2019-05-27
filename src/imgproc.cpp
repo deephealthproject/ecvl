@@ -164,4 +164,91 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
     }
 }
 
+void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
+{
+    if (src.colortype_==ColorType::none || new_type == ColorType::none) {
+        throw std::runtime_error("Cannot change color to or from ColorType::none");
+    }
+
+    if (src.colortype_ == new_type) {
+        // if not, check if dst==src
+        if (&src != &dst) { // if no, copy            
+            dst = src;
+        }
+        return;
+    }
+
+    if (src.colortype_ == ColorType::HSV || new_type == ColorType::HSV 
+        ||
+        src.colortype_ == ColorType::YCbCr || new_type == ColorType::YCbCr
+        ) {
+        throw std::runtime_error("Not implemented");
+    }
+
+    if (src.colortype_ == ColorType::GRAY) {
+        if (new_type == ColorType::RGB || new_type == ColorType::BGR) {
+            if (src.channels_ == "xyc") {
+                auto dims = src.dims_;
+                dims[2] = 3;
+                dst = Image(dims, src.elemtype_, "xyc", new_type);
+                auto plane0 = dst.data_ + 0 * dst.strides_[2];
+                auto plane1 = dst.data_ + 1 * dst.strides_[2];
+                auto plane2 = dst.data_ + 2 * dst.strides_[2];
+                if (src.contiguous_) {
+                    memcpy(plane0, src.data_, src.datasize_);
+                    memcpy(plane1, src.data_, src.datasize_);
+                    memcpy(plane2, src.data_, src.datasize_);
+                }
+                else {
+                    auto i = src.Begin<uint8_t>(), e = src.End<uint8_t>();
+                    for (; i != e; ++i) {
+                        memcpy(plane0, i.ptr_, src.elemsize_);
+                        memcpy(plane1, i.ptr_, src.elemsize_);
+                        memcpy(plane2, i.ptr_, src.elemsize_);
+                        plane0 += src.elemsize_;
+                        plane1 += src.elemsize_;
+                        plane2 += src.elemsize_;
+                    }
+                }
+            }
+            else if (src.channels_ == "cxy") {
+                auto dims = src.dims_;
+                dims[0] = 3;
+                dst = Image(dims, src.elemtype_, "cxy", new_type);
+                auto plane0 = dst.data_ + 0 * dst.strides_[0];
+                auto plane1 = dst.data_ + 1 * dst.strides_[0];
+                auto plane2 = dst.data_ + 2 * dst.strides_[0];
+                auto i = src.Begin<uint8_t>(), e = src.End<uint8_t>();
+                for (; i != e; ++i) {
+                    memcpy(plane0, i.ptr_, src.elemsize_);
+                    memcpy(plane1, i.ptr_, src.elemsize_);
+                    memcpy(plane2, i.ptr_, src.elemsize_);
+                    plane0 += 3 * src.elemsize_;
+                    plane1 += 3 * src.elemsize_;
+                    plane2 += 3 * src.elemsize_;
+                }
+            }
+            else {
+                throw std::runtime_error("Not implemented");
+            }
+        }
+        return;
+    }
+    
+    if (src.colortype_ == ColorType::RGB && new_type == ColorType::GRAY) {
+        throw std::runtime_error("Not implemented");
+    }
+    if (src.colortype_ == ColorType::BGR && new_type == ColorType::GRAY) {
+        throw std::runtime_error("Not implemented");
+    }
+
+    if (src.colortype_ == ColorType::BGR && new_type == ColorType::RGB 
+        ||
+        src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
+        throw std::runtime_error("Not implemented");
+    }
+
+    throw std::runtime_error("How did you get here?");
+}
+
 } // namespace ecvl

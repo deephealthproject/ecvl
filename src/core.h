@@ -256,7 +256,8 @@ class View : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
-    View(Image& img) {
+    View(Image& img) 
+    {
         if (DT != img.elemtype_)
             throw std::runtime_error("View type is different from Image type");
         elemtype_ = img.elemtype_;
@@ -270,6 +271,42 @@ public:
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
         mem_ = ShallowMemoryManager::GetInstance();
+    }
+
+    View(Image& img, const std::vector<int>& start, const std::vector<int>& size) : View(img)
+    {
+        dims_.clear();
+        int ssize = size.size();
+        for (int i = 0; i < ssize; ++i) {
+            if (start[i] < 0 || start[i] >= img.dims_[i])
+                throw std::runtime_error("Start of crop outside image limits");
+            dims_.push_back(img.dims_[i] - start[i]);
+            if (size[i] > dims_[i]) {
+                throw std::runtime_error("Crop outside image limits");
+            }
+            if (size[i] >= 0) {
+                dims_[i] = size[i];
+            }
+        }
+
+        // Check if image has a color dimension
+        auto cpos = channels_.find('c');
+        if (cpos != std::string::npos) {
+            // If we are cropping the color channel, we fix the color information
+            if (dims_[cpos] != img.dims_[cpos]) {
+                if (dims_[cpos] == 1) {
+                    colortype_ = ColorType::GRAY;
+                }
+                else {
+                    channels_[cpos] = 'o';
+                    colortype_ = ColorType::none;
+                }
+            }
+        }
+
+        data_ = img.Ptr(start);
+        datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
+        contiguous_ = false;
     }
 
     basetype& operator()(const std::vector<int>& coords) {
@@ -360,6 +397,9 @@ public:
     ConstContiguousIterator<basetype> Begin() { return ConstContiguousIterator<basetype>(*this); }
     ConstContiguousIterator<basetype> End() { return ConstContiguousIterator<basetype>(*this, dims_); }
 };
+
+
+void RearrangeChannels(const Image& src, Image& dst, const std::string& channels);
 
 } // namespace ecvl
 
