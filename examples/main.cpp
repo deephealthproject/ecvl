@@ -6,50 +6,47 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "../src/support_opencv.h"
-#include "../src/imgcodecs.h"
-#include "../src/filesystem.h"
-#include "../src/imgproc.h"
+#include "ecvl/core.h"
 
 namespace ecvl {
 
-template<typename ViewType>
-ecvl::Image& Mul(ecvl::Image& img, double d)
-{
-    using namespace ecvl;
-    ViewType v(img);
-    auto i = v.Begin(), e = v.End();
-    for (; i != e; ++i) {
-        auto &p = *i;
-        p = static_cast<typename ViewType::basetype>(p * d);
-    }
-    return img;
-}
+	template<typename ViewType>
+	ecvl::Image& Mul(ecvl::Image& img, double d)
+	{
+		using namespace ecvl;
+		ViewType v(img);
+		auto i = v.Begin(), e = v.End();
+		for (; i != e; ++i) {
+			auto& p = *i;
+			p = static_cast<typename ViewType::basetype>(p * d);
+		}
+		return img;
+	}
 
-ecvl::Image& Mul(ecvl::Image& img, double d)
-{
-    using namespace ecvl;
-    if (img.contiguous_) {
-        switch (img.elemtype_)
-        {
+	ecvl::Image& Mul(ecvl::Image& img, double d)
+	{
+		using namespace ecvl;
+		if (img.contiguous_) {
+			switch (img.elemtype_)
+			{
 #define ECVL_TUPLE(name, ...) case DataType::name: return Mul<ContiguousView<DataType::name>>(img, d);
-#include "../src/datatype_existing_tuples.inc"
+#include "ecvl/core/datatype_existing_tuples.inc"
 #undef ECVL_TUPLE
-        default:
-            throw std::runtime_error("Not implemented");
-        }
-    }
-    else {
-        switch (img.elemtype_)
-        {
+			default:
+				throw std::runtime_error("Not implemented");
+			}
+		}
+		else {
+			switch (img.elemtype_)
+			{
 #define ECVL_TUPLE(name, ...) case DataType::name: return Mul<View<DataType::name>>(img, d);
-#include "../src/datatype_existing_tuples.inc"
+#include "ecvl/core/datatype_existing_tuples.inc"
 #undef ECVL_TUPLE
-        default:
-            throw std::runtime_error("Not implemented");
-        }
-    }
-}
+			default:
+				throw std::runtime_error("Not implemented");
+			}
+		}
+	}
 
 } // namespace ecvl
 

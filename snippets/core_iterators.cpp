@@ -1,5 +1,4 @@
-#include "../src/filesystem.h"
-#include "../src/imgcodecs.h"
+#include "ecvl/core.h"
 
 using namespace std;
 using namespace ecvl;

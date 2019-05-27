@@ -1,0 +1,10 @@
+target_sources(ECVL_CORE
+	PRIVATE
+        image.cpp
+        datatype.cpp
+        filesystem.cc
+        imgcodecs.cpp
+        imgproc.cpp
+        memorymanager.cpp
+        support_opencv.cpp
+)

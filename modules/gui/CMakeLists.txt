@@ -1,0 +1,5 @@
+add_subdirectory("include/ecvl")
+add_subdirectory(src)
+target_link_libraries (ECVL_GUI ECVL_CORE ${OpenCV_LIBS} ${wxWidgets_LIBRARIES})
+set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
+set(ECVL_LIBS "${ECVL_LIBS};ECVL_GUI")
