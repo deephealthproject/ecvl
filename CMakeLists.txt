@@ -139,7 +139,7 @@ if(result)
 endif()
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
   RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
 if(result)
   message(FATAL_ERROR "Build step for googletest failed: ${result}")
 endif()
@@ -171,21 +171,57 @@ set(CMAKE_FOLDER "")
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL library, examples and tests
 #--------------------------------------------------------------------------------------------------------
-add_library(ECVL "")
-add_subdirectory(src)
-target_link_libraries (ECVL  ${OpenCV_LIBS})
-
-add_executable(EXAMPLES "")
-add_subdirectory(examples/)
-target_link_libraries(EXAMPLES ECVL)
-
 add_executable(ECVL_TESTS "")
-add_subdirectory(src/test)
-target_link_libraries(ECVL_TESTS ECVL gtest_main)
+set(ECVL_MODULES "")
+
+set(BUILD_ECVL_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not")
+set(BUILD_ECVL_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
+
+if(BUILD_ECVL_CORE)
+    add_library(ECVL_CORE "")
+    add_subdirectory("modules/core")
+    include_directories("modules/core/include")
+    target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
+    set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
+    list(APPEND ECVL_MODULES "ECVL_CORE")
+endif()
+if(BUILD_ECVL_GUI)
+    if(BUILD_ECVL_CORE)
+        find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
+        if(wxWidgets_FOUND)
+            include(${wxWidgets_USE_FILE})
+            add_library(ECVL_GUI "")
+            add_subdirectory("modules/gui")
+            include_directories("modules/gui/include")
+            #target_include_directories(ECVL_GUI PRIVATE ${wxWidgets_INCLUDE_DIRS})
+            
+            message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
+            
+            
+            target_link_libraries(ECVL_GUI ECVL_CORE ${OpenCV_LIBS} ${wxWidgets_LIBRARIES})
+            set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
+            list(APPEND ECVL_MODULES "ECVL_GUI")
+        else()
+            set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
+            message(STATUS "ECVL_GUI disabled: unmet dependency wxWidgets")
+        endif()
+    else()
+        set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
+        message(STATUS "ECVL_GUI disabled: unmet dependency ECVL_CORE")
+    endif()
+endif()
+
+target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest_main)
+
+message(STATUS "Modules to be built: ${ECVL_MODULES}")
 
 enable_testing()
 
 gtest_discover_tests(ECVL_TESTS)
+
+add_executable(EXAMPLES "")
+add_subdirectory(examples)
+target_link_libraries(EXAMPLES ${ECVL_MODULES} ${wxWidgets_LIBRARIES})
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL library, examples and tests
 #--------------------------------------------------------------------------------------------------------
@@ -245,7 +281,7 @@ FOREACH(cur_file ${snippets_sources})
     #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
     add_executable(${exe_name} ${cur_file})
 	set_target_properties(${exe_name} PROPERTIES FOLDER "Snippets")
-    target_link_libraries(${exe_name} ECVL)
+    target_link_libraries(${exe_name} ${ECVL_MODULES})
 ENDFOREACH()
 #--------------------------------------------------------------------------------------------------------
 # END: Snippets
