@@ -120,8 +120,8 @@ int main(void)
     ImWrite("cropped.png", cropped2);
 
     Image test1, test2;
-    ChangeColorSpace(cropped1, test1, ColorType::BGR);
-    ChangeColorSpace(cropped2, test2, ColorType::BGR);
+    ChangeColorSpace(cropped1, cropped1, ColorType::BGR);
+    ChangeColorSpace(cropped2, cropped2, ColorType::BGR);
 
     Image img1, img2;
     ImRead("../data/Kodak/img0003.png", img1);

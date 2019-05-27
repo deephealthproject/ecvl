@@ -111,7 +111,7 @@ An optional scale parameter can be provided. Different interpolation types are a
 
 
 @param[in] src The input Image.
-@param[out] dst The output rotated Image.
+@param[out] dst The rotated output Image.
 @param[in] angle The rotation angle in degrees.
 @param[in] scale Optional scaling factor.
 @param[in] interp Interpolation type used. Default is InterpolationType::linear.
@@ -120,6 +120,17 @@ An optional scale parameter can be provided. Different interpolation types are a
 void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale = 1.0, InterpolationType interp = InterpolationType::linear);
 
 
+/* @brief Copies the source Image into destination Image changing the color space.
+
+The ChangeColorSpace procedure convert the color space of the source Image into the specified color space.
+New data are copied into destination Image. Source and destination can be contiguous or not and can also 
+be the same Image.
+
+@param[in] src The input Image to convert in the new color space.
+@param[out] dst The output Image in the "new_type" color space.
+@param[in] new_type The new color space in which the src Image must be converted.
+
+*/
 void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type);
 
 } // namespace ecvl
