@@ -1,4 +1,4 @@
-#include "../src/core.h"
+#include "ecvl/core.h"
 
 using namespace ecvl;
 using namespace std;
