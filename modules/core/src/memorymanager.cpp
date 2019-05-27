@@ -1,4 +1,4 @@
-#include "memorymanager.h"
+#include "ecvl/core/memorymanager.h"
 
 DefaultMemoryManager* DefaultMemoryManager::GetInstance()
 {
