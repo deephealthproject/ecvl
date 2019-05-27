@@ -6,6 +6,22 @@
 
 namespace ecvl {
 
+/* @anchor ThresholdingType
+
+   Enum class representing the ECVL threhsolding types.
+*
+*/
+enum class ThresholdingType {
+    binary,     /** < \f[\texttt{dst} (x,y) =  \fork{\texttt{maxval}}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{0}{otherwise}\f] */
+    binary_inv, /** < \f[\texttt{dst} (x,y) =  \fork{0}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{maxval}}{otherwise}\f] */
+    trunc,      /** < \f[\texttt{dst} (x,y) =  \fork{\texttt{threshold}}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{src}(x,y)}{otherwise}\f] */
+    tozero,     /** < \f[\texttt{dst} (x,y) =  \fork{\texttt{src}(x,y)}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{0}{otherwise}\f] */
+    tozero_inv, /** < \f[\texttt{dst} (x,y) =  \fork{0}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{src}(x,y)}{otherwise}\f] */
+    mask,       /** < */
+    otsu,       /** < The Otsu algorithm will be used to choose the optimal threshold value */
+    triangle,   /** < The Triangle algorithm will be used to choose the optimal threshold value */
+};
+
 /* @anchor InterpolationType
 
    Enum class representing the ECVL interpolation types.
