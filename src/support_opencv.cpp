@@ -95,42 +95,32 @@ Image MatToImage(const cv::Mat& m)
 
 cv::Mat ImageToMat(const Image& img)
 {
-    cv::Mat m;
-    if (img.channels_ == "xyc") {
-        int type;
-        switch (img.elemtype_)
-        {
-        case DataType::uint8:   type = CV_MAKETYPE(CV_8U, 1); break;
-        case DataType::int8:    type = CV_MAKETYPE(CV_8S, 1); break;
-        case DataType::uint16:  type = CV_MAKETYPE(CV_16U, 1); break;
-        case DataType::int16:   type = CV_MAKETYPE(CV_16S, 1); break;
-        case DataType::int32:   type = CV_MAKETYPE(CV_32S, 1); break;
-        case DataType::float32: type = CV_MAKETYPE(CV_32F, 1); break;
-        case DataType::float64: type = CV_MAKETYPE(CV_64F, 1); break;
-        default:
-            break;
-        }
-
-        int tmp[] = { img.dims_[1], img.dims_[0] }; // Swap dimensions to have rows, cols
-
-        std::vector<cv::Mat> channels;
-        for (int c = 0; c < img.dims_[2]; ++c) {
-            if (img.contiguous_) {
-                channels.emplace_back(2, tmp, type, (void*)(img.Ptr({ 0,0,c })));
-            }
-            else {
-                channels.emplace_back(2, tmp, type);
-                channels.back().data;
-                for (int r = 0; r < img.dims_[1]; ++r) {
-                    memcpy(channels[c].ptr<uint8_t>(r), img.Ptr({ 0, r, c }), img.dims_[0] * img.elemsize_);
-                }
-            }
-        }
-        cv::merge(channels, m);
-    }
-    else {
+    if (img.channels_ != "cxy" && img.channels_ != "xyc")
         throw std::runtime_error("Not implemented");
+    if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY)
+        throw std::runtime_error("Not implemented");
+
+    Image tmp;
+    RearrangeChannels(img, tmp, "cxy");
+
+    int type;
+    switch (tmp.elemtype_)
+    {
+    case DataType::uint8:   type = CV_MAKETYPE(CV_8U,  tmp.dims_[0]); break;
+    case DataType::int8:    type = CV_MAKETYPE(CV_8S,  tmp.dims_[0]); break;
+    case DataType::uint16:  type = CV_MAKETYPE(CV_16U, tmp.dims_[0]); break;
+    case DataType::int16:   type = CV_MAKETYPE(CV_16S, tmp.dims_[0]); break;
+    case DataType::int32:   type = CV_MAKETYPE(CV_32S, tmp.dims_[0]); break;
+    case DataType::float32: type = CV_MAKETYPE(CV_32F, tmp.dims_[0]); break;
+    case DataType::float64: type = CV_MAKETYPE(CV_64F, tmp.dims_[0]); break;
+    default:
+        break;
     }
+
+    int mdims[] = { tmp.dims_[2], tmp.dims_[1] }; // Swap dimensions to have rows, cols
+
+    cv::Mat m(2, mdims, type);
+    memcpy(m.data, tmp.data_, tmp.datasize_);
 
     return m;
 }
