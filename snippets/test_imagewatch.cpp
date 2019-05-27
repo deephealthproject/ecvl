@@ -1,5 +1,5 @@
 #include "../src/core.h"
-#include <vector>
+
 using namespace ecvl;
 using namespace std;
 
@@ -19,7 +19,5 @@ int main()
     Image g({ 5, 5, 3 }, DataType::uint8, "xyz", ColorType::none);
     Image h({ 5, 5 }, DataType::uint8, "xy", ColorType::none);
     
-    vector<int> v = { 1,2,3 };
-    auto x = v[4];
     return EXIT_SUCCESS;
 }
