@@ -8,48 +8,6 @@
 
 #include "ecvl/core.h"
 
-namespace ecvl {
-
-	template<typename ViewType>
-	ecvl::Image& Mul(ecvl::Image& img, double d)
-	{
-		using namespace ecvl;
-		ViewType v(img);
-		auto i = v.Begin(), e = v.End();
-		for (; i != e; ++i) {
-			auto& p = *i;
-			p = static_cast<typename ViewType::basetype>(p * d);
-		}
-		return img;
-	}
-
-	ecvl::Image& Mul(ecvl::Image& img, double d)
-	{
-		using namespace ecvl;
-		if (img.contiguous_) {
-			switch (img.elemtype_)
-			{
-#define ECVL_TUPLE(name, ...) case DataType::name: return Mul<ContiguousView<DataType::name>>(img, d);
-#include "ecvl/core/datatype_existing_tuples.inc"
-#undef ECVL_TUPLE
-			default:
-				throw std::runtime_error("Not implemented");
-			}
-		}
-		else {
-			switch (img.elemtype_)
-			{
-#define ECVL_TUPLE(name, ...) case DataType::name: return Mul<View<DataType::name>>(img, d);
-#include "ecvl/core/datatype_existing_tuples.inc"
-#undef ECVL_TUPLE
-			default:
-				throw std::runtime_error("Not implemented");
-			}
-		}
-	}
-
-} // namespace ecvl
-
 int main(void)
 {
     using namespace ecvl;
@@ -126,7 +84,7 @@ int main(void)
 
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
-    Mul(img1, 0.5);
+    img1.Mul(4, false);
 
     cv::TickMeter tm;
 

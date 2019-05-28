@@ -166,7 +166,7 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
 
 void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 {
-    if (src.colortype_==ColorType::none || new_type == ColorType::none) {
+    if (src.colortype_ == ColorType::none || new_type == ColorType::none) {
         throw std::runtime_error("Cannot change color to or from ColorType::none");
     }
 
@@ -180,7 +180,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 
     Image tmp;
 
-    if (src.colortype_ == ColorType::HSV || new_type == ColorType::HSV 
+    if (src.colortype_ == ColorType::HSV || new_type == ColorType::HSV
         ||
         src.colortype_ == ColorType::YCbCr || new_type == ColorType::YCbCr
         ) {
@@ -237,7 +237,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         dst = std::move(tmp);
         return;
     }
-    
+
     if (src.colortype_ == ColorType::RGB && new_type == ColorType::GRAY) {
         throw std::runtime_error("Not implemented");
     }
@@ -245,7 +245,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         throw std::runtime_error("Not implemented");
     }
 
-    if (src.colortype_ == ColorType::BGR && new_type == ColorType::RGB 
+    if (src.colortype_ == ColorType::BGR && new_type == ColorType::RGB
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
         throw std::runtime_error("Not implemented");
@@ -269,5 +269,26 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
     dst = MatToImage(m);
 }
+
+double OtsuThreshold(const Image& src) {
+    if (src.colortype_ != ColorType::GRAY) { // What if the Image has ColorType::none?
+        throw std::runtime_error("The OtsuThreshold requires a grayscale Image");
+    }
+
+    if (true) {
+        throw std::runtime_error("Not implemented");
+    }
+}
+
+//void CalculateHistogram(const Image& src, std::vector<double>& hist) {
+//    if (src.colortype_ != ColorType::GRAY) {
+//        throw std::runtime_error("Not implemented");
+//    }
+//    
+//    if (true) {
+//        throw std::runtime_error("Not implemented");
+//    }
+//}
+
 
 } // namespace ecvl

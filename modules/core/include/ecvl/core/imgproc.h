@@ -4,6 +4,7 @@
 #include "image.h"
 #include "support_opencv.h"
 
+
 namespace ecvl {
 
 //OTSU,       /**< The Otsu algorithm will be used to choose the optimal threshold value */
@@ -149,6 +150,18 @@ set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type"
 
 */
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type = ThresholdingType::BINARY);
+
+/** @brief Calculates the Otsu thresholding value.
+
+The OtsuThreshold function calculates the Otsu threshold value over a given input Image. the Image must by ColorType::GRAY.
+
+@param[in] src Input Image on which to calculato the Otsu threshold value.
+
+@return Otsu threshold value.
+*/
+double OtsuThreshold(const Image& src);
+
+Image& Mul(Image& img, double d, DataType dt = DataType::none, bool saturate = true);
 
 } // namespace ecvl
 

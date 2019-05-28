@@ -251,6 +251,49 @@ public:
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
     }
+
+    /** @brief Template specialization of the inplace multiplication
+    function. In most cases is better to use the @ref Mul.
+
+    @param[in] img Image to be multiplied by a scalar value.
+    @param[in] d Scalar value to use for the multiplication.
+    @param[in] saturate Whether to apply saturation or not.
+
+    @return Image containing the result of the multiplication, same as the input one.
+    */
+    template<typename ViewType>
+    Image& Mul(double d, bool saturate)
+    {
+        using namespace ecvl;
+        ViewType v(*this);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<typename ViewType::basetype>(p * d);
+            }
+            else {
+                p = static_cast<typename ViewType::basetype>(p * d);
+            }
+        }
+        return *this;
+    }
+
+    /** @brief In-place multiplication between an Image and a scalar value.
+    Without type promotion. @anchor Mul
+
+    The Mul() function multiplies an input image by a scalar value and stores
+    the result in the same image. The type of the image will not change. By
+    default a saturation will be applied. If it is not the desired behavior
+    change the "saturate" parameter to false.
+
+    @param[in] img Image to be multiplied (in-place) by a scalar value.
+    @param[in] d Scalar value to use for the multiplication.
+    @param[in] saturation Whether to apply saturation or not. Default is true.
+
+    @return Image containing the result of the multiplication.
+    */
+    Image& Mul(double d, bool saturate = true);
 };
 
 #include "iterators_impl.inc"
