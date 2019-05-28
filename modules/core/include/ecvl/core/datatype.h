@@ -2,6 +2,7 @@
 #define ECVL_DATATYPE_H_
 
 #include <cstdint>
+#include <limits>
 
 namespace ecvl {
 
