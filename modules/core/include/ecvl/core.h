@@ -9,5 +9,6 @@
 #include "core/memorymanager.h"
 #include "core/support_opencv.h"
 #include "core/datatype.h"
+#include "core/arithmetic.h"
 
 #endif // ECVL_CORE_H_

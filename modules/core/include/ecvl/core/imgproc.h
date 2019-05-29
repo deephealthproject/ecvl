@@ -161,7 +161,25 @@ The OtsuThreshold function calculates the Otsu threshold value over a given inpu
 */
 double OtsuThreshold(const Image& src);
 
-Image& Mul(Image& img, double d, DataType dt = DataType::none, bool saturate = true);
+// Template copy image
+template<DataType SDT, DataType DDT>
+struct StructCopyImage {
+    static void actual_function(Image& src, Image& dst)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+
+        View<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto is = vsrc.Begin(), es = vsrc.End();
+        auto id = vdst.Begin();
+        for (; is != es; ++is, ++id) {
+            *id = static_cast<dsttype>(*is);
+        }
+    }
+};
+
+// Copy image
+void CopyImage(Image& src, Image& dst, DataType new_type = DataType::none);
 
 } // namespace ecvl
 

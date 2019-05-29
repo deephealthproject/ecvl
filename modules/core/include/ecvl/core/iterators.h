@@ -61,7 +61,7 @@ struct ContiguousIterator {
     bool operator==(const ContiguousIterator& rhs) const { return ptr_ == rhs.ptr_; }
     bool operator!=(const ContiguousIterator& rhs) const { return ptr_ != rhs.ptr_; }
 private:
-    ContiguousIterator & ContiguousIncrementPos();
+    ContiguousIterator& ContiguousIncrementPos();
 };
 
 template <typename T>

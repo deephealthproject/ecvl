@@ -39,16 +39,16 @@ enum class ColorType {
 */
 class Image {
 public:
-    DataType            elemtype_;  /**< Type of Image pixels, must be one of the 
+    DataType            elemtype_;  /**< Type of Image pixels, must be one of the
                                          values available in @ref DataType.        */
     uint8_t             elemsize_;  /**< Size (in bytes) of Image pixels.          */
-    std::vector<int>    dims_;      /**< Vector of Image dimensions. Each dimension 
+    std::vector<int>    dims_;      /**< Vector of Image dimensions. Each dimension
                                          is given in pixels/voxels. */
     std::vector<int>    strides_;   /**< Vector of Image strides. Strides represent
-                                         the number of bytes the pointer on data 
-                                         has to move to reach the next pixel/voxel 
+                                         the number of bytes the pointer on data
+                                         has to move to reach the next pixel/voxel
                                          on the correspondent size. */
-    std::string         channels_;  /**< String which describes how Image planes 
+    std::string         channels_;  /**< String which describes how Image planes
                                          are organized. A single character provides
                                          the information related to the corresponding
                                          channel. The possible values are:
@@ -60,14 +60,14 @@ public:
                                             - 'o': any other dimension
                                          For example, "xyc" describes a 2-dimensional
                                          Image structured in color planes. This could
-                                         be for example a ColorType::GRAY Image with 
+                                         be for example a ColorType::GRAY Image with
                                          dims_[2] = 1 or a ColorType::RGB Image with
                                          dims_[2] = 3 an so on. The ColorType constrains
-                                         the value of the dimension corresponding to 
-                                         the color channel. 
+                                         the value of the dimension corresponding to
+                                         the color channel.
                                          Another example is "cxy" with dims_[0] = 3 and
                                          ColorType::BGR. In this case the color dimension
-                                         is the one which changes faster as it is done 
+                                         is the one which changes faster as it is done
                                          in other libraries such as OpenCV. */
     ColorType           colortype_; /**< Image ColorType. If this is different from ColorType::none
                                          the channels_ string must contain a 'c' and the
@@ -126,7 +126,7 @@ public:
     Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
-        dims_{dims},
+        dims_{ dims },
         strides_{},
         channels_{ move(channels) },
         colortype_{ colortype },
@@ -250,60 +250,19 @@ public:
     const uint8_t* Ptr(const std::vector<int>& coords) const {
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
-    }
+    }    
 
-    /** @brief Template specialization of the inplace multiplication
-    function. In most cases is better to use the @ref Mul.
-
-    @param[in] img Image to be multiplied by a scalar value.
-    @param[in] d Scalar value to use for the multiplication.
-    @param[in] saturate Whether to apply saturation or not.
-
-    @return Image containing the result of the multiplication, same as the input one.
-    */
-    template<typename ViewType>
-    Image& Mul(double d, bool saturate)
-    {
-        using namespace ecvl;
-        ViewType v(*this);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<typename ViewType::basetype>(p * d);
-            }
-            else {
-                p = static_cast<typename ViewType::basetype>(p * d);
-            }
-        }
-        return *this;
-    }
-
-    /** @brief In-place multiplication between an Image and a scalar value.
-    Without type promotion. @anchor Mul
-
-    The Mul() function multiplies an input image by a scalar value and stores
-    the result in the same image. The type of the image will not change. By
-    default a saturation will be applied. If it is not the desired behavior
-    change the "saturate" parameter to false.
-
-    @param[in] img Image to be multiplied (in-place) by a scalar value.
-    @param[in] d Scalar value to use for the multiplication.
-    @param[in] saturation Whether to apply saturation or not. Default is true.
-
-    @return Image containing the result of the multiplication.
-    */
-    Image& Mul(double d, bool saturate = true);
 };
 
-#include "iterators_impl.inc"
+#include "iterators_impl.inc.h"
 template <DataType DT>
 class View : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
-    View(Image& img) 
+    View(Image& img)
     {
+        auto culo = DT;
         if (DT != img.elemtype_)
             throw std::runtime_error("View type is different from Image type");
         elemtype_ = img.elemtype_;
@@ -446,8 +405,8 @@ public:
 
 /** @brief Changes the order of the Image dimensions.
 
-The RearrangeChannels procedure changes the order of the input Image dimensions saving 
-the result into the output Image. The new order of dimensions can be specified as a 
+The RearrangeChannels procedure changes the order of the input Image dimensions saving
+the result into the output Image. The new order of dimensions can be specified as a
 string through the "channels" parameter. Input and output Images can be the same. The
 number of channels of the input Image must be the same of required channels.
 

@@ -10,8 +10,8 @@ target_sources(ECVL_CORE
     core/imgcodecs.h
     core/imgproc.h
     core/iterators.h
-    core/iterators_impl.inc
-    core/datatype_existing_tuples.inc
-    core/datatype_tuples.inc
+    core/iterators_impl.inc.h
+    core/datatype_existing_tuples.inc.h
+    core/datatype_tuples.inc.h
 
 )
