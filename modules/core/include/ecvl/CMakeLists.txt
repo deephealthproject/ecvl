@@ -2,6 +2,7 @@ target_sources(ECVL_CORE
 	PRIVATE
     
     core.h
+    core/arithmetic.h
     core/memorymanager.h
     core/support_opencv.h
     core/datatype.h
