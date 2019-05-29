@@ -4,7 +4,7 @@ namespace ecvl {
 
 void Mul(Image& src1_dst, const Image& src2)
 {
-    static constexpr Table<StructMul> table;
+    static constexpr Table2D<StructMul> table;
     table(src1_dst.elemtype_, src2.elemtype_)(src1_dst, src2);
 }
 

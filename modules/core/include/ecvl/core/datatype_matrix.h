@@ -6,7 +6,7 @@
 namespace ecvl {
 
 template<template<DataType src, DataType dst>class _StructFun>
-struct Table {
+struct Table2D {
 
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0)>::actual_function);
 
@@ -22,7 +22,7 @@ struct Table {
     template<>
     constexpr void FillData<DataTypeSize() * DataTypeSize()>() {}
 
-    constexpr Table() : data() {
+    constexpr Table2D() : data() {
         FillData<0>();
     }
 

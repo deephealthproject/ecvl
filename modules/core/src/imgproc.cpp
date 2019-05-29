@@ -328,8 +328,7 @@ void CopyImage(Image& src, Image& dst, DataType new_type)
         }
     }
 
-
-    static constexpr Table<StructCopyImage> table;
+    static constexpr Table2D<StructCopyImage> table;
     table(src.elemtype_, dst.elemtype_)(src, dst);
 }
 
