@@ -59,7 +59,18 @@ ODT saturate_cast(const IDT& v) {
     return static_cast<ODT>(v);
 }
 
-// Template in-place mul between Images
+/** @brief Template struct for in-place multiplication between images 
+of any ecvl::DataType.
+
+This object allows to generate all the possible combination of matrixes
+
+This struct, and in particular its ActualFunction method, is accessed 
+through Table1D which 
+
+@param[in] v Input value (of any type).
+
+@return Input value after cast and saturation.
+*/
 template <DataType a, DataType b>
 struct StructMul {
     static void actual_function(Image& src1_dst, const Image& src2) {
@@ -86,7 +97,7 @@ void Mul(Image& src1_dst, const Image& src2);
     @param[in] saturate Whether to apply saturation or not.
 
     @return Image containing the result of the multiplication, same as the input one.
-    */
+*/
 template<typename ViewType>
 Image& Mul(Image& img, double d, bool saturate)
 {
