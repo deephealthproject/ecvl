@@ -103,8 +103,8 @@ int main(void)
     //Mul(img1, 2);
     //Mul(0.5, img1);
 
-    Mul(tmp, 4);
-    Div(200, tmp);
+    Div(img1, 4);
+    Div(200, img1);
 
     Add(img1, 100, false);
     Add(-100, img1, false);
