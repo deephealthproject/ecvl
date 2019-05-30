@@ -8,7 +8,7 @@
 
 namespace ecvl {
 
-/* @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
+/** @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
 
 @param[in] interp Interpolation type, see @ref InterpolationType.
 

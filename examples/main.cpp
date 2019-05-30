@@ -8,6 +8,7 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
+#include "ecvl/gui.h"
 
 int main(void)
 {
@@ -78,6 +79,7 @@ int main(void)
     ImRead("../data/Kodak/img0003.png", img1);
     ImRead("../data/Kodak/img0015.png", img2);
 
+    ImShow(img1);
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
     Image img3, img4;
