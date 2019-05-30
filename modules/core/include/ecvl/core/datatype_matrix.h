@@ -10,20 +10,22 @@ struct Table2D {
 
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0)>::actual_function);
 
+    template<int i>
+    struct integer {};
+
     template <int i>
-    constexpr void FillData() {
+    constexpr void FillData(integer<i>) {
         constexpr auto arr = DataTypeArray();
         constexpr int src = i / DataTypeSize();
         constexpr int dst = i % DataTypeSize();
         data[i] = _StructFun<arr[src], arr[dst]>::actual_function;
-        FillData<i + 1>();
+        FillData(integer<i + 1>());
     }
 
-    template<>
-    constexpr void FillData<DataTypeSize() * DataTypeSize()>() {}
+    constexpr void FillData(integer< DataTypeSize()* DataTypeSize() >) {}
 
     constexpr Table2D() : data() {
-        FillData<0>();
+        FillData<0>(integer<0>());
     }
 
     inline fun_type operator()(DataType src, DataType dst) const {
