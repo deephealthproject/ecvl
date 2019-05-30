@@ -88,19 +88,21 @@ int main(void)
 
     cv::TickMeter tm;
 
-    tm.reset();
-    tm.start();
-    Add(img3, img2);
-    tm.stop();
-    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+    //tm.reset();
+    //tm.start();
+    //Add(img3, img2);
+    //tm.stop();
+    //std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    tm.reset();
-    tm.start();
-    Sub(img3, img2);
-    tm.stop();
-    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+    //tm.reset();
+    //tm.start();
+    //Sub(img3, img2);
+    //tm.stop();
+    //std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
+    Mul(img1, 2);
+
+    /*Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
     ContiguousViewXYC<DataType::float32> vmask(mask);
     auto radius = float(std::min(vmask.width() / 2, vmask.height() / 2));
     int cx = vmask.width() / 2;
@@ -119,7 +121,7 @@ int main(void)
     Mul(img1, 4, false);
 
     Sum(img, 100.0);
-    Mul(img, 0.5);
+    Mul(img, 0.5);*/
 
     tm.reset();
     tm.start();

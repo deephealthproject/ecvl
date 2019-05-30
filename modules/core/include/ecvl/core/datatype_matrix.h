@@ -5,6 +5,36 @@
 
 namespace ecvl {
 
+// TODO internal doc
+template<template<DataType DT, typename ...>class _StructFun, typename ...Args>
+struct Table1D {
+
+    using fun_type = decltype(&_StructFun<static_cast<DataType>(0), Args...>::ActualFunction);
+
+    template<int i>
+    struct integer {};
+
+    template <int i>
+    constexpr void FillData(integer<i>) {
+        constexpr auto arr = DataTypeArray();
+        data[i] = _StructFun<arr[i], Args...>::ActualFunction;
+        FillData(integer<i + 1>());
+    }
+
+    constexpr void FillData(integer<DataTypeSize()>) {}
+
+    constexpr Table1D() : data() {
+        FillData<0>(integer<0>());
+    }
+
+    inline fun_type operator()(DataType dt) const {
+        return data[static_cast<int>(dt)];
+    }
+
+    fun_type data[DataTypeSize()];
+};
+
+// TODO internal doc
 template<template<DataType src, DataType dst>class _StructFun>
 struct Table2D {
 
