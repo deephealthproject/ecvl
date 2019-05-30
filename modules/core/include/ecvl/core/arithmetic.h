@@ -417,6 +417,41 @@ Image& Div(T value, Image& img, bool saturate = true, ET epsilon = std::numeric_
     return table(img.elemtype_)(value, img, saturate, epsilon);
 }
 
+// Struct template specialization of the in-place negation of an Image. 
+template<DataType DT>
+struct StructScalarNeg{
+    static Image& ActualFunction(Image& img)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            p = static_cast<typename TypeInfo<DT>::basetype>(-p);
+        }
+        return img;
+    }
+};
+
+/** @brief In-place negation of an Image. @anchor Neg
+
+The Neg() function negates every value of an Image, and stores the 
+the result in the same image. The type of the image will not change.
+
+@param[in,out] img Image to be negated (in-place).
+
+@return Reference to the Image containing the result of the negation.
+*/
+Image& Neg(Image& img) {
+    
+    // TODO add checks
+    if (static_cast<size_t>(img.elemtype_) >= DataTypeSignedSize()) {
+        throw std::runtime_error("Neg function is only allowed for signed images");
+    }
+    
+    static constexpr SignedTable1D<StructScalarNeg> table;          
+    return table(img.elemtype_)(img);
+}
+
 } // namespace ecvl
 
 #endif // !ECVL_ARITHMETIC_H_

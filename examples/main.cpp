@@ -103,6 +103,11 @@ int main(void)
     //Mul(img1, 2);
     //Mul(0.5, img1);
 
+    Image img5;
+    CopyImage(img1, img5, DataType::int16);
+    Neg(img5);
+    Neg(img1);
+
     Div(img1, 4);
     Div(200, img1);
 
