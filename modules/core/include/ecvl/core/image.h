@@ -73,30 +73,87 @@ public:
                                          the channels_ string must contain a 'c' and the
                                          corresponding dimension must have the appropriate
                                          value. See @ref ColorType for the possible values. */
-    uint8_t*            data_;
-    size_t              datasize_;
-    bool                contiguous_;
+    uint8_t*            data_;      /**< Pointer to Image data. If the Image is not the owner
+                                         of data, for example when using Image views, this 
+                                         attribute will point to the data of another Image.
+                                         The possession or not of the data depends on the 
+                                         MemoryManager. */
+    size_t              datasize_;  /**< Size of Image data in bytes. */
+    bool                contiguous_;/**< Whether the image is stored contiguously or not in memory. */
 
-    MetaData* meta_;
-    MemoryManager* mem_;
+    MetaData* meta_;                /**< Pointer to Image MetaData. */
+    MemoryManager* mem_;            /**< Pointer to the MemoryManager employed by the Image. It 
+                                         can be DefaultMemoryManager or ShallowMemoryManager. The 
+                                         former is responsible for allocating and deallocating data,
+                                         when using the DefaultMemoryManager the Image is the owner
+                                         of data. When ShallowMemoryManager is employed the Image
+                                         does not own data and operations on memory are not allowed
+                                         or does not produce any effect.*/
 
+    /** @brief Generic non-const Begin Iterator.
+    
+    This function gives you a non-const generic Begin Iterator that can be used both for contiguous and 
+    non-contiguous non-const Images. It is useful to iterate over a non-const Image. If the Image is contiguous 
+    prefer the use of ContiguousIterato which in most cases improve the performance.
+    */
     template<typename T>
-    Iterator<T> Begin() { return Iterator<T>(*this); }
+    Iterator<T> Begin() { return Iterator<T>(*this); }  
+    
+    /** @brief Generic non-const End Iterator.
+
+    This function gives you a non-const generic End Iterator that can be used both for contiguous and
+    non-contiguous non-const Images. It is useful to iterate over over a non-const Image.
+    */
     template<typename T>
     Iterator<T> End() { return Iterator<T>(*this, dims_); }
 
-    template<typename T>
-    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }
-    template<typename T>
-    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }
+    /** @brief Generic const Begin Iterator.
 
+    This function gives you a const generic Begin Iterator that can be used both for contiguous and
+    non-contiguous const Images. It is useful to iterate over a const Image. If the Image is contiguous 
+    prefer the use of ConstContiguousIterator which in most cases improve the performance.
+    */
+    template<typename T>
+    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }  
+    
+    /** @brief Generic const End Iterator.
+
+    This function gives you a const generic End Iterator that can be used both for contiguous and
+    non-contiguous const Images. It is useful to iterate over a const Image.
+    */
+    template<typename T>
+    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }  
+
+    /** @brief Contiguous non-const Begin Iterator.
+
+    This function gives you a contiguous non-const Begin Iterator that can be used only for contiguous
+    Images. If the Image is contiguous it is preferable to the non-contiguous iterator since it has usually
+    better performance.
+    */
     template<typename T>
     ContiguousIterator<T> ContiguousBegin() { return ContiguousIterator<T>(*this); }
+    
+    /** @brief Contiguous non-const End Iterator.
+
+    This function gives you a contiguous non-const End Iterator that can be used only for contiguous
+    Images.
+    */
     template<typename T>
     ContiguousIterator<T> ContiguousEnd() { return ContiguousIterator<T>(*this, dims_); }
 
+    /** @brief Contiguous const Begin Iterator.
+
+    This function gives you a contiguous const Begin Iterator that can be used only for contiguous Images. 
+    If the Image is contiguous it is preferable to the non-contiguous iterator since it has usually better 
+    performance.
+    */
     template<typename T>
     ConstContiguousIterator<T> ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
+    
+    /** @brief Contiguous const End Iterator.
+
+    This function gives you a contiguous const End Iterator that can be used only for contiguous Images.
+    */
     template<typename T>
     ConstContiguousIterator<T> ContiguousEnd() const { return ConstContiguousIterator<T>(*this, dims_); }
 
@@ -121,7 +178,7 @@ public:
 
     /** @brief Initializing constructor
 
-        This constructor creates a proper image and allocates the data.
+        The initializing constructor creates a proper image and allocates the data.
     */
     Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) :
         elemtype_{ elemtype },
@@ -148,19 +205,23 @@ public:
         data_ = mem_->Allocate(datasize_);
     }
 
-    /** @brief Copy constructor: Deep Copy
+    /** @brief Copy constructor.
+    
+    The copy constructor creates an new Image copying (Deep Copy) the input one.
+    The new Image will be contiguous regardless of the contiguity of the to be 
+    copied Image.
     */
     Image(const Image& img) :
-        elemtype_{ img.elemtype_ },//
-        elemsize_{ img.elemsize_ },//
-        dims_{ img.dims_ },//
-        strides_{ img.strides_ },//
-        channels_{ img.channels_ },// 
-        colortype_{ img.colortype_ },//
-        data_{},//
-        datasize_{ img.datasize_ },//
-        contiguous_{ img.contiguous_ },//
-        meta_{ img.meta_ },//
+        elemtype_{ img.elemtype_ },
+        elemsize_{ img.elemsize_ },
+        dims_{ img.dims_ },
+        strides_{ img.strides_ },
+        channels_{ img.channels_ },
+        colortype_{ img.colortype_ },
+        data_{},
+        datasize_{ img.datasize_ },
+        contiguous_{ img.contiguous_ },
+        meta_{ img.meta_ },
         mem_{ img.mem_ }
     {
         if (mem_ == ShallowMemoryManager::GetInstance()) {
@@ -236,17 +297,24 @@ public:
         return *this;
     }
 
+    /** @brief Destructor
+
+    If the Image is the owner of data they will be deallocate. Otherwise nothing will happen.
+    */
     ~Image() {
         if (mem_)
             mem_->Deallocate(data_);
     }
 
+    /** @brief To check whether the Image contains or not data, regardless the owning status. */
     bool IsEmpty() const { return data_ == nullptr; }
 
+    /** @brief Returns a non-const pointer to data at given coordinates. */
     uint8_t* Ptr(const std::vector<int>& coords) {
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
     }
+    /** @brief Returns a const pointer to data at given coordinates. */
     const uint8_t* Ptr(const std::vector<int>& coords) const {
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
