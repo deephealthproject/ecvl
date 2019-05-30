@@ -39,17 +39,21 @@ enum class ColorType {
 */
 class Image {
 public:
-    DataType            elemtype_;  /**< Type of Image pixels, must be one of the
+    DataType            elemtype_;  /**< @brief Type of Image pixels, must be one of the
                                          values available in @ref DataType.        */
-    uint8_t             elemsize_;  /**< Size (in bytes) of Image pixels.          */
-    std::vector<int>    dims_;      /**< Vector of Image dimensions. Each dimension
+    uint8_t             elemsize_;  /**< @brief Size (in bytes) of Image pixels.          */
+    std::vector<int>    dims_;      /**< @brief Vector of Image dimensions. Each dimension
                                          is given in pixels/voxels. */
-    std::vector<int>    strides_;   /**< Vector of Image strides. Strides represent
+    std::vector<int>    strides_;   /**< @brief Vector of Image strides. 
+                                    
+                                         Strides represent
                                          the number of bytes the pointer on data
                                          has to move to reach the next pixel/voxel
                                          on the correspondent size. */
-    std::string         channels_;  /**< String which describes how Image planes
-                                         are organized. A single character provides
+    std::string         channels_;  /**< @brief String which describes how Image planes
+                                         are organized. 
+                                         
+                                         A single character provides
                                          the information related to the corresponding
                                          channel. The possible values are:
                                             - 'x': horizontal spatial dimension
@@ -69,21 +73,26 @@ public:
                                          ColorType::BGR. In this case the color dimension
                                          is the one which changes faster as it is done
                                          in other libraries such as OpenCV. */
-    ColorType           colortype_; /**< Image ColorType. If this is different from ColorType::none
+    ColorType           colortype_; /**< @brief Image ColorType. 
+                                    
+                                         If this is different from ColorType::none
                                          the channels_ string must contain a 'c' and the
                                          corresponding dimension must have the appropriate
                                          value. See @ref ColorType for the possible values. */
-    uint8_t*            data_;      /**< Pointer to Image data. If the Image is not the owner
+    uint8_t*            data_;      /**< @brief Pointer to Image data. 
+                                    
+                                         If the Image is not the owner
                                          of data, for example when using Image views, this 
                                          attribute will point to the data of another Image.
                                          The possession or not of the data depends on the 
                                          MemoryManager. */
-    size_t              datasize_;  /**< Size of Image data in bytes. */
-    bool                contiguous_;/**< Whether the image is stored contiguously or not in memory. */
+    size_t              datasize_;  /**< @brief Size of Image data in bytes. */
+    bool                contiguous_;/**< @brief Whether the image is stored contiguously or not in memory. */
 
-    MetaData* meta_;                /**< Pointer to Image MetaData. */
-    MemoryManager* mem_;            /**< Pointer to the MemoryManager employed by the Image. It 
-                                         can be DefaultMemoryManager or ShallowMemoryManager. The 
+    MetaData* meta_;                /**< @brief Pointer to Image MetaData. */
+    MemoryManager* mem_;            /**< @brief Pointer to the MemoryManager employed by the Image. 
+                                    
+                                         It can be DefaultMemoryManager or ShallowMemoryManager. The 
                                          former is responsible for allocating and deallocating data,
                                          when using the DefaultMemoryManager the Image is the owner
                                          of data. When ShallowMemoryManager is employed the Image

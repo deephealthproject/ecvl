@@ -8,6 +8,7 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
+//#include "ecvl/gui.h"
 
 int main(void)
 {
@@ -78,6 +79,7 @@ int main(void)
     ImRead("../data/Kodak/img0003.png", img1);
     ImRead("../data/Kodak/img0015.png", img2);
 
+    //ImShow(img1);
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
     Image img3, img4;
@@ -107,7 +109,7 @@ int main(void)
         int ry = y - cy;
         for (int x = 0; x < vmask.width(); ++x) {
             int rx = x - cx;
-            float rd = sqrt(rx * rx + ry * ry) / radius;
+            float rd = static_cast<float>(sqrt(rx * rx + ry * ry) / radius);
             vmask(x, y, 0) = vmask(x, y, 1) = vmask(x, y, 2) = std::max(0.f, 1 - rd);
         }
     }
