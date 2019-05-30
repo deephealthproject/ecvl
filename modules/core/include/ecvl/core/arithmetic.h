@@ -59,13 +59,16 @@ ODT saturate_cast(const IDT& v) {
     return static_cast<ODT>(v);
 }
 
-// In-place Add between Images
+// In-place Add between Images TODO doc
 void Add(Image& src1_dst, const Image& src2);
 // Template implementation for in-place Add between Images
+// TODO doc
 template <DataType a, DataType b>
 struct StructAdd {
     static void actual_function(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
+
+        // TODO check before performing Add
 
         View<a> vsrc1_dst(src1_dst);
         ConstView<b> vsrc2(src2);
@@ -77,13 +80,16 @@ struct StructAdd {
     }
 };
 
-// In-place Sub between Images
+// In-place Sub between Images TODO doc
 void Sub(Image& src1_dst, const Image& src2);
 // Template implementation for in-place Sub between Images
+// TODO doc
 template <DataType a, DataType b>
 struct StructSub {
     static void actual_function(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
+
+        // TODO check before performing Add
 
         View<a> vsrc1_dst(src1_dst);
         ConstView<b> vsrc2(src2);
@@ -95,16 +101,17 @@ struct StructSub {
     }
 };
 
-/** @brief Template struct for in-place multiplication between images 
-of any ecvl::DataType.
-
-*/
+// In-place Mul between images TODO doc
 void Mul(Image& src1_dst, const Image& src2);
-// Template implementation for in-place Mul between Images
+/** @brief Template struct for in-place multiplication between images
+of any ecvl::DataType. */
+// TODO doc
 template <DataType a, DataType b>
 struct StructMul {
     static void actual_function(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
+
+        // TODO check before performing Add
 
         View<a> vsrc1_dst(src1_dst);
         ConstView<b> vsrc2(src2);
@@ -116,13 +123,16 @@ struct StructMul {
     }
 };
 
-// In-place Div between Images
+// In-place Div between Images TODO doc
 void Div(Image& src1_dst, const Image& src2);
 // Template implementation for in-place Div between Images
+// TODO doc
 template <DataType a, DataType b>
 struct StructDiv {
     static void actual_function(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
+
+        // TODO check before performing Add
 
         View<a> vsrc1_dst(src1_dst);
         ConstView<b> vsrc2(src2);
@@ -133,7 +143,6 @@ struct StructDiv {
         }
     }
 };
-
 
 /** @brief Template specialization of the in-place multiplication
     function. In most cases it is better to use the @ref Mul.
