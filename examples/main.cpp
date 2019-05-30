@@ -7,6 +7,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "ecvl/core.h"
+#include "ecvl/gui.h"
 
 int main(void)
 {
@@ -82,6 +83,7 @@ int main(void)
     ImRead("../data/Kodak/img0003.png", img1);
     ImRead("../data/Kodak/img0015.png", img2);
 
+    ImShow(img1);
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
     img1.Mul(4, false);
