@@ -11,10 +11,14 @@
 
 The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/). It will be automatically updated at each commit/push to the master branch.
 
-## Requirements
+## Requirements (mandatory)
 
-- C++ Compiler with C++11 support
-- OpenCV 3.0 or later
+- C++ Compiler with C++17 support;
+- OpenCV 3.0 or later (https://opencv.org/).
+
+## Requirements (optional)
+
+- wxWidgets (https://www.wxwidgets.org/), required by the ECVL GUI module.
 
 ## ImageWatch plugin for Microsof Visual Studio
 
