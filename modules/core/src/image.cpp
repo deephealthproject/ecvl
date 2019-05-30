@@ -48,28 +48,4 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     dst = std::move(tmp);
 }
 
-Image& Image::Mul(double d, bool saturate)
-{
-    if (contiguous_) {
-        switch (elemtype_)
-        {
-#define ECVL_TUPLE(name, ...) case DataType::name: return Image::Mul<ContiguousView<DataType::name>>(d, saturate);
-#include "ecvl/core/datatype_existing_tuples.inc"
-#undef ECVL_TUPLE
-        default:
-            throw std::runtime_error("How did you get here?");
-        }
-    }
-    else {
-        switch (elemtype_)
-        {
-#define ECVL_TUPLE(name, ...) case DataType::name: return Image::Mul<View<DataType::name>>(d, saturate);
-#include "ecvl/core/datatype_existing_tuples.inc"
-#undef ECVL_TUPLE
-        default:
-            throw std::runtime_error("How did you get here?");
-        }
-    }
-}
-
 } // namespace ecvl

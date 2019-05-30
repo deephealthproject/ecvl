@@ -2,9 +2,9 @@
 
 #include <stdexcept>
 
-//#include <opencv2/core.hpp>
-//#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include "ecvl/core/datatype_matrix.h"
 
 namespace ecvl {
 
@@ -280,15 +280,56 @@ double OtsuThreshold(const Image& src) {
     }
 }
 
-//void CalculateHistogram(const Image& src, std::vector<double>& hist) {
-//    if (src.colortype_ != ColorType::GRAY) {
-//        throw std::runtime_error("Not implemented");
-//    }
-//    
-//    if (true) {
-//        throw std::runtime_error("Not implemented");
-//    }
-//}
+void CopyImage(Image& src, Image& dst, DataType new_type)
+{
+    if (&src == &dst)
+        throw std::runtime_error("src and dst cannot be the same image");
 
+    if (new_type == DataType::none) {
+        // Get type from dst or src
+        if (dst.IsEmpty()) {
+            dst = src;
+            return;
+        }
+        if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_) {
+            // Destination needs to be resized
+            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                throw std::runtime_error("Trying to resize an Image which doesn't own data.");
+            }
+            dst = Image(src.dims_, src.elemtype_, src.channels_, src.colortype_);
+        }
+        if (src.colortype_ != dst.colortype_) {
+            // Destination needs to change its color space
+            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
+            }
+            dst.colortype_ = src.colortype_;
+        }
+    }
+    else {
+        if (dst.IsEmpty()) {
+            dst = Image(src.dims_, new_type, src.channels_, src.colortype_);
+        }
+        else {
+            if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemtype_ != new_type) {
+                // Destination needs to be resized
+                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                    throw std::runtime_error("Trying to resize an Image which doesn't own data.");
+                }
+                dst = Image(src.dims_, new_type, src.channels_, src.colortype_);
+            }
+            if (src.colortype_ != dst.colortype_) {
+                // Destination needs to change its color space
+                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                    throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
+                }
+                dst.colortype_ = src.colortype_;
+            }
+        }
+    }
+
+    static constexpr Table2D<StructCopyImage> table;
+    table(src.elemtype_, dst.elemtype_)(src, dst);
+}
 
 } // namespace ecvl

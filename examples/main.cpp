@@ -7,6 +7,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "ecvl/core.h"
+#include "ecvl/core/arithmetic.h"
 #include "ecvl/gui.h"
 
 int main(void)
@@ -37,19 +38,14 @@ int main(void)
     Image k2;
     RearrangeChannels(k1, k2, "xyc");
 
-    /*
-    Image test({ 5, 5 }, DataType::uint16, "xy", ColorType::none);
-    Img<uint16_t> t(test);
-    t(0, 0) = 1;
-    t(1, 0) = 2;
-    t(2, 0) = 3;
-
-    cv::Mat3b m(3, 2);
-    m << cv::Vec3b(1, 1, 1), cv::Vec3b(2, 2, 2),
-        cv::Vec3b(3, 3, 3), cv::Vec3b(4, 4, 4),
-        cv::Vec3b(5, 5, 5), cv::Vec3b(6, 6, 6);
-    Image img = MatToImage(m);
-    */
+    Image a1;
+    CopyImage(x, a1);
+    CopyImage(x, a1);
+    CopyImage(x, a1, DataType::uint16);
+    Image a2;
+    CopyImage(x, a2, DataType::int32);
+    CopyImage(a2, a1, DataType::float32);
+    CopyImage(a1, a2, DataType::int16);
 
     // Read ECVL image from file
     Image img;
@@ -86,9 +82,44 @@ int main(void)
     ImShow(img1);
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
-    img1.Mul(4, false);
+    Image img3, img4;
+    CopyImage(img1, img3, DataType::uint16);
+    CopyImage(img1, img4, DataType::uint16);
 
     cv::TickMeter tm;
+
+    tm.reset();
+    tm.start();
+    Add(img3, img2);
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
+    tm.reset();
+    tm.start();
+    Sub(img3, img2);
+    tm.stop();
+    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+
+    Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
+    ContiguousViewXYC<DataType::float32> vmask(mask);
+    auto radius = float(std::min(vmask.width() / 2, vmask.height() / 2));
+    int cx = vmask.width() / 2;
+    int cy = vmask.height() / 2;
+    for (int y = 0; y < vmask.height(); ++y) {
+        int ry = y - cy;
+        for (int x = 0; x < vmask.width(); ++x) {
+            int rx = x - cx;
+            float rd = sqrt(rx * rx + ry * ry) / radius;
+            vmask(x, y, 0) = vmask(x, y, 1) = vmask(x, y, 2) = std::max(0.f, 1 - rd);
+        }
+    }
+
+    Mul(img3, vmask);
+
+    Mul(img1, 4, false);
+
+    Sum(img, 100.0);
+    Mul(img, 0.5);
 
     tm.reset();
     tm.start();

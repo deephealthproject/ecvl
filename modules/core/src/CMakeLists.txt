@@ -7,4 +7,5 @@ target_sources(ECVL_CORE
         imgproc.cpp
         memorymanager.cpp
         support_opencv.cpp
+        arithmetic.cpp
 )

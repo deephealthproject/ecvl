@@ -1,6 +1,8 @@
 #ifndef ECVL_CORE_H_
 #define ECVL_CORE_H_
 
+#include "core/arithmetic.h"
+#include "core/datatype.h"
 #include "core/filesystem.h"
 #include "core/image.h"
 #include "core/imgcodecs.h"
@@ -8,6 +10,5 @@
 #include "core/iterators.h"
 #include "core/memorymanager.h"
 #include "core/support_opencv.h"
-#include "core/datatype.h"
 
 #endif // ECVL_CORE_H_
