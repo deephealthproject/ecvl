@@ -144,33 +144,24 @@ struct StructDiv {
     }
 };
 
-/** @brief Template specialization of the in-place multiplication
-    function. In most cases it is better to use the @ref Mul.
-
-    @param[in] img Image to be multiplied by a scalar value.
-    @param[in] d Scalar value to use for the multiplication.
-    @param[in] saturate Whether to apply saturation or not.
-
-    @return Image containing the result of the multiplication, same as the input one.
-*/
+// Struct template specialization of the in-place multiplication between Image and scalar. 
 template<DataType DT, typename T>
 struct StructScalarMul{
-
-static Image& ActualFunction(Image& img, T d, bool saturate)
-{
-    View<DT> v(img);
-    auto i = v.Begin(), e = v.End();
-    for (; i != e; ++i) {
-        auto& p = *i;
-        if (saturate) {
-            p = saturate_cast<DT>(p * d);
+    static Image& ActualFunction(Image& img, T d, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(p * d);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p * d);
+            }
         }
-        else {
-            p = static_cast<typename TypeInfo<DT>::basetype>(p * d);
-        }
+        return img;
     }
-    return img;
-}
 };
 
 /** @brief In-place multiplication between an Image and a scalar value,
@@ -188,73 +179,61 @@ change the "saturate" parameter to false.
 @return Reference to the Image containing the result of the multiplication.
 */
 template<typename T>
-Image& Mul(Image& img, T d, bool saturate = true) {                               
+Image& Mul(Image& img, T value, bool saturate = true) {                               
     static constexpr Table1D<StructScalarMul, T> table;          
-    return table(img.elemtype_)(img, d, saturate);
+    return table(img.elemtype_)(img, value, saturate);
 }
 
-/** @brief Template specialization of the in-place sum
-function. In most cases is better to use the @ref Sum.
+/** @overload [Image& Mul(Image& img, T value, bool saturate = true)] */
+template<typename T>
+Image& Mul(T value, Image& img, bool saturate = true) {                               
+    return Mul(img, value, saturate);
+}
 
-@param[in] img Image to be summed by a scalar value.
-@param[in] d Scalar value to use for the sum.
-@param[in] saturate Whether to apply saturation or not.
-
-@return Image containing the result of the sum, same as the input one.
-*/
-template<typename ViewType, typename T>
-Image& Sum(Image& img, T value, bool saturate)
-{
-    ViewType v(img);
-    auto i = v.Begin(), e = v.End();
-    for (; i != e; ++i) {
-        auto& p = *i;
-        if (saturate) {
-            p = saturate_cast<typename ViewType::basetype>(p + value);
+// Struct template specialization of the in-place sum between Image and scalar. 
+template<DataType DT, typename T>
+struct StructScalarAdd{
+    static Image& ActualFunction(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(p + value);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p + value);
+            }
         }
-        else {
-            p = static_cast<typename ViewType::basetype>(p + value);
-        }
+        return img;
     }
-    return img;
-}
+};
 
 /** @brief In-place sum between an Image and a scalar value, without type
 promotion. @anchor Sum
 
-The Sum() function sum an input image by a scalar value and stores
+The Sum() function sums a scalar value to the input Image and stores
 the result in the same image. The type of the image will not change. By
 default a saturation will be applied. If it is not the desired behavior
 change the "saturate" parameter to false.
 
-@param[in] img Image to be summed (in-place) by a scalar value.
+@param[in,out] img Image to be summed (in-place) by a scalar value.
 @param[in] d Scalar value to use for the sum.
 @param[in] saturation Whether to apply saturation or not. Default is true.
 
-@return Image containing the result of the sum.
+@return Reference to the image containing the result of the sum.
 */
 template <typename T>
-Image& Sum(Image& img, T value, bool saturate = true) {
-    if (img.contiguous_) {
-        switch (img.elemtype_)
-        {
-#define ECVL_TUPLE(name, ...) case DataType::name: return Sum<ContiguousView<DataType::name>>(img, value, saturate);
-#include "ecvl/core/datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE
-        default:
-            throw std::runtime_error("How did you get here?");
-        }
-    }
-    else {
-        switch (img.elemtype_)
-        {
-#define ECVL_TUPLE(name, ...) case DataType::name: return Sum<View<DataType::name>>(img, value, saturate);
-#include "ecvl/core/datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE
-        default:
-            throw std::runtime_error("How did you get here?");
-        }
-    }
+Image& Add(Image& img, T value, bool saturate = true) {
+    static constexpr Table1D<StructScalarAdd, T> table;          
+    return table(img.elemtype_)(img, value, saturate);
+}
+
+/** @overload [Image& Sum(Image& img, T value, bool saturate = true)] */
+template <typename T>
+Image& Add(T value, Image& img, bool saturate = true) {
+    return Add(img, value, saturate);
 }
 
 } // namespace ecvl

@@ -101,6 +101,10 @@ int main(void)
     //std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
     Mul(img1, 2);
+    Mul(0.5, img1);
+
+    Add(img1, 100);
+    Add(-100, img1);
 
     /*Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
     ContiguousViewXYC<DataType::float32> vmask(mask);
