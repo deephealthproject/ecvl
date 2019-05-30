@@ -174,7 +174,7 @@ change the "saturate" parameter to false.
 
 @param[in,out] img Image to be multiplied (in-place) by a scalar value.
 @param[in] d Scalar value to use for the multiplication.
-@param[in] saturation Whether to apply saturation or not. Default is true.
+@param[in] saturate Whether to apply saturation or not. Default is true.
 
 @return Reference to the Image containing the result of the multiplication.
 */
@@ -223,7 +223,7 @@ change the "saturate" parameter to false.
 
 @param[in,out] img Image to be summed (in-place) by a scalar value.
 @param[in] value Scalar value to use for the sum.
-@param[in] saturation Whether to apply saturation or not. Default is true.
+@param[in] saturate Whether to apply saturation or not. Default is true.
 
 @return Reference to the Image containing the result of the sum.
 */
@@ -272,7 +272,7 @@ change the "saturate" parameter to false.
 
 @param[in,out] img Image to be subtracted (in-place) by a scalar value.
 @param[in] value Scalar value to use for the subtraction.
-@param[in] saturation Whether to apply saturation or not. Default is true.
+@param[in] saturate Whether to apply saturation or not. Default is true.
 
 @return Reference to the Image containing the result of the subtraction.
 */
@@ -315,7 +315,7 @@ change the "saturate" parameter to false.
 
 @param[in] value Scalar value to use for the subtraction (Minuend).
 @param[in,out] img Subtrahend of the operation. It will store the final result.
-@param[in] saturation Whether to apply saturation or not. Default is true.
+@param[in] saturate Whether to apply saturation or not. Default is true.
 
 @return Reference to the Image containing the result of the subtraction.
 */
@@ -358,7 +358,7 @@ change the "saturate" parameter to false.
 
 @param[in,out] img Image to be divided (in-place) by a scalar value.
 @param[in] value Scalar value to use for the division.
-@param[in] saturation Whether to apply saturation or not. Default is true.
+@param[in] saturate Whether to apply saturation or not. Default is true.
 
 @return Reference to the Image containing the result of the division.
 */
