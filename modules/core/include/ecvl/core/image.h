@@ -403,6 +403,42 @@ public:
     ConstContiguousIterator<basetype> End() { return ConstContiguousIterator<basetype>(*this, dims_); }
 };
 
+template <DataType DT>
+class ContiguousViewXYC : public Image {
+public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
+    ContiguousViewXYC(Image& img) {
+        if (img.channels_ != "xyc")
+            throw std::runtime_error("ContiguousView2D can be built only from \"xyc\" images");
+        if (!img.contiguous_)
+            throw std::runtime_error("ContiguousView2D can be built only from images with contiguous data");
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        mem_ = ShallowMemoryManager::GetInstance();
+    }
+
+    int width() const { return dims_[0]; }
+    int height() const { return dims_[1]; }
+    int channels() const { return dims_[2]; }
+
+    basetype& operator()(int x, int y, int c) {
+        return *reinterpret_cast<basetype*>(data_ + c * strides_[2] + y * strides_[1] + x * strides_[0]);
+    }
+
+    ContiguousIterator<basetype> Begin() { return ContiguousIterator<basetype>(*this); }
+    ContiguousIterator<basetype> End() { return ContiguousIterator<basetype>(*this, dims_); }
+};
+
+
 /** @brief Changes the order of the Image dimensions.
 
 The RearrangeChannels procedure changes the order of the input Image dimensions saving

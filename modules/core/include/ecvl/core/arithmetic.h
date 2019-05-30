@@ -59,18 +59,48 @@ ODT saturate_cast(const IDT& v) {
     return static_cast<ODT>(v);
 }
 
+// In-place Add between Images
+void Add(Image& src1_dst, const Image& src2);
+// Template implementation for in-place Add between Images
+template <DataType a, DataType b>
+struct StructAdd {
+    static void actual_function(Image& src1_dst, const Image& src2) {
+        using dsttype = typename TypeInfo<a>::basetype;
+
+        View<a> vsrc1_dst(src1_dst);
+        ConstView<b> vsrc2(src2);
+        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            *is1 = static_cast<dsttype>(*is1 + *is2);
+        }
+    }
+};
+
+// In-place Sub between Images
+void Sub(Image& src1_dst, const Image& src2);
+// Template implementation for in-place Sub between Images
+template <DataType a, DataType b>
+struct StructSub {
+    static void actual_function(Image& src1_dst, const Image& src2) {
+        using dsttype = typename TypeInfo<a>::basetype;
+
+        View<a> vsrc1_dst(src1_dst);
+        ConstView<b> vsrc2(src2);
+        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            *is1 = static_cast<dsttype>(*is1 - *is2);
+        }
+    }
+};
+
 /** @brief Template struct for in-place multiplication between images 
 of any ecvl::DataType.
 
-This object allows to generate all the possible combination of matrixes
-
-This struct, and in particular its ActualFunction method, is accessed 
-through Table1D which 
-
-@param[in] v Input value (of any type).
-
-@return Input value after cast and saturation.
 */
+void Mul(Image& src1_dst, const Image& src2);
+// Template implementation for in-place Mul between Images
 template <DataType a, DataType b>
 struct StructMul {
     static void actual_function(Image& src1_dst, const Image& src2) {
@@ -86,11 +116,27 @@ struct StructMul {
     }
 };
 
-// In-place mul between Images
-void Mul(Image& src1_dst, const Image& src2);
+// In-place Div between Images
+void Div(Image& src1_dst, const Image& src2);
+// Template implementation for in-place Div between Images
+template <DataType a, DataType b>
+struct StructDiv {
+    static void actual_function(Image& src1_dst, const Image& src2) {
+        using dsttype = typename TypeInfo<a>::basetype;
+
+        View<a> vsrc1_dst(src1_dst);
+        ConstView<b> vsrc2(src2);
+        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            *is1 = static_cast<dsttype>(*is1 / *is2);
+        }
+    }
+};
+
 
 /** @brief Template specialization of the in-place multiplication
-    function. In most cases is better to use the @ref Mul.
+    function. In most cases it is better to use the @ref Mul.
 
     @param[in] img Image to be multiplied by a scalar value.
     @param[in] d Scalar value to use for the multiplication.

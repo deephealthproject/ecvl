@@ -88,18 +88,32 @@ int main(void)
 
     tm.reset();
     tm.start();
-    Mul(img3, img2);
+    Add(img3, img2);
     tm.stop();
     std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    img4.contiguous_ = false;
-    img2.contiguous_ = false;
     tm.reset();
     tm.start();
-    Mul(img4, img2);
+    Sub(img3, img2);
     tm.stop();
     std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
-    
+
+    Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
+    ContiguousViewXYC<DataType::float32> vmask(mask);
+    auto radius = float(std::min(vmask.width() / 2, vmask.height() / 2));
+    int cx = vmask.width() / 2;
+    int cy = vmask.height() / 2;
+    for (int y = 0; y < vmask.height(); ++y) {
+        int ry = y - cy;
+        for (int x = 0; x < vmask.width(); ++x) {
+            int rx = x - cx;
+            float rd = sqrt(rx * rx + ry * ry) / radius;
+            vmask(x, y, 0) = vmask(x, y, 1) = vmask(x, y, 2) = std::max(0.f, 1 - rd);
+        }
+    }
+
+    Mul(img3, vmask);
+
     Mul(img1, 4, false);
 
     Sum(img, 100.0);
