@@ -59,13 +59,26 @@ ODT saturate_cast(const IDT& v) {
     return static_cast<ODT>(v);
 }
 
-// In-place Add between Images TODO doc
+/** @brief In-place multiplication between an Image and a scalar value,
+without type promotion. @anchor Mul
+
+The Mul() function multiplies an input image by a scalar value and stores
+the result in the same image. The type of the image will not change. By
+default a saturation will be applied. If it is not the desired behavior
+change the "saturate" parameter to false.
+
+@param[in,out] img Image to be multiplied (in-place) by a scalar value.
+@param[in] d Scalar value to use for the multiplication.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return Reference to the Image containing the result of the multiplication.
+*/
 void Add(Image& src1_dst, const Image& src2);
 // Template implementation for in-place Add between Images
 // TODO doc
 template <DataType a, DataType b>
 struct StructAdd {
-    static void actual_function(Image& src1_dst, const Image& src2) {
+    static void ActualFunction(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
 
         // TODO check before performing Add
@@ -86,7 +99,7 @@ void Sub(Image& src1_dst, const Image& src2);
 // TODO doc
 template <DataType a, DataType b>
 struct StructSub {
-    static void actual_function(Image& src1_dst, const Image& src2) {
+    static void ActualFunction(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
 
         // TODO check before performing Add
@@ -108,7 +121,7 @@ of any ecvl::DataType. */
 // TODO doc
 template <DataType a, DataType b>
 struct StructMul {
-    static void actual_function(Image& src1_dst, const Image& src2) {
+    static void ActualFunction(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
 
         // TODO check before performing Add
@@ -129,7 +142,7 @@ void Div(Image& src1_dst, const Image& src2);
 // TODO doc
 template <DataType a, DataType b>
 struct StructDiv {
-    static void actual_function(Image& src1_dst, const Image& src2) {
+    static void ActualFunction(Image& src1_dst, const Image& src2) {
         using dsttype = typename TypeInfo<a>::basetype;
 
         // TODO check before performing Add

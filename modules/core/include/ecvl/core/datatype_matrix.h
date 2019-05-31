@@ -64,10 +64,10 @@ struct SignedTable1D {
 };
 
 // TODO internal doc
-template<template<DataType src, DataType dst>class _StructFun>
+template<template<DataType src, DataType dst, typename ...>class _StructFun, typename ...Args>
 struct Table2D {
 
-    using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0)>::actual_function);
+    using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0), Args...>::ActualFunction);
 
     template<int i>
     struct integer {};
@@ -77,7 +77,7 @@ struct Table2D {
         constexpr auto arr = DataTypeArray();
         constexpr int src = i / DataTypeSize();
         constexpr int dst = i % DataTypeSize();
-        data[i] = _StructFun<arr[src], arr[dst]>::actual_function;
+        data[i] = _StructFun<arr[src], arr[dst], Args...>::ActualFunction;
         FillData(integer<i + 1>());
     }
 

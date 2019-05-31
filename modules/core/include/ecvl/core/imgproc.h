@@ -164,7 +164,7 @@ double OtsuThreshold(const Image& src);
 // Template copy image
 template<DataType SDT, DataType DDT>
 struct StructCopyImage {
-    static void actual_function(Image& src, Image& dst)
+    static void ActualFunction(Image& src, Image& dst)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;
 
