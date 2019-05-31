@@ -67,7 +67,7 @@ void CopyImage(Image& src, Image& dst, DataType new_type)
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemsize_ != dst.elemsize_) {
-                dst = Image(src.dims_, src.elemtype_, src.channels_, src.colortype_);
+                dst = Image(src.dims_, dst.elemtype_, src.channels_, src.colortype_);
             }
         }
         if (src.colortype_ != dst.colortype_) {

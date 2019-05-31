@@ -547,29 +547,32 @@ struct StructCopyImage {
     }
 };
 
-/** @brief Copies the source Image into the destination one.
+/** @brief Copies the source Image into the destination Image.
 
 The CopyImage() procedure takes an Image and copies its data into the destination Image.
-Source and destination cannot be the same Image. An optional new_type parameter can 
-be used to change the DataType of the destination Image. 
+Source and destination cannot be the same Image. The optional new_type parameter can 
+be used to change the DataType of the destination Image. This function is mainly designed to 
+change the DataType of an Image, copying its data into a new Image. Anyway, it will handle 
+all the possible situations that may happen trying to avoid unnecessary allocations.
 When the DataType is not specified the function will have the following behaviors:
     - if the destination Image is empty the source will be directly copied into the destination. 
-    - if source and destination have different dimension or channels and the destination is the
-        owner of data, the procedure will overwrite the destination Image creating a new Image 
-        (channels and dims will be the same of the source Image).
-    - if source and destination have different dimension or channels and the destination is not
+    - if source and destination have different size in memory or different channels and the destination 
+        is the owner of data, the procedure will overwrite the destination Image creating a new Image 
+        (channels, dimensions and pixels type (DataType) will be the same of the source Image).
+    - if source and destination have different size in memory or different channels and the destination is not
         the owner of data, the procedure will throw an exception.
     - if source and destination have different color types and the destination is the owner of 
-        data, the procedure produce a destination Image with the same color type of the source.
+        data, the procedure produces a destination Image with the same color type of the source.
     - if source and destination have different color types and the destination is not the owner 
         of data, the procedure will throw an exception.
-When the DataType is specified the function will have the same behavior but data 
-    
+When the DataType is specified the function will have the same behavior, but the destination Image will have 
+the specified DataType.
 
-@param[in] src Input Image on which to rearrange dimensions.
-@param[out] dst The output rearranged Image. Can be the src Image.
-@param[in] channels Desired order of Image channels.
-
+@param[in] src Source Image to be copied into destination Image.
+@param[out] dst Destination Image that will hold a copy of the source Image. Cannot be the source Image.
+@param[in] new_type Desired type for the destination Image after the copy. If none (default) the destination 
+            Image will preserve its type if it is not empty, otherwise it will have the same type of the 
+            source Image. 
 */
 void CopyImage(Image& src, Image& dst, DataType new_type = DataType::none);
 
