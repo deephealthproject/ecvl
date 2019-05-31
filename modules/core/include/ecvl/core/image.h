@@ -551,11 +551,11 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 // Template copy image
 template<DataType SDT, DataType DDT>
 struct StructCopyImage {
-    static void ActualFunction(Image& src, Image& dst)
+    static void ActualFunction(const Image& src, Image& dst)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;
 
-        View<SDT> vsrc(src);
+        ConstView<SDT> vsrc(src);
         View<DDT> vdst(dst);
         auto is = vsrc.Begin(), es = vsrc.End();
         auto id = vdst.Begin();
@@ -596,7 +596,7 @@ the specified DataType.
             Image will preserve its type if it is not empty, otherwise it will have the same type of the 
             source Image. 
 */
-void CopyImage(Image& src, Image& dst, DataType new_type = DataType::none);
+void CopyImage(const Image& src, Image& dst, DataType new_type = DataType::none);
 
 } // namespace ecvl
 

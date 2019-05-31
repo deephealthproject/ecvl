@@ -454,16 +454,7 @@ the result in the same image. The type of the image will not change.
 
 @return Reference to the Image containing the result of the negation.
 */
-Image& Neg(Image& img) {
-    
-    // TODO add checks
-    if (static_cast<size_t>(img.elemtype_) >= DataTypeSignedSize()) {
-        throw std::runtime_error("Neg function is only allowed for signed images");
-    }
-    
-    static constexpr SignedTable1D<StructScalarNeg> table;          
-    return table(img.elemtype_)(img);
-}
+Image& Neg(Image& img);
 
 /** @brief Template struct for multiplication between images of any ecvl::DataType. */
 // TODO doc
@@ -490,27 +481,8 @@ Image& Neg(Image& img) {
 //    }
 //};
 //
-//// Mul between two images that store the result in a different Image TODO doc
-//void Mul_(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true) {                               
-//
-//    // TODO fix checks
-//    
-//    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
-//        throw std::runtime_error("Source images must have the same dimensions and channels.");
-//    }
-//    
-//    if (!dst.IsOwner()) {    
-//        if (src1.dims_ != dst.dims_ || src1.channels_ != dst.channels_) {
-//            throw std::runtime_error("Non-owning data destination image must have the same dimensions and channels as the sources.");
-//        }
-//    }
-//    else {
-//        dst.Create(src1.dims_, dst_type, src1.channels_, src1.colortype_);
-//    }
-//
-//    static constexpr Table3D<Struct_Mul> table;          
-//    //table(src1.elemtype_, src2.elemtype_, dst.elemtype_)(src1, src2, dst, dst_type, saturate);
-//}
+// Mul between two images that store the result in a different Image TODO doc
+void Mul_(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
 } // namespace ecvl
 

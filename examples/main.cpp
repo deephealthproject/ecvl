@@ -105,6 +105,9 @@ int main(void)
         //Mul(img1, 2);
         //Mul(0.5, img1);
 
+        Image m;
+        Mul_(img1, img2, m, DataType::float32);
+
         img1.Create({ 8192, 2304, 1 }, DataType::int8, "xyc", ColorType::GRAY);
         img1.Create({ 3072, 2048, 3 }, DataType::uint8, "xyc", ColorType::BGR);
 

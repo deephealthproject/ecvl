@@ -91,7 +91,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     dst = std::move(tmp);
 }
 
-void CopyImage(Image& src, Image& dst, DataType new_type)
+void CopyImage(const Image& src, Image& dst, DataType new_type)
 {
     if (src.elemtype_ == DataType::none)
         throw std::runtime_error("Why should you copy a Image with none DataType into another?");
