@@ -4,6 +4,47 @@
 
 namespace ecvl {
 
+void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) {
+
+    if (mem_ == ShallowMemoryManager::GetInstance()) {
+        *this = Image(dims, elemtype, std::move(channels), colortype);
+        return;
+    }
+    else {
+
+        if (!contiguous_) {
+            *this = Image(dims, elemtype, std::move(channels), colortype);
+            return;
+        }
+        else {
+            // Compute datasize
+            size_t new_datasize = DataTypeSize(elemtype);
+            new_datasize = std::accumulate(begin(dims), end(dims), new_datasize, std::multiplies<size_t>());
+
+            if (datasize_ != new_datasize) {
+                datasize_ = new_datasize;
+                mem_->Deallocate(data_);
+                data_ = mem_->Allocate(new_datasize);
+            }
+
+            elemtype_ = elemtype;
+            elemsize_ = DataTypeSize(elemtype_);
+            dims_ = dims;   // A check could be added to save this copy
+            channels_ = std::move(channels);
+            colortype_ = colortype;
+            datasize_ = new_datasize;
+
+            // Compute strides
+            strides_ = { elemsize_ };
+            int dsize = dims_.size();
+            for (int i = 0; i < dsize - 1; ++i) {
+                strides_.push_back(strides_[i] * dims_[i]);
+            }
+            return;
+        }
+    }
+}
+
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels)
 {
     // Check if rearranging is required
