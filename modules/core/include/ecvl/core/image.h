@@ -333,6 +333,9 @@ public:
     /** @brief To check whether the Image contains or not data, regardless the owning status. */
     bool IsEmpty() const { return data_ == nullptr; }
 
+    /** @brief To check whether the Image is owner of the data. */
+    bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
+
     /** @brief Returns a non-const pointer to data at given coordinates. */
     uint8_t* Ptr(const std::vector<int>& coords) {
         assert(coords.size() == strides_.size());
