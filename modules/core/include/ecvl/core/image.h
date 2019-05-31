@@ -565,15 +565,19 @@ struct StructCopyImage {
 /** @brief Copies the source Image into the destination Image.
 
 The CopyImage() procedure takes an Image and copies its data into the destination Image.
-Source and destination cannot be the same Image. The optional new_type parameter can 
+Source and destination cannot be the same Image. Source cannot be a Image with DataType::none.
+The optional new_type parameter can 
 be used to change the DataType of the destination Image. This function is mainly designed to 
-change the DataType of an Image, copying its data into a new Image. Anyway, it will handle 
-all the possible situations that may happen trying to avoid unnecessary allocations.
+change the DataType of an Image, copying its data into a new Image or to copy an Image into a
+View as a patch. So if you just want to copy an Image as it is, use the copy constructor or = 
+instead. Anyway, the procedure will handle all the possible situations that may happen trying 
+to avoid unnecessary allocations.
 When the DataType is not specified the function will have the following behaviors:
     - if the destination Image is empty the source will be directly copied into the destination. 
     - if source and destination have different size in memory or different channels and the destination 
         is the owner of data, the procedure will overwrite the destination Image creating a new Image 
-        (channels, dimensions and pixels type (DataType) will be the same of the source Image).
+        (channels and dimensions will be the same of the source Image, pixels type (DataType) will be the 
+        same of the destination Image if they are not none or the same of the source otherwise).
     - if source and destination have different size in memory or different channels and the destination is not
         the owner of data, the procedure will throw an exception.
     - if source and destination have different color types and the destination is the owner of 

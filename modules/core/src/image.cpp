@@ -93,6 +93,9 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
 void CopyImage(Image& src, Image& dst, DataType new_type)
 {
+    if (src.elemtype_ == DataType::none)
+        throw std::runtime_error("Why should you copy a Image with none DataType into another?");
+
     if (&src == &dst)
         throw std::runtime_error("src and dst cannot be the same image");
 
@@ -108,7 +111,7 @@ void CopyImage(Image& src, Image& dst, DataType new_type)
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemsize_ != dst.elemsize_) {
-                dst = Image(src.dims_, dst.elemtype_, src.channels_, src.colortype_);
+                dst = Image(src.dims_, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_, src.channels_, src.colortype_);
             }
         }
         if (src.colortype_ != dst.colortype_) {
