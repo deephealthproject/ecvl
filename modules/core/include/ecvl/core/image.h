@@ -530,6 +530,49 @@ number of channels of the input Image must be the same of required channels.
 */
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels);
 
+// Template copy image
+template<DataType SDT, DataType DDT>
+struct StructCopyImage {
+    static void ActualFunction(Image& src, Image& dst)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+
+        View<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto is = vsrc.Begin(), es = vsrc.End();
+        auto id = vdst.Begin();
+        for (; is != es; ++is, ++id) {
+            *id = static_cast<dsttype>(*is);
+        }
+    }
+};
+
+/** @brief Copies the source Image into the destination one.
+
+The CopyImage() procedure takes an Image and copies its data into the destination Image.
+Source and destination cannot be the same Image. An optional new_type parameter can 
+be used to change the DataType of the destination Image. 
+When the DataType is not specified the function will have the following behaviors:
+    - if the destination Image is empty the source will be directly copied into the destination. 
+    - if source and destination have different dimension or channels and the destination is the
+        owner of data, the procedure will overwrite the destination Image creating a new Image 
+        (channels and dims will be the same of the source Image).
+    - if source and destination have different dimension or channels and the destination is not
+        the owner of data, the procedure will throw an exception.
+    - if source and destination have different color types and the destination is the owner of 
+        data, the procedure produce a destination Image with the same color type of the source.
+    - if source and destination have different color types and the destination is not the owner 
+        of data, the procedure will throw an exception.
+When the DataType is specified the function will have the same behavior but data 
+    
+
+@param[in] src Input Image on which to rearrange dimensions.
+@param[out] dst The output rearranged Image. Can be the src Image.
+@param[in] channels Desired order of Image channels.
+
+*/
+void CopyImage(Image& src, Image& dst, DataType new_type = DataType::none);
+
 } // namespace ecvl
 
 #endif // !ECVL_IMAGE_H_
