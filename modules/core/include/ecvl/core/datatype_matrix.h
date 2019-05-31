@@ -35,7 +35,7 @@ struct Table1D {
 };
 
 // TODO internal doc
-template<template<DataType DT, typename ...>class _StructFun, typename ...Args>
+template<template<DataType, typename ...>class _StructFun, typename ...Args>
 struct SignedTable1D {
 
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), Args...>::ActualFunction);
@@ -64,7 +64,7 @@ struct SignedTable1D {
 };
 
 // TODO internal doc
-template<template<DataType src, DataType dst, typename ...>class _StructFun, typename ...Args>
+template<template<DataType, DataType, typename ...>class _StructFun, typename ...Args>
 struct Table2D {
 
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0), Args...>::ActualFunction);
@@ -95,6 +95,41 @@ struct Table2D {
 
     fun_type data[DataTypeSize() * DataTypeSize()];
 };
+
+// TODO internal doc
+//template<template<DataType, DataType, DataType, typename ...>class _StructFun, typename ...Args>
+//struct Table3D {
+//
+//    using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0), static_cast<DataType>(0), Args...>::ActualFunction);
+//    
+//    template<int i>
+//    struct integer {};
+//    
+//    template <int i>
+//    constexpr void FillData(integer<i>) {
+//        constexpr auto arr = DataTypeArray();
+//        constexpr int src1 = (i / DataTypeSize()) % DataTypeSize(); // Row index in a plane
+//        constexpr int src2 = i % DataTypeSize();                    // Col index in a row of a plane
+//        constexpr int dst = i / (DataTypeSize() * DataTypeSize());  // Plane index
+//        //data[i] = _StructFun<arr[src1], arr[src2], arr[dst], Args...>::ActualFunction;
+//        FillData(integer<i + 1>());
+//    }
+//    
+//    constexpr void FillData(integer< DataTypeSize() * DataTypeSize() * DataTypeSize() >) {}
+//    
+//    constexpr Table3D() : data() {
+//        FillData(integer<0>());
+//    }
+//    
+//    inline fun_type operator()(DataType src1, DataType src2, DataType dst) const {
+//        int row = static_cast<int>(src1);
+//        int col = static_cast<int>(src2);
+//        int pla = static_cast<int>(dst);
+//        return data[pla*(DataTypeSize() * DataTypeSize()) + row * DataTypeSize() + col];
+//    }
+//    
+//    fun_type data[DataTypeSize() * DataTypeSize() * DataTypeSize()];
+//};
 
 } // namespace ecvl
 

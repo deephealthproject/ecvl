@@ -465,6 +465,53 @@ Image& Neg(Image& img) {
     return table(img.elemtype_)(img);
 }
 
+/** @brief Template struct for multiplication between images of any ecvl::DataType. */
+// TODO doc
+//template <DataType S1DT, DataType S2DT, DataType DDT>
+//struct Struct_Mul {
+//    static void ActualFunction(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) {
+//    //    using dsttype = typename TypeInfo<DDT>::basetype;
+//    //
+//    //    // TODO check before performing Add
+//    //    ConstView<S1DT> vsrc1(src1);
+//    //    ConstView<S2DT> vsrc2(src2);
+//    //    View<DDT>  vdst(dst);
+//    //    auto id = vdst.Begin(), ed = vdst.End();
+//    //    auto is1 = vsrc1.Begin();
+//    //    auto is2 = vsrc2.Begin();
+//    //    for (; id != ed; ++id, ++is1, ++is2) {
+//    //        if (saturate) {
+//    //            *id = saturate_cast<DDT>(*is1 * *is2);
+//    //        }
+//    //        else {
+//    //            *id = static_cast<dsttype>(*is1 * *is2);
+//    //        }
+//    //    }
+//    }
+//};
+//
+//// Mul between two images that store the result in a different Image TODO doc
+//void Mul_(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true) {                               
+//
+//    // TODO fix checks
+//    
+//    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
+//        throw std::runtime_error("Source images must have the same dimensions and channels.");
+//    }
+//    
+//    if (!dst.IsOwner()) {    
+//        if (src1.dims_ != dst.dims_ || src1.channels_ != dst.channels_) {
+//            throw std::runtime_error("Non-owning data destination image must have the same dimensions and channels as the sources.");
+//        }
+//    }
+//    else {
+//        dst.Create(src1.dims_, dst_type, src1.channels_, src1.colortype_);
+//    }
+//
+//    static constexpr Table3D<Struct_Mul> table;          
+//    //table(src1.elemtype_, src2.elemtype_, dst.elemtype_)(src1, src2, dst, dst_type, saturate);
+//}
+
 } // namespace ecvl
 
 #endif // !ECVL_ARITHMETIC_H_
