@@ -306,6 +306,21 @@ public:
         return *this;
     }
 
+    /** @brief Allocates new contiguous data if needed.
+    
+    The Create method allocates Image data as specified by the input parameters.
+    The procedures tries to avoid the allocation of new memory when possible.
+    The resulting image will be contiguous in any case.
+    Calling this method on an Image that does not own data will always cause 
+    a new allocation, and the Image will become the owner of the data.
+
+    @param[in] dims New Image dimensions.
+    @param[in] elemtype New Image DataType.
+    @param[in] channels New Image channels.
+    @params[in] colortype New Image colortype.
+    */
+    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype);
+
     /** @brief Destructor
 
     If the Image is the owner of data they will be deallocate. Otherwise nothing will happen.
