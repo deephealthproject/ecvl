@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ECVL_MEMORYMANAGER_H
+#define ECVL_MEMORYMANAGER_H
 
 #include <cstdint>
 #include <cstring>
@@ -40,3 +41,4 @@ public:
     static ShallowMemoryManager* GetInstance();
 };
 
+#endif // ECVL_MEMORYMANAGER_H
