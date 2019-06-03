@@ -86,7 +86,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
         }
     }
     else {
-        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
     dst = std::move(tmp);
