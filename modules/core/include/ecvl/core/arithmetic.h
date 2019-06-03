@@ -459,7 +459,7 @@ parameter to false.
 
 @param[in] src1 Multiplier (first factor) Image.
 @param[in] src1 Multiplicand (second factor) Image.
-@param[in] dst  Image into which save the result of the multiplication.
+@param[out] dst Image into which save the result of the multiplication.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
 
@@ -476,7 +476,7 @@ parameter to false.
 
 @param[in] src1 Dividend (numerator) Image.
 @param[in] src1 Divisor (denominator) Image.
-@param[in] dst  Image into which save the result of the division.
+@param[out] dst Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
 
@@ -493,7 +493,7 @@ parameter to false.
 
 @param[in] src1 Minuend Image.
 @param[in] src1 Subtrahend Image.
-@param[in] dst  Image into which save the result of the division.
+@param[out] dst Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
 
@@ -510,7 +510,7 @@ parameter to false.
 
 @param[in] src1 Augend (first addend) Image.
 @param[in] src1 Addend (second addend) Image.
-@param[in] dst  Image into which save the result of the division.
+@param[out] dst Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
 
