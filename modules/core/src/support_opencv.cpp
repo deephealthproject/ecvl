@@ -1,5 +1,7 @@
 #include "ecvl/core/support_opencv.h"
 
+#include "ecvl/core/standard_errors.h"
+
 namespace ecvl {
 
 Image MatToImage(const cv::Mat& m)
@@ -87,7 +89,7 @@ Image MatToImage(const cv::Mat& m)
         }
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 
     return img;
@@ -96,9 +98,9 @@ Image MatToImage(const cv::Mat& m)
 cv::Mat ImageToMat(const Image& img)
 {
     if (img.channels_ != "cxy" && img.channels_ != "xyc")
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY)
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
 
     Image tmp;
     RearrangeChannels(img, tmp, "cxy");

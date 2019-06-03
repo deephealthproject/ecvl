@@ -1,6 +1,7 @@
 #include "ecvl/core/image.h"
 #include "ecvl/core/datatype_matrix.h"
 
+#include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
 
@@ -85,7 +86,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
         }
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 
     dst = std::move(tmp);

@@ -5,6 +5,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "ecvl/core/datatype_matrix.h"
+#include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
 
@@ -22,7 +23,7 @@ static int GetOpenCVInterpolation(InterpolationType interp) {
     case InterpolationType::cubic:      return cv::INTER_CUBIC;
     case InterpolationType::lanczos4:   return cv::INTER_LANCZOS4;
     default:
-        throw std::runtime_error("Should not happen");
+        throw std::runtime_error(ERROR_NOT_REACHABLE_CODE);
     }
 }
 
@@ -42,7 +43,7 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
@@ -65,7 +66,7 @@ void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
@@ -81,7 +82,7 @@ void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
@@ -97,7 +98,7 @@ void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
@@ -126,7 +127,7 @@ void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std:
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
@@ -160,7 +161,7 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
@@ -184,7 +185,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ||
         src.colortype_ == ColorType::YCbCr || new_type == ColorType::YCbCr
         ) {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 
     if (src.colortype_ == ColorType::GRAY) {
@@ -231,7 +232,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
                 }
             }
             else {
-                throw std::runtime_error("Not implemented");
+                throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
             }
         }
         dst = std::move(tmp);
@@ -239,19 +240,19 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     }
 
     if (src.colortype_ == ColorType::RGB && new_type == ColorType::GRAY) {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
     if (src.colortype_ == ColorType::BGR && new_type == ColorType::GRAY) {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 
     if (src.colortype_ == ColorType::BGR && new_type == ColorType::RGB
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 
-    throw std::runtime_error("How did you get here?");
+    throw std::runtime_error(ERROR_NOT_REACHABLE_CODE);
 }
 
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type) {
@@ -263,7 +264,7 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     case ecvl::ThresholdingType::BINARY:        t_type = cv::THRESH_BINARY;      break;
     case ecvl::ThresholdingType::BINARY_INV:    t_type = cv::THRESH_BINARY_INV;  break;
     default:
-        throw std::runtime_error("How did you get here?");
+        throw std::runtime_error(ERROR_NOT_REACHABLE_CODE);
     }
 
     cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
@@ -276,7 +277,7 @@ double OtsuThreshold(const Image& src) {
     }
 
     if (true) {
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error(ERROR_NOT_IMPLEMENTED);
     }
 }
 
