@@ -26,12 +26,12 @@ public:
 
 */
 enum class ColorType {
-    none,
-    GRAY,
-    RGB,
-    BGR,
-    HSV,
-    YCbCr,
+    none,  /**< Special ColorType for Images that contain only data and do not have any ColorType */
+    GRAY,  /**< Gray-scale ColorType */
+    RGB,   /**< RGB ColorType */
+    BGR,   /**< BGR ColorType */
+    HSV,   /**< HSV ColorType */
+    YCbCr, /**< YCbCr ColorType */
 };
 
 /** @brief Image class
@@ -317,7 +317,7 @@ public:
     @param[in] dims New Image dimensions.
     @param[in] elemtype New Image DataType.
     @param[in] channels New Image channels.
-    @params[in] colortype New Image colortype.
+    @param[in] colortype New Image colortype.
     */
     void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype);
 
