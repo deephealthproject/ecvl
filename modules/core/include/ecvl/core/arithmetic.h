@@ -460,10 +460,55 @@ parameter to false.
 */
 void Mul(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
+/** @brief Divides two Image(s) and stores the result in a third Image.
+
+This procedure divides the src1 Image by the src2 Image (src1/src2) and stores the result 
+into the dst Image that will have the specified DataType. By default a saturation
+will be applied. If it is not the desired behavior change the "saturate"
+parameter to false.
+
+@param[in] src1 Dividend Image.
+@param[in] src1 Divisor Image.
+@param[in] dst  Image into which save the result of the division.
+@param[in] dst_type DataType that destination Image must have at the end of the operation.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return
+*/
 void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
+/** @brief Subtracts two Image(s) and stores the result in a third Image.
+
+This procedure subtracts the src2 Image from the src1 Image (src1 - src2) and stores the result
+in the dst Image that will have the specified DataType. By default a saturation
+will be applied. If it is not the desired behavior change the "saturate"
+parameter to false.
+
+@param[in] src1 Minuend Image.
+@param[in] src1 Subtrahend Image.
+@param[in] dst  Image into which save the result of the division.
+@param[in] dst_type DataType that destination Image must have at the end of the operation.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return
+*/
 void Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
+/** @brief Adds two Image(s) and stores the result in a third Image.
+
+This procedure adds src1 and src2 Image(s) (src1 + src2) and stores the result
+in the dst Image that will have the specified DataType. By default a saturation
+will be applied. If it is not the desired behavior change the "saturate"
+parameter to false.
+
+@param[in] src1 First Image to be added.
+@param[in] src1 Second Image to be added.
+@param[in] dst  Image into which save the result of the division.
+@param[in] dst_type DataType that destination Image must have at the end of the operation.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return
+*/
 void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
 

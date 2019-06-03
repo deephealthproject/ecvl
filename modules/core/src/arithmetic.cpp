@@ -48,7 +48,8 @@ void Function(const Image& src1, const Image& src2, Image& dst, DataType dst_typ
                                                                                                   \
     if (!dst.IsOwner()) {                                                                         \
         if (src1.dims_ != dst.dims_ || src1.channels_ != dst.channels_) {                         \
-            throw std::runtime_error("Non-owning data destination image must have the same dimensions and channels as the sources."); \
+            throw std::runtime_error("Non-owning data destination image must have the             \
+                    same dimensions and channels as the sources.");                               \
         }                                                                                         \
     }                                                                                             \
                                                                                                   \
