@@ -66,27 +66,34 @@ constexpr size_t DataTypeSignedSize() {
 /**  @brief Function to get a std::array with all the DataType values at compile time.
 
 @return A std::array with all the DataType values.
+
  */
 constexpr std::array<DataType, DataTypeSize()> DataTypeArray() {
+    //@cond
     constexpr std::array<DataType, DataTypeSize()> arr = {
 #define ECVL_TUPLE(name, ...) DataType::name,
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE	
     };
     return arr;
+    //@endcond
 }
+
+
 
 /**  @brief Function to get a std::array with all the signed DataType values at compile time.
 
 @return A std::array with all the signed DataType values.
  */
 constexpr std::array<DataType, DataTypeSignedSize()> DataTypeSignedArray() {
+    //@cond
     constexpr std::array<DataType, DataTypeSignedSize()> arr = {
 #define ECVL_TUPLE(name, ...) DataType::name,
 #include "datatype_existing_tuples_signed.inc.h"
 #undef ECVL_TUPLE	
     };
     return arr;
+    //@endcond
 }
 
 } // namespace ecvl

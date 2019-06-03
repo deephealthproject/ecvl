@@ -7,12 +7,6 @@
 
 namespace ecvl {
 
-//OTSU,       /**< The Otsu algorithm will be used to choose the optimal threshold value */
-//TRIANGLE,   /**< The Triangle algorithm will be used to choose the optimal threshold value */
-//TRUNC,      /**< \f[\texttt{dst} (x,y) =  \fork{\texttt{threshold}}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{src}(x,y)}{otherwise}\f] */
-//TOZERO,     /**< \f[\texttt{dst} (x,y) =  \fork{\texttt{src}(x,y)}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{0}{otherwise}\f] */
-//TOZERO_INV, /**< \f[\texttt{dst} (x,y) =  \fork{0}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{src}(x,y)}{otherwise}\f] */
-
 /** @brief Enum class representing the ECVL threhsolding types.
     
     @anchor ThresholdingType

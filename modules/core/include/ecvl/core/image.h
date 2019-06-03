@@ -20,10 +20,9 @@ public:
     virtual ~MetaData() {}
 };
 
-/** @anchor ColorType
+/** @brief Enum class representing the ECVL supported color spaces.
 
-   Enum class representing the ECVL supported color spaces.
-
+@anchor ColorType
 */
 enum class ColorType {
     none,  /**< Special ColorType for Images that contain only data and do not have any ColorType */
