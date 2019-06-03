@@ -30,7 +30,7 @@ static int GetOpenCVInterpolation(InterpolationType interp) {
 void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -50,7 +50,7 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
 void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -73,7 +73,7 @@ void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales
 void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -89,7 +89,7 @@ void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -105,7 +105,7 @@ void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     cv::Point2f pt;
@@ -134,7 +134,7 @@ void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std:
 void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {

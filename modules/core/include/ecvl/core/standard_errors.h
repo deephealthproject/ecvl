@@ -10,5 +10,6 @@
 #define ECVL_ERROR_NOT_ALLOWED_ON_NON_OWING_IMAGE(...) throw std::runtime_error(ECVL_ERROR_MSG "Operation not allowed on non-owning Image" __VA_ARGS__);
 #define ECVL_ERROR_UNSUPPORTED_OPENCV_DEPTH throw std::runtime_error(ECVL_ERROR_MSG "Unsupported OpenCV depth");
 #define ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS throw std::runtime_error(ECVL_ERROR_MSG "Unsupported OpenCV dimensions");
+#define ECVL_ERROR_EMPTY_IMAGE throw std::runtime_error(ECVL_ERROR_MSG "Empty image provided");
 
 #endif // !ECV_STANDARD_ERRORS_H_

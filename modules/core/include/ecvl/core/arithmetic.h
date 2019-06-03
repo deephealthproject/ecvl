@@ -458,7 +458,7 @@ will be applied. If it is not the desired behavior change the "saturate"
 parameter to false.
 
 @param[in] src1 Multiplier (first factor) Image.
-@param[in] src1 Multiplicand (second factor) Image.
+@param[in] src2 Multiplicand (second factor) Image.
 @param[out] dst Image into which save the result of the multiplication.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
@@ -466,23 +466,6 @@ parameter to false.
 @return
 */
 void Mul(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
-
-/** @brief Divides two Image(s) and stores the result in a third Image.
-
-This procedure divides the src1 Image by the src2 Image (src1/src2) and stores the result 
-into the dst Image that will have the specified DataType. By default a saturation
-will be applied. If it is not the desired behavior change the "saturate"
-parameter to false.
-
-@param[in] src1 Dividend (numerator) Image.
-@param[in] src1 Divisor (denominator) Image.
-@param[out] dst Image into which save the result of the division.
-@param[in] dst_type DataType that destination Image must have at the end of the operation.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return
-*/
-void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
 /** @brief Subtracts two Image(s) and stores the result in a third Image.
 
@@ -492,7 +475,7 @@ will be applied. If it is not the desired behavior change the "saturate"
 parameter to false.
 
 @param[in] src1 Minuend Image.
-@param[in] src1 Subtrahend Image.
+@param[in] src2 Subtrahend Image.
 @param[out] dst Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
@@ -509,7 +492,7 @@ will be applied. If it is not the desired behavior change the "saturate"
 parameter to false.
 
 @param[in] src1 Augend (first addend) Image.
-@param[in] src1 Addend (second addend) Image.
+@param[in] src2 Addend (second addend) Image.
 @param[out] dst Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
@@ -518,6 +501,42 @@ parameter to false.
 */
 void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
+/** @brief Divides two Image(s) and stores the result in a third Image.
+
+This procedure divides the src1 Image by the src2 Image (src1/src2) and stores the result
+into the dst Image that will have the specified DataType. By default a saturation
+will be applied. If it is not the desired behavior change the "saturate"
+parameter to false.
+
+@param[in] src1 Dividend (numerator) Image.
+@param[in] src2 Divisor (denominator) Image.
+@param[out] dst Image into which save the result of the division.
+@param[in] dst_type DataType that destination Image must have at the end of the operation.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+@param[in] epsilon Small value to be added to the Image values before performing
+            the division.If not specified by default it is the minimum positive
+            number representable in a double.
+
+@return
+*/
+template <typename ET = double>
+void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true, ET epsilon = std::numeric_limits<double>::min())
+{
+    // TODO add appropriate checks
+
+    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
+        throw std::runtime_error("Source images must have the same dimensions and channels.");
+    }
+
+    if (!dst.IsOwner()) {
+        if (src1.dims_ != dst.dims_ || src1.channels_ != dst.channels_) {
+            throw std::runtime_error("Non-owning data destination image must have the same dimensions and channels as the sources.");
+        }
+    }
+
+    CopyImage(src1, dst, dst_type);
+    Div(dst, src2);
+}
 
 } // namespace ecvl
 
