@@ -59,20 +59,6 @@ ODT saturate_cast(const IDT& v) {
     return static_cast<ODT>(v);
 }
 
-/** @brief In-place multiplication between an Image and a scalar value,
-without type promotion. @anchor InplaceMul
-
-The Mul() function multiplies an input image by a scalar value and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in,out] img Image to be multiplied (in-place) by a scalar value.
-@param[in] d Scalar value to use for the multiplication.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return Reference to the Image containing the result of the multiplication.
-*/
 void Add(Image& src1_dst, const Image& src2);
 // Template implementation for in-place Add between Images
 // TODO doc
@@ -186,7 +172,7 @@ default a saturation will be applied. If it is not the desired behavior
 change the "saturate" parameter to false.
 
 @param[in,out] img Image to be multiplied (in-place) by a scalar value.
-@param[in] d Scalar value to use for the multiplication.
+@param[in] value Scalar value to use for the multiplication.
 @param[in] saturate Whether to apply saturation or not. Default is true.
 
 @return Reference to the Image containing the result of the multiplication.
@@ -319,7 +305,7 @@ struct StructScalarSubInv{
 };
 
 /** @brief In-place subtraction between a scalar value and an Image, without type
-promotion. @anchor ScalarSub
+promotion. @anchor ScalarInvSub
 
 The Sub() function subtracts the input Image from a scalar value and stores
 the result in the same image. The type of the image will not change. By
@@ -414,7 +400,7 @@ change the "saturate" parameter to false.
 
 @param[in] value Scalar value to use for the division (Dividend).
 @param[in,out] img Divisor of the operation. It will store the final result.
-@param[in] saturation Whether to apply saturation or not. Default is true.
+@param[in] saturate Whether to apply saturation or not. Default is true.
 @param[in] epsilon Small value to be added to the Image values before performing
             the division. If not specified by default it is the minimum positive
             number representable in a double.

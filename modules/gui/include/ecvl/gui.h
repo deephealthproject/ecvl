@@ -55,7 +55,7 @@ public:
 The ImShow function instantiates a ShowApp and starts it with a wxEntry() call.
 The image is shown with its original size. 
 
-@param[in] Image to be shown.
+@param[in] img Image to be shown.
 
 */
 void ImShow(const Image& img);
