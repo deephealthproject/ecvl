@@ -10,6 +10,7 @@ namespace ecvl {
 /************************************************************************************/
 /*  Arithmetic Operations Between Two Images (source and destination are the same)  */
 /************************************************************************************/
+// TODO add appropriate checks
 #define STANDARD_INPLACE_OPERATION(Function, TemplateImplementation) \
 void Function(Image& src1_dst, const Image& src2)                    \
 {                                                                    \
@@ -24,6 +25,7 @@ STANDARD_INPLACE_OPERATION(Div, StructDiv)
 /************************************************************************************/
 /*   Unary Arithmetic Operations over Images (source and destination are the same)  */
 /************************************************************************************/
+// TODO add appropriate checks
 Image& Neg(Image& img) {
 
     // TODO add checks

@@ -431,6 +431,10 @@ struct StructScalarNeg{
     }
 };
 
+/************************************************************************************/
+/*   Unary Arithmetic Operations over Images (source and destination are the same)  */
+/************************************************************************************/
+
 /** @brief In-place negation of an Image. @anchor Neg
 
 The Neg() function negates every value of an Image, and stores the 
@@ -442,6 +446,9 @@ the result in the same image. The type of the image will not change.
 */
 Image& Neg(Image& img);
 
+/************************************************************************************/
+/*  Arithmetic Operations Between Two Images (source and destination are different) */
+/************************************************************************************/
 
 /** @brief Multiplies two Image(s) and stores the result in a third Image.
 
@@ -450,8 +457,8 @@ a third Image that will have the specified DataType. By default a saturation
 will be applied. If it is not the desired behavior change the "saturate" 
 parameter to false.
 
-@param[in] src1 First Image to be multiplied.
-@param[in] src1 Second Image to be multiplied.
+@param[in] src1 Multiplier (first factor) Image.
+@param[in] src1 Multiplicand (second factor) Image.
 @param[in] dst  Image into which save the result of the multiplication.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
@@ -467,8 +474,8 @@ into the dst Image that will have the specified DataType. By default a saturatio
 will be applied. If it is not the desired behavior change the "saturate"
 parameter to false.
 
-@param[in] src1 Dividend Image.
-@param[in] src1 Divisor Image.
+@param[in] src1 Dividend (numerator) Image.
+@param[in] src1 Divisor (denominator) Image.
 @param[in] dst  Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
@@ -501,8 +508,8 @@ in the dst Image that will have the specified DataType. By default a saturation
 will be applied. If it is not the desired behavior change the "saturate"
 parameter to false.
 
-@param[in] src1 First Image to be added.
-@param[in] src1 Second Image to be added.
+@param[in] src1 Augend (first addend) Image.
+@param[in] src1 Addend (second addend) Image.
 @param[in] dst  Image into which save the result of the division.
 @param[in] dst_type DataType that destination Image must have at the end of the operation.
 @param[in] saturate Whether to apply saturation or not. Default is true.
