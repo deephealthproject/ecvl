@@ -60,7 +60,7 @@ ODT saturate_cast(const IDT& v) {
 }
 
 /** @brief In-place multiplication between an Image and a scalar value,
-without type promotion. @anchor Mul
+without type promotion. @anchor InplaceMul
 
 The Mul() function multiplies an input image by a scalar value and stores
 the result in the same image. The type of the image will not change. By
@@ -178,7 +178,7 @@ struct StructScalarMul{
 };
 
 /** @brief In-place multiplication between an Image and a scalar value,
-without type promotion. @anchor Mul
+without type promotion. @anchor ScalarMul
 
 The Mul() function multiplies an input image by a scalar value and stores
 the result in the same image. The type of the image will not change. By
@@ -227,7 +227,7 @@ struct StructScalarAdd{
 };
 
 /** @brief In-place addition between an Image and a scalar value, without type
-promotion. @anchor Add
+promotion. @anchor ScalarAdd
 
 The Add() function sums a scalar value to the input Image and stores
 the result in the same image. The type of the image will not change. By
@@ -276,7 +276,7 @@ struct StructScalarSub{
 };
 
 /** @brief In-place subtraction between an Image and a scalar value, without type
-promotion. @anchor Sub
+promotion. @anchor ScalarSub
 
 The Sub() function subtracts a scalar value from the input Image and stores
 the result in the same image. The type of the image will not change. By
@@ -319,7 +319,7 @@ struct StructScalarSubInv{
 };
 
 /** @brief In-place subtraction between a scalar value and an Image, without type
-promotion. @anchor Sub
+promotion. @anchor ScalarSub
 
 The Sub() function subtracts the input Image from a scalar value and stores
 the result in the same image. The type of the image will not change. By
@@ -362,7 +362,7 @@ struct StructScalarDiv{
 };
 
 /** @brief In-place division between an Image and a scalar value, without type
-promotion. @anchor Div
+promotion. @anchor ScalarDiv
 
 The Div() function divides an input Image by a scalar value and stores
 the result in the same image. The type of the image will not change. By
@@ -405,7 +405,7 @@ struct StructScalarDivInv{
 };
 
 /** @brief In-place divion between a scalar value and an Image, without type
-promotion. @anchor Div
+promotion. @anchor ScalarInvDiv
 
 The Div() function divides a scalar value by the input Image and stores
 the result in the same image. The type of the image will not change. By
