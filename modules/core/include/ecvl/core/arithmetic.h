@@ -442,33 +442,30 @@ the result in the same image. The type of the image will not change.
 */
 Image& Neg(Image& img);
 
-/** @brief Template struct for multiplication between images of any ecvl::DataType. */
-// TODO doc
-//template <DataType S1DT, DataType S2DT, DataType DDT>
-//struct Struct_Mul {
-//    static void ActualFunction(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) {
-//    //    using dsttype = typename TypeInfo<DDT>::basetype;
-//    //
-//    //    // TODO check before performing Add
-//    //    ConstView<S1DT> vsrc1(src1);
-//    //    ConstView<S2DT> vsrc2(src2);
-//    //    View<DDT>  vdst(dst);
-//    //    auto id = vdst.Begin(), ed = vdst.End();
-//    //    auto is1 = vsrc1.Begin();
-//    //    auto is2 = vsrc2.Begin();
-//    //    for (; id != ed; ++id, ++is1, ++is2) {
-//    //        if (saturate) {
-//    //            *id = saturate_cast<DDT>(*is1 * *is2);
-//    //        }
-//    //        else {
-//    //            *id = static_cast<dsttype>(*is1 * *is2);
-//    //        }
-//    //    }
-//    }
-//};
-//
-// Mul between two images that store the result in a different Image TODO doc
-void Mul_(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
+
+/** @brief Multiplies two Image(s) and stores the result in a third Image.
+
+This procedure multiplies two Image(s) together and stores the result in 
+a third Image that will have the specified DataType. By default a saturation
+will be applied. If it is not the desired behavior change the "saturate" 
+parameter to false.
+
+@param[in] src1 First Image to be multiplied.
+@param[in] src1 Second Image to be multiplied.
+@param[in] dst  Image into which save the result of the multiplication.
+@param[in] dst_type DataType that destination Image must have at the end of the operation.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return
+*/
+void Mul(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
+
+void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
+
+void Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
+
+void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
+
 
 } // namespace ecvl
 
