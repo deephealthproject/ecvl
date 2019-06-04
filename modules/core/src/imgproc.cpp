@@ -5,10 +5,11 @@
 #include <opencv2/imgproc.hpp>
 
 #include "ecvl/core/datatype_matrix.h"
+#include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
 
-/* @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
+/** @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
 
 @param[in] interp Interpolation type, see @ref InterpolationType.
 
@@ -22,14 +23,14 @@ static int GetOpenCVInterpolation(InterpolationType interp) {
     case InterpolationType::cubic:      return cv::INTER_CUBIC;
     case InterpolationType::lanczos4:   return cv::INTER_LANCZOS4;
     default:
-        throw std::runtime_error("Should not happen");
+        ECVL_ERROR_NOT_REACHABLE_CODE
     }
 }
 
 void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -42,14 +43,14 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
 void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -65,14 +66,14 @@ void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
 void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -81,14 +82,14 @@ void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
 void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -97,14 +98,14 @@ void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
 void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     cv::Point2f pt;
@@ -126,14 +127,14 @@ void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std:
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
 void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp)
 {
     if (src.IsEmpty()) {
-        throw std::runtime_error("Empty image provided");
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     if (src.channels_ == "xyc") {
@@ -160,7 +161,7 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
         dst = ecvl::MatToImage(m);
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
@@ -184,7 +185,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ||
         src.colortype_ == ColorType::YCbCr || new_type == ColorType::YCbCr
         ) {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
     if (src.colortype_ == ColorType::GRAY) {
@@ -231,7 +232,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
                 }
             }
             else {
-                throw std::runtime_error("Not implemented");
+                ECVL_ERROR_NOT_IMPLEMENTED
             }
         }
         dst = std::move(tmp);
@@ -239,19 +240,19 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     }
 
     if (src.colortype_ == ColorType::RGB && new_type == ColorType::GRAY) {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
     if (src.colortype_ == ColorType::BGR && new_type == ColorType::GRAY) {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
     if (src.colortype_ == ColorType::BGR && new_type == ColorType::RGB
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    throw std::runtime_error("How did you get here?");
+    ECVL_ERROR_NOT_REACHABLE_CODE
 }
 
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type) {
@@ -263,7 +264,7 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     case ecvl::ThresholdingType::BINARY:        t_type = cv::THRESH_BINARY;      break;
     case ecvl::ThresholdingType::BINARY_INV:    t_type = cv::THRESH_BINARY_INV;  break;
     default:
-        throw std::runtime_error("How did you get here?");
+        ECVL_ERROR_NOT_REACHABLE_CODE
     }
 
     cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
@@ -276,60 +277,8 @@ double OtsuThreshold(const Image& src) {
     }
 
     if (true) {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
-}
-
-void CopyImage(Image& src, Image& dst, DataType new_type)
-{
-    if (&src == &dst)
-        throw std::runtime_error("src and dst cannot be the same image");
-
-    if (new_type == DataType::none) {
-        // Get type from dst or src
-        if (dst.IsEmpty()) {
-            dst = src;
-            return;
-        }
-        if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_) {
-            // Destination needs to be resized
-            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
-                throw std::runtime_error("Trying to resize an Image which doesn't own data.");
-            }
-            dst = Image(src.dims_, src.elemtype_, src.channels_, src.colortype_);
-        }
-        if (src.colortype_ != dst.colortype_) {
-            // Destination needs to change its color space
-            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
-                throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
-            }
-            dst.colortype_ = src.colortype_;
-        }
-    }
-    else {
-        if (dst.IsEmpty()) {
-            dst = Image(src.dims_, new_type, src.channels_, src.colortype_);
-        }
-        else {
-            if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemtype_ != new_type) {
-                // Destination needs to be resized
-                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
-                    throw std::runtime_error("Trying to resize an Image which doesn't own data.");
-                }
-                dst = Image(src.dims_, new_type, src.channels_, src.colortype_);
-            }
-            if (src.colortype_ != dst.colortype_) {
-                // Destination needs to change its color space
-                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
-                    throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
-                }
-                dst.colortype_ = src.colortype_;
-            }
-        }
-    }
-
-    static constexpr Table2D<StructCopyImage> table;
-    table(src.elemtype_, dst.elemtype_)(src, dst);
 }
 
 } // namespace ecvl

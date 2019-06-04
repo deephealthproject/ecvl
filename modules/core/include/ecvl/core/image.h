@@ -20,18 +20,17 @@ public:
     virtual ~MetaData() {}
 };
 
-/** @anchor ColorType
+/** @brief Enum class representing the ECVL supported color spaces.
 
-   Enum class representing the ECVL supported color spaces.
-
+@anchor ColorType
 */
 enum class ColorType {
-    none,
-    GRAY,
-    RGB,
-    BGR,
-    HSV,
-    YCbCr,
+    none,  /**< Special ColorType for Images that contain only data and do not have any ColorType */
+    GRAY,  /**< Gray-scale ColorType */
+    RGB,   /**< RGB ColorType */
+    BGR,   /**< BGR ColorType */
+    HSV,   /**< HSV ColorType */
+    YCbCr, /**< YCbCr ColorType */
 };
 
 /** @brief Image class
@@ -39,17 +38,21 @@ enum class ColorType {
 */
 class Image {
 public:
-    DataType            elemtype_;  /**< Type of Image pixels, must be one of the
+    DataType            elemtype_;  /**< @brief Type of Image pixels, must be one of the
                                          values available in @ref DataType.        */
-    uint8_t             elemsize_;  /**< Size (in bytes) of Image pixels.          */
-    std::vector<int>    dims_;      /**< Vector of Image dimensions. Each dimension
+    uint8_t             elemsize_;  /**< @brief Size (in bytes) of Image pixels.          */
+    std::vector<int>    dims_;      /**< @brief Vector of Image dimensions. Each dimension
                                          is given in pixels/voxels. */
-    std::vector<int>    strides_;   /**< Vector of Image strides. Strides represent
+    std::vector<int>    strides_;   /**< @brief Vector of Image strides. 
+                                    
+                                         Strides represent
                                          the number of bytes the pointer on data
                                          has to move to reach the next pixel/voxel
                                          on the correspondent size. */
-    std::string         channels_;  /**< String which describes how Image planes
-                                         are organized. A single character provides
+    std::string         channels_;  /**< @brief String which describes how Image planes
+                                         are organized. 
+                                         
+                                         A single character provides
                                          the information related to the corresponding
                                          channel. The possible values are:
                                             - 'x': horizontal spatial dimension
@@ -69,21 +72,26 @@ public:
                                          ColorType::BGR. In this case the color dimension
                                          is the one which changes faster as it is done
                                          in other libraries such as OpenCV. */
-    ColorType           colortype_; /**< Image ColorType. If this is different from ColorType::none
+    ColorType           colortype_; /**< @brief Image ColorType. 
+                                    
+                                         If this is different from ColorType::none
                                          the channels_ string must contain a 'c' and the
                                          corresponding dimension must have the appropriate
                                          value. See @ref ColorType for the possible values. */
-    uint8_t*            data_;      /**< Pointer to Image data. If the Image is not the owner
+    uint8_t*            data_;      /**< @brief Pointer to Image data. 
+                                    
+                                         If the Image is not the owner
                                          of data, for example when using Image views, this 
                                          attribute will point to the data of another Image.
                                          The possession or not of the data depends on the 
                                          MemoryManager. */
-    size_t              datasize_;  /**< Size of Image data in bytes. */
-    bool                contiguous_;/**< Whether the image is stored contiguously or not in memory. */
+    size_t              datasize_;  /**< @brief Size of Image data in bytes. */
+    bool                contiguous_;/**< @brief Whether the image is stored contiguously or not in memory. */
 
-    MetaData* meta_;                /**< Pointer to Image MetaData. */
-    MemoryManager* mem_;            /**< Pointer to the MemoryManager employed by the Image. It 
-                                         can be DefaultMemoryManager or ShallowMemoryManager. The 
+    MetaData* meta_;                /**< @brief Pointer to Image MetaData. */
+    MemoryManager* mem_;            /**< @brief Pointer to the MemoryManager employed by the Image. 
+                                    
+                                         It can be DefaultMemoryManager or ShallowMemoryManager. The 
                                          former is responsible for allocating and deallocating data,
                                          when using the DefaultMemoryManager the Image is the owner
                                          of data. When ShallowMemoryManager is employed the Image
@@ -297,6 +305,21 @@ public:
         return *this;
     }
 
+    /** @brief Allocates new contiguous data if needed.
+    
+    The Create method allocates Image data as specified by the input parameters.
+    The procedures tries to avoid the allocation of new memory when possible.
+    The resulting image will be contiguous in any case.
+    Calling this method on an Image that does not own data will always cause 
+    a new allocation, and the Image will become the owner of the data.
+
+    @param[in] dims New Image dimensions.
+    @param[in] elemtype New Image DataType.
+    @param[in] channels New Image channels.
+    @param[in] colortype New Image colortype.
+    */
+    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype);
+
     /** @brief Destructor
 
     If the Image is the owner of data they will be deallocate. Otherwise nothing will happen.
@@ -308,6 +331,9 @@ public:
 
     /** @brief To check whether the Image contains or not data, regardless the owning status. */
     bool IsEmpty() const { return data_ == nullptr; }
+
+    /** @brief To check whether the Image is owner of the data. */
+    bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
 
     /** @brief Returns a non-const pointer to data at given coordinates. */
     uint8_t* Ptr(const std::vector<int>& coords) {
@@ -520,6 +546,58 @@ number of channels of the input Image must be the same of required channels.
 
 */
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels);
+
+// Template copy image
+template<DataType SDT, DataType DDT>
+struct StructCopyImage {
+    static void _(const Image& src, Image& dst)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+
+        ConstView<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto is = vsrc.Begin(), es = vsrc.End();
+        auto id = vdst.Begin();
+        for (; is != es; ++is, ++id) {
+            *id = static_cast<dsttype>(*is);
+        }
+    }
+};
+
+/** @brief Copies the source Image into the destination Image.
+
+The CopyImage() procedure takes an Image and copies its data into the destination Image.
+Source and destination cannot be the same Image. Source cannot be a Image with DataType::none.
+The optional new_type parameter can 
+be used to change the DataType of the destination Image. This function is mainly designed to 
+change the DataType of an Image, copying its data into a new Image or to copy an Image into a
+View as a patch. So if you just want to copy an Image as it is, use the copy constructor or = 
+instead. Anyway, the procedure will handle all the possible situations that may happen trying 
+to avoid unnecessary allocations.
+When the DataType is not specified the function will have the following behaviors:
+    - if the destination Image is empty the source will be directly copied into the destination. 
+    - if source and destination have different size in memory or different channels and the destination 
+        is the owner of data, the procedure will overwrite the destination Image creating a new Image 
+        (channels and dimensions will be the same of the source Image, pixels type (DataType) will be the 
+        same of the destination Image if they are not none or the same of the source otherwise).
+    - if source and destination have different size in memory or different channels and the destination is not
+        the owner of data, the procedure will throw an exception.
+    - if source and destination have different color types and the destination is the owner of 
+        data, the procedure produces a destination Image with the same color type of the source.
+    - if source and destination have different color types and the destination is not the owner 
+        of data, the procedure will throw an exception.
+    - if source and destination are the same Image, there are two options. If new_type is the same of the two 
+        Image(s) or it is DataType::none, nothing happens. Otherwise, an exception is thrown.
+When the DataType is specified the function will have the same behavior, but the destination Image will have 
+the specified DataType.
+
+@param[in] src Source Image to be copied into destination Image.
+@param[out] dst Destination Image that will hold a copy of the source Image. Cannot be the source Image.
+@param[in] new_type Desired type for the destination Image after the copy. If none (default) the destination 
+            Image will preserve its type if it is not empty, otherwise it will have the same type of the 
+            source Image. 
+*/
+void CopyImage(const Image& src, Image& dst, DataType new_type = DataType::none);
 
 } // namespace ecvl
 

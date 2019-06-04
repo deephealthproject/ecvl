@@ -1,5 +1,7 @@
 #include "ecvl/core/support_opencv.h"
 
+#include "ecvl/core/standard_errors.h"
+
 namespace ecvl {
 
 Image MatToImage(const cv::Mat& m)
@@ -25,13 +27,13 @@ Image MatToImage(const cv::Mat& m)
         case CV_32F: img.elemtype_ = DataType::float32; break;
         case CV_64F: img.elemtype_ = DataType::float64; break;
         default:
-            throw std::runtime_error("Unsupported OpenCV Depth");
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DEPTH
         }
         img.elemsize_ = DataTypeSize(img.elemtype_);
 
         // Channels and colors
         if (m.dims < 2) {
-            throw std::runtime_error("Unsupported OpenCV dims");
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
         else if (m.dims == 2) {
             img.channels_ = "xy";
@@ -40,7 +42,7 @@ Image MatToImage(const cv::Mat& m)
             img.channels_ = "xyz";
         }
         else {
-            throw std::runtime_error("Unsupported OpenCV dims");
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
 
         if (m.type() == CV_8UC1) { // Guess this is a gray level image
@@ -87,7 +89,7 @@ Image MatToImage(const cv::Mat& m)
         }
     }
     else {
-        throw std::runtime_error("Not implemented");
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
     return img;
@@ -95,10 +97,12 @@ Image MatToImage(const cv::Mat& m)
 
 cv::Mat ImageToMat(const Image& img)
 {
-    if (img.channels_ != "cxy" && img.channels_ != "xyc")
-        throw std::runtime_error("Not implemented");
-    if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY)
-        throw std::runtime_error("Not implemented");
+    if (img.channels_ != "cxy" && img.channels_ != "xyc") {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+    if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
 
     Image tmp;
     RearrangeChannels(img, tmp, "cxy");

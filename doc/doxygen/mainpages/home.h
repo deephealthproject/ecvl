@@ -3,8 +3,6 @@
 
 @image html DEEPHEALTH_doxygen_logo_reduced.png
 
-@author 
-
 ECVL is the European Computer Vision Library, under development within the European project DeepHealth. Here you can find the provisional doxygen documentation. Checkout the GitHub project <a href="https://github.com/deephealthproject/ECVL">here</a>. 
 
 @cond

@@ -8,12 +8,15 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
+//#include "ecvl/gui.h"
 
 int main(void)
 {
     using namespace ecvl;
     using namespace filesystem;
     
+    try {
+
     Image x({ 5, 4, 3 }, DataType::uint8, "xyc", ColorType::RGB);
     View<DataType::uint8> y(x);
     y({ 0,0,0 }) = 15; y({ 1,0,0 }) = 16; y({ 2,0,0 }) = 17; y({ 3,0,0 }) = 18; y({ 4,0,0 }) = 19;
@@ -78,6 +81,7 @@ int main(void)
     ImRead("../data/Kodak/img0003.png", img1);
     ImRead("../data/Kodak/img0015.png", img2);
 
+        //ImShow(img1);
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
     Image img3, img4;
@@ -86,19 +90,61 @@ int main(void)
 
     cv::TickMeter tm;
 
-    tm.reset();
-    tm.start();
-    Add(img3, img2);
-    tm.stop();
-    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+        //tm.reset();
+        //tm.start();
+        //Add(img3, img2);
+        //tm.stop();
+        //std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    tm.reset();
-    tm.start();
-    Sub(img3, img2);
-    tm.stop();
-    std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
+        //tm.reset();
+        //tm.start();
+        //Sub(img3, img2);
+        //tm.stop();
+        //std::cout << "Elapsed " << tm.getTimeSec() << " s\n";
 
-    Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
+        //Mul(img1, 2);
+        //Mul(0.5, img1);
+
+        Image m;
+
+        img1.Create({ 8192, 2304, 1 }, DataType::int8, "xyc", ColorType::GRAY);
+        img1.Create({ 3072, 2048, 3 }, DataType::uint8, "xyc", ColorType::BGR);
+
+        Image img5;
+        CopyImage(img1, img5, DataType::int16);
+        //Neg(img5);
+        //Neg(img1); // not allowed on unsigned
+
+        Image dst1, dst2, dst3, dst4;
+        
+        // Test add functions
+        Add(img1, img2, dst1);
+        Add(img1, 100, dst2);
+        Add(200, img1, dst2);
+        
+        // Test sub functions
+        Sub(img1, img2, dst1);
+        Sub(img1, 100, dst2);
+        Sub(300, img1, dst2);
+
+        // Test mul functions
+        Mul(img5, img2, dst3);
+        Mul(img5, 255, dst3);
+        Mul(512, img5, dst3);
+
+        // Test div functions
+        Div(img1, img2, dst1);
+        Div(img2, img1, dst2);
+        Div(img1, 2, dst2);
+        Div(200, img1, dst3);
+
+        Image test({1,1,1}, DataType::uint8, "xyc", ColorType::GRAY);
+        Div(5, 2, test);
+
+        //Sub(img1, 100);
+        //Sub(100, Sub(img1, 100));
+        
+        /*Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
     ContiguousViewXYC<DataType::float32> vmask(mask);
     auto radius = float(std::min(vmask.width() / 2, vmask.height() / 2));
     int cx = vmask.width() / 2;
@@ -107,7 +153,7 @@ int main(void)
         int ry = y - cy;
         for (int x = 0; x < vmask.width(); ++x) {
             int rx = x - cx;
-            auto rd = float(sqrt(rx * rx + ry * ry) / radius);
+            auto rd = static_cast<float>(sqrt(rx * rx + ry * ry) / radius);
             vmask(x, y, 0) = vmask(x, y, 1) = vmask(x, y, 2) = std::max(0.f, 1 - rd);
         }
     }
@@ -117,7 +163,7 @@ int main(void)
     Mul(img1, 4, false);
 
     Sum(img, 100.0);
-    Mul(img, 0.5);
+        Mul(img, 0.5);*/
 
     tm.reset();
     tm.start();
@@ -172,4 +218,10 @@ int main(void)
         return EXIT_FAILURE;
     }*/
     return EXIT_SUCCESS;
+
+    }
+    catch (const std::runtime_error& e) {
+        std::cerr << "Runtime error: " << e.what() << "\n";
+        return EXIT_FAILURE;
+    }
 }

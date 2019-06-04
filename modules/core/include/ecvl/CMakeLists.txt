@@ -5,6 +5,8 @@ target_sources(ECVL_CORE
 	core/arithmetic.h
 	core/datatype.h
 	core/datatype_existing_tuples.inc.h
+    core/datatype_existing_tuples_signed.inc.h
+    core/datatype_existing_tuples_unsigned.inc.h
 	core/datatype_matrix.h
 	core/datatype_tuples.inc.h
 	core/filesystem.h

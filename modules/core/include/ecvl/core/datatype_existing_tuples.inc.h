@@ -1,11 +1,6 @@
-ECVL_TUPLE(uint8   /**< uint8_t  */,  1, uint8_t   )
-ECVL_TUPLE(uint16  /**< uint16_t */,  2, uint16_t  )
-ECVL_TUPLE(uint32  /**< uint32_t */,  4, uint32_t  )
-ECVL_TUPLE(uint64  /**< uint64_t */,  8, uint64_t  )
-ECVL_TUPLE(int8    /**< int8_t   */,  1, int8_t    )
-ECVL_TUPLE(int16   /**< int16_t  */,  2, int16_t   )
-ECVL_TUPLE(int32   /**< int32_t  */,  4, int32_t   )
-ECVL_TUPLE(int64   /**< int64_t  */,  8, int64_t   )
-ECVL_TUPLE(float32 /**< float    */,  4, float     )
-ECVL_TUPLE(float64 /**< double   */,  8, double    )
+// Signed DataType MUST be included before unsigned DataType, 
+// otherwise the Table logic will be broken, as well as the in-place
+// Neg function.
 
+#include "datatype_existing_tuples_signed.inc.h"
+#include "datatype_existing_tuples_unsigned.inc.h"
