@@ -107,7 +107,7 @@ int main(void)
         int ry = y - cy;
         for (int x = 0; x < vmask.width(); ++x) {
             int rx = x - cx;
-            float rd = sqrt(rx * rx + ry * ry) / radius;
+            auto rd = float(sqrt(rx * rx + ry * ry) / radius);
             vmask(x, y, 0) = vmask(x, y, 1) = vmask(x, y, 2) = std::max(0.f, 1 - rd);
         }
     }
