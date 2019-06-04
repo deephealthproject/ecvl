@@ -550,7 +550,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 // Template copy image
 template<DataType SDT, DataType DDT>
 struct StructCopyImage {
-    static void ActualFunction(const Image& src, Image& dst)
+    static void _(const Image& src, Image& dst)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;
 
@@ -586,6 +586,8 @@ When the DataType is not specified the function will have the following behavior
         data, the procedure produces a destination Image with the same color type of the source.
     - if source and destination have different color types and the destination is not the owner 
         of data, the procedure will throw an exception.
+    - if source and destination are the same Image, there are two options. If new_type is the same of the two 
+        Image(s) or it is DataType::none, nothing happens. Otherwise, an exception is thrown.
 When the DataType is specified the function will have the same behavior, but the destination Image will have 
 the specified DataType.
 

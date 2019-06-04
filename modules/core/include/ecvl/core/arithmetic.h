@@ -1,8 +1,12 @@
 #ifndef ECVL_ARITHMETIC_H_
 #define ECVL_ARITHMETIC_H_
 
+#include <type_traits>
+
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/image.h"
+
+#include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
 
@@ -59,385 +63,13 @@ ODT saturate_cast(const IDT& v) {
     return static_cast<ODT>(v);
 }
 
-void Add(Image& src1_dst, const Image& src2);
-// Template implementation for in-place Add between Images
-// TODO doc
-template <DataType a, DataType b>
-struct StructAdd {
-    static void ActualFunction(Image& src1_dst, const Image& src2) {
-        using dsttype = typename TypeInfo<a>::basetype;
-
-        // TODO check before performing Add
-
-        View<a> vsrc1_dst(src1_dst);
-        ConstView<b> vsrc2(src2);
-        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
-        auto is2 = vsrc2.Begin();
-        for (; is1 != es1; ++is1, ++is2) {
-            *is1 = static_cast<dsttype>(*is1 + *is2);
-        }
-    }
-};
-
-// In-place Sub between Images TODO doc
-void Sub(Image& src1_dst, const Image& src2);
-// Template implementation for in-place Sub between Images
-// TODO doc
-template <DataType a, DataType b>
-struct StructSub {
-    static void ActualFunction(Image& src1_dst, const Image& src2) {
-        using dsttype = typename TypeInfo<a>::basetype;
-
-        // TODO check before performing Add
-
-        View<a> vsrc1_dst(src1_dst);
-        ConstView<b> vsrc2(src2);
-        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
-        auto is2 = vsrc2.Begin();
-        for (; is1 != es1; ++is1, ++is2) {
-            *is1 = static_cast<dsttype>(*is1 - *is2);
-        }
-    }
-};
-
-// In-place Mul between images TODO doc
-void Mul(Image& src1_dst, const Image& src2);
-/** @brief Template struct for in-place multiplication between images
-of any ecvl::DataType. */
-// TODO doc
-template <DataType a, DataType b>
-struct StructMul {
-    static void ActualFunction(Image& src1_dst, const Image& src2) {
-        using dsttype = typename TypeInfo<a>::basetype;
-
-        // TODO check before performing Add
-
-        View<a> vsrc1_dst(src1_dst);
-        ConstView<b> vsrc2(src2);
-        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
-        auto is2 = vsrc2.Begin();
-        for (; is1 != es1; ++is1, ++is2) {
-            *is1 = static_cast<dsttype>(*is1 * *is2);
-        }
-    }
-};
-
-// In-place Div between Images TODO doc
-void Div(Image& src1_dst, const Image& src2);
-// Template implementation for in-place Div between Images
-// TODO doc
-template <DataType a, DataType b>
-struct StructDiv {
-    static void ActualFunction(Image& src1_dst, const Image& src2) {
-        using dsttype = typename TypeInfo<a>::basetype;
-
-        // TODO check before performing Add
-
-        View<a> vsrc1_dst(src1_dst);
-        ConstView<b> vsrc2(src2);
-        auto is1 = vsrc1_dst.Begin(), es1 = vsrc1_dst.End();
-        auto is2 = vsrc2.Begin();
-        for (; is1 != es1; ++is1, ++is2) {
-            *is1 = static_cast<dsttype>(*is1 / *is2);
-        }
-    }
-};
-
-// Struct template specialization of the in-place multiplication between Image and scalar. 
-template<DataType DT, typename T>
-struct StructScalarMul{
-    static Image& ActualFunction(Image& img, T d, bool saturate)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<DT>(p * d);
-            }
-            else {
-                p = static_cast<typename TypeInfo<DT>::basetype>(p * d);
-            }
-        }
-        return img;
-    }
-};
-
-/** @brief In-place multiplication between an Image and a scalar value,
-without type promotion. @anchor ScalarMul
-
-The Mul() function multiplies an input image by a scalar value and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in,out] img Image to be multiplied (in-place) by a scalar value.
-@param[in] value Scalar value to use for the multiplication.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return Reference to the Image containing the result of the multiplication.
-*/
-template<typename T>
-Image& Mul(Image& img, T value, bool saturate = true) {                               
-
-    // TODO add checks
-    
-    static constexpr Table1D<StructScalarMul, T> table;          
-    return table(img.elemtype_)(img, value, saturate);
-}
-
-/** @overload [Image& Mul(Image& img, T value, bool saturate = true)] */
-template<typename T>
-Image& Mul(T value, Image& img, bool saturate = true) {                               
-    return Mul(img, value, saturate);
-}
-
-// Struct template specialization of the in-place sum between Image and scalar. 
-template<DataType DT, typename T>
-struct StructScalarAdd{
-    static Image& ActualFunction(Image& img, T value, bool saturate)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<DT>(p + value);
-            }
-            else {
-                p = static_cast<typename TypeInfo<DT>::basetype>(p + value);
-            }
-        }
-        return img;
-    }
-};
-
-/** @brief In-place addition between an Image and a scalar value, without type
-promotion. @anchor ScalarAdd
-
-The Add() function sums a scalar value to the input Image and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in,out] img Image to be summed (in-place) by a scalar value.
-@param[in] value Scalar value to use for the sum.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return Reference to the Image containing the result of the sum.
-*/
-template <typename T>
-Image& Add(Image& img, T value, bool saturate = true) {
-    
-    // TODO add checks
-    
-    static constexpr Table1D<StructScalarAdd, T> table;          
-    return table(img.elemtype_)(img, value, saturate);
-}
-
-/** @overload [Image& Sum(Image& img, T value, bool saturate = true)] */
-template <typename T>
-Image& Add(T value, Image& img, bool saturate = true) {
-    return Add(img, value, saturate);
-}
-
-// Struct template specialization of the in-place subtraction between Image and scalar. 
-template<DataType DT, typename T>
-struct StructScalarSub{
-    static Image& ActualFunction(Image& img, T value, bool saturate)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<DT>(p - value);
-            }
-            else {
-                p = static_cast<typename TypeInfo<DT>::basetype>(p - value);
-            }
-        }
-        return img;
-    }
-};
-
-/** @brief In-place subtraction between an Image and a scalar value, without type
-promotion. @anchor ScalarSub
-
-The Sub() function subtracts a scalar value from the input Image and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in,out] img Image to be subtracted (in-place) by a scalar value.
-@param[in] value Scalar value to use for the subtraction.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return Reference to the Image containing the result of the subtraction.
-*/
-template <typename T>
-Image& Sub(Image& img, T value, bool saturate = true) {
-    
-    // TODO add checks
-
-    static constexpr Table1D<StructScalarSub, T> table;          
-    return table(img.elemtype_)(img, value, saturate);
-}
-
-// Struct template specialization of the in-place subtraction between a scalar value and an Image. 
-template<DataType DT, typename T>
-struct StructScalarSubInv{
-    static Image& ActualFunction(T value, Image& img, bool saturate)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<DT>(value - p);
-            }
-            else {
-                p = static_cast<typename TypeInfo<DT>::basetype>(value - p);
-            }
-        }
-        return img;
-    }
-};
-
-/** @brief In-place subtraction between a scalar value and an Image, without type
-promotion. @anchor ScalarInvSub
-
-The Sub() function subtracts the input Image from a scalar value and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in] value Scalar value to use for the subtraction (Minuend).
-@param[in,out] img Subtrahend of the operation. It will store the final result.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return Reference to the Image containing the result of the subtraction.
-*/
-template <typename T>
-Image& Sub(T value, Image& img, bool saturate = true) {
-    
-    // TODO add checks
-
-    static constexpr Table1D<StructScalarSubInv, T> table;          
-    return table(img.elemtype_)(value, img, saturate);
-}
-
-// Struct template specialization of the in-place division between Image and scalar. 
-template<DataType DT, typename T>
-struct StructScalarDiv{
-    static Image& ActualFunction(Image& img, T value, bool saturate)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<DT>(p/value);
-            }
-            else {
-                p = static_cast<typename TypeInfo<DT>::basetype>(p/value);
-            }
-        }
-        return img;
-    }
-};
-
-/** @brief In-place division between an Image and a scalar value, without type
-promotion. @anchor ScalarDiv
-
-The Div() function divides an input Image by a scalar value and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in,out] img Image to be divided (in-place) by a scalar value.
-@param[in] value Scalar value to use for the division.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-
-@return Reference to the Image containing the result of the division.
-*/
-template <typename T>
-Image& Div(Image& img, T value, bool saturate = true) {
-    
-    // TODO add checks
-
-    static constexpr Table1D<StructScalarDiv, T> table;          
-    return table(img.elemtype_)(img, value, saturate);
-}
-
-// Struct template specialization of the in-place division between a scalar value and an Image. 
-template<DataType DT, typename T, typename ET>
-struct StructScalarDivInv{
-    static Image& ActualFunction(T value, Image& img, bool saturate, ET epsilon)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            if (saturate) {
-                p = saturate_cast<DT>(value/(p + epsilon));
-            }
-            else {
-                p = static_cast<typename TypeInfo<DT>::basetype>(value/(p + epsilon));
-            }
-        }
-        return img;
-    }
-};
-
-/** @brief In-place divion between a scalar value and an Image, without type
-promotion. @anchor ScalarInvDiv
-
-The Div() function divides a scalar value by the input Image and stores
-the result in the same image. The type of the image will not change. By
-default a saturation will be applied. If it is not the desired behavior
-change the "saturate" parameter to false.
-
-@param[in] value Scalar value to use for the division (Dividend).
-@param[in,out] img Divisor of the operation. It will store the final result.
-@param[in] saturate Whether to apply saturation or not. Default is true.
-@param[in] epsilon Small value to be added to the Image values before performing
-            the division. If not specified by default it is the minimum positive
-            number representable in a double.
-
-@return Reference to the Image containing the result of the division.
-*/
-template <typename T, typename ET = double>
-Image& Div(T value, Image& img, bool saturate = true, ET epsilon = std::numeric_limits<double>::min()) {
-
-    // TODO add checks
-
-    static constexpr Table1D<StructScalarDivInv, T, ET> table;          
-    return table(img.elemtype_)(value, img, saturate, epsilon);
-}
-
-// Struct template specialization of the in-place negation of an Image. 
-template<DataType DT>
-struct StructScalarNeg{
-    static Image& ActualFunction(Image& img)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            p = static_cast<typename TypeInfo<DT>::basetype>(-p);
-        }
-        return img;
-    }
-};
-
 /************************************************************************************/
 /*   Unary Arithmetic Operations over Images (source and destination are the same)  */
 /************************************************************************************/
 
 /** @brief In-place negation of an Image. @anchor Neg
 
-The Neg() function negates every value of an Image, and stores the 
+The Neg() function negates every value of an Image, and stores the
 the result in the same image. The type of the image will not change.
 
 @param[in,out] img Image to be negated (in-place).
@@ -452,9 +84,9 @@ Image& Neg(Image& img);
 
 /** @brief Multiplies two Image(s) and stores the result in a third Image.
 
-This procedure multiplies two Image(s) together and stores the result in 
+This procedure multiplies two Image(s) together and stores the result in
 a third Image that will have the specified DataType. By default a saturation
-will be applied. If it is not the desired behavior change the "saturate" 
+will be applied. If it is not the desired behavior change the "saturate"
 parameter to false.
 
 @param[in] src1 Multiplier (first factor) Image.
@@ -501,6 +133,548 @@ parameter to false.
 */
 void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
+
+
+/************************************************************************************/
+/*  Addition                                                                        */
+/************************************************************************************/
+
+// Template implementation for the in-place Addition between Image(s)
+template <DataType DT1, DataType DT2>
+struct StructAdd {
+    static void _(Image& src1, const Image& src2, bool saturate) {
+        using dsttype = typename TypeInfo<DT1>::basetype;
+
+        View<DT1> vsrc1(src1);
+        ConstView<DT2> vsrc2(src2);
+        auto is1 = vsrc1.Begin(), es1 = vsrc1.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            if (saturate) {
+                *is1 = saturate_cast<dsttype>(*is1 + *is2);
+            }
+            else {
+                *is1 = static_cast<dsttype>(*is1 + *is2);
+            }
+        }
+    }
+};
+
+// Template specialization for the in-place Addition between Image and scalar. 
+template<DataType DT, typename T>
+struct ImageScalarAddImpl {
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(p + value);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p + value);
+            }
+        }
+    }
+};
+
+// Template non-specialized proxy for Add procedure (scalar + scalar)
+template<typename ST1, typename ST2>
+struct AddImpl {
+    static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+};
+
+// Template partial-specialized proxy for Add procedure (Image + scalar)
+template<typename ST2>
+struct AddImpl<Image, ST2> {
+    static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table1D<ImageScalarAddImpl, ST2> table;
+        table(dst.elemtype_)(dst, src2, saturate);
+    }
+};
+
+// Template partial-specialized proxy for Add procedure (scalar + Image)
+template<typename ST1>
+struct AddImpl<ST1, Image> {
+    static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate) {
+
+        AddImpl<Image, ST1>::_(src2, src1, dst, saturate);
+    }
+};
+
+// Template partial-specialized proxy for Add procedure (Image + Image)
+template<>
+struct AddImpl<Image, Image> {
+    static void _(const Image& src1, const Image& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table2D<StructAdd> table;
+        table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
+    }
+};
+
+/** @brief Adds two objects that could be either a scalar value or an Image,
+storing the result into a destination Image. The procedure does not perform any type promotion.
+
+The procedure takes two input values (src1 and src2) and adds them together,
+storing the result into the destination image.
+If one of the operands is an Image and the other one is a scalar value, each pixel of the Image is increased
+by the scalar value, and the result is stored into dst.
+If src1 and src2 are both Image(s) the pixel-wise addition is applied and, again,
+the result is stored into dst.
+
+Saturation is applied by default. If it is not the desired behavior change the
+saturate parameter to false.
+
+In any case, the operation performed is dst = src1 + src2.
+
+@param[in] src1 Augend operand. Could be either a scalar or an Image.
+@param[in] src2 Addend operand. Could be either a scalar or an Image.
+@param[out] dst Destination Image. It will store the final result. If dst is not empty, its DataType will be preserved.
+                Otherwise, it will have the same DataType as src1 if it is an Image, src2 otherwise.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return.
+*/
+template<typename ST1, typename ST2>
+void Add(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true)
+{
+    AddImpl<ST1, ST2>::_(src1, src2, dst, saturate);
+}
+
+
+/************************************************************************************/
+/*  Subtraction                                                                     */
+/************************************************************************************/
+
+// Template implementation for the in-place subtraction between Image(s)
+template <DataType DT1, DataType DT2>
+struct StructSub {
+    static void _(Image& src1, const Image& src2, bool saturate) {
+        using dsttype = typename TypeInfo<DT1>::basetype;
+
+        View<DT1> vsrc1(src1);
+        ConstView<DT2> vsrc2(src2);
+        auto is1 = vsrc1.Begin(), es1 = vsrc1.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            if (saturate) {
+                *is1 = saturate_cast<dsttype>(*is1 - *is2);
+            }
+            else {
+                *is1 = static_cast<dsttype>(*is1 - *is2);
+            }
+        }
+    }
+};
+
+// Template specialization for the in-place subtraction between Image and scalar. 
+template<DataType DT, typename T>
+struct ImageScalarSubImpl {
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(p - value);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p - value);
+            }
+        }
+    }
+};
+
+// Template specialization for the in-place subtraction between scalar and Image. 
+template<DataType DT, typename T>
+struct ScalarImageSubImpl {
+    static void _(T value, Image& img, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(value - p);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(value - p);
+            }
+        }
+    }
+};
+
+// Template non-specialized proxy for Sub procedure (scalar - scalar)
+template<typename ST1, typename ST2>
+struct SubImpl {
+    static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+};
+
+// Template partial-specialized proxy for Sub procedure (Image - scalar)
+template<typename ST2>
+struct SubImpl<Image, ST2> {
+    static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table1D<ImageScalarSubImpl, ST2> table;
+        table(dst.elemtype_)(dst, src2, saturate);
+    }
+};
+
+// Template partial-specialized proxy for Sub procedure (scalar - Image)
+template<typename ST1>
+struct SubImpl<ST1, Image> {
+    static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src2, dst);
+        static constexpr Table1D<ScalarImageSubImpl, ST1> table;
+        table(dst.elemtype_)(src1, dst, saturate);
+    }
+};
+
+// Template partial-specialized proxy for Sub procedure (Image - Image)
+template<>
+struct SubImpl<Image, Image> {
+    static void _(const Image& src1, const Image& src2, Image& dst, bool saturate) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table2D<StructSub> table;
+        table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
+    }
+};
+
+/** @brief Subtracts two objects that could be either a scalar value or an Image,
+storing the result into a destination Image. The procedure does not perform any type promotion.
+
+The procedure takes two input values (src1 and src2) and subtracts the second from the
+first, storing the result into the destination image.
+If src1 is an Image and src2 is a scalar value, src2 is subtracted from all the pixels
+inside src1 and the result is stored into dst.
+If src1 is a scalar value and src2 is an Image, the opposite happens: src1 is diminished by
+each pixel value of src2, and the result is stored into dst.
+If src1 and src2 are both Image(s) the pixel-wise subtraction is applied and, again,
+the result is stored into dst.
+
+Saturation is applied by default. If it is not the desired behavior change the
+saturate parameter to false.
+
+In any case, the operation performed is dst = src1 - src2.
+
+@param[in] src1 Minuend operand. Could be either a scalar or an Image.
+@param[in] src2 Subtrahend operand. Could be either a scalar or an Image.
+@param[out] dst Destination Image. It will store the final result. If dst is not empty, its DataType will be preserved.
+                Otherwise, it will have the same DataType as src1 if it is an Image, src2 otherwise.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return.
+*/
+template<typename ST1, typename ST2>
+void Sub(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true)
+{
+    SubImpl<ST1, ST2>::_(src1, src2, dst, saturate);
+}
+
+
+
+/************************************************************************************/
+/*  Multiplication                                                                  */
+/************************************************************************************/
+
+// Template implementation for the in-place Multiplication between Image(s)
+template <DataType DT1, DataType DT2>
+struct StructMul {
+    static void _(Image& src1, const Image& src2, bool saturate) {
+        using dsttype = typename TypeInfo<DT1>::basetype;
+
+        View<DT1> vsrc1(src1);
+        ConstView<DT2> vsrc2(src2);
+        auto is1 = vsrc1.Begin(), es1 = vsrc1.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            if (saturate) {
+                *is1 = saturate_cast<dsttype>(*is1 * *is2);
+            }
+            else {
+                *is1 = static_cast<dsttype>(*is1 * *is2);
+            }
+        }
+    }
+};
+
+// Template specialization for the in-place Multiplication between Image and scalar. 
+template<DataType DT, typename T>
+struct ImageScalarMulImpl {
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(p * value);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p * value);
+            }
+        }
+    }
+};
+
+// Template non-specialized proxy for Mul procedure (scalar * scalar)
+template<typename ST1, typename ST2>
+struct MulImpl {
+    static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate) {
+
+        // TODO Mul appropriate checks
+
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+};
+
+// Template partial-specialized proxy for Mul procedure (Image * scalar)
+template<typename ST2>
+struct MulImpl<Image, ST2> {
+    static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate) {
+
+        // TODO Mul appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table1D<ImageScalarMulImpl, ST2> table;
+        table(dst.elemtype_)(dst, src2, saturate);
+    }
+};
+
+// Template partial-specialized proxy for Mul procedure (scalar * Image)
+template<typename ST1>
+struct MulImpl<ST1, Image> {
+    static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate) {
+
+        MulImpl<Image, ST1>::_(src2, src1, dst, saturate);
+    }
+};
+
+// Template partial-specialized proxy for Mul procedure (Image * Image)
+template<>
+struct MulImpl<Image, Image> {
+    static void _(const Image& src1, const Image& src2, Image& dst, bool saturate) {
+
+        // TODO Mul appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table2D<StructMul> table;
+        table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
+    }
+};
+
+/** @brief Multiplies two objects that could be either a scalar value or an Image,
+storing the result into a destination Image. The procedure does not perform any type promotion.
+
+The procedure takes two input values (src1 and src2) and multiplies them together,
+storing the result into the destination image.
+If one of the operands is an Image and the other one is a scalar value, each pixel of the Image is 
+multiplied by the scalar value, and the result is stored into dst.
+If src1 and src2 are both Image(s) the pixel-wise multiplication is applied and, again,
+the result is stored into dst.
+
+Saturation is applied by default. If it is not the desired behavior change the
+saturate parameter to false.
+
+In any case, the operation performed is dst = src1 * src2.
+
+@param[in] src1 Multiplier operand. Could be either a scalar or an Image.
+@param[in] src2 Multiplicand operand. Could be either a scalar or an Image.
+@param[out] dst Destination Image. It will store the final result. If dst is not empty, its DataType will be preserved.
+                Otherwise, it will have the same DataType as src1 if it is an Image, src2 otherwise.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+
+@return.
+*/
+template<typename ST1, typename ST2>
+void Mul(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true)
+{
+    MulImpl<ST1, ST2>::_(src1, src2, dst, saturate);
+}
+
+
+
+/************************************************************************************/
+/*  Division                                                                        */
+/************************************************************************************/
+
+// Template implementation for the in-place division between Image(s)
+template <DataType DT1, DataType DT2, typename ET>
+struct StructDiv {
+    static void _(Image& src1, const Image& src2, bool saturate, ET epsilon) {
+        using dsttype = typename TypeInfo<DT1>::basetype;
+
+        View<DT1> vsrc1(src1);
+        ConstView<DT2> vsrc2(src2);
+        auto is1 = vsrc1.Begin(), es1 = vsrc1.End();
+        auto is2 = vsrc2.Begin();
+        for (; is1 != es1; ++is1, ++is2) {
+            *is1 = static_cast<dsttype>(*is1 / (*is2 + epsilon));
+        }
+    }
+};
+
+// Template specialization for the in-place division between Image and scalar. 
+template<DataType DT, typename T>
+struct ImageScalarDivImpl {
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(p / value);
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p / value);
+            }
+        }
+    }
+};
+
+// Template specialization for the in-place division between scalar and Image. 
+template<DataType DT, typename T, typename ET>
+struct ScalarImageDivImpl {
+    static void _(T value, Image& img, bool saturate, ET epsilon)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(value / (p + epsilon));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(value / (p + epsilon));
+            }
+        }
+    }
+};
+
+// Template non-specialized proxy for Div procedure (scalar/scalar)
+template<typename ST1, typename ST2, typename ET>
+struct DivImpl {
+    static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate, ET epsilon) {
+
+        // TODO add appropriate checks
+
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+};
+
+// Template partial-specialized proxy for Div procedure (Image/scalar)
+template<typename ST2, typename ET>
+struct DivImpl<Image, ST2, ET> {
+    static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate, ET epsilon) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src1, dst);
+        // TODO add appropriate checks
+        if (src2 != 0) {
+            static constexpr Table1D<ImageScalarDivImpl, ST2> table;
+            table(dst.elemtype_)(dst, src2, saturate);
+        }
+        else {
+            ECVL_ERROR_DIVISION_BY_ZERO
+        }
+    }
+};
+
+// Template partial-specialized proxy for Div procedure (scalar/Image)
+template<typename ST1, typename ET>
+struct DivImpl<ST1, Image, ET> {
+    static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate, ET epsilon) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src2, dst);
+        // TODO add appropriate checks
+        static constexpr Table1D<ScalarImageDivImpl, ST1, ET> table;
+        table(dst.elemtype_)(src1, dst, saturate, epsilon);
+    }
+};
+
+// Template partial-specialized proxy for Div procedure (Image/Image)
+template<typename ET>
+struct DivImpl<Image, Image, ET> {
+    static void _(const Image& src1, const Image& src2, Image& dst, bool saturate, ET epsilon) {
+
+        // TODO add appropriate checks
+
+        CopyImage(src1, dst);
+        static constexpr Table2D<StructDiv, ET> table;
+        table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate, epsilon);
+    }
+};
+
+/** @brief Divides two objects that could be either a scalar value or an Image,
+storing the result into a destination Image. The procedure does not perform any type promotion.
+
+The procedure takes two input values (src1 and src2) and divides the first by the
+second, storing the result in the destination image. If src1 is an Image and src2 a
+scalar value all the pixels inside src1 are divided by src2 and the result is
+stored into dst. 
+If src1 is a scalar value and src2 is an Image the opposite happens: all the pixel values
+of src2 divide the scalar value src1 and the result is stored into dst.
+If src1 and sr2 are both Image(s)
+the pixel-wise division is applied and, again, the result is stored into dst.
+
+Saturation is applied by default. If it is not the desired behavior change the
+saturate parameter to false.
+
+In the cases in which the divisor (denominator) is an Image an epsilon value is
+summed to each divisor pixel value before the division in order to avoid divisions
+by zero.
+
+In any case, the operation performed is dst = src1 / src2.
+
+@param[in] src1 Dividend (numerator) operand. Could be either a scalar or an Image.
+@param[in] src2 Divisor (denominator) operand. Could be either a scalar or an Image.
+@param[out] dst Destination Image. It will store the final result. If dst is not empty, its DataType will be preserved.
+                Otherwise, it will have the same DataType as src1 if it is an Image, src2 otherwise.
+@param[in] saturate Whether to apply saturation or not. Default is true.
+@param[in] epsilon Small value to be added to divisor pixel values before performing
+            the division. If not specified by default it is the minimum positive number
+            representable in a double. It is ignored if src2 is a scalar value.
+
+@return.
+*/
+template<typename ST1, typename ST2, typename ET = double>
+void Div(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true, ET epsilon = std::numeric_limits<double>::min())
+{
+    DivImpl<ST1, ST2, ET>::_(src1, src2, dst, saturate, epsilon);
+}
+
 /** @brief Divides two Image(s) and stores the result in a third Image.
 
 This procedure divides the src1 Image by the src2 Image (src1/src2) and stores the result
@@ -519,24 +693,24 @@ parameter to false.
 
 @return
 */
-template <typename ET = double>
-void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true, ET epsilon = std::numeric_limits<double>::min())
-{
-    // TODO add appropriate checks
-
-    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
-        throw std::runtime_error("Source images must have the same dimensions and channels.");
-    }
-
-    if (!dst.IsOwner()) {
-        if (src1.dims_ != dst.dims_ || src1.channels_ != dst.channels_) {
-            throw std::runtime_error("Non-owning data destination image must have the same dimensions and channels as the sources.");
-        }
-    }
-
-    CopyImage(src1, dst, dst_type);
-    Div(dst, src2);
-}
+//template <typename ET = double>
+//void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true, ET epsilon = std::numeric_limits<double>::min())
+//{
+//    // TODO add appropriate checks
+//
+//    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
+//        throw std::runtime_error("Source images must have the same dimensions and channels.");
+//    }
+//
+//    if (!dst.IsOwner()) {
+//        if (src1.dims_ != dst.dims_ || src1.channels_ != dst.channels_) {
+//            throw std::runtime_error("Non-owning data destination image must have the same dimensions and channels as the sources.");
+//        }
+//    }
+//
+//    CopyImage(src1, dst, dst_type);
+//    Div(dst, src2);
+//}
 
 } // namespace ecvl
 

@@ -106,26 +106,44 @@ int main(void)
         //Mul(0.5, img1);
 
         Image m;
-        Mul(img1, img2, m, DataType::float32);
 
         img1.Create({ 8192, 2304, 1 }, DataType::int8, "xyc", ColorType::GRAY);
         img1.Create({ 3072, 2048, 3 }, DataType::uint8, "xyc", ColorType::BGR);
 
         Image img5;
         CopyImage(img1, img5, DataType::int16);
-        Neg(img5);
-        Neg(img1);
+        //Neg(img5);
+        //Neg(img1); // not allowed on unsigned
 
-        Div(img1, 4);
-        Div(200, img1);
+        Image dst1, dst2, dst3, dst4;
+        
+        // Test add functions
+        Add(img1, img2, dst1);
+        Add(img1, 100, dst2);
+        Add(200, img1, dst2);
+        
+        // Test sub functions
+        Sub(img1, img2, dst1);
+        Sub(img1, 100, dst2);
+        Sub(300, img1, dst2);
 
-        Add(img1, 100, false);
-        Add(-100, img1, false);
+        // Test mul functions
+        Mul(img5, img2, dst3);
+        Mul(img5, 255, dst3);
+        Mul(512, img5, dst3);
+
+        // Test div functions
+        Div(img1, img2, dst1);
+        Div(img2, img1, dst2);
+        Div(img1, 2, dst2);
+        Div(200, img1, dst3);
+
+        Image test({1,1,1}, DataType::uint8, "xyc", ColorType::GRAY);
+        Div(5, 2, test);
 
         //Sub(img1, 100);
-        Sub(100, Sub(img1, 100));
-
-
+        //Sub(100, Sub(img1, 100));
+        
         /*Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
         ContiguousViewXYC<DataType::float32> vmask(mask);
         auto radius = float(std::min(vmask.width() / 2, vmask.height() / 2));

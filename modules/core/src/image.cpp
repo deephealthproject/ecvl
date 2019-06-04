@@ -97,8 +97,12 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
     if (src.elemtype_ == DataType::none)
         throw std::runtime_error("Why should you copy a Image with none DataType into another?");
 
-    if (&src == &dst)
-        throw std::runtime_error("src and dst cannot be the same image");
+    if (&src == &dst) {
+        if (src.elemtype_ != new_type && new_type != DataType::none) {
+            throw std::runtime_error("src and dst cannot be the same image while changing the type");
+        }
+        return;
+    }
 
     if (new_type == DataType::none) {
         // Get type from dst or src
