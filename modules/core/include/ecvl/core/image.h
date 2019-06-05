@@ -257,7 +257,7 @@ public:
                 // TODO: optimize so that we can memcpy one block at a time on the first dimension
                 // This will require Iterators to increment more than one
                 auto p = data_;
-                auto i = Begin<uint8_t>(), e = End<uint8_t>();
+                auto i = img.Begin<uint8_t>(), e = img.End<uint8_t>();
                 for (; i != e; ++i) {
                     memcpy(p++, i.ptr_, elemsize_);
                 }

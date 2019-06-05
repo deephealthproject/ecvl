@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 #include <iostream>
 #include <cmath>
+#include <numeric>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -85,6 +86,39 @@ int main(void)
     //ResizeScale(img1, img1, { 0.3, 0.3 });
 
     Image img3, img4;
+
+    CopyImage(View<DataType::uint8>(img1, { 0,0,0 }, { -1,-1,1 }), img3);
+    img4.Create({ 32,32,1 }, DataType::uint8, "xyc", ColorType::GRAY);
+    std::vector<uint32_t> accum(32);
+    std::vector<uint32_t> count(32);
+    uint32_t *paccum, *pcount;
+    ContiguousViewXYC<DataType::uint8> v3(img3);
+    auto i = v3.Begin();
+    auto pout = img4.data_;
+    for (int dr = 0, sr = 0, w = v3.width(), h = v3.height(); sr < h; ++dr) {
+        memset(paccum = accum.data(), 0, 32*4);
+        memset(pcount = count.data(), 0, 32*4);
+        while (sr * 32 / h == dr) {
+            paccum = accum.data();
+            pcount = count.data();
+            for (int dc = 0, sc = 0; sc < w; ++sc) {
+                *paccum += *i;
+                *pcount += 1;
+                ++i;
+                if (sc * 32 / w > dc) {
+                    ++dc;
+                    ++paccum;
+                    ++pcount;
+                }
+            }
+            sr++;
+        }
+        std::transform(begin(accum), end(accum), begin(count), pout, std::divides<uint32_t>());
+        pout += 32;
+    }
+
+
+
     CopyImage(img1, img3, DataType::uint16);
     CopyImage(img1, img4, DataType::uint16);
 

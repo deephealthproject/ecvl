@@ -5,14 +5,13 @@
 
 namespace ecvl {
 
-void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) {
-
-    if (mem_ == ShallowMemoryManager::GetInstance()) {
+void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) 
+{
+    if (IsEmpty() || !IsOwner()) {
         *this = Image(dims, elemtype, std::move(channels), colortype);
         return;
     }
     else {
-
         if (!contiguous_) {
             *this = Image(dims, elemtype, std::move(channels), colortype);
             return;
