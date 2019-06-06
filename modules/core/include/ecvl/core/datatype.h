@@ -35,6 +35,8 @@ template<ecvl::DataType> struct TypeInfo { using basetype = void; };
 #include "datatype_tuples.inc.h"
 #undef ECVL_TUPLE
 
+template<ecvl::DataType DT>
+using TypeInfo_t = typename TypeInfo<DT>::basetype;
 
 /**  @brief Function to get the number of existing DataType at compile time.
 
