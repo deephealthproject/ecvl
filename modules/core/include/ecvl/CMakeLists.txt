@@ -17,5 +17,6 @@ target_sources(ECVL_CORE
 	core/iterators_impl.inc.h
 	core/memorymanager.h
 	core/support_opencv.h
+    core/type_promotion.h
 
 )

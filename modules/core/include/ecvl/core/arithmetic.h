@@ -5,7 +5,7 @@
 
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/image.h"
-
+#include "ecvl/core/type_promotion.h"
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
@@ -144,14 +144,13 @@ template <DataType DT1, DataType DT2>
 struct StructAdd {
     static void _(Image& src1, const Image& src2, bool saturate) {
         using dsttype = typename TypeInfo<DT1>::basetype;
-
         View<DT1> vsrc1(src1);
         ConstView<DT2> vsrc2(src2);
         auto is1 = vsrc1.Begin(), es1 = vsrc1.End();
         auto is2 = vsrc2.Begin();
         for (; is1 != es1; ++is1, ++is2) {
             if (saturate) {
-                *is1 = saturate_cast<dsttype>(*is1 + *is2);
+                *is1 = saturate_cast<dsttype>(PromoteAdd(*is1, *is2));
             }
             else {
                 *is1 = static_cast<dsttype>(*is1 + *is2);
@@ -170,7 +169,7 @@ struct ImageScalarAddImpl {
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(p + value);
+                p = saturate_cast<DT>(PromoteAdd(p, value));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(p + value);
@@ -201,6 +200,7 @@ struct AddImpl<Image, ST2> {
         static constexpr Table1D<ImageScalarAddImpl, ST2> table;
         table(dst.elemtype_)(dst, src2, saturate);
     }
+
 };
 
 // Template partial-specialized proxy for Add procedure (scalar + Image)
@@ -271,7 +271,7 @@ struct StructSub {
         auto is2 = vsrc2.Begin();
         for (; is1 != es1; ++is1, ++is2) {
             if (saturate) {
-                *is1 = saturate_cast<dsttype>(*is1 - *is2);
+                *is1 = saturate_cast<dsttype>(PromoteSub(*is1, *is2));
             }
             else {
                 *is1 = static_cast<dsttype>(*is1 - *is2);
@@ -290,7 +290,7 @@ struct ImageScalarSubImpl {
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(p - value);
+                p = saturate_cast<DT>(PromoteSub(value, p));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(p - value);
@@ -309,7 +309,7 @@ struct ScalarImageSubImpl {
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(value - p);
+                p = saturate_cast<DT>(PromoteSub(value, p));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(value - p);
@@ -417,7 +417,7 @@ struct StructMul {
         auto is2 = vsrc2.Begin();
         for (; is1 != es1; ++is1, ++is2) {
             if (saturate) {
-                *is1 = saturate_cast<dsttype>(*is1 * *is2);
+                *is1 = saturate_cast<dsttype>(PromoteMul(*is1, *is2));
             }
             else {
                 *is1 = static_cast<dsttype>(*is1 * *is2);
@@ -436,7 +436,7 @@ struct ImageScalarMulImpl {
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(p * value);
+                p = saturate_cast<DT>(PromoteMul(p, value));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(p * value);
@@ -537,7 +537,12 @@ struct StructDiv {
         auto is1 = vsrc1.Begin(), es1 = vsrc1.End();
         auto is2 = vsrc2.Begin();
         for (; is1 != es1; ++is1, ++is2) {
-            *is1 = static_cast<dsttype>(*is1 / (*is2 + epsilon));
+            if (saturate) {
+                *is1 = saturate_cast<dsttype>(PromoteDiv(*is1, (*is2 + epsilon)));
+            }
+            else {
+                *is1 = static_cast<dsttype>(*is1 / (*is2 + epsilon));
+            }
         }
     }
 };
@@ -552,7 +557,7 @@ struct ImageScalarDivImpl {
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(p / value);
+                p = saturate_cast<DT>(PromoteDiv(p, value));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(p / value);
@@ -571,7 +576,7 @@ struct ScalarImageDivImpl {
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(value / (p + epsilon));
+                p = saturate_cast<DT>(PromoteDiv(value, (p + epsilon)));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(value / (p + epsilon));
