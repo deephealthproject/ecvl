@@ -3,6 +3,8 @@
 
 #include <wx/wx.h>
 
+#undef _
+
 #include "ecvl/core/image.h"
 
 namespace ecvl {
