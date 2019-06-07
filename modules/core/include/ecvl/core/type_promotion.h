@@ -10,8 +10,8 @@ namespace ecvl {
 
 template<typename T, typename U>
 struct larger_arithmetic_type {
-    static_assert(std::is_arithmetic_v<T>, "T must be arithmetic");
-    static_assert(std::is_arithmetic_v<U>, "U must be arithmetic");
+    static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
+    static_assert(std::is_arithmetic<U>::value, "U must be arithmetic");
     using type = typename std::conditional_t<(std::numeric_limits<T>::digits < std::numeric_limits<U>::digits), U, T>;
 };
 
@@ -22,9 +22,9 @@ using larger_arithmetic_type_t = typename larger_arithmetic_type<T, U>::type;
 template<typename T, typename U>
 struct arithmetic_superior_type {
     using type = typename
-        std::conditional_t<std::is_floating_point_v<T>&& std::is_floating_point_v<U>, larger_arithmetic_type_t<T, U>,
-        std::conditional_t<std::is_floating_point_v<T>, T,
-        std::conditional_t<std::is_floating_point_v<U>, U,
+        std::conditional_t<std::is_floating_point<T>::value && std::is_floating_point<U>::value, larger_arithmetic_type_t<T, U>,
+        std::conditional_t<std::is_floating_point<T>::value, T,
+        std::conditional_t<std::is_floating_point<U>::value, U,
         larger_arithmetic_type_t<T, U>>>>;
 };
 

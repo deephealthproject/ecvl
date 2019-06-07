@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
-#include <iostream>
 #include <cmath>
+#include <functional>
+#include <iostream>
 #include <numeric>
 
 #include <opencv2/core.hpp>
