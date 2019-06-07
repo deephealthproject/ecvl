@@ -356,7 +356,6 @@ public:
 
     View(Image& img)
     {
-        auto culo = DT;
         if (DT != img.elemtype_)
             throw std::runtime_error("View type is different from Image type");
         elemtype_ = img.elemtype_;
