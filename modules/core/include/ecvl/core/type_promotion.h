@@ -38,7 +38,7 @@ struct promote_superior_type {
 
     using type = typename
         std::conditional_t<(sizeof(T) == 8u || sizeof(U) == 8u), double,
-        std::conditional_t<std::is_floating_point_v<superior_type>, superior_type,
+        std::conditional_t<std::is_floating_point<superior_type>::value, superior_type,
         std::conditional_t<(std::numeric_limits<superior_type>::digits < std::numeric_limits<std::int16_t>::digits), std::int16_t,
         std::conditional_t<(std::numeric_limits<superior_type>::digits < std::numeric_limits<std::int32_t>::digits), std::int32_t,
         std::conditional_t<(std::numeric_limits<superior_type>::digits < std::numeric_limits<std::int64_t>::digits), std::int64_t, double>>>>>;
