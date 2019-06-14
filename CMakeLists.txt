@@ -173,6 +173,7 @@ set(ECVL_MODULES "")
 
 set(BUILD_ECVL_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not")
 set(BUILD_ECVL_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
+set(BUILD_ECVL_EDDLL ON CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)")
 
 if(BUILD_ECVL_CORE)
     add_library(ECVL_CORE "")
@@ -195,7 +196,7 @@ if(BUILD_ECVL_GUI)
             message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
             
             
-            target_link_libraries(ECVL_GUI ECVL_CORE ${OpenCV_LIBS} ${wxWidgets_LIBRARIES})
+            target_link_libraries(ECVL_GUI ECVL_CORE ${wxWidgets_LIBRARIES})
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
         else()
@@ -205,6 +206,29 @@ if(BUILD_ECVL_GUI)
     else()
         set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
         message(STATUS "ECVL_GUI disabled: unmet dependency ECVL_CORE")
+    endif()
+endif()
+if(BUILD_ECVL_EDDLL)
+    if(BUILD_ECVL_CORE)
+        find_package(EDDLL)
+        if(EDDLL_FOUND)
+            add_library(ECVL_EDDLL "")
+            add_subdirectory("modules/eddll")
+            include_directories("modules/eddll/include")
+            #target_include_directories(ECVL_GUI PRIVATE ${wxWidgets_INCLUDE_DIRS})
+            
+            #message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")            
+            
+            target_link_libraries(ECVL_EDDLL ECVL_CORE EDDLL)
+            set_target_properties(ECVL_EDDLL PROPERTIES FOLDER "Modules")
+            list(APPEND ECVL_MODULES "ECVL_EDDLL")
+        else()
+            set(BUILD_ECVL_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
+            message(STATUS "ECVL_EDDLL disabled: unmet dependency EDDLL")
+        endif()
+    else()
+        set(BUILD_ECVL_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
+        message(STATUS "ECVL_EDDLL disabled: unmet dependency ECVL_CORE")
     endif()
 endif()
 
@@ -218,7 +242,7 @@ gtest_discover_tests(ECVL_TESTS)
 
 add_executable(EXAMPLES "")
 add_subdirectory(examples)
-target_link_libraries(EXAMPLES ${ECVL_MODULES} ${wxWidgets_LIBRARIES})
+target_link_libraries(EXAMPLES ${ECVL_MODULES})
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL library, examples and tests
 #--------------------------------------------------------------------------------------------------------
