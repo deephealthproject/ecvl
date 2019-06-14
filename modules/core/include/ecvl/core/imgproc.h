@@ -31,7 +31,7 @@ enum class InterpolationType {
     lanczos4    /**< Lanczos interpolation over 8x8 neighborhood */
 };
 
-/** @brief Resizes an Image to a new dimension
+/** @brief Resizes an Image to the specified dimensions
 
 The function resizes Image src and outputs the result in dst.
 
