@@ -14,12 +14,12 @@ namespace ecvl {
 */
 class wxImagePanel : public wxPanel
 {
-    wxImage image;
-    wxBitmap resized;
-    int w, h;
-    void paintEvent(wxPaintEvent & evt);                
-    void OnSize(wxSizeEvent& event);                
-    void render(wxDC& dc);                         
+    wxImage image_;
+    wxBitmap resized_;
+    int w_, h_;
+    void PaintEvent(wxPaintEvent & evt);
+    void OnSize(wxSizeEvent& event);
+    void Render(wxDC& dc);
 
 public:
     wxImagePanel(wxFrame* parent) : wxPanel(parent) {}      
@@ -62,6 +62,23 @@ The image is shown with its original size.
 */
 void ImShow(const Image& img);
 
+/** @brief Convert an ECVL Image into a wxImage.
+
+@param[in] img Input ECVL Image.
+
+@return wxImage.
+*/
+
+wxImage WxFromImg(Image& img);
+
+/** @brief Convert a wxImage into an ECVL Image.
+
+@param[in] wx Input wxImage.
+
+@return ECVL Image.
+*/
+
+Image ImgFromWx(const wxImage& wx);
 } // namespace ecvl
 
 #endif // ECVL_GUI_H_
