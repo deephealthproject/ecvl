@@ -1,0 +1,30 @@
+============
+PDFTK Builder
+============
+
+Author: 
+Angus Johnson
+Copyright (c) 2005-15
+
+The PDFTK Builder binary, source code and documentation can be found at
+http://www.angusj.com/pdftkb/
+
+You are free to distribute this software under the terms of the GNU General Public License.  
+The complete text of the GNU General Public License can be found at 
+http://www.gnu.org/copyleft/gpl.html
+
+======
+PDFTK
+======
+
+Author: 
+Sid Steward <ssteward@accesspdf.com>
+Copyright (c) 2003-06
+
+The PDFTK binary, source code and documentation can be found at
+http://www.pdfhacks.com/pdftk/
+
+You are free to distribute this software under the terms of the GNU General Public License.  
+The complete text of the GNU General Public License can be found at 
+http://www.gnu.org/copyleft/gpl.html
+
