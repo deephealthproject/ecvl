@@ -112,14 +112,60 @@ endif()
 # END: static/dinamic runtime										
 #--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: ECVL_CORE (the main target)	
+#--------------------------------------------------------------------------------------------------------
+add_executable(ECVL_TESTS "") # it must be define before ECVL_CORE
+
+add_library(ECVL_CORE "")
+add_subdirectory("modules/core")
+target_include_directories(ECVL_CORE PUBLIC "modules/core/include")
+set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
+set(ECVL_MODULES ECVL_CORE)
+#--------------------------------------------------------------------------------------------------------
+# END: ECVL_CORE (the main target)	
+#--------------------------------------------------------------------------------------------------------
+
+
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: OpenCV 	
 #--------------------------------------------------------------------------------------------------------
 set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc" CACHE STRING "OpenCV required packages")
 FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
-include_directories(${OpenCV_INCLUDE_DIRS})
+target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
 # END: OpenCV 	
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: 3party
+#--------------------------------------------------------------------------------------------------------
+#In the case that DCMTK is alredy installed (begin)
+#set(ECVL_WITH_DICOM ON CACHE BOOL "Whether to build DICOM support or not")
+#if(${ECVL_WITH_DICOM})
+#    FIND_PACKAGE(DCMTK)
+#    if(${DCMTK_FOUND})
+#        include_directories(${DCMTK_INCLUDE_DIRS})
+#        add_compile_definitions(ECVL_DCMTK)
+#    else(${DCMTK_FOUND})
+#        set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not" FORCE)
+#        message(WARNING "DICOM support has been disabled because DCMTK library couldn't be found")
+#    endif(${DCMTK_FOUND})
+#endif(${ECVL_WITH_DICOM})
+#In the case that DCMTK is alredy installed (end)
+
+set(CMAKE_FOLDER 3party)
+add_subdirectory(3party)
+set(CMAKE_FOLDER "")
+
+if(${ECVL_WITH_DICOM})
+    add_compile_definitions(ECVL_WITH_DICOM)
+endif(${ECVL_WITH_DICOM})
+#--------------------------------------------------------------------------------------------------------
+# END: 3party
 #--------------------------------------------------------------------------------------------------------
 
 
@@ -166,25 +212,14 @@ set(CMAKE_FOLDER "")
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: ECVL library, examples and tests
+# BEGIN: ECVL optional libraries, examples and tests
 #--------------------------------------------------------------------------------------------------------
-add_executable(ECVL_TESTS "")
-set(ECVL_MODULES "")
+set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
+set(ECVL_BUILD_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
+set(ECVL_BUILD_EDDLL ON CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)")
 
-set(BUILD_ECVL_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not")
-set(BUILD_ECVL_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
-set(BUILD_ECVL_EDDLL ON CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)")
-
-if(BUILD_ECVL_CORE)
-    add_library(ECVL_CORE "")
-    add_subdirectory("modules/core")
-    include_directories("modules/core/include")
-    target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
-    set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
-    list(APPEND ECVL_MODULES "ECVL_CORE")
-endif()
-if(BUILD_ECVL_GUI)
-    if(BUILD_ECVL_CORE)
+if(ECVL_BUILD_GUI)
+    if(ECVL_BUILD_CORE)
         find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
         if(wxWidgets_FOUND)
             include(${wxWidgets_USE_FILE})
@@ -200,16 +235,16 @@ if(BUILD_ECVL_GUI)
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
         else()
-            set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
+            set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
             message(STATUS "ECVL_GUI disabled: unmet dependency wxWidgets")
         endif()
     else()
-        set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
+        set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
         message(STATUS "ECVL_GUI disabled: unmet dependency ECVL_CORE")
     endif()
 endif()
-if(BUILD_ECVL_EDDLL)
-    if(BUILD_ECVL_CORE)
+if(ECVL_BUILD_EDDLL)
+    if(ECVL_BUILD_CORE)
         find_package(EDDLL)
         if(EDDLL_FOUND)
             add_library(ECVL_EDDLL "")
@@ -223,11 +258,11 @@ if(BUILD_ECVL_EDDLL)
             set_target_properties(ECVL_EDDLL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDLL")
         else()
-            set(BUILD_ECVL_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
+            set(ECVL_BUILD_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
             message(STATUS "ECVL_EDDLL disabled: unmet dependency EDDLL")
         endif()
     else()
-        set(BUILD_ECVL_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
+        set(ECVL_BUILD_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
         message(STATUS "ECVL_EDDLL disabled: unmet dependency ECVL_CORE")
     endif()
 endif()
@@ -243,8 +278,12 @@ gtest_discover_tests(ECVL_TESTS)
 add_executable(EXAMPLES "")
 add_subdirectory(examples)
 target_link_libraries(EXAMPLES ${ECVL_MODULES})
+
+#find_package(DCMTK REQUIRED)
+#message(STATUS "DCMTK include dirs: ${DCMTK_INCLUDE_DIRS}")
+#target_include_directories(EXAMPLES PRIVATE ${DCMTK_INCLUDE_DIRS})
 #--------------------------------------------------------------------------------------------------------
-# END: ECVL library, examples and tests
+# END: ECVL optional libraries, examples and tests
 #--------------------------------------------------------------------------------------------------------
 
 

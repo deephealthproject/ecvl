@@ -4,12 +4,20 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include "ecvl/core/support_opencv.h"
+#include "ecvl/core/support_dcmtk.h"
 
 namespace ecvl {
 
 bool ImRead(const std::string& filename, Image& dst)
 {
     dst = MatToImage(cv::imread(filename));
+
+#ifdef ECVL_WITH_DICOM
+    if (dst.IsEmpty()) {
+        DicomRead(filename, dst);
+    }
+#endif
+
     return !dst.IsEmpty();
 }
 

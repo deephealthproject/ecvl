@@ -11,4 +11,8 @@
 #include "core/memorymanager.h"
 #include "core/support_opencv.h"
 
+#ifdef ECVL_WITH_DICOM
+#include "core/support_dcmtk.h"
+#endif
+
 #endif // ECVL_CORE_H_

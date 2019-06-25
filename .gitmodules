@@ -1,0 +1,3 @@
+[submodule "3party/dcmtk"]
+	path = 3party/dcmtk
+	url = https://github.com/DCMTK/dcmtk
