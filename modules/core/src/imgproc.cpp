@@ -246,10 +246,45 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
+    //TODO: update with the operator+ for iterators
     if (src.colortype_ == ColorType::BGR && new_type == ColorType::RGB
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
-        ECVL_ERROR_NOT_IMPLEMENTED
+        if (src.channels_ == "xyc") {
+            tmp = Image(src.dims_, src.elemtype_, "xyc", new_type);
+            auto plane0 = tmp.data_ + 0 * tmp.strides_[2];
+            auto plane1 = tmp.data_ + 1 * tmp.strides_[2];
+            auto plane2 = tmp.data_ + 2 * tmp.strides_[2];
+            if (src.contiguous_) {
+                memcpy(plane0, src.data_ + 2 * src.strides_[2], src.strides_[2] * src.elemsize_);
+                memcpy(plane1, src.data_ + 1 * src.strides_[2], src.strides_[2] * src.elemsize_);
+                memcpy(plane2, src.data_ + 0 * src.strides_[2], src.strides_[2] * src.elemsize_);
+            }
+            else {
+                ECVL_ERROR_NOT_IMPLEMENTED
+            }
+        }
+        else if (src.channels_ == "cxy") {
+            tmp = Image(src.dims_, src.elemtype_, "cxy", new_type);
+            auto plane0 = tmp.data_ + 0 * tmp.strides_[0];
+            auto plane1 = tmp.data_ + 1 * tmp.strides_[0];
+            auto plane2 = tmp.data_ + 2 * tmp.strides_[0];
+            auto i = src.Begin<uint8_t>(), e = src.End<uint8_t>();
+            for (; i != e; ++i) {
+                memcpy(plane0, i.ptr_ + 2 * src.elemsize_, src.elemsize_);
+                memcpy(plane1, i.ptr_ + 1 * src.elemsize_, src.elemsize_);
+                memcpy(plane2, i.ptr_ + 0 * src.elemsize_, src.elemsize_);
+                plane0 += 3 * src.elemsize_;
+                plane1 += 3 * src.elemsize_;
+                plane2 += 3 * src.elemsize_;
+                ++i; ++i;
+            }
+        }
+        else {
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
+        dst = std::move(tmp);
+        return;
     }
 
     ECVL_ERROR_NOT_REACHABLE_CODE

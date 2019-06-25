@@ -1,6 +1,17 @@
 /[Bb]uild*
 /[Bb]in*
 
+#############################
+# Begin: Documentation      #
+#############################
+
 /doc/html*
 /doc/latex*
 /doc/man*
+
+/doc/*.tmp
+/doc/doxygen/*.pdf
+
+#############################
+# End: Documentation        #
+#############################

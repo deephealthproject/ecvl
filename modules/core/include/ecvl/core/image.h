@@ -39,7 +39,7 @@ enum class ColorType {
 class Image {
 public:
     DataType            elemtype_;  /**< @brief Type of Image pixels, must be one of the
-                                         values available in @ref DataType.        */
+                                         values available in DataType.        */
     uint8_t             elemsize_;  /**< @brief Size (in bytes) of Image pixels.          */
     std::vector<int>    dims_;      /**< @brief Vector of Image dimensions. Each dimension
                                          is given in pixels/voxels. */
