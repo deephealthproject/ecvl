@@ -1,4 +1,4 @@
-set(ECVL_WITH_DICOM ON CACHE BOOL "Whether to build DICOM support or not")
+
 if(${ECVL_WITH_DICOM})
     
     find_package(Git QUIET)

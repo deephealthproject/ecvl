@@ -29,7 +29,7 @@
 
 cmake_minimum_required (VERSION 3.13)
 
-project (ECVL CXX)
+project (ecvl CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
@@ -116,7 +116,7 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL_CORE (the main target)	
 #--------------------------------------------------------------------------------------------------------
-add_executable(ECVL_TESTS "") # it must be define before ECVL_CORE
+add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
 
 add_library(ECVL_CORE "")
 add_subdirectory("modules/core")
@@ -156,6 +156,8 @@ target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
 #    endif(${DCMTK_FOUND})
 #endif(${ECVL_WITH_DICOM})
 #In the case that DCMTK is alredy installed (end)
+
+set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 
 set(CMAKE_FOLDER 3party)
 add_subdirectory(3party)
@@ -254,7 +256,7 @@ if(ECVL_BUILD_EDDLL)
             
             #message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")            
             
-            target_link_libraries(ECVL_EDDLL ECVL_CORE EDDLL)
+            target_link_libraries(ECVL_EDDLL ECVL_CORE eddll)
             set_target_properties(ECVL_EDDLL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDLL")
         else()
@@ -278,10 +280,6 @@ gtest_discover_tests(ECVL_TESTS)
 add_executable(EXAMPLES "")
 add_subdirectory(examples)
 target_link_libraries(EXAMPLES ${ECVL_MODULES})
-
-#find_package(DCMTK REQUIRED)
-#message(STATUS "DCMTK include dirs: ${DCMTK_INCLUDE_DIRS}")
-#target_include_directories(EXAMPLES PRIVATE ${DCMTK_INCLUDE_DIRS})
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL optional libraries, examples and tests
 #--------------------------------------------------------------------------------------------------------
