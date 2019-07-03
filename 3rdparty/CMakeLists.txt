@@ -1,18 +1,21 @@
-
-if(${ECVL_WITH_DICOM})
-    
-    find_package(Git QUIET)
+macro(ecvl_update_3rdparty SUBMODULE)
     if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    # Update submodules as needed
-        message(STATUS "DCMTK update")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive dcmtk
+    # Update submodule as needed
+        message(STATUS "${SUBMODULE} update")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive "${SUBMODULE}"
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                         RESULT_VARIABLE GIT_SUBMOD_RESULT)
         if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout DCMTK submodule")
+            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout ${SUBMODULE} submodule")
         endif()
     endif()
+endmacro()
 
+
+if(${ECVL_WITH_DICOM})
+    
+    ecvl_update_3rdparty(dcmtk)
+    
     SET(BUILD_APPS OFF CACHE INTERNAL "" FORCE)
     SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
     SET(BUILD_SINGLE_SHARED_LIBRARY OFF CACHE INTERNAL "" FORCE)
@@ -86,9 +89,9 @@ if(${ECVL_WITH_DICOM})
     SET(WITH_ZLIBINC "" CACHE INTERNAL "" FORCE)
     SET(DCMTK_ENABLE_LFS lfs CACHE INTERNAL "" FORCE)
 
-    set(CMAKE_FOLDER 3party/dcmtk)
+    set(CMAKE_FOLDER 3rdparty/dcmtk)
     add_subdirectory(dcmtk)
-    set(CMAKE_FOLDER 3party)
+    set(CMAKE_FOLDER 3rdparty)
 
     set(DCMTK_LIBS ofstd;oflog;dcmdata;dcmimgle;dcmimage;dcmjpeg)
     
@@ -101,8 +104,62 @@ if(${ECVL_WITH_DICOM})
     endforeach()
     message(STATUS "DCMTK incldue dure: ${DCMTK_INCLUDE_DIRS}")
     target_include_directories(ECVL_CORE PUBLIC ${DCMTK_INCLUDE_DIRS}) 
-    target_include_directories(ECVL_CORE PUBLIC "${PROJECT_BINARY_DIR}/3party/dcmtk/config/include") # for osconfig.h
+    target_include_directories(ECVL_CORE PUBLIC "${PROJECT_BINARY_DIR}/3rdparty/dcmtk/config/include") # for osconfig.h
     
     target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_dcmtk.h" "../modules/core/src/support_dcmtk.cpp")
 
-endif(${ECVL_WITH_DICOM})
+endif(${ECVL_WITH_DICOM})  
+    
+
+if(${ECVL_WITH_OPENGL})
+
+    ecvl_update_3rdparty(glm)
+    
+    if (ECVL_STATIC)
+        SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
+        SET(BUILD_STATIC_LIBS ON CACHE INTERNAL "" FORCE)        
+    else()
+        SET(BUILD_SHARED_LIBS ON CACHE INTERNAL "" FORCE)
+        SET(BUILD_STATIC_LIBS OFF CACHE INTERNAL "" FORCE)        
+    endif()
+    SET(GLM_DISABLE_AUTO_DETECTION OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_QUIET OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_CXX_11 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_CXX_14 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_CXX_17 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_CXX_20 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_CXX_98 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_FAST_MATH OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_LANG_EXTENSIONS OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_AVX OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_AVX2 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_SSE2 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_SSE3 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_SSE4_1 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_SSE4_2 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_ENABLE_SIMD_SSSE3 OFF CACHE INTERNAL "" FORCE)
+    SET(GLM_TEST_FORCE_PURE OFF CACHE INTERNAL "" FORCE)
+    
+    set(CMAKE_FOLDER 3rdparty/glm)
+    add_subdirectory(glm)
+    set(CMAKE_FOLDER 3rdparty)
+    target_link_libraries(ECVL_CORE glm)
+
+endif(${ECVL_WITH_OPENGL})
+
+
+if(${ECVL_TESTS})
+
+    ecvl_update_3rdparty(googletest)
+
+    SET(BUILD_GMOCK OFF CACHE INTERNAL "" FORCE)
+    
+    set(CMAKE_FOLDER 3rdparty/googletest)
+    add_subdirectory(googletest)
+    set(CMAKE_FOLDER 3rdparty)
+    
+    include(GoogleTest)
+    
+endif(${ECVL_TESTS})
+

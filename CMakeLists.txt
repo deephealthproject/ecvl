@@ -116,7 +116,10 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL_CORE (the main target)	
 #--------------------------------------------------------------------------------------------------------
-add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
+set(ECVL_TESTS ON CACHE BOOL "Whether to build ECVL tests or not")
+if(${ECVL_TESTS})
+    add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
+endif()
 
 add_library(ECVL_CORE "")
 add_subdirectory("modules/core")
@@ -141,7 +144,7 @@ target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: 3party
+# BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
 #In the case that DCMTK is alredy installed (begin)
 #set(ECVL_WITH_DICOM ON CACHE BOOL "Whether to build DICOM support or not")
@@ -158,56 +161,64 @@ target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
 #In the case that DCMTK is alredy installed (end)
 
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
+set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not")
 
-set(CMAKE_FOLDER 3party)
-add_subdirectory(3party)
+find_package(Git QUIET)
+
+set(CMAKE_FOLDER 3rdparty)
+add_subdirectory(3rdparty)
 set(CMAKE_FOLDER "")
 
 if(${ECVL_WITH_DICOM})
     add_compile_definitions(ECVL_WITH_DICOM)
 endif(${ECVL_WITH_DICOM})
+
+if(${ECVL_WITH_OPENGL})
+    add_compile_definitions(ECVL_WITH_OPENGL)
+endif(${ECVL_WITH_OPENGL})
+
 #--------------------------------------------------------------------------------------------------------
-# END: 3party
+# END: 3rdparty
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: download and install GTest
 #--------------------------------------------------------------------------------------------------------
-set(CMAKE_FOLDER GTest)
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
-if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
-
-# Prevent overriding the parent project's compiler/linker
-# settings on Windows
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-                 EXCLUDE_FROM_ALL)
-
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
-endif()
-
-include(GoogleTest)
-set(CMAKE_FOLDER "")
+#set(CMAKE_FOLDER GTest)
+#configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+#execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+#  RESULT_VARIABLE result
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+#if(result)
+#  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+#endif()
+#execute_process(COMMAND ${CMAKE_COMMAND} --build .
+#  RESULT_VARIABLE result
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
+#if(result)
+#  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+#endif()
+#
+## Prevent overriding the parent project's compiler/linker
+## settings on Windows
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#
+## Add googletest directly to our build. This defines
+## the gtest and gtest_main targets.
+#add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
+#                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
+#                 EXCLUDE_FROM_ALL)
+#
+## The gtest/gtest_main targets carry header search path
+## dependencies automatically when using CMake 2.8.11 or
+## later. Otherwise we have to add them here ourselves.
+#if (CMAKE_VERSION VERSION_LESS 2.8.11)
+#  include_directories("${gtest_SOURCE_DIR}/include")
+#endif()
+#
+#include(GoogleTest)
+#set(CMAKE_FOLDER "")
 #--------------------------------------------------------------------------------------------------------
 # END: download and install GTest
 #--------------------------------------------------------------------------------------------------------
@@ -234,6 +245,9 @@ if(ECVL_BUILD_GUI)
             
             
             target_link_libraries(ECVL_GUI ECVL_CORE ${wxWidgets_LIBRARIES})
+            if(${ECVL_WITH_OPENGL})
+                target_link_libraries(ECVL_GUI glm)
+            endif(${ECVL_WITH_OPENGL})
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
         else()
@@ -269,13 +283,13 @@ if(ECVL_BUILD_EDDLL)
     endif()
 endif()
 
-target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest_main)
-
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
 
+if (${ECVL_TESTS})
+target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest_main)
 enable_testing()
-
 gtest_discover_tests(ECVL_TESTS)
+endif()
 
 add_executable(EXAMPLES "")
 add_subdirectory(examples)
