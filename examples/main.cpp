@@ -17,6 +17,9 @@ int main(void)
     using namespace ecvl;
     using namespace filesystem;
 
+    Image dicom_image;
+    ImRead("C:\\Users\\Stefano\\Desktop\\JPEG2000\\image - 000001.dcm", dicom_image);
+
     try {
 
         Image x({ 5, 4, 3 }, DataType::uint8, "xyc", ColorType::RGB);
