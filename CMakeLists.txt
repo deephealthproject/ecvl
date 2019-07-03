@@ -147,7 +147,7 @@ target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
-set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not")
+set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
 
 find_package(Git QUIET)
 #--------------------------------------------------------------------------------------------------------
@@ -278,9 +278,10 @@ endif(${ECVL_WITH_OPENGL})
 # BEGIN: ECVL examples and tests
 #--------------------------------------------------------------------------------------------------------
 if (${ECVL_TESTS})
-target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest_main)
-enable_testing()
-gtest_discover_tests(ECVL_TESTS)
+    target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main)
+    enable_testing()
+    #gtest_discover_tests(ECVL_TESTS)
+    gtest_add_tests(TARGET ECVL_TESTS)
 endif()
 
 add_executable(EXAMPLES "")
