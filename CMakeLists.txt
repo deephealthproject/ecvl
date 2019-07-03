@@ -146,37 +146,10 @@ target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
-#In the case that DCMTK is alredy installed (begin)
-#set(ECVL_WITH_DICOM ON CACHE BOOL "Whether to build DICOM support or not")
-#if(${ECVL_WITH_DICOM})
-#    FIND_PACKAGE(DCMTK)
-#    if(${DCMTK_FOUND})
-#        include_directories(${DCMTK_INCLUDE_DIRS})
-#        add_compile_definitions(ECVL_DCMTK)
-#    else(${DCMTK_FOUND})
-#        set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not" FORCE)
-#        message(WARNING "DICOM support has been disabled because DCMTK library couldn't be found")
-#    endif(${DCMTK_FOUND})
-#endif(${ECVL_WITH_DICOM})
-#In the case that DCMTK is alredy installed (end)
-
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not")
 
 find_package(Git QUIET)
-
-set(CMAKE_FOLDER 3rdparty)
-add_subdirectory(3rdparty)
-set(CMAKE_FOLDER "")
-
-if(${ECVL_WITH_DICOM})
-    add_compile_definitions(ECVL_WITH_DICOM)
-endif(${ECVL_WITH_DICOM})
-
-if(${ECVL_WITH_OPENGL})
-    add_compile_definitions(ECVL_WITH_OPENGL)
-endif(${ECVL_WITH_OPENGL})
-
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
 #--------------------------------------------------------------------------------------------------------
@@ -225,7 +198,7 @@ endif(${ECVL_WITH_OPENGL})
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: ECVL optional libraries, examples and tests
+# BEGIN: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
 set(ECVL_BUILD_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
@@ -239,15 +212,11 @@ if(ECVL_BUILD_GUI)
             add_library(ECVL_GUI "")
             add_subdirectory("modules/gui")
             include_directories("modules/gui/include")
-            #target_include_directories(ECVL_GUI PRIVATE ${wxWidgets_INCLUDE_DIRS})
             
             message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
             
-            
             target_link_libraries(ECVL_GUI ECVL_CORE ${wxWidgets_LIBRARIES})
-            if(${ECVL_WITH_OPENGL})
-                target_link_libraries(ECVL_GUI glm)
-            endif(${ECVL_WITH_OPENGL})
+
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
         else()
@@ -266,10 +235,7 @@ if(ECVL_BUILD_EDDLL)
             add_library(ECVL_EDDLL "")
             add_subdirectory("modules/eddll")
             include_directories("modules/eddll/include")
-            #target_include_directories(ECVL_GUI PRIVATE ${wxWidgets_INCLUDE_DIRS})
-            
-            #message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")            
-            
+           
             target_link_libraries(ECVL_EDDLL ECVL_CORE eddll)
             set_target_properties(ECVL_EDDLL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDLL")
@@ -284,7 +250,33 @@ if(ECVL_BUILD_EDDLL)
 endif()
 
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
+#--------------------------------------------------------------------------------------------------------
+# END: ECVL optional libraries
+#--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: 3rdparty
+#--------------------------------------------------------------------------------------------------------
+set(CMAKE_FOLDER 3rdparty)
+add_subdirectory(3rdparty)
+set(CMAKE_FOLDER "")
+
+if(${ECVL_WITH_DICOM})
+    add_compile_definitions(ECVL_WITH_DICOM)
+endif(${ECVL_WITH_DICOM})
+
+if(${ECVL_WITH_OPENGL})
+    add_compile_definitions(ECVL_WITH_OPENGL)
+endif(${ECVL_WITH_OPENGL})
+#--------------------------------------------------------------------------------------------------------
+# END: 3rdparty
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: ECVL examples and tests
+#--------------------------------------------------------------------------------------------------------
 if (${ECVL_TESTS})
 target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest_main)
 enable_testing()
@@ -295,7 +287,7 @@ add_executable(EXAMPLES "")
 add_subdirectory(examples)
 target_link_libraries(EXAMPLES ${ECVL_MODULES})
 #--------------------------------------------------------------------------------------------------------
-# END: ECVL optional libraries, examples and tests
+# END: ECVL examples and tests
 #--------------------------------------------------------------------------------------------------------
 
 
