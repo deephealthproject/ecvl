@@ -4,7 +4,10 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include "ecvl/core/support_opencv.h"
+
+#ifdef ECVL_WITH_DICOM
 #include "ecvl/core/support_dcmtk.h"
+#endif
 
 namespace ecvl {
 
