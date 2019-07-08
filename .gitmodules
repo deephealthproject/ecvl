@@ -1,6 +1,6 @@
 [submodule "3rdparty/dcmtk"]
 	path = 3rdparty/dcmtk
-	url = https://github.com/DCMTK/dcmtk
+	url = https://github.com/DCMTK/dcmtk.git
 [submodule "3rdparty/glm"]
 	path = 3rdparty/glm
 	url = https://github.com/g-truc/glm.git

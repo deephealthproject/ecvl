@@ -78,7 +78,7 @@ namespace ecvl {
             switch (color_type) {
 
             case ColorType::RGB:     dims.push_back(3);     channels += 'c';    break;
-            case ColorType::GRAY:    dims.push_back(1);     channels += 'c';    break;
+            case ColorType::GRAY:    dims.push_back(1);     channels += "xyzc";    break;
             default:                                                            break;
 
             }
