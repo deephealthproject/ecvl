@@ -14,8 +14,6 @@
 
 namespace ecvl {
     // settings
-    const unsigned int SCR_WIDTH = 800;
-    const unsigned int SCR_HEIGHT = 800;
 
     class BasicGLPane : public wxGLCanvas
     {
@@ -294,7 +292,7 @@ namespace ecvl {
         ourShader.setMat4("view", view);
 
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(35.f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);  // projective
+        projection = glm::perspective(glm::radians(35.f), (float)GetSize().x / (float)GetSize().y, 0.1f, 100.0f);  // projective
         //projection = glm::ortho(-1.f, 1.f, -1.f, 1.f);                                                          // orthographic
         ourShader.setMat4("projection", projection);
 
