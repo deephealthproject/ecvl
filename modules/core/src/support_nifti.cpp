@@ -92,7 +92,7 @@ namespace ecvl {
             // Copia i pixel
             if (nim->datatype == DT_BINARY) {
                 // leggi bit a bit
-                throw std::runtime_error("Not implemented.\n")
+                throw std::runtime_error("Not implemented.\n");
             }
             else if (nim->datatype == DT_RGB) {
                 // leggi un piano alla volta

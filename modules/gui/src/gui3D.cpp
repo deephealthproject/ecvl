@@ -202,7 +202,8 @@ namespace ecvl {
         if (!gladLoadGL())
             std::cout << "Failed to initialize GLAD" << std::endl;
 
-        std::cout << GLVersion.major << "." << GLVersion.minor << std::endl;
+        //std::cout << GLVersion.major << "." << GLVersion.minor << std::endl;
+        
         timer.Start(1000 / fps);
         // set up vertex data (and buffer(s)) and configure vertex attributes
         // ------------------------------------------------------------------
