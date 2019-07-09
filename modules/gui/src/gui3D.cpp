@@ -19,7 +19,7 @@ namespace ecvl {
     // settings
 
 
-    template <DataType DT> // tipo di src
+    template <DataType DT> // src type
     struct NormalizeToUint8Str {
 
         static void _(const Image& src, Image& dst) {
@@ -243,8 +243,8 @@ namespace ecvl {
         }
 
         Image uint8_conversion;
-        const Image& img = (src_img.elemtype_ == DataType::uint8) ? src_img : (NormalizeToUint8(src_img, uint8_conversion), uint8_conversion);
-
+        NormalizeToUint8(src_img, uint8_conversion);
+        const Image& img = uint8_conversion;
 
         //std::cout << GLVersion.major << "." << GLVersion.minor << std::endl;
         
@@ -295,7 +295,17 @@ namespace ecvl {
             dd = img.spacings_[2];
         }
 
-        glm::mat4 scala = glm::scale(glm::mat4(1.f), glm::vec3(((float)width / width) / dw, ((float)width / height) / dh, ((float)width / depth) / dd));
+        float scale_w = (1.f / width) / dw;
+        float scale_h = (1.f / height) / dh;
+        float scale_d = (1.f / depth) / dd;
+
+        float scale_min = std::min(std::min(scale_w, scale_h), scale_d);
+        float coeff = 1 / scale_min;
+        scale_w *= coeff;
+        scale_h *= coeff;
+        scale_d *= coeff;
+
+        glm::mat4 scala = glm::scale(glm::mat4(1.f), glm::vec3(scale_w, scale_h, scale_d));
 
         // Going 3D
         glGenTextures(1, &texture3D);
@@ -317,33 +327,37 @@ namespace ecvl {
         unsigned char* data = new unsigned char[img.dims_[0] * img.dims_[1] * img.dims_[2] * 4];
 
 
-        // !!! Only works with DataType::uint8 !!!
-        if (img.colortype_ == ColorType::RGB)
-        {
-            for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
-                memcpy(data + i * 4, img.data_ + i * 3, 3);
-                if (data[i * 4 + 0] < black_threshold && data[i * 4 + 1] < black_threshold && data[i * 4 + 2] < black_threshold) {
-                    data[i * 4 + 3] = 0;
-                }
-                else {
-                    data[i * 4 + 3] = data[i * 4];
-                    //data[i * 4 + 3] = alpha;
-                }
-            }
-        }
-        else if (img.colortype_ == ColorType::GRAY)
+        // !!! Only works with ColorType::GRAY !!!
+        if (img.colortype_ == ColorType::GRAY)
         {
             for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
                 data[i * 4] = img.data_[i];
                 data[i * 4 + 1] = img.data_[i];
                 data[i * 4 + 2] = img.data_[i];
                 data[i * 4 + 3] = img.data_[i];
-//                data[i * 4 + 3] = alpha;
+                //                data[i * 4 + 3] = alpha;
                 if (data[i * 4 + 0] < black_threshold) {
                     data[i * 4 + 3] = 0;
                 }
             }
         }
+        else {
+            throw std::runtime_error("Not implemented.\n");
+        }
+        //if (img.colortype_ == ColorType::RGB)
+        //{
+        //    for (int i = 0; i < img.dims_[1] * img.dims_[2] * img.dims_[3]; i++) {
+        //        memcpy(data + i * 4, img.data_ + i * 3, 3);
+        //        if (data[i * 4 + 0] < black_threshold && data[i * 4 + 1] < black_threshold && data[i * 4 + 2] < black_threshold) {
+        //            data[i * 4 + 3] = 0;
+        //        }
+        //        else {
+        //            data[i * 4 + 3] = data[i * 4];
+        //            //data[i * 4 + 3] = alpha;
+        //        }
+        //    }
+        //}
+
 
         glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, width, height, depth, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         delete[] data;
