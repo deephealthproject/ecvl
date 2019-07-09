@@ -3,7 +3,9 @@
 #include "ecvl/gui.h"
 
 #include <ctime>
+
 #include <iostream>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,9 +13,45 @@
 #include <opencv2/core.hpp>
 
 #include "ecvl/gui/shader.h"
+#include "ecvl/core/datatype_matrix.h"
 
 namespace ecvl {
     // settings
+
+
+    template <DataType DT> // tipo di src
+    struct NormalizeToUint8Str {
+
+        static void _(const Image& src, Image& dst) {
+
+            dst.Create(src.dims_, DataType::uint8, src.channels_, src.colortype_, src.spacings_);
+
+            ConstView<DT> src_v(src);
+            View<DataType::uint8> dst_v(dst);
+
+            // find max and min
+            TypeInfo_t<DT> max = *std::max_element(src_v.Begin(), src_v.End());
+            TypeInfo_t<DT> min = *std::min_element(src_v.Begin(), src_v.End());
+
+            auto dst_it = dst_v.Begin();
+            auto src_it = src_v.Begin();
+            auto src_end = src_v.End();
+            for (; src_it != src_end; ++src_it, ++dst_it) {
+                (*dst_it) = (((*src_it) - min) * 255) / (max - min);
+            }
+
+        }
+
+    };
+
+    void NormalizeToUint8(const Image& src, Image& dst) {
+
+        Table1D<NormalizeToUint8Str> table;
+        table(src.elemtype_)(src, dst);
+
+    }
+
+
 
     class BasicGLPane : public wxGLCanvas
     {
@@ -167,7 +205,7 @@ namespace ecvl {
 
         // render
         // ------
-        glClearColor(0.f, 0.f, 0.f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glBindVertexArray(VAO3D);
@@ -192,15 +230,21 @@ namespace ecvl {
         SwapBuffers();
     }
 
-    BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& img) :
+    BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
         wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE), timer(this, wxID_ANY)
     {
         m_context = new wxGLContext(this);
 
         SetCurrent(*m_context);
 
-        if (!gladLoadGL())
+        if (!gladLoadGL()) {
             std::cout << "Failed to initialize GLAD" << std::endl;
+            return;
+        }
+
+        Image uint8_conversion;
+        const Image& img = (src_img.elemtype_ == DataType::uint8) ? src_img : (NormalizeToUint8(src_img, uint8_conversion), uint8_conversion);
+
 
         //std::cout << GLVersion.major << "." << GLVersion.minor << std::endl;
         
@@ -237,11 +281,21 @@ namespace ecvl {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices3D), indices3D, GL_STATIC_DRAW);
 
-        int depth = img.dims_[2];
         int width = img.dims_[0];
         int height = img.dims_[1];
+        int depth = img.dims_[2];
 
-        glm::mat4 scala = glm::scale(glm::mat4(1.f), glm::vec3((float)width / width, (float)width / height, (float)width / depth));
+        float dw = 1;
+        float dh = 1;
+        float dd = 1;
+
+        if (img.spacings_.size() >= 3) {
+            dw = img.spacings_[0];
+            dh = img.spacings_[1];
+            dd = img.spacings_[2];
+        }
+
+        glm::mat4 scala = glm::scale(glm::mat4(1.f), glm::vec3(((float)width / width) / dw, ((float)width / height) / dh, ((float)width / depth) / dd));
 
         // Going 3D
         glGenTextures(1, &texture3D);
@@ -262,6 +316,7 @@ namespace ecvl {
         unsigned char alpha = 100;
         unsigned char* data = new unsigned char[img.dims_[0] * img.dims_[1] * img.dims_[2] * 4];
 
+
         // !!! Only works with DataType::uint8 !!!
         if (img.colortype_ == ColorType::RGB)
         {
@@ -272,7 +327,7 @@ namespace ecvl {
                 }
                 else {
                     data[i * 4 + 3] = data[i * 4];
-                    //data[i * 4 + 3] = 100;
+                    //data[i * 4 + 3] = alpha;
                 }
             }
         }
@@ -283,6 +338,7 @@ namespace ecvl {
                 data[i * 4 + 1] = img.data_[i];
                 data[i * 4 + 2] = img.data_[i];
                 data[i * 4 + 3] = img.data_[i];
+//                data[i * 4 + 3] = alpha;
                 if (data[i * 4 + 0] < black_threshold) {
                     data[i * 4 + 3] = 0;
                 }

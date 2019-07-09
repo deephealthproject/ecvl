@@ -34,8 +34,10 @@ namespace ecvl {
 
             // Convert nifti_image into ecvl::Image
             std::vector<int> dims;
+            std::vector<float> spacings;
             for (int i = 0; i < ndims; i++) {
                 dims.push_back(nim->dim[i + 1]);
+                spacings.push_back(nim->pixdim[i + 1]);
             }
 
             DataType data_type;
@@ -54,12 +56,12 @@ namespace ecvl {
             case  DT_INT64:            data_type = DataType::int64;     break;              /* long long (64 bits)          */
             //case  DT_UINT64:           data_type = DataType::uint64;    break;                /* unsigned long long (64 bits) */
             case  DT_RGBA32:           data_type = DataType::uint8;     break;               /* 4 byte RGBA (32 bits/voxel)  */                       // attenzione perché sono 4 canali
-            // case  DT_COMPLEX256:       data_type = DataType::none;      break;                  /* long double pair (256 bits)  */                    // non supportato
-            // case  DT_COMPLEX128:       data_type = DataType::none;      break;                  /* double pair (128 bits)       */                    // non supportato
-            // case  DT_FLOAT128:         data_type = DataType::none;      break;                /* long double (128 bits)       */                      // non supportato
-            // case  DT_UNKNOWN:          data_type = DataType::none;      break;               /* what it says, dude           */
-            // case  DT_ALL:              data_type = DataType::none;      break;           /* not very useful (?)          */
-            // case  DT_COMPLEX:          data_type = DataType::none;      break;               /* complex (64 bits/voxel)      */                       // non supportato
+            //case  DT_COMPLEX256:       data_type = DataType::none;      break;                  /* long double pair (256 bits)  */                    // non supportato
+            //case  DT_COMPLEX128:       data_type = DataType::none;      break;                  /* double pair (128 bits)       */                    // non supportato
+            //case  DT_FLOAT128:         data_type = DataType::none;      break;                /* long double (128 bits)       */                      // non supportato
+            //case  DT_UNKNOWN:          data_type = DataType::none;      break;               /* what it says, dude           */
+            //case  DT_ALL:              data_type = DataType::none;      break;           /* not very useful (?)          */
+            //case  DT_COMPLEX:          data_type = DataType::none;      break;               /* complex (64 bits/voxel)      */                       // non supportato
             default:                   throw runtime_error("Unsupported data type.\n");
 
             }
@@ -87,7 +89,7 @@ namespace ecvl {
 
             }
 
-            dst.Create(dims, data_type, channels, color_type);
+            dst.Create(dims, data_type, channels, color_type, spacings);
 
             // Copia i pixel
             if (nim->datatype == DT_BINARY) {

@@ -5,15 +5,15 @@
 
 namespace ecvl {
 
-void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) 
+void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings)
 {
     if (IsEmpty() || !IsOwner()) {
-        *this = Image(dims, elemtype, std::move(channels), colortype);
+        *this = Image(dims, elemtype, std::move(channels), colortype, spacings);
         return;
     }
     else {
         if (!contiguous_) {
-            *this = Image(dims, elemtype, std::move(channels), colortype);
+            *this = Image(dims, elemtype, std::move(channels), colortype, spacings);
             return;
         }
         else {
@@ -30,6 +30,7 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
             elemtype_ = elemtype;
             elemsize_ = DataTypeSize(elemtype_);
             dims_ = dims;   // A check could be added to save this copy
+            spacings_ = spacings;  
             channels_ = std::move(channels);
             colortype_ = colortype;
             datasize_ = new_datasize;
@@ -47,6 +48,8 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
 
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels)
 {
+    // TODO consider spacings
+
     // Check if rearranging is required
     if (src.channels_ == channels) {
         // if not, check if dst==src
@@ -93,6 +96,8 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
 void CopyImage(const Image& src, Image& dst, DataType new_type)
 {
+    // TODO consider spacings
+
     if (src.elemtype_ == DataType::none)
         throw std::runtime_error("Why should you copy a Image with none DataType into another?");
 
