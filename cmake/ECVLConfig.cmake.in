@@ -24,4 +24,4 @@ if (${ECVL_BUILD_GUI})
     endif()
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/ECVLTargets.cmake")
+include("${CMAKE_INSTALL_PREFIX}/ECVLTargets.cmake")
