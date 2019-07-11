@@ -70,25 +70,6 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-# Removed to allow automatic tests without EDDLL
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: add EDDLL dependency (still Windows specific)												
-#--------------------------------------------------------------------------------------------------------
-#set(ECVL_EDDLL_INSTALL_PATH "" CACHE PATH "")
-#
-#if(ECVL_EDDLL_INSTALL_PATH STREQUAL "")
-#	message(ERROR " EDDLL install path must be specified")
-#endif()
-#
-## TODO: handle the case in which EDDLL is dynamic compiled
-#target_link_libraries(ECVL debug "${ECVL_EDDLL_INSTALL_PATH}/Debug/lib/static/EDDLL.lib")
-##message(STATUS "${ECVL_EDDLL_INSTALL_PATH}/Debug/lib/static/EDDLL.lib")						 
-#target_link_libraries(ECVL optimized "${ECVL_EDDLL_INSTALL_PATH}/Release/lib/static/EDDLL.lib")
-##message(STATUS "${ECVL_EDDLL_INSTALL_PATH}/Release/lib/static/EDDLL.lib")
-#include_directories("${ECVL_EDDLL_INSTALL_PATH}/include")
-#--------------------------------------------------------------------------------------------------------
-# END: add EDDLL dependency	(still Windows specific)											
-#--------------------------------------------------------------------------------------------------------
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: static/dinamic runtime 												
@@ -123,9 +104,13 @@ endif()
 
 add_library(ECVL_CORE "")
 add_subdirectory("modules/core")
-target_include_directories(ECVL_CORE PUBLIC "modules/core/include")
+target_include_directories(ECVL_CORE PUBLIC	
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules/core/include>  
+	$<INSTALL_INTERFACE:include>
+)
 set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
 set(ECVL_MODULES ECVL_CORE)
+set(ECVL_MODULES_DIRS core)
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)	
 #--------------------------------------------------------------------------------------------------------
@@ -137,7 +122,7 @@ set(ECVL_MODULES ECVL_CORE)
 set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc" CACHE STRING "OpenCV required packages")
 FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
+target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
 # END: OpenCV 	
 #--------------------------------------------------------------------------------------------------------
@@ -215,10 +200,12 @@ if(ECVL_BUILD_GUI)
             
             message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
             
-            target_link_libraries(ECVL_GUI ECVL_CORE ${wxWidgets_LIBRARIES})
+            target_link_libraries(ECVL_GUI PUBLIC ECVL_CORE ${wxWidgets_LIBRARIES})
+            target_include_directories(ECVL_GUI PUBLIC ${wxWidgets_INCLUDE_DIRS})
 
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
+            list(APPEND ECVL_MODULES_DIRS "gui")
         else()
             set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
             message(STATUS "ECVL_GUI disabled: unmet dependency wxWidgets")
@@ -239,6 +226,7 @@ if(ECVL_BUILD_EDDLL)
             target_link_libraries(ECVL_EDDLL ECVL_CORE eddll)
             set_target_properties(ECVL_EDDLL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDLL")
+            list(APPEND ECVL_MODULES_DIRS "eddll")
         else()
             set(ECVL_BUILD_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
             message(STATUS "ECVL_EDDLL disabled: unmet dependency EDDLL")
@@ -293,50 +281,6 @@ target_link_libraries(EXAMPLES ${ECVL_MODULES})
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: pthreads setup for windows os												
-#--------------------------------------------------------------------------------------------------------
-#
-## The following commands should be removed when pthread linux 
-## specific calls will be replaced by thread c++ standard calls 
-#if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-#	set(ECVL_PTHREADS_INSTALL_PATH "$ENV{PTHREADS_ROOT}" CACHE PATH "")
-#	
-#	if(ECVL_PTHREADS_INSTALL_PATH STREQUAL "")
-#		message(ERROR " pthreds install path must be specified under Windows")
-#	endif()
-#	
-#	target_link_libraries(ECVL debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3d.lib"
-#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
-#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
-#								 
-#	target_link_libraries(ECVL optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3.lib"
-#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
-#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
-#								 
-#	include_directories("${ECVL_PTHREADS_INSTALL_PATH}/include")
-#	
-#	# The following command should be moved elsewhere
-#	if(MSVC)
-#		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-#	endif()
-#endif()
-#--------------------------------------------------------------------------------------------------------
-# END: pthreads setup for windows os												
-#--------------------------------------------------------------------------------------------------------
-
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: pthreads setup for linux os												
-#--------------------------------------------------------------------------------------------------------
-#if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-#    find_package(Threads REQUIRED)
-#    target_link_libraries(ECVL Threads::Threads)
-#endif()
-#--------------------------------------------------------------------------------------------------------
-# END: pthreads setup for linux os												
-#--------------------------------------------------------------------------------------------------------
-
-
-#--------------------------------------------------------------------------------------------------------
 # BEGIN: Snippets
 #--------------------------------------------------------------------------------------------------------
 include(snippets/CMakeLists.txt)
@@ -352,3 +296,33 @@ ENDFOREACH()
 # END: Snippets
 #--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Install
+#--------------------------------------------------------------------------------------------------------
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    message(STATUS "....")
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
+endif()
+install(TARGETS ${ECVL_MODULES}
+		EXPORT ECVLTargets
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib/static
+		)
+install(EXPORT ECVLTargets DESTINATION ${CMAKE_INSTALL_PREFIX})
+foreach(module_name ${ECVL_MODULES_DIRS})
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/modules/${module_name}/include
+		DESTINATION "."
+        FILES_MATCHING PATTERN "*.h")
+endforeach()
+message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")   
+
+#install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in
+#        DESTINATION ${CMAKE_INSTALL_PREFIX})     
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_INSTALL_PREFIX}/ECVLConfig.cmake)
+#--------------------------------------------------------------------------------------------------------
+# END: Install
+#--------------------------------------------------------------------------------------------------------
+        

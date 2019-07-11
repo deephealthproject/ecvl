@@ -96,15 +96,23 @@ if(${ECVL_WITH_DICOM})
     set(DCMTK_LIBS ofstd;oflog;dcmdata;dcmimgle;dcmimage;dcmjpeg)
     
     message(STATUS "DCMTK libs: ${DCMTK_LIBS}")
-    target_link_libraries(ECVL_CORE ${DCMTK_LIBS})
+    target_link_libraries(ECVL_CORE PUBLIC ${DCMTK_LIBS})
 
     set(DCMTK_INCLUDE_DIRS "")
     foreach(DCMTK_LIB config ${DCMTK_LIBS})
         list(APPEND DCMTK_INCLUDE_DIRS "dcmtk/${DCMTK_LIB}/include")
     endforeach()
     message(STATUS "DCMTK incldue dure: ${DCMTK_INCLUDE_DIRS}")
-    target_include_directories(ECVL_CORE PUBLIC ${DCMTK_INCLUDE_DIRS}) 
-    target_include_directories(ECVL_CORE PUBLIC "${PROJECT_BINARY_DIR}/3rdparty/dcmtk/config/include") # for osconfig.h
+    
+    foreach(dcmtk_include_dir ${DCMTK_INCLUDE_DIRS})
+        target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${dcmtk_include_dir}> $<INSTALL_INTERFACE:include> )
+    endforeach()
+    target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/3rdparty/dcmtk/config/include> $<INSTALL_INTERFACE:include> ) # for osconfig.h
+    #
+    #target_include_directories(ECVL_CORE PUBLIC	
+    #    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
+    #    $<INSTALL_INTERFACE:include>    
+    #)    
     
     target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_dcmtk.h" "../modules/core/src/support_dcmtk.cpp")
 
@@ -114,7 +122,7 @@ if(${ECVL_WITH_OPENGL})
     if(${ECVL_BUILD_GUI})
 		find_package(OpenGL)
 		if(${OPENGL_FOUND})
-			target_link_libraries(ECVL_GUI OpenGL::GL)
+			target_link_libraries(ECVL_GUI PUBLIC OpenGL::GL)
 			target_include_directories(ECVL_GUI PUBLIC ${OPENGL_INCLUDE_DIR})
 			
 			ecvl_update_3rdparty(glm)
@@ -148,10 +156,20 @@ if(${ECVL_WITH_OPENGL})
 			set(CMAKE_FOLDER 3rdparty/glm)
 			add_subdirectory(glm)
 			set(CMAKE_FOLDER 3rdparty)
-			target_link_libraries(ECVL_GUI glm)
+			target_link_libraries(ECVL_GUI PUBLIC glm)
 		
-			target_include_directories(ECVL_GUI PUBLIC glad/include)
-			target_sources(ECVL_GUI PRIVATE glad/src/glad.c)
+			#target_include_directories(ECVL_GUI PUBLIC glad/include)
+			
+            target_include_directories(ECVL_GUI PUBLIC	
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/glad/include>  
+                $<INSTALL_INTERFACE:include>
+            )
+            install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glad/include
+                DESTINATION "."
+                FILES_MATCHING PATTERN "*.h")
+            # probabilmente gli header vanno installati a parte
+            
+            target_sources(ECVL_GUI PRIVATE glad/src/glad.cpp)
 		else()
 			set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)" FORCE)
 			message(STATUS "ECVL_WITH_OPENGL disabled: OpenGL not found")
@@ -166,8 +184,31 @@ endif(${ECVL_WITH_OPENGL})
 # nifti 
 set(CMAKE_FOLDER 3rdparty/nifti)
 add_subdirectory(nifti)
-target_link_libraries(ECVL_CORE nifti)
+target_link_libraries(ECVL_CORE PUBLIC nifti)
 set(CMAKE_FOLDER 3rdparty)
+
+# prova externalproject
+
+#include(ExternalProject)
+#
+#ExternalProject_Add(nifti
+#  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/nifti
+#  BINARY_DIR ${CMAKE_BINARY_DIR}/nifti
+#  DOWNLOAD_COMMAND ""
+#  UPDATE_COMMAND ""
+#  CMAKE_CACHE_ARGS
+#    #-Foo_DIR:PATH=${CMAKE_BINARY_DIR}/Foo-build
+#    #-DAwesome_ENABLE_EXTRA:BOOL=${Awesome_ENABLE_EXTRA}
+#    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}/3rdparty
+#  #INSTALL_COMMAND ""
+#  )
+##return()
+#
+##add_subdirectory(nifti)
+#  
+##find_package(NIFTI REQUIRED)
+#add_library(nifti IMPORTED STATIC)
+#target_link_libraries(ECVL_CORE PUBLIC nifti)
 
 
 if(${ECVL_TESTS})

@@ -12,12 +12,23 @@ add_library(nifti
 
 )
 
-target_include_directories(nifti PUBLIC include)
+target_include_directories(nifti PUBLIC	
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
+	$<INSTALL_INTERFACE:include>
+)
 
-find_package(zlib)
-if (${ZLIB_FOUND})
-    target_link_libraries(nifti ZLIB::ZLIB)
-endif()
+#find_package(zlib)
+#if (${ZLIB_FOUND})
+#    target_link_libraries(nifti ZLIB::ZLIB)
+#endif()
 
-
-
+install(TARGETS nifti
+        EXPORT NIFTIConfig
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib/static
+		)
+install(EXPORT NIFTIConfig DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
+    DESTINATION "."
+    FILES_MATCHING PATTERN "*.h")
