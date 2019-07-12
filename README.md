@@ -12,7 +12,7 @@
 The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/). It is automatically updated at each commit/push to the master branch.
 
 ## Requirements (mandatory)
-- CMaker 3.13 or later;
+- CMake 3.13 or later;
 - C++ Compiler with C++17 support;
 - OpenCV 3.0 or later (https://opencv.org/).
 
