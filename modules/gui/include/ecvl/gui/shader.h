@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 
+namespace ecvl {
+
 struct Shader {
 public:
     unsigned int ID;
@@ -138,4 +140,7 @@ private:
     }
 };
 
+}
+
 #endif // ECVL_SHADER_H
+
