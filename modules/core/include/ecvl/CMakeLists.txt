@@ -18,6 +18,7 @@ target_sources(ECVL_CORE
 	core/memorymanager.h
     core/standard_errors.h
 	core/support_opencv.h
+	core/support_nifti.h
     core/type_promotion.h
 
 )

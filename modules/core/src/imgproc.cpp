@@ -184,6 +184,8 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     if (src.colortype_ == ColorType::HSV || new_type == ColorType::HSV
         ||
         src.colortype_ == ColorType::YCbCr || new_type == ColorType::YCbCr
+        ||
+        src.colortype_ == ColorType::RGBA || new_type == ColorType::RGBA
         ) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }

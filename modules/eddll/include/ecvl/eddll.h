@@ -2,7 +2,6 @@
 #define ECVL_EDDLL_H_
 
 #include <eddll/apis/eddl.h>
-
 #include "ecvl/core/image.h"
 
 namespace ecvl {
@@ -31,8 +30,8 @@ namespace ecvl {
 
     @return EDDLL Tensor.
     */
-
     tensor DatasetToTensor(vector<string> dataset, const std::vector<int>& dims);
+
 } // namespace ecvl 
 
 #endif // ECVL_EDDLL_H_

@@ -5,11 +5,22 @@
 
 #include "ecvl/core/support_opencv.h"
 
+#ifdef ECVL_WITH_DICOM
+#include "ecvl/core/support_dcmtk.h"
+#endif
+
 namespace ecvl {
 
 bool ImRead(const std::string& filename, Image& dst)
 {
     dst = MatToImage(cv::imread(filename));
+
+#ifdef ECVL_WITH_DICOM
+    if (dst.IsEmpty()) {
+        DicomRead(filename, dst);
+    }
+#endif
+
     return !dst.IsEmpty();
 }
 

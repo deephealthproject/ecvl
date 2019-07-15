@@ -29,7 +29,7 @@
 
 cmake_minimum_required (VERSION 3.13)
 
-project (ECVL CXX)
+project (ecvl CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
@@ -70,25 +70,6 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-# Removed to allow automatic tests without EDDLL
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: add EDDLL dependency (still Windows specific)												
-#--------------------------------------------------------------------------------------------------------
-#set(ECVL_EDDLL_INSTALL_PATH "" CACHE PATH "")
-#
-#if(ECVL_EDDLL_INSTALL_PATH STREQUAL "")
-#	message(ERROR " EDDLL install path must be specified")
-#endif()
-#
-## TODO: handle the case in which EDDLL is dynamic compiled
-#target_link_libraries(ECVL debug "${ECVL_EDDLL_INSTALL_PATH}/Debug/lib/static/EDDLL.lib")
-##message(STATUS "${ECVL_EDDLL_INSTALL_PATH}/Debug/lib/static/EDDLL.lib")						 
-#target_link_libraries(ECVL optimized "${ECVL_EDDLL_INSTALL_PATH}/Release/lib/static/EDDLL.lib")
-##message(STATUS "${ECVL_EDDLL_INSTALL_PATH}/Release/lib/static/EDDLL.lib")
-#include_directories("${ECVL_EDDLL_INSTALL_PATH}/include")
-#--------------------------------------------------------------------------------------------------------
-# END: add EDDLL dependency	(still Windows specific)											
-#--------------------------------------------------------------------------------------------------------
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: static/dinamic runtime 												
@@ -98,7 +79,7 @@ set(ECVL_STATIC ON CACHE BOOL "Whether to build static or dinamic libraries")
 if(MSVC)
     if(ECVL_STATIC)
         message(STATUS "Setting static runtime for MSVC")
-        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
+        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO ) 
             string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
     else()
@@ -112,183 +93,196 @@ endif()
 # END: static/dinamic runtime										
 #--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: ECVL_CORE (the main target)	
+#--------------------------------------------------------------------------------------------------------
+set(ECVL_TESTS ON CACHE BOOL "Whether to build ECVL tests or not")
+if(${ECVL_TESTS})
+    add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
+endif()
+
+add_library(ECVL_CORE "")
+add_subdirectory("modules/core")
+target_include_directories(ECVL_CORE PUBLIC	
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules/core/include>  
+	$<INSTALL_INTERFACE:include>
+)
+set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
+set(ECVL_MODULES ECVL_CORE)
+set(ECVL_MODULES_DIRS core)
+#--------------------------------------------------------------------------------------------------------
+# END: ECVL_CORE (the main target)	
+#--------------------------------------------------------------------------------------------------------
+
+
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: OpenCV 	
 #--------------------------------------------------------------------------------------------------------
 set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc" CACHE STRING "OpenCV required packages")
 FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
-include_directories(${OpenCV_INCLUDE_DIRS})
+target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
 # END: OpenCV 	
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
+# BEGIN: 3rdparty
+#--------------------------------------------------------------------------------------------------------
+set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
+set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
+
+find_package(Git QUIET)
+#--------------------------------------------------------------------------------------------------------
+# END: 3rdparty
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
 # BEGIN: download and install GTest
 #--------------------------------------------------------------------------------------------------------
-set(CMAKE_FOLDER GTest)
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
-if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
-
-# Prevent overriding the parent project's compiler/linker
-# settings on Windows
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-                 EXCLUDE_FROM_ALL)
-
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
-endif()
-
-include(GoogleTest)
-set(CMAKE_FOLDER "")
+#set(CMAKE_FOLDER GTest)
+#configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+#execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+#  RESULT_VARIABLE result
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+#if(result)
+#  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+#endif()
+#execute_process(COMMAND ${CMAKE_COMMAND} --build .
+#  RESULT_VARIABLE result
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
+#if(result)
+#  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+#endif()
+#
+## Prevent overriding the parent project's compiler/linker
+## settings on Windows
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#
+## Add googletest directly to our build. This defines
+## the gtest and gtest_main targets.
+#add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
+#                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
+#                 EXCLUDE_FROM_ALL)
+#
+## The gtest/gtest_main targets carry header search path
+## dependencies automatically when using CMake 2.8.11 or
+## later. Otherwise we have to add them here ourselves.
+#if (CMAKE_VERSION VERSION_LESS 2.8.11)
+#  include_directories("${gtest_SOURCE_DIR}/include")
+#endif()
+#
+#include(GoogleTest)
+#set(CMAKE_FOLDER "")
 #--------------------------------------------------------------------------------------------------------
 # END: download and install GTest
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: ECVL library, examples and tests
+# BEGIN: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
-add_executable(ECVL_TESTS "")
-set(ECVL_MODULES "")
+set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
+set(ECVL_BUILD_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
+set(ECVL_BUILD_EDDLL ON CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)")
 
-set(BUILD_ECVL_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not")
-set(BUILD_ECVL_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
-set(BUILD_ECVL_EDDLL ON CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)")
-
-if(BUILD_ECVL_CORE)
-    add_library(ECVL_CORE "")
-    add_subdirectory("modules/core")
-    include_directories("modules/core/include")
-    target_link_libraries(ECVL_CORE ${OpenCV_LIBS})
-    set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
-    list(APPEND ECVL_MODULES "ECVL_CORE")
-endif()
-if(BUILD_ECVL_GUI)
-    if(BUILD_ECVL_CORE)
+if(ECVL_BUILD_GUI)
+    if(ECVL_BUILD_CORE)
         find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
         if(wxWidgets_FOUND)
             include(${wxWidgets_USE_FILE})
             add_library(ECVL_GUI "")
             add_subdirectory("modules/gui")
             include_directories("modules/gui/include")
-            #target_include_directories(ECVL_GUI PRIVATE ${wxWidgets_INCLUDE_DIRS})
             
             message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
             
-            
-            target_link_libraries(ECVL_GUI ECVL_CORE ${wxWidgets_LIBRARIES})
+            target_link_libraries(ECVL_GUI PUBLIC ECVL_CORE ${wxWidgets_LIBRARIES})
+            target_include_directories(ECVL_GUI PUBLIC ${wxWidgets_INCLUDE_DIRS})
+
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
+            list(APPEND ECVL_MODULES_DIRS "gui")
         else()
-            set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
+            set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
             message(STATUS "ECVL_GUI disabled: unmet dependency wxWidgets")
         endif()
     else()
-        set(BUILD_ECVL_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
+        set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
         message(STATUS "ECVL_GUI disabled: unmet dependency ECVL_CORE")
     endif()
 endif()
-if(BUILD_ECVL_EDDLL)
-    if(BUILD_ECVL_CORE)
+if(ECVL_BUILD_EDDLL)
+    if(ECVL_BUILD_CORE)
         find_package(EDDLL)
         if(EDDLL_FOUND)
             add_library(ECVL_EDDLL "")
             add_subdirectory("modules/eddll")
             include_directories("modules/eddll/include")
-            #target_include_directories(ECVL_GUI PRIVATE ${wxWidgets_INCLUDE_DIRS})
-            
-            #message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")            
-            
-            target_link_libraries(ECVL_EDDLL ECVL_CORE EDDLL)
+           
+            target_link_libraries(ECVL_EDDLL ECVL_CORE eddll)
             set_target_properties(ECVL_EDDLL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDLL")
+            list(APPEND ECVL_MODULES_DIRS "eddll")
         else()
-            set(BUILD_ECVL_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
+            set(ECVL_BUILD_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
             message(STATUS "ECVL_EDDLL disabled: unmet dependency EDDLL")
         endif()
     else()
-        set(BUILD_ECVL_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
+        set(ECVL_BUILD_EDDLL OFF CACHE BOOL "Whether to build ECVL_EDDLL or not (requires EDDLL)" FORCE)
         message(STATUS "ECVL_EDDLL disabled: unmet dependency ECVL_CORE")
     endif()
 endif()
 
-target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest_main)
+foreach(MODULE ${ECVL_MODULES})
+    string(TOLOWER ${MODULE} LOWER_MODULE)
+	set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_DEBUG "${LOWER_MODULE}d")
+	set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
+endforeach()
 
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
+#--------------------------------------------------------------------------------------------------------
+# END: ECVL optional libraries
+#--------------------------------------------------------------------------------------------------------
 
-enable_testing()
 
-gtest_discover_tests(ECVL_TESTS)
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: 3rdparty
+#--------------------------------------------------------------------------------------------------------
+set(CMAKE_FOLDER 3rdparty)
+add_subdirectory(3rdparty)
+set(CMAKE_FOLDER "")
+
+if(${ECVL_WITH_DICOM})
+    add_compile_definitions(ECVL_WITH_DICOM)
+endif(${ECVL_WITH_DICOM})
+
+if(${ECVL_WITH_OPENGL})
+    add_compile_definitions(ECVL_WITH_OPENGL)
+endif(${ECVL_WITH_OPENGL})
+#--------------------------------------------------------------------------------------------------------
+# END: 3rdparty
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: ECVL examples and tests
+#--------------------------------------------------------------------------------------------------------
+if (${ECVL_TESTS})
+    target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main)
+    enable_testing()
+    #gtest_discover_tests(ECVL_TESTS)
+    gtest_add_tests(TARGET ECVL_TESTS)
+endif()
 
 add_executable(EXAMPLES "")
 add_subdirectory(examples)
 target_link_libraries(EXAMPLES ${ECVL_MODULES})
 #--------------------------------------------------------------------------------------------------------
-# END: ECVL library, examples and tests
-#--------------------------------------------------------------------------------------------------------
-
-
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: pthreads setup for windows os												
-#--------------------------------------------------------------------------------------------------------
-#
-## The following commands should be removed when pthread linux 
-## specific calls will be replaced by thread c++ standard calls 
-#if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-#	set(ECVL_PTHREADS_INSTALL_PATH "$ENV{PTHREADS_ROOT}" CACHE PATH "")
-#	
-#	if(ECVL_PTHREADS_INSTALL_PATH STREQUAL "")
-#		message(ERROR " pthreds install path must be specified under Windows")
-#	endif()
-#	
-#	target_link_libraries(ECVL debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3d.lib"
-#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
-#							   debug "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
-#								 
-#	target_link_libraries(ECVL optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVC3.lib"
-#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVCE3d.lib"
-#							   optimized "${ECVL_PTHREADS_INSTALL_PATH}/lib/libpthreadVSE3d.lib")
-#								 
-#	include_directories("${ECVL_PTHREADS_INSTALL_PATH}/include")
-#	
-#	# The following command should be moved elsewhere
-#	if(MSVC)
-#		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-#	endif()
-#endif()
-#--------------------------------------------------------------------------------------------------------
-# END: pthreads setup for windows os												
-#--------------------------------------------------------------------------------------------------------
-
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: pthreads setup for linux os												
-#--------------------------------------------------------------------------------------------------------
-#if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-#    find_package(Threads REQUIRED)
-#    target_link_libraries(ECVL Threads::Threads)
-#endif()
-#--------------------------------------------------------------------------------------------------------
-# END: pthreads setup for linux os												
+# END: ECVL examples and tests
 #--------------------------------------------------------------------------------------------------------
 
 
@@ -308,3 +302,33 @@ ENDFOREACH()
 # END: Snippets
 #--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Install
+#--------------------------------------------------------------------------------------------------------
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    message(STATUS "....")
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
+endif()
+install(TARGETS ${ECVL_MODULES}
+		EXPORT ECVLTargets
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib/static
+		)
+install(EXPORT ECVLTargets DESTINATION ${CMAKE_INSTALL_PREFIX})
+foreach(module_name ${ECVL_MODULES_DIRS})
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/modules/${module_name}/include
+		DESTINATION "."
+        FILES_MATCHING PATTERN "*.h")
+endforeach()
+message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")   
+
+#install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in
+#        DESTINATION ${CMAKE_INSTALL_PREFIX})     
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_INSTALL_PREFIX}/ECVLConfig.cmake)
+#--------------------------------------------------------------------------------------------------------
+# END: Install
+#--------------------------------------------------------------------------------------------------------
+        

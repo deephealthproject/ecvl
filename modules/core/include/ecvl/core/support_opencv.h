@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ECVL_SUPPORT_OPENCV_H_
+#define ECVL_SUPPORT_OPENCV_H_
 
 #include "image.h"
 
@@ -21,3 +22,5 @@ ecvl::Image MatToImage(const cv::Mat& m);
 cv::Mat ImageToMat(const Image& img);
 
 } // namespace ecvl 
+
+#endif // ECVL_SUPPORT_OPENCV_H_

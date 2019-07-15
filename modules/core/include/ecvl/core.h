@@ -10,5 +10,10 @@
 #include "core/iterators.h"
 #include "core/memorymanager.h"
 #include "core/support_opencv.h"
+#include "core/support_nifti.h"
+
+#ifdef ECVL_WITH_DICOM
+#include "core/support_dcmtk.h"
+#endif
 
 #endif // ECVL_CORE_H_

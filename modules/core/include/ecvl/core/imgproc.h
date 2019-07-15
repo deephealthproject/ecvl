@@ -115,7 +115,7 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
 
 /** @brief Copies the source Image into destination Image changing the color space.
 
-The ChangeColorSpace procedure convert the color space of the source Image into the specified color space.
+The ChangeColorSpace procedure converts the color space of the source Image into the specified color space.
 New data are copied into destination Image. Source and destination can be contiguous or not and can also 
 be the same Image.
 

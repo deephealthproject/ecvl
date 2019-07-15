@@ -28,6 +28,7 @@ enum class ColorType {
     none,  /**< Special ColorType for Images that contain only data and do not have any ColorType */
     GRAY,  /**< Gray-scale ColorType */
     RGB,   /**< RGB ColorType */
+    RGBA,  /**< RGBA ColorType */
     BGR,   /**< BGR ColorType */
     HSV,   /**< HSV ColorType */
     YCbCr, /**< YCbCr ColorType */
@@ -78,6 +79,13 @@ public:
                                          the channels_ string must contain a 'c' and the
                                          corresponding dimension must have the appropriate
                                          value. See @ref ColorType for the possible values. */
+
+    std::vector<float>  spacings_;  /**< @brief Space between pixels/voxels.
+                                         
+                                         Vector with the same size as dims_, storing the
+                                         distance in mm between consecutive pixels/voxels 
+                                         on every axis.  */
+
     uint8_t*            data_;      /**< @brief Pointer to Image data. 
                                     
                                          If the Image is not the owner
@@ -173,6 +181,7 @@ public:
         elemtype_{ DataType::none },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{},
+        spacings_{},
         strides_{},
         channels_{},
         colortype_{ ColorType::none },
@@ -188,10 +197,11 @@ public:
 
         The initializing constructor creates a proper image and allocates the data.
     */
-    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype) :
+    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings = std::vector<float>()) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{ dims },
+        spacings_{spacings},
         strides_{},
         channels_{ move(channels) },
         colortype_{ colortype },
@@ -223,6 +233,7 @@ public:
         elemtype_{ img.elemtype_ },
         elemsize_{ img.elemsize_ },
         dims_{ img.dims_ },
+        spacings_{ img.spacings_ },
         strides_{ img.strides_ },
         channels_{ img.channels_ },
         colortype_{ img.colortype_ },
@@ -273,6 +284,7 @@ public:
         elemtype_{ img.elemtype_ },
         elemsize_{ img.elemsize_ },
         dims_{ move(img.dims_) },
+        spacings_{ move(img.spacings_) },
         strides_{ move(img.strides_) },
         channels_{ move(img.channels_) },
         colortype_{ img.colortype_ },
@@ -290,6 +302,7 @@ public:
         swap(lhs.elemtype_, rhs.elemtype_);
         swap(lhs.elemsize_, rhs.elemsize_);
         swap(lhs.dims_, rhs.dims_);
+        swap(lhs.spacings_, rhs.spacings_);
         swap(lhs.strides_, rhs.strides_);
         swap(lhs.channels_, rhs.channels_);
         swap(lhs.colortype_, rhs.colortype_);
@@ -318,7 +331,7 @@ public:
     @param[in] channels New Image channels.
     @param[in] colortype New Image colortype.
     */
-    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype);
+    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings = std::vector<float>());
 
     /** @brief Destructor
 
@@ -361,6 +374,7 @@ public:
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
+        spacings_ = img.spacings_;
         strides_ = img.strides_;
         channels_ = img.channels_;
         colortype_ = img.colortype_;
@@ -424,6 +438,7 @@ public:
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
+        spacings_ = img.spacings_;
         strides_ = img.strides_;
         channels_ = img.channels_;
         colortype_ = img.colortype_;
@@ -451,6 +466,7 @@ public:
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
+        spacings_ = img.spacings_;
         strides_ = img.strides_;
         channels_ = img.channels_;
         colortype_ = img.colortype_;
@@ -478,6 +494,7 @@ public:
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
+        spacings_ = img.spacings_;
         strides_ = img.strides_;
         channels_ = img.channels_;
         colortype_ = img.colortype_;
@@ -509,6 +526,7 @@ public:
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
+        spacings_ = img.spacings_;
         strides_ = img.strides_;
         channels_ = img.channels_;
         colortype_ = img.colortype_;

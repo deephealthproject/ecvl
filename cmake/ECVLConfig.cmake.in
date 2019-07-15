@@ -1,0 +1,30 @@
+include(CMakeFindDependencyMacro)
+
+SET(ECVL_WITH_DICOM @ECVL_WITH_DICOM@)
+SET(ECVL_WITH_OPENGL @ECVL_WITH_OPENGL@)
+SET(ECVL_BUILD_EDDLL @ECVL_BUILD_EDDLL@)
+SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
+
+find_dependency(OpenCV)
+find_dependency(NIFTI)
+
+if(${ECVL_WITH_DICOM})
+    find_dependency(DCMTK)
+endif()
+
+if (${ECVL_BUILD_EDDLL})
+    find_dependency(EDDLL)
+endif()
+
+if (${ECVL_BUILD_GUI})
+    find_dependency(wxWidgets)
+    if (${ECVL_WITH_OPENGL})
+        find_dependency(glm)
+        find_dependency(OpenGL)
+    endif()
+endif()
+
+include("${CMAKE_INSTALL_PREFIX}/ECVLTargets.cmake")
+
+SET(ECVL_LIBRARIES ${ECVL_MODULES})
+SET(ECVL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")

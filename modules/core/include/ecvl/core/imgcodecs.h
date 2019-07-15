@@ -44,7 +44,7 @@ filename extension. The following sample shows how to create a BGR image and sav
 independent consider to use @ref imwrite_path "ImWrite(const filesystem::path& filename, const Image& src)".
 @param[in] src Image to be saved.
 
-@return true if the image is correctly write, false otherwise.
+@return true if the image is correctly written, false otherwise.
 */
 bool ImWrite(const std::string& filename, const Image& src);
 
@@ -57,7 +57,7 @@ This variant of ImWrite is platform independent.
 @param[in] filename A filesystem::path identifying the output file name. 
 @param[in] src Image to be saved.
 
-@return true if the image is correctly write, false otherwise.
+@return true if the image is correctly written, false otherwise.
 */
 bool ImWrite(const filesystem::path& filename, const Image& src);
 
