@@ -237,6 +237,12 @@ if(ECVL_BUILD_EDDLL)
     endif()
 endif()
 
+foreach(MODULE ${ECVL_MODULES})
+    string(TOLOWER ${MODULE} LOWER_MODULE)
+	set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_DEBUG "${LOWER_MODULE}d")
+	set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
+endforeach()
+
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL optional libraries
