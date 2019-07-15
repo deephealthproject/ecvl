@@ -10,15 +10,20 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
-//#include "ecvl/gui.h"
+#include "ecvl/gui.h"
 
 int main(void)
 {
     using namespace ecvl;
     using namespace filesystem;
 
-    Image dicom_image;
-    ImRead("C:\\Users\\Stefano\\Desktop\\JPEG2000\\image - 000001.dcm", dicom_image);
+    Image nifti_image;
+    NiftiRead("C:\\Users\\Stefano\\Desktop\\nifti-images\\1010_brain_mr_02.nii", nifti_image);
+
+    ImShow3D(nifti_image);
+
+    //Image dicom_image;
+    //ImRead("C:\\Users\\Stefano\\Desktop\\JPEG2000\\image - 000001.dcm", dicom_image);
 
     try {
 
@@ -60,6 +65,13 @@ int main(void)
             return EXIT_FAILURE;
         }
 
+        //img.dims_.back() = 1;
+        //img.dims_.push_back(3);
+
+        //img.channels_ = "xyzc";
+
+        //ImShow3D(img);
+
         //Image rot1, rot2, rot3, rot4, rot5;
         //Rotate2D(img, rot5, 30, {});
         //Rotate2D(img, rot1, 30, {}, 0.5);
@@ -86,8 +98,17 @@ int main(void)
         ImRead("../data/Kodak/img0003.png", img1);
         ImRead("../data/Kodak/img0015.png", img2);
 
+        ChangeColorSpace(img1, img1, ColorType::RGB);
+        RearrangeChannels(img1, img1, "cxy");
+
+        img1.dims_ = { 3, 3072, 2048, 1 };
+
+        img1.channels_ = "cxyz";
+
+        //ImShow3D(img1);
+
         //ImShow(img1);
-    //ResizeScale(img1, img1, { 0.3, 0.3 });
+        //ResizeScale(img1, img1, { 0.3, 0.3 });
 
         Image img3, img4;
 
