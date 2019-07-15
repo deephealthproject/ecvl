@@ -39,7 +39,7 @@ The function resizes Image src and outputs the result in dst.
 @param[out] dst The output resized Image.
 @param[in] newdims std::vector<int> that specifies the new size of each dimension.
             The vector size must match the src Image dimentions, excluding the color channel
-@param[in] interp InterpolationType to be used. See @ref InterpolationType.
+@param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
 
 */
 void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp = InterpolationType::linear);
@@ -49,10 +49,10 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
 The function resizes Image src and outputs the result in dst.
 
 @param[in] src The input Image.
-@param[out] dst The output resized Image.
+@param[out] dst The output rescaled Image.
 @param[in] scales std::vector<double> that specifies the scale to apply to each dimension.
             The vector size must match the src Image dimentions, excluding the color channel.
-@param[in] interp InterpolationType to be used. See @ref InterpolationType.
+@param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
 
 */
 void ResizeScale(const ecvl::Image& src, ecvl::Image& dst, const std::vector<double>& scales, InterpolationType interp = InterpolationType::linear);

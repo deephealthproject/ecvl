@@ -42,11 +42,10 @@ public:
     DataType            elemtype_;  /**< @brief Type of Image pixels, must be one of the
                                          values available in DataType.        */
     uint8_t             elemsize_;  /**< @brief Size (in bytes) of Image pixels.          */
-    std::vector<int>    dims_;      /**< @brief Vector of Image dimensions. Each dimension
+    std::vector<int>    dims_;      /**< @brief @anchor dims_ Vector of Image dimensions. Each dimension
                                          is given in pixels/voxels. */
-    std::vector<int>    strides_;   /**< @brief Vector of Image strides. 
-                                    
-                                         Strides represent
+    std::vector<int>    strides_;   /**< @brief Vector of Image strides. */
+                                    /**< Strides represent
                                          the number of bytes the pointer on data
                                          has to move to reach the next pixel/voxel
                                          on the correspondent size. */
@@ -80,11 +79,10 @@ public:
                                          corresponding dimension must have the appropriate
                                          value. See @ref ColorType for the possible values. */
 
-    std::vector<float>  spacings_;  /**< @brief Space between pixels/voxels.
-                                         
-                                         Vector with the same size as dims_, storing the
+    std::vector<float> spacings_;   /**< @brief Space between pixels/voxels. */
+                                    /**< Vector with the same size as @ref dims_, storing the
                                          distance in mm between consecutive pixels/voxels 
-                                         on every axis.  */
+                                         on every axis. */
 
     uint8_t*            data_;      /**< @brief Pointer to Image data. 
                                     
