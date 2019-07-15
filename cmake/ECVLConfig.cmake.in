@@ -5,20 +5,27 @@ SET(ECVL_WITH_OPENGL @ECVL_WITH_OPENGL@)
 SET(ECVL_BUILD_EDDLL @ECVL_BUILD_EDDLL@)
 SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
 
+set(OpenCV_DIR "@OpenCV_DIR@")
 find_dependency(OpenCV)
+
+set(NIFTI_DIR "@CMAKE_INSTALL_PREFIX@")
 find_dependency(NIFTI)
 
 if(${ECVL_WITH_DICOM})
+    set(DCMTK_DIR "@CMAKE_INSTALL_PREFIX@/install/cmake")
     find_dependency(DCMTK)
 endif()
 
 if (${ECVL_BUILD_EDDLL})
+    set(EDDLL_DIR "@EDDLL_DIR@")
     find_dependency(EDDLL)
 endif()
 
 if (${ECVL_BUILD_GUI})
+    set(wxWidgets_ROOT_DIR "@wxWidgets_ROOT_DIR@")
     find_dependency(wxWidgets)
     if (${ECVL_WITH_OPENGL})
+        set(glm_DIR "@CMAKE_INSTALL_PREFIX@/lib/cmake/glm")
         find_dependency(glm)
         find_dependency(OpenGL)
     endif()
