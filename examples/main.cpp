@@ -10,7 +10,7 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
-#include "ecvl/gui.h"
+//#include "ecvl/gui.h"
 
 int main(void)
 {
@@ -20,7 +20,7 @@ int main(void)
     Image nifti_image;
     NiftiRead("C:\\Users\\Stefano\\Desktop\\nifti-images\\1010_brain_mr_02.nii", nifti_image);
 
-    ImShow3D(nifti_image);
+    //ImShow3D(nifti_image);
 
     //Image dicom_image;
     //ImRead("C:\\Users\\Stefano\\Desktop\\JPEG2000\\image - 000001.dcm", dicom_image);
