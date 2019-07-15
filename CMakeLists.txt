@@ -327,7 +327,7 @@ message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")
 #install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in
 #        DESTINATION ${CMAKE_INSTALL_PREFIX})     
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_INSTALL_PREFIX}/ECVLConfig.cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_INSTALL_PREFIX}/ECVLConfig.cmake @ONLY)
 #--------------------------------------------------------------------------------------------------------
 # END: Install
 #--------------------------------------------------------------------------------------------------------
