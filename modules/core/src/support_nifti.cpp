@@ -129,5 +129,8 @@ namespace ecvl {
         }
     }
 
+    bool NiftiRead(const filesystem::path& filename, Image& dst) {
+        return NiftiRead(filename.string(), dst);
+    }
 
 } // namespace evl
