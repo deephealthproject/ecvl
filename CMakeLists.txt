@@ -35,6 +35,18 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
 
 #--------------------------------------------------------------------------------------------------------
+# BEGIN: Install(first step): must be at the beginning otherwise in case of any failure (i.e. OpenCV not found) won't work
+#--------------------------------------------------------------------------------------------------------
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    message(STATUS "\nHere we are!\n")
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
+endif()
+#--------------------------------------------------------------------------------------------------------
+# END: Install (first step)
+#--------------------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------------------
 # BEGIN: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
 # This should be done as follows but it doesn't work!?
@@ -307,7 +319,7 @@ ENDFOREACH()
 # BEGIN: Install
 #--------------------------------------------------------------------------------------------------------
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    message(STATUS "....")
+    message(STATUS "\nHere we are!\n")
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
 endif()
 install(TARGETS ${ECVL_MODULES}
@@ -327,6 +339,7 @@ message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")
 #install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in
 #        DESTINATION ${CMAKE_INSTALL_PREFIX})     
 
+message(STATUS "${CMAKE_CURRENT_SOURCE_DIR} and ${CMAKE_INSTALL_PREFIX}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_INSTALL_PREFIX}/ECVLConfig.cmake @ONLY)
 #--------------------------------------------------------------------------------------------------------
 # END: Install
