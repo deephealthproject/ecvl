@@ -18,7 +18,8 @@ The ECVL documentation is available online [here](http://imagelab.ing.unimore.it
 
 ## Requirements (optional)
 
-- wxWidgets (https://www.wxwidgets.org/), required by the ECVL GUI module.
+- wxWidgets (https://www.wxwidgets.org/), required by the ECVL GUI module;
+- OpenGL 3.3 or later, required by the 3D viewer.
 
 ## ImageWatch plugin for Microsoft Visual Studio
 
