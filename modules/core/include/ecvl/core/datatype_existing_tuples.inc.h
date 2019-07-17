@@ -2,5 +2,5 @@
 // otherwise the Table logic will be broken, as well as the in-place
 // Neg function.
 
-#include "datatype_existing_tuples_signed_inc.h"
-#include "datatype_existing_tuples_unsigned_inc.h"
+#include "datatype_existing_tuples_signed.inc.h"
+#include "datatype_existing_tuples_unsigned.inc.h"

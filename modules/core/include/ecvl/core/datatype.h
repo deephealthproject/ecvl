@@ -14,7 +14,7 @@ data types allowed for images.
  */
 enum class DataType {
 #define ECVL_TUPLE(name, ...) name,
-#include "datatype_tuples_inc.h"
+#include "datatype_tuples.inc.h"
 #undef ECVL_TUPLE
 };
 
@@ -32,7 +32,7 @@ uint8_t DataTypeSize(DataType dt);
  */
 template<ecvl::DataType> struct TypeInfo { using basetype = void; };
 #define ECVL_TUPLE(name, size, type, ...) template<> struct TypeInfo<ecvl::DataType::name> { using basetype = type; };
-#include "datatype_tuples_inc.h"
+#include "datatype_tuples.inc.h"
 #undef ECVL_TUPLE
 
 template<ecvl::DataType DT>
@@ -45,7 +45,7 @@ using TypeInfo_t = typename TypeInfo<DT>::basetype;
 constexpr size_t DataTypeSize() {
     constexpr size_t size = 0
 #define ECVL_TUPLE(name, ...) + 1
-#include "datatype_existing_tuples_inc.h"
+#include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE	
         ;
     return size;
@@ -58,12 +58,11 @@ constexpr size_t DataTypeSize() {
 constexpr size_t DataTypeSignedSize() {
     constexpr size_t size = 0
 #define ECVL_TUPLE(name, ...) + 1
-#include "datatype_existing_tuples_signed_inc.h"
+#include "datatype_existing_tuples_signed.inc.h"
 #undef ECVL_TUPLE	
         ;
     return size;
 }
-
 
 /**  @brief Function to get a std::array with all the DataType values at compile time.
 
@@ -74,7 +73,7 @@ constexpr std::array<DataType, DataTypeSize()> DataTypeArray() {
     //@cond
     constexpr std::array<DataType, DataTypeSize()> arr = {
 #define ECVL_TUPLE(name, ...) DataType::name,
-#include "datatype_existing_tuples_inc.h"
+#include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE	
     };
     return arr;
@@ -91,7 +90,7 @@ constexpr std::array<DataType, DataTypeSignedSize()> DataTypeSignedArray() {
     //@cond
     constexpr std::array<DataType, DataTypeSignedSize()> arr = {
 #define ECVL_TUPLE(name, ...) DataType::name,
-#include "datatype_existing_tuples_signed_inc.h"
+#include "datatype_existing_tuples_signed.inc.h"
 #undef ECVL_TUPLE	
     };
     return arr;
