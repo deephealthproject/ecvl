@@ -181,11 +181,12 @@ if(${ECVL_WITH_OPENGL})
 endif(${ECVL_WITH_OPENGL})
 
 
-# nifti 
-set(CMAKE_FOLDER 3rdparty/nifti)
-add_subdirectory(nifti)
-target_link_libraries(ECVL_CORE PUBLIC nifti)
-set(CMAKE_FOLDER 3rdparty)
+# nifti
+# we use our own functions
+#set(CMAKE_FOLDER 3rdparty/nifti)
+#add_subdirectory(nifti)
+#target_link_libraries(ECVL_CORE PUBLIC nifti)
+#set(CMAKE_FOLDER 3rdparty)
 
 # prova externalproject
 

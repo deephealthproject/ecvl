@@ -61,7 +61,11 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     Image tmp;
     // Check if rearranging is possible, else throw
     if (src.channels_ == "xyc" && channels == "cxy") {
-        tmp = Image({ src.dims_[2], src.dims_[0], src.dims_[1] }, src.elemtype_, channels, src.colortype_);
+        std::vector<float> new_spacings;
+        if (src.spacings_.size() == 3) {
+            new_spacings = { src.spacings_[2], src.spacings_[0], src.spacings_[1] };
+        }
+        tmp = Image({ src.dims_[2], src.dims_[0], src.dims_[1] }, src.elemtype_, channels, src.colortype_, new_spacings);
         auto i = src.Begin<uint8_t>();
         auto plane_elems = src.dims_[0] * src.dims_[1];
         for (int ch = 0; ch < src.dims_[2]; ++ch) {
@@ -75,7 +79,11 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     }
     else if (src.channels_ == "cxy" && channels == "xyc")
     {
-        tmp = Image({ src.dims_[1], src.dims_[2], src.dims_[0] }, src.elemtype_, channels, src.colortype_);
+        std::vector<float> new_spacings;
+        if (src.spacings_.size() == 3) {
+            new_spacings = { src.spacings_[1], src.spacings_[2], src.spacings_[0] };
+        }
+        tmp = Image({ src.dims_[1], src.dims_[2], src.dims_[0] }, src.elemtype_, channels, src.colortype_, new_spacings);
         auto i = src.Begin<uint8_t>();
         auto plane_elems = src.dims_[1] * src.dims_[2];
         for (int el = 0; el < plane_elems; ++el) {

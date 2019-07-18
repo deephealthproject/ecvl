@@ -32,6 +32,31 @@ This variant of NiftiRead is platform independent.
 */
 bool NiftiRead(const filesystem::path& filename, Image& dst);
 
+/** @brief Saves an image into a specified nifti file.
+
+The function NiftiWrite saves the input image into a specified file, with the NIfTI-1 format.
+
+@param[in] filename A std::string identifying the output file name. In order to be platform
+independent consider to use @ref niftiwrite_path "NiftiWrite(const filesystem::path& filename, const Image& src)".
+@param[in] src Image to be saved.
+
+@return true if the image is correctly written, false otherwise.
+*/
+bool NiftiWrite(const std::string& filename, const Image& src);
+
+/** @overload
+
+This variant of NiftiWrite is platform independent.
+
+@anchor niftiwrite_path
+
+@param[in] filename A filesystem::path identifying the output file name.
+@param[in] src Image to be saved.
+
+@return true if the image is correctly written, false otherwise.
+*/
+bool NiftiWrite(const filesystem::path& filename, const Image& src);
+
 } // namespace ecvl 
 
 #endif // ECVL_SUPPORT_NIFTI_H_
