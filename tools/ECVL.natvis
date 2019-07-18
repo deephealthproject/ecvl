@@ -21,6 +21,9 @@
     <DisplayString Condition="dims_size()==3">
 	{{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {channels_}, {colortype_}}}
     </DisplayString>
+    <DisplayString Condition="dims_size()==4">
+	{{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]} x {dims_[3]}, {channels_}, {colortype_}}}
+    </DisplayString>
     
     <Expand>
       <Synthetic Name="[type]" Condition="elemtype_==DataType::uint8">
@@ -75,6 +78,16 @@
       <Item Name="[data]"   Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[0]=='c'">data_</Item>
       <Item Name="[data]"   Condition="colortype_==ColorType::GRAY &amp;&amp; channels_[0]=='c'">data_</Item>
       <!-- END: to handle "cxy" Images -->
+
+      <!-- BEGIN: to handle "xyzc" Images -->
+      <Item Name="[width]"  Condition="channels_[3]=='c'">dims_[0]</Item>
+      <Item Name="[height]" Condition="channels_[3]=='c'">dims_[1]</Item>
+      <Item Name="[depth]" Condition="channels_[3]=='c'">dims_[2]</Item>
+      <Item Name="[planes]" Condition="channels_[3]=='c'">dims_[3]</Item>
+      <Item Name="[stride]" Condition="channels_[3]=='c'">strides_[1]</Item>
+      <Item Name="[data]"   Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[3]=='c'">data_</Item>
+      <Item Name="[data]"   Condition="colortype_==ColorType::GRAY &amp;&amp; channels_[3]=='c'">data_</Item>
+      <!-- END: to handle "xyzc" Images -->
 
       <!-- BEGIN: to handle Images with no color information ColorType::none -->
       <!-- N x N -->

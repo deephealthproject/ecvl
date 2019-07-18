@@ -64,7 +64,6 @@ constexpr size_t DataTypeSignedSize() {
     return size;
 }
 
-
 /**  @brief Function to get a std::array with all the DataType values at compile time.
 
 @return A std::array with all the DataType values.
