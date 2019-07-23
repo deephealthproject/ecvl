@@ -32,6 +32,31 @@ This variant of DicomRead is platform independent.
 */
 extern bool DicomRead(const filesystem::path& filename, Image& dst);
 
+/** @brief Saves an image into a specified DICOM file.
+
+The function DicomWrite saves the input image into a specified file, with the DICOM format.
+
+@param[in] filename A std::string identifying the output file name. In order to be platform
+independent consider to use @ref dicomwrite_path "DicomWrite(const filesystem::path& filename, const Image& src)".
+@param[in] src Image to be saved.
+
+@return true if the image is correctly written, false otherwise.
+*/
+extern bool DicomWrite(const std::string& filename, const Image& src);
+
+/** @overload
+
+This variant of DicomWrite is platform independent.
+
+@anchor dicomwrite_path
+
+@param[in] filename A filesystem::path identifying the output file name.
+@param[in] src Image to be saved.
+
+@return true if the image is correctly written, false otherwise.
+*/
+extern bool DicomWrite(const filesystem::path& filename, const Image& src);
+
 } // namespace ecvl
 
 #endif // SUPPORT_DCMTK_H_

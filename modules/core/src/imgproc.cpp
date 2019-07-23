@@ -258,9 +258,9 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             auto plane1 = tmp.data_ + 1 * tmp.strides_[2];
             auto plane2 = tmp.data_ + 2 * tmp.strides_[2];
             if (src.contiguous_) {
-                memcpy(plane0, src.data_ + 2 * src.strides_[2], src.strides_[2] * src.elemsize_);
-                memcpy(plane1, src.data_ + 1 * src.strides_[2], src.strides_[2] * src.elemsize_);
-                memcpy(plane2, src.data_ + 0 * src.strides_[2], src.strides_[2] * src.elemsize_);
+                memcpy(plane0, src.data_ + 2 * src.strides_[2], src.strides_[2]);
+                memcpy(plane1, src.data_ + 1 * src.strides_[2], src.strides_[2]);
+                memcpy(plane2, src.data_ + 0 * src.strides_[2], src.strides_[2]);
             }
             else {
                 ECVL_ERROR_NOT_IMPLEMENTED
