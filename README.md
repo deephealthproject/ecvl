@@ -24,3 +24,4 @@ The ECVL documentation is available online [here](http://imagelab.ing.unimore.it
 ## ImageWatch plugin for Microsoft Visual Studio
 
 An extension of ImageWatch is available to visually inspect ecvl::Image when debugging. In order to use it be sure to install the ImageWatch plugin for Visual Studio and copy and past the file ```tools/ECVL.natvis``` from the GitHub repo into ```C:\Users\<!!username!!>\Documents\Visual Studio 2017\Visualizers```
+
