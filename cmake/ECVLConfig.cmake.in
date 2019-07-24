@@ -8,8 +8,8 @@ SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
 set(OpenCV_DIR "@OpenCV_DIR@")
 find_dependency(OpenCV)
 
-set(NIFTI_DIR "@CMAKE_INSTALL_PREFIX@")
-find_dependency(NIFTI)
+#set(NIFTI_DIR "@CMAKE_INSTALL_PREFIX@")
+#find_dependency(NIFTI)
 
 if(${ECVL_WITH_DICOM})
     set(DCMTK_DIR "@CMAKE_INSTALL_PREFIX@/install/cmake")
