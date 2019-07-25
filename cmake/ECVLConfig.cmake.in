@@ -2,7 +2,7 @@ include(CMakeFindDependencyMacro)
 
 SET(ECVL_WITH_DICOM @ECVL_WITH_DICOM@)
 SET(ECVL_WITH_OPENGL @ECVL_WITH_OPENGL@)
-SET(ECVL_BUILD_EDDLL @ECVL_BUILD_EDDLL@)
+SET(ECVL_BUILD_EDDLL @ECVL_BUILD_EDDL@)
 SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
 
 set(OpenCV_DIR "@OpenCV_DIR@")
@@ -16,9 +16,9 @@ if(${ECVL_WITH_DICOM})
     find_dependency(DCMTK)
 endif()
 
-if (${ECVL_BUILD_EDDLL})
-    set(EDDLL_DIR "@EDDLL_DIR@")
-    find_dependency(EDDLL)
+if (${ECVL_BUILD_EDDL})
+    set(EDDL_DIR "@EDDL_DIR@")
+    find_dependency(EDDL)
 endif()
 
 if (${ECVL_BUILD_GUI})
