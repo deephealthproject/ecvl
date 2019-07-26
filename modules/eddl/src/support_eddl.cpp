@@ -34,7 +34,7 @@ namespace ecvl
             RearrangeChannels(tmp, tmp, "xyc");
 
         int tot_dims = tmp.dims_[0] * tmp.dims_[1] * tmp.dims_[2];
-        tensor t = eddl.T({ tot_dims });
+        tensor t = T({ tot_dims });
         memcpy(t->input->ptr, tmp.data_, tmp.datasize_);
         return t;
     }
@@ -45,7 +45,7 @@ namespace ecvl
 
         //dims[0] = n_samples, dims[1] = n_channels, dims[2] = width, dims[3] = height
         int tot_dims = dims[1] * dims[2] * dims[3];
-        tensor stack = eddl.T({ dims[0], tot_dims });
+        tensor stack = T({ dims[0], tot_dims });
         int i = 0;
         cv::TickMeter tm;
 
