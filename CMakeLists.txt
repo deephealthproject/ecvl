@@ -8,6 +8,7 @@
 #           Federico Bolelli, <federico.bolelli@unimore.it>
 #           Costantino Grana, <costantino.grana@unimore.it>
 #			Stefano Allegretti, <stefano.allegretti@unimore.it>
+#			Laura Canalini, <laura.canalini@unimore.it>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -50,8 +51,8 @@ endif()
 # BEGIN: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
 # This should be done as follows but it doesn't work!?
-#set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_EXTENSIONS OFF)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     include(CheckCXXCompilerFlag)
@@ -86,18 +87,18 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: static/dinamic runtime 												
 #--------------------------------------------------------------------------------------------------------
-set(ECVL_STATIC ON CACHE BOOL "Whether to build static or dinamic libraries")
+set(ECVL_SHARED OFF CACHE BOOL "Whether to build static or dinamic libraries")
 
 if(MSVC)
-    if(ECVL_STATIC)
+    if(ECVL_SHARED)
+    	message(STATUS "Setting dinamic runtime for MSVC")
+        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
+            string(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
+        endforeach(flag_var)
+    else()
         message(STATUS "Setting static runtime for MSVC")
         foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO ) 
             string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-        endforeach(flag_var)
-    else()
-	    message(STATUS "Setting dinamic runtime for MSVC")
-        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
-            string(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
 	endif()
 endif()
@@ -114,7 +115,7 @@ if(${ECVL_TESTS})
     add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
 endif()
 
-add_library(ECVL_CORE "")
+add_library(ECVL_CORE STATIC "")
 add_subdirectory("modules/core")
 target_include_directories(ECVL_CORE PUBLIC	
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules/core/include>  
@@ -206,7 +207,7 @@ if(ECVL_BUILD_GUI)
         find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
         if(wxWidgets_FOUND)
             include(${wxWidgets_USE_FILE})
-            add_library(ECVL_GUI "")
+            add_library(ECVL_GUI STATIC "")
             add_subdirectory("modules/gui")
             include_directories("modules/gui/include")
             
@@ -231,7 +232,7 @@ if(ECVL_BUILD_EDDL)
     if(ECVL_BUILD_CORE)
         find_package(EDDL)
         if(EDDL_FOUND)
-            add_library(ECVL_EDDL "")
+            add_library(ECVL_EDDL STATIC "")
             add_subdirectory("modules/eddl")
             include_directories("modules/eddl/include")
            
@@ -318,15 +319,11 @@ ENDFOREACH()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Install
 #--------------------------------------------------------------------------------------------------------
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    message(STATUS "\nHere we are!\n")
-    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
-endif()
 install(TARGETS ${ECVL_MODULES}
 		EXPORT ECVLTargets
 		RUNTIME DESTINATION bin
 		LIBRARY DESTINATION lib
-		ARCHIVE DESTINATION lib/static
+		ARCHIVE DESTINATION lib
 		)
 install(EXPORT ECVLTargets DESTINATION ${CMAKE_INSTALL_PREFIX})
 foreach(module_name ${ECVL_MODULES_DIRS})
@@ -336,11 +333,9 @@ foreach(module_name ${ECVL_MODULES_DIRS})
 endforeach()
 message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")   
 
-#install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in
-#        DESTINATION ${CMAKE_INSTALL_PREFIX})     
-
-message(STATUS "${CMAKE_CURRENT_SOURCE_DIR} and ${CMAKE_INSTALL_PREFIX}")
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_INSTALL_PREFIX}/ECVLConfig.cmake @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake
+        DESTINATION ${CMAKE_INSTALL_PREFIX}) 
 #--------------------------------------------------------------------------------------------------------
 # END: Install
 #--------------------------------------------------------------------------------------------------------
