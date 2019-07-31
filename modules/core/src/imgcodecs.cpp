@@ -29,6 +29,17 @@ bool ImRead(const filesystem::path& filename, Image& dst)
     return ImRead(filename.string(), dst);
 }
 
+
+bool ImReadMulti(const std::string& filename, Image& dst) {
+
+    std::vector<cv::Mat> v;
+    cv::imreadmulti(filename, v);
+    dst = MatVecToImage(v);
+
+    return !dst.IsEmpty();
+}
+
+
 bool ImWrite(const std::string& filename, const Image& src) 
 {
     return cv::imwrite(filename, ImageToMat(src));

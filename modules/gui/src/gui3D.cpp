@@ -14,6 +14,7 @@
 
 #include "ecvl/gui/shader.h"
 #include "ecvl/core/datatype_matrix.h"
+#include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
     // settings
@@ -147,7 +148,7 @@ namespace ecvl {
         END_EVENT_TABLE()
 
         class Show3DApp : public wxApp {
-        Image img_;
+        const Image& img_;
 
         virtual bool OnInit();
 
@@ -245,6 +246,7 @@ namespace ecvl {
         Image uint8_conversion;
         NormalizeToUint8(src_img, uint8_conversion);
         const Image& img = uint8_conversion;
+        //const Image& img = src_img;
 
         //std::cout << GLVersion.major << "." << GLVersion.minor << std::endl;
         
@@ -285,9 +287,9 @@ namespace ecvl {
         int height = img.dims_[1];
         int depth = img.dims_[2];
 
-        float dw = 1;
-        float dh = 1;
-        float dd = 1;
+        float dw = 1.f;
+        float dh = 1.f;
+        float dd = 1.f;
 
         if (img.spacings_.size() >= 3) {
             dw = img.spacings_[0];
@@ -341,23 +343,51 @@ namespace ecvl {
                 }
             }
         }
-        else {
-            throw std::runtime_error("Not implemented.\n");
+        else if (img.colortype_ == ColorType::RGB)
+        {
+            if (img.channels_.back() == 'c') {
+                for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
+                    //memcpy(data + i * 4, img.data_ + i * 3, 3);
+                    data[i * 4 + 0] = img.data_[img.strides_.back() * 0 + i];
+                    data[i * 4 + 1] = img.data_[img.strides_.back() * 1 + i];
+                    data[i * 4 + 2] = img.data_[img.strides_.back() * 2 + i];
+                    if (data[i * 4 + 0] < black_threshold && data[i * 4 + 1] < black_threshold && data[i * 4 + 2] < black_threshold) {
+                        data[i * 4 + 3] = 0;
+                    }
+                    else {
+                        //data[i * 4 + 3] = data[i * 4];
+                        data[i * 4 + 3] = alpha;
+                    }
+                }
+            }
+            else {
+                ECVL_ERROR_NOT_IMPLEMENTED
+            }
         }
-        //if (img.colortype_ == ColorType::RGB)
-        //{
-        //    for (int i = 0; i < img.dims_[1] * img.dims_[2] * img.dims_[3]; i++) {
-        //        memcpy(data + i * 4, img.data_ + i * 3, 3);
-        //        if (data[i * 4 + 0] < black_threshold && data[i * 4 + 1] < black_threshold && data[i * 4 + 2] < black_threshold) {
-        //            data[i * 4 + 3] = 0;
-        //        }
-        //        else {
-        //            data[i * 4 + 3] = data[i * 4];
-        //            //data[i * 4 + 3] = alpha;
-        //        }
-        //    }
-        //}
-
+        else if (img.colortype_ == ColorType::BGR)
+        {
+            if (img.channels_.back() == 'c') {
+                for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
+                    //memcpy(data + i * 4, img.data_ + i * 3, 3);
+                    data[i * 4 + 0] = img.data_[img.strides_.back() * 2 + i];
+                    data[i * 4 + 1] = img.data_[img.strides_.back() * 1 + i];
+                    data[i * 4 + 2] = img.data_[img.strides_.back() * 0 + i];
+                    if (data[i * 4 + 0] < black_threshold && data[i * 4 + 1] < black_threshold && data[i * 4 + 2] < black_threshold) {
+                        data[i * 4 + 3] = 0;
+                    }
+                    else {
+                        //data[i * 4 + 3] = data[i * 4];
+                        data[i * 4 + 3] = alpha;
+                    }
+                }
+            }
+            else {
+                ECVL_ERROR_NOT_IMPLEMENTED
+            }
+        }
+        else {
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
 
         glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, width, height, depth, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         delete[] data;
@@ -421,7 +451,7 @@ namespace ecvl {
     void BasicGLPane::KeyReleased(wxKeyEvent& evt) {
 
         int key_code = evt.GetKeyCode();
-        if (key_code == 80 /* P */) {
+        if (key_code == WXK_SPACE) {
             enable_rotation = !enable_rotation;
         }
         else if (key_code == WXK_UP) {

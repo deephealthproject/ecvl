@@ -129,4 +129,99 @@ cv::Mat ImageToMat(const Image& img)
     return m;
 }
 
+Image MatVecToImage(const std::vector<cv::Mat>& v) {
+    Image img;
+
+    if (v.empty())
+        return img;
+
+    if (v[0].isContinuous()) {
+        // Dims
+        img.dims_ = std::vector<int>(v[0].dims + 1);
+        std::reverse_copy(v[0].size.p, v[0].size.p + v[0].dims, begin(img.dims_)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
+        img.dims_.back() = 120; //v.size();
+
+        // Type
+        switch (v[0].depth()) {
+        case CV_8U:  img.elemtype_ = DataType::uint8; break;
+        case CV_8S:  img.elemtype_ = DataType::int8; break;
+        case CV_16U: img.elemtype_ = DataType::uint16; break;
+        case CV_16S: img.elemtype_ = DataType::int16; break;
+        case CV_32S: img.elemtype_ = DataType::int32; break;
+        case CV_32F: img.elemtype_ = DataType::float32; break;
+        case CV_64F: img.elemtype_ = DataType::float64; break;
+        default:
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DEPTH
+        }
+        img.elemsize_ = DataTypeSize(img.elemtype_);
+
+        // Channels and colors
+        if (v[0].dims < 2) {
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
+        }
+        else if (v[0].dims == 2) {
+            img.channels_ = "xyz";
+        }
+        else if (v[0].dims == 3) {
+            img.channels_ = "xyzw";
+        }
+        else {
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
+        }
+
+        if (v[0].type() == CV_8UC1) { // Guess this is a gray level image
+            img.channels_ += "c";
+            img.dims_.push_back(1); // Add another dim for color planes (but it is one dimensional)
+            img.colortype_ = ColorType::GRAY;
+        }
+        else if (v[0].type() == CV_8UC3) { // Guess this is a BGR image
+            img.channels_ += "c";
+            img.dims_.push_back(3); // Add another dim for color planes
+            img.colortype_ = ColorType::BGR;
+        }
+        else if (v[0].channels() == 1) {
+            img.colortype_ = ColorType::none;
+        }
+        else {
+            img.channels_ += "o";
+            img.dims_.push_back(v[0].channels()); // Add another dim for color planes
+            img.colortype_ = ColorType::none;
+        }
+
+        // Strides
+        img.strides_.push_back(img.elemsize_);
+        int dsize = img.dims_.size();
+        for (int i = 0; i < dsize - 1; ++i) {
+            img.strides_.push_back(img.strides_[i] * img.dims_[i]);
+        }
+
+        // Data
+        img.datasize_ = img.elemsize_;
+        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.datasize_, std::multiplies<int>());
+        img.mem_ = DefaultMemoryManager::GetInstance();
+        img.data_ = img.mem_->Allocate(img.datasize_);
+        // The following code copies the data twice. Should be improved!
+
+        std::vector<cv::Mat> channels;
+        // For every channel
+        for (int i = 0; i < img.dims_.back(); i++) {
+            
+            // For every slice
+            for (int j = 0; j < 120 /* v.size() */; j++) {
+
+                cv::split(v[j], channels);
+
+                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2], channels[i].data, img.strides_[img.strides_.size() - 2]);
+
+            }
+        }
+    }
+    else {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+
+    return img;
+}
+
 } // namespace ecvl 

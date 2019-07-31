@@ -34,6 +34,34 @@ This variant of ImRead is platform independent.
 */
 bool ImRead(const filesystem::path& filename, Image& dst);
 
+
+/** @brief Loads a multi-page image from a file.
+
+The function ImReadMulti loads a multi-page image from the specified file. If the image cannot
+be read for any reason, the function creates an empty Image and returns false.
+
+@param[in] filename A std::string identifying the file name. In order to be platform
+independent consider to use @ref imreadmulti_path "ImReadMulti(const filesystem::path& filename, Image& dst)" .
+@param[out] dst Image in which data will be stored.
+
+@return true if the image is correctly read, false otherwise.
+*/
+bool ImReadMulti(const std::string& filename, Image& dst);
+
+/** @overload
+
+This variant of ImReadMulti is platform independent.
+
+@anchor imreadmulti_path
+
+@param[in] filename A filesystem::path identifying the file name.
+@param[out] dst Image in which data will be stored.
+
+@return true if the image is correctly read, false otherwise.
+*/
+bool ImReadMulti(const filesystem::path& filename, Image& dst);
+
+
 /** @brief Saves an image into a specified file.
 
 The function ImWrite saves the input image into a specified file. The image format is chosen based on the 
