@@ -365,6 +365,8 @@ class View : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
+    View() {}
+
     View(Image& img)
     {
         if (DT != img.elemtype_)
@@ -432,6 +434,8 @@ class ConstView : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
+    ConstView() {}
+
     ConstView(const Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
@@ -460,6 +464,8 @@ class ContiguousView : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
+    ContiguousView() {}
+
     ContiguousView(Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
@@ -487,6 +493,8 @@ template <DataType DT>
 class ConstContiguousView : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
+
+    ConstContiguousView() {}
 
     ConstContiguousView(Image& img) {
         elemtype_ = img.elemtype_;
