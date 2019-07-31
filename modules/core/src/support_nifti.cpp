@@ -4,7 +4,6 @@
 #include <fstream>
 
 #include "ecvl/core/standard_errors.h"
-
 //#include <nifti/nifti1_io.h>
 
 using namespace std;
@@ -335,7 +334,7 @@ namespace ecvl {
         return true;
     }
 
-    bool NiftiRead(const filesystem::path& filename, Image& dst) {
+    bool NiftiRead(const ::filesystem::path& filename, Image& dst) {
         return NiftiRead(filename.string(), dst);
     }
 
@@ -506,7 +505,7 @@ namespace ecvl {
         return true;
     }
 
-    bool NiftiWrite(const filesystem::path& filename, const Image& src) {
+    bool NiftiWrite(const ::filesystem::path& filename, const Image& src) {
         return NiftiWrite(filename.string(), src);
     }
 
