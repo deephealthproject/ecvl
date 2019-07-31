@@ -32,7 +32,7 @@ pipeline {
                 }
                 stage('windows') {
                     agent {
-                        label 'windows'
+                        label 'windows && opencv'
                     }
                     stages {
                         stage('Build') {
