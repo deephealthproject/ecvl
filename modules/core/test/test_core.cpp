@@ -5,21 +5,21 @@
 using namespace ecvl;
 
 TEST(Core, CreateEmptyImage) {
-	Image img;
-	EXPECT_EQ(img.dims_.size(), 0);
-	EXPECT_EQ(img.strides_.size(), 0);
-	EXPECT_EQ(img.data_, nullptr);
+    Image img;
+    EXPECT_EQ(img.dims_.size(), 0);
+    EXPECT_EQ(img.strides_.size(), 0);
+    EXPECT_EQ(img.data_, nullptr);
 }
 
 TEST(Core, CreateImageWithFiveDims) {
 
-	Image img({ 1, 2, 3, 4, 5 }, DataType::uint8, "xyzoo", ColorType::none);
-	EXPECT_EQ(img.dims_.size(), 5);
+    Image img({ 1, 2, 3, 4, 5 }, DataType::uint8, "xyzoo", ColorType::none);
+    EXPECT_EQ(img.dims_.size(), 5);
     int sdims = img.dims_.size();
-	for (int i = 0; i < sdims; i++) {
-		EXPECT_EQ(img.dims_[i], i + 1);
-	}
-	EXPECT_EQ(img.strides_.size(), 5);
+    for (int i = 0; i < sdims; i++) {
+        EXPECT_EQ(img.dims_[i], i + 1);
+    }
+    EXPECT_EQ(img.strides_.size(), 5);
 
 }
 
@@ -47,4 +47,24 @@ TEST(ArithmeticNeg, WorksWithInt8) {
     EXPECT_EQ(y({ 3,3,2 }), -48);
     EXPECT_EQ(y({ 4,2,1 }), 127);
     EXPECT_EQ(y({ 3,2,0 }), -128);
+}
+
+TEST(RearrangeChannels, WorksWithVolumeInt16RGB) {
+
+    Image img({ 3, 4, 3, 2 }, DataType::int16, "cxyz", ColorType::RGB);
+    View<DataType::int16> view(img);
+    auto it = view.Begin();
+    for (int i = 0; i < 24 * 3; i++) {
+        *it = i;
+        ++it;
+    }
+    Image img2;
+    RearrangeChannels(img, img2, "xyzc");
+    View<DataType::int16> view2(img2);
+
+    EXPECT_EQ(view2({ 2, 0, 1, 0 }), 42);
+    EXPECT_EQ(view2({ 3, 1, 1, 2 }), 59);
+    EXPECT_EQ(view2({ 0, 2, 0, 1 }), 25);
+    EXPECT_EQ(view2({ 1, 2, 0, 1 }), 28);
+
 }
