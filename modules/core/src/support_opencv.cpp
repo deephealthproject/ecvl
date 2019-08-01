@@ -139,7 +139,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v) {
         // Dims
         img.dims_ = std::vector<int>(v[0].dims + 1);
         std::reverse_copy(v[0].size.p, v[0].size.p + v[0].dims, begin(img.dims_)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
-        img.dims_.back() = 120; //v.size();
+        img.dims_.back() = v.size();
 
         // Type
         switch (v[0].depth()) {
@@ -207,7 +207,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v) {
         for (int i = 0; i < img.dims_.back(); i++) {
             
             // For every slice
-            for (int j = 0; j < 120 /* v.size() */; j++) {
+            for (int j = 0; j < v.size(); j++) {
 
                 cv::split(v[j], channels);
 

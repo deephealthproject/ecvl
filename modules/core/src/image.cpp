@@ -30,7 +30,7 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
             elemtype_ = elemtype;
             elemsize_ = DataTypeSize(elemtype_);
             dims_ = dims;   // A check could be added to save this copy
-            spacings_ = spacings;  
+            spacings_ = spacings;
             channels_ = std::move(channels);
             colortype_ = colortype;
             datasize_ = new_datasize;
@@ -58,46 +58,85 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
         }
         return;
     }
-    Image tmp;
+
+    // bindings[new_pos] = old_pos
+    std::vector<int> bindings(src.channels_.size());
+    std::vector<int> new_dims(src.dims_.size());
+    std::vector<float> new_spacings(src.spacings_.size());
+
+    for (int old_pos = 0; old_pos < src.channels_.size(); old_pos++) {
+        char c = src.channels_[old_pos];
+        size_t new_pos = channels.find(c);
+        if (new_pos == std::string::npos) {
+            ECVL_ERROR_WRONG_PARAMS("channels")
+        }
+        else {
+            bindings[new_pos] = old_pos;
+            new_dims[new_pos] = src.dims_[old_pos];
+            if (new_spacings.size() == new_dims.size()) {   // spacings is not a mandatory field
+                new_spacings[new_pos] = src.spacings_[old_pos];
+            }
+        }
+    }
+
+    Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings);
+
+    std::vector<int> coor(tmp.dims_.size());
+    for (int tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
+
+        int x = tmp_pos;
+        for (int i = coor.size() - 1; i >= 0; i--) {
+            coor[i] = x / tmp.strides_[i];
+            x %= tmp.strides_[i];
+        }
+
+        int src_pos = 0;
+        for (int i = 0; i < tmp.dims_.size(); i++) {
+            src_pos += coor[i] * src.strides_[bindings[i]];
+        }
+
+        memcpy(tmp.data_ + tmp_pos, src.data_ + src_pos, tmp.elemsize_);
+    }
+
     // Check if rearranging is possible, else throw
-    if (src.channels_ == "xyc" && channels == "cxy") {
-        std::vector<float> new_spacings;
-        if (src.spacings_.size() == 3) {
-            new_spacings = { src.spacings_[2], src.spacings_[0], src.spacings_[1] };
-        }
-        tmp = Image({ src.dims_[2], src.dims_[0], src.dims_[1] }, src.elemtype_, channels, src.colortype_, new_spacings);
-        auto i = src.Begin<uint8_t>();
-        auto plane_elems = src.dims_[0] * src.dims_[1];
-        for (int ch = 0; ch < src.dims_[2]; ++ch) {
-            auto ptr = tmp.data_ + ch * tmp.elemsize_;
-            for (int el = 0; el < plane_elems; ++el) {
-                memcpy(ptr, i.ptr_, tmp.elemsize_);
-                ++i;
-                ptr += tmp.strides_[1];
-            }
-        }
-    }
-    else if (src.channels_ == "cxy" && channels == "xyc")
-    {
-        std::vector<float> new_spacings;
-        if (src.spacings_.size() == 3) {
-            new_spacings = { src.spacings_[1], src.spacings_[2], src.spacings_[0] };
-        }
-        tmp = Image({ src.dims_[1], src.dims_[2], src.dims_[0] }, src.elemtype_, channels, src.colortype_, new_spacings);
-        auto i = src.Begin<uint8_t>();
-        auto plane_elems = src.dims_[1] * src.dims_[2];
-        for (int el = 0; el < plane_elems; ++el) {
-            auto ptr = tmp.data_ + el * tmp.elemsize_;
-            for (int ch = 0; ch < src.dims_[0]; ++ch) {
-                memcpy(ptr, i.ptr_, tmp.elemsize_);
-                ++i;
-                ptr += tmp.strides_[2];
-            }
-        }
-    }
-    else {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
+    //if (src.channels_ == "xyc" && channels == "cxy") {
+    //    std::vector<float> new_spacings;
+    //    if (src.spacings_.size() == 3) {
+    //        new_spacings = { src.spacings_[2], src.spacings_[0], src.spacings_[1] };
+    //    }
+    //    tmp = Image({ src.dims_[2], src.dims_[0], src.dims_[1] }, src.elemtype_, channels, src.colortype_, new_spacings);
+    //    auto i = src.Begin<uint8_t>();
+    //    auto plane_elems = src.dims_[0] * src.dims_[1];
+    //    for (int ch = 0; ch < src.dims_[2]; ++ch) {
+    //        auto ptr = tmp.data_ + ch * tmp.elemsize_;
+    //        for (int el = 0; el < plane_elems; ++el) {
+    //            memcpy(ptr, i.ptr_, tmp.elemsize_);
+    //            ++i;
+    //            ptr += tmp.strides_[1];
+    //        }
+    //    }
+    //}
+    //else if (src.channels_ == "cxy" && channels == "xyc")
+    //{
+    //    std::vector<float> new_spacings;
+    //    if (src.spacings_.size() == 3) {
+    //        new_spacings = { src.spacings_[1], src.spacings_[2], src.spacings_[0] };
+    //    }
+    //    tmp = Image({ src.dims_[1], src.dims_[2], src.dims_[0] }, src.elemtype_, channels, src.colortype_, new_spacings);
+    //    auto i = src.Begin<uint8_t>();
+    //    auto plane_elems = src.dims_[1] * src.dims_[2];
+    //    for (int el = 0; el < plane_elems; ++el) {
+    //        auto ptr = tmp.data_ + el * tmp.elemsize_;
+    //        for (int ch = 0; ch < src.dims_[0]; ++ch) {
+    //            memcpy(ptr, i.ptr_, tmp.elemsize_);
+    //            ++i;
+    //            ptr += tmp.strides_[2];
+    //        }
+    //    }
+    //}
+    //else {
+    //    ECVL_ERROR_NOT_IMPLEMENTED
+    //}
 
     dst = std::move(tmp);
 }
