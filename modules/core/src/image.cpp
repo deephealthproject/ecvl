@@ -48,8 +48,6 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
 
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels)
 {
-    // TODO consider spacings
-
     // Check if rearranging is required
     if (src.channels_ == channels) {
         // if not, check if dst==src
@@ -81,23 +79,19 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
     Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings);
 
-    std::vector<int> coor(tmp.dims_.size());
     for (int tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
 
         int x = tmp_pos;
-        for (int i = coor.size() - 1; i >= 0; i--) {
-            coor[i] = x / tmp.strides_[i];
-            x %= tmp.strides_[i];
-        }
-
         int src_pos = 0;
-        for (int i = 0; i < tmp.dims_.size(); i++) {
-            src_pos += coor[i] * src.strides_[bindings[i]];
+        for (int i = tmp.dims_.size() - 1; i >= 0; i--) {
+            src_pos += (x / tmp.strides_[i]) * src.strides_[bindings[i]];
+            x %= tmp.strides_[i];
         }
 
         memcpy(tmp.data_ + tmp_pos, src.data_ + src_pos, tmp.elemsize_);
     }
 
+    // TODO consider spacings
     // Check if rearranging is possible, else throw
     //if (src.channels_ == "xyc" && channels == "cxy") {
     //    std::vector<float> new_spacings;
