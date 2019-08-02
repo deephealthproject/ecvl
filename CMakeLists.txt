@@ -34,6 +34,7 @@ project (ecvl CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
+set(CMAKE_POSITION_INDEPENDENT_CODE True) #To always generate position independent code
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Install(first step): must be at the beginning otherwise in case of any failure (i.e. OpenCV not found) won't work
