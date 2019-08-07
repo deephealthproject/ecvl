@@ -207,7 +207,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v) {
         for (int i = 0; i < img.dims_.back(); i++) {
             
             // For every slice
-            for (int j = 0; j < v.size(); j++) {
+            for (size_t j = 0; j < v.size(); j++) {
 
                 cv::split(v[j], channels);
 

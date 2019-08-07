@@ -65,7 +65,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     std::vector<int> new_dims(src.dims_.size());
     std::vector<float> new_spacings(src.spacings_.size());
 
-    for (int old_pos = 0; old_pos < src.channels_.size(); old_pos++) {
+    for (size_t old_pos = 0; old_pos < src.channels_.size(); old_pos++) {
         char c = src.channels_[old_pos];
         size_t new_pos = channels.find(c);
         if (new_pos == std::string::npos) {
@@ -82,7 +82,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
     Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings);
 
-    for (int tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
+    for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
 
         int x = tmp_pos;
         int src_pos = 0;
