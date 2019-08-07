@@ -11,8 +11,9 @@
 #include "datatype.h"
 #include "memorymanager.h"
 #include "iterators.h"
-#include "arithmetic_impl.h"
 #include "datatype_matrix.h"
+#include "type_promotion.h"
+#include "standard_errors.h"
 
 namespace ecvl {
 
@@ -35,6 +36,17 @@ enum class ColorType {
     HSV,   /**< HSV ColorType */
     YCbCr, /**< YCbCr ColorType */
 };
+
+class Image;
+
+template <DataType DT>
+class View;
+
+template <DataType DT>
+class ConstView;
+
+#include "arithmetic_impl.inc.h"
+
 
 /** @brief Image class
 
@@ -365,8 +377,8 @@ public:
         static constexpr Table1D<ImageScalarAddImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
-    template<>
-    void Add(const Image& rhs, bool saturate) {    
+    
+    void Add(const Image& rhs, bool saturate = true) {    
         static constexpr Table2D<StructAdd> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
@@ -377,8 +389,8 @@ public:
         static constexpr Table1D<ImageScalarSubImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
-    template<>
-    void Sub(const Image& rhs, bool saturate) {
+
+    void Sub(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructSub> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
@@ -389,8 +401,8 @@ public:
         static constexpr Table1D<ImageScalarMulImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
-    template<>
-    void Mul(const Image& rhs, bool saturate) {
+
+    void Mul(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructMul> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
@@ -401,8 +413,8 @@ public:
         static constexpr Table1D<ImageScalarDivImpl, int> table;
         table(elemtype_)(*this, rhs, saturate, 0);
     }
-    template<>
-    void Div(const Image& rhs, bool saturate) {
+
+    void Div(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructDiv, int> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate, 0);
     }

@@ -7,7 +7,6 @@
 #include "ecvl/core/image.h"
 #include "ecvl/core/type_promotion.h"
 #include "ecvl/core/standard_errors.h"
-#include "ecvl/core/arithmetic_impl.h"
 
 namespace ecvl {
 

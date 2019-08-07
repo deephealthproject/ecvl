@@ -1,16 +1,3 @@
-#ifndef ECVL_ARITHMETIC_IMPL_H_
-#define ECVL_ARITHMETIC_IMPL_H_
-
-#include <type_traits>
-
-#include "ecvl/core/datatype_matrix.h"
-#include "ecvl/core/image.h"
-#include "ecvl/core/type_promotion.h"
-#include "ecvl/core/standard_errors.h"
-
-
-namespace ecvl {
-
 /** @brief Saturate a value (of any type) to the specified type.
 
 Given an input of any type the saturate_cast function provide an
@@ -224,6 +211,3 @@ struct ImageScalarDivImpl {
         }
     }
 };
-
-} // namespace ecvl
-#endif // ECVL_ARITHMETIC_IMPL_H_
