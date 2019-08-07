@@ -57,6 +57,9 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
         return;
     }
 
+    if (channels.size() != src.channels_.size()) {
+        ECVL_ERROR_WRONG_PARAMS("channels.size() does not match src.channels_.size()")
+    }
     // bindings[new_pos] = old_pos
     std::vector<int> bindings(src.channels_.size());
     std::vector<int> new_dims(src.dims_.size());
@@ -66,7 +69,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
         char c = src.channels_[old_pos];
         size_t new_pos = channels.find(c);
         if (new_pos == std::string::npos) {
-            ECVL_ERROR_WRONG_PARAMS("channels")
+            ECVL_ERROR_WRONG_PARAMS("channels contains wrong characters")
         }
         else {
             bindings[new_pos] = old_pos;
