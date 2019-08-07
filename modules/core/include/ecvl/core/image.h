@@ -371,49 +371,53 @@ public:
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
     }    
 
-    /** @brief In-place addition of an Image or a scalar value. */
+    /** @brief In-place addition of a scalar value. */
     template<typename T>
     void Add(const T& rhs, bool saturate = true) {
         static constexpr Table1D<ImageScalarAddImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
     
+    /** @brief In-place addition of an Image. */
     void Add(const Image& rhs, bool saturate = true) {    
         static constexpr Table2D<StructAdd> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
 
-    /** @brief In-place subtraction of an Image or a scalar value. */
+    /** @brief In-place subtraction of a scalar value. */
     template<typename T>
     void Sub(const T& rhs, bool saturate = true) {
         static constexpr Table1D<ImageScalarSubImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
 
+    /** @brief In-place subtraction of an Image. */
     void Sub(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructSub> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
 
-    /** @brief In-place multiplication for an Image or a scalar value. */
+    /** @brief In-place multiplication for a scalar value. */
     template<typename T>
     void Mul(const T& rhs, bool saturate = true) {
         static constexpr Table1D<ImageScalarMulImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
-
+    
+    /** @brief In-place multiplication for an Image. */
     void Mul(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructMul> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
     
-    /** @brief In-place division for an Image or a scalar value. */
+    /** @brief In-place division for a scalar value. */
     template<typename T>
     void Div(const T& rhs, bool saturate = true) {
         static constexpr Table1D<ImageScalarDivImpl, int> table;
         table(elemtype_)(*this, rhs, saturate, 0);
     }
 
+    /** @brief In-place division for an Image. */
     void Div(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructDiv, int> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate, 0);
