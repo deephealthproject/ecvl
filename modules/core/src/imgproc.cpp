@@ -165,6 +165,26 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
     }
 }
 
+
+inline void RGB2GRAYGeneric(const uint8_t* r, const uint8_t* g, const uint8_t* b, uint8_t* dst, DataType dt) {
+
+    // 0.299 * R + 0.587 * G + 0.114 * B
+
+#define DEREF(ptr, type)            *reinterpret_cast<TypeInfo_t<DataType::type>*>(ptr)
+#define CONST_DEREF(ptr, type)      *reinterpret_cast<const TypeInfo_t<DataType::type>*>(ptr)
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: DEREF(dst, type) = saturate_cast<DataType::type>(0.299 * CONST_DEREF(r, type) + 0.587 * CONST_DEREF(g, type) + 0.114 * CONST_DEREF(b, type));  break;
+
+    switch (dt) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+    }
+
+#undef ECVL_TUPLE
+#undef DEREF
+#undef CONST_DEREF
+}
+
 void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 {
     if (src.colortype_ == ColorType::none || new_type == ColorType::none) {
@@ -241,8 +261,38 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         return;
     }
 
-    if (src.colortype_ == ColorType::RGB && new_type == ColorType::GRAY) {
-        ECVL_ERROR_NOT_IMPLEMENTED
+    if ((src.colortype_ == ColorType::RGB || src.colortype_ == ColorType::BGR) && new_type == ColorType::GRAY) {
+
+        size_t c_pos = src.channels_.find('c');
+        if (c_pos == std::string::npos) {
+            ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+        }
+
+        std::vector<int> tmp_dims = src.dims_;
+        tmp_dims[c_pos] = 1;
+
+        tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_);
+
+        const uint8_t* r = src.data_ + ((src.colortype_ == ColorType::RGB) ? 0 : 2) * src.strides_[c_pos];
+        const uint8_t* g = src.data_ +                                         1    * src.strides_[c_pos];
+        const uint8_t* b = src.data_ + ((src.colortype_ == ColorType::RGB) ? 2 : 0) * src.strides_[c_pos];
+
+        for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
+
+            int x = tmp_pos;
+            int src_pos = 0;
+            for (int i = tmp.dims_.size() - 1; i >= 0; i--) {
+                if (i != c_pos) {
+                    src_pos += (x / tmp.strides_[i]) * src.strides_[i];
+                    x %= tmp.strides_[i];
+                }
+            }
+
+            RGB2GRAYGeneric(r + src_pos, g + src_pos, b + src_pos, tmp.data_ + tmp_pos, src.elemtype_);
+
+        }
+        dst = tmp;
+        return;
     }
     if (src.colortype_ == ColorType::BGR && new_type == ColorType::GRAY) {
         ECVL_ERROR_NOT_IMPLEMENTED
