@@ -153,7 +153,7 @@ The OtsuThreshold function calculates the Otsu threshold value over a given inpu
 
 @return Otsu threshold value.
 */
-double OtsuThreshold(const Image& src);
+int OtsuThreshold(const Image& src);
 
 } // namespace ecvl
 

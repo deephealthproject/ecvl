@@ -358,14 +358,61 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     dst = MatToImage(m);
 }
 
-double OtsuThreshold(const Image& src) {
+std::vector<double> Histogram(const Image& src) {
+
+    if (src.elemtype_ != DataType::uint8 || src.colortype_ != ColorType::GRAY) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    std::vector<double> hist(256, 0);
+
+    ConstView<DataType::uint8> view(src);
+    for (auto it = view.Begin(); it != view.End(); ++it) {
+        hist[*it]++;
+    }
+
+    int total_pixels = std::accumulate(src.dims_.begin(), src.dims_.end(), 1, std::multiplies<int>());
+    for (auto it = hist.begin(); it < hist.end(); it++) {
+        *it /= total_pixels;
+    }
+
+    return hist;
+}
+
+int OtsuThreshold(const Image& src) {
     if (src.colortype_ != ColorType::GRAY) { // What if the Image has ColorType::none?
         throw std::runtime_error("The OtsuThreshold requires a grayscale Image");
     }
 
-    if (true) {
+    if (src.elemtype_ != DataType::uint8) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
+
+    std::vector<double> hist = Histogram(src);
+    
+    double mu_t = 0;
+    for (size_t i = 1; i < hist.size(); i++) {
+        mu_t += hist[i] * i;
+    }
+
+    double w_k = 0;
+    double mu_k = 0;
+    double sigma_max = 0;
+    int threshold = 0;
+    for (size_t k = 0; k < hist.size() - 1; k++) {
+
+        w_k += hist[k];
+        mu_k += hist[k] * k;
+
+        double sigma = ((mu_t * w_k - mu_k) * (mu_t * w_k - mu_k)) / (w_k * (1 - w_k));
+        if (sigma > sigma_max) {
+            sigma_max = sigma;
+            threshold = k;
+        }
+
+    }
+
+    return threshold;
 }
 
 } // namespace ecvl
