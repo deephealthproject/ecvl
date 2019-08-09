@@ -74,4 +74,86 @@ void Function(const Image& src1, const Image& src2, Image& dst, DataType dst_typ
 //STANDARD_NON_INPLACE_OPERATION(Add)
 //STANDARD_NON_INPLACE_OPERATION(Sub)
 
+void And(const Image& src1, const Image& src2, Image& dst) {
+
+    if (src1.elemtype_ != DataType::uint8 || src1.colortype_ != ColorType::GRAY ||
+        src2.elemtype_ != DataType::uint8 || src2.colortype_ != ColorType::GRAY) {
+        ECVL_ERROR_WRONG_PARAMS("src images must have DataType::uint8 and ColorType::GRAY")
+    }
+
+    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
+        ECVL_ERROR_WRONG_PARAMS("src1 and src2 must have same dimensions and channels")
+    }
+
+    if (!dst.IsOwner()) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    Image tmp;
+    bool use_tmp = false;
+    if (&dst == &src1 || &dst == &src2) {
+        use_tmp = true;
+    }
+    Image& img = use_tmp ? tmp : dst;
+    img.Create(src1.dims_, DataType::uint8, src1.channels_, ColorType::GRAY, src1.spacings_);
+
+    ConstView<DataType::uint8> view1(src1);
+    ConstView<DataType::uint8> view2(src2);
+    View<DataType::uint8> view_dst(img);
+
+    auto it1 = view1.Begin();
+    auto it2 = view2.Begin();
+    auto it_dst = view_dst.Begin();
+    auto it_dst_end = view_dst.End();
+
+    for (; it_dst != it_dst_end; ++it_dst, ++it1, ++it2) {
+        *it_dst = *it1 & *it2;
+    }
+
+    if (use_tmp) {
+        dst = tmp;
+    }
+}
+
+void Or(const Image& src1, const Image& src2, Image& dst) {
+
+    if (src1.elemtype_ != DataType::uint8 || src1.colortype_ != ColorType::GRAY ||
+        src2.elemtype_ != DataType::uint8 || src2.colortype_ != ColorType::GRAY) {
+        ECVL_ERROR_WRONG_PARAMS("src images must have DataType::uint8 and ColorType::GRAY")
+    }
+
+    if (src1.dims_ != src2.dims_ || src1.channels_ != src2.channels_) {
+        ECVL_ERROR_WRONG_PARAMS("src1 and src2 must have same dimensions and channels")
+    }
+
+    if (!dst.IsOwner()) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    Image tmp;
+    bool use_tmp = false;
+    if (&dst == &src1 || &dst == &src2) {
+        use_tmp = true;
+    }
+    Image& img = use_tmp ? tmp : dst;
+    img.Create(src1.dims_, DataType::uint8, src1.channels_, ColorType::GRAY, src1.spacings_);
+
+    ConstView<DataType::uint8> view1(src1);
+    ConstView<DataType::uint8> view2(src2);
+    View<DataType::uint8> view_dst(img);
+
+    auto it1 = view1.Begin();
+    auto it2 = view2.Begin();
+    auto it_dst = view_dst.Begin();
+    auto it_dst_end = view_dst.End();
+
+    for (; it_dst != it_dst_end; ++it_dst, ++it1, ++it2) {
+        *it_dst = *it1 | *it2;
+    }
+
+    if (use_tmp) {
+        dst = tmp;
+    }
+}
+
 } // namespace ecvl

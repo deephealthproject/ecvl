@@ -325,7 +325,7 @@ storing the result into a destination Image. The procedure does not perform any 
 
 The procedure takes two input values (src1 and src2) and multiplies them together,
 storing the result into the destination image.
-If one of the operands is an Image and the other one is a scalar value, each pixel of the Image is 
+If one of the operands is an Image and the other one is a scalar value, each pixel of the Image is
 multiplied by the scalar value, and the result is stored into dst.
 If src1 and src2 are both Image(s) the pixel-wise multiplication is applied and, again,
 the result is stored into dst.
@@ -439,7 +439,7 @@ storing the result into a destination Image. The procedure does not perform any 
 The procedure takes two input values (src1 and src2) and divides the first by the
 second, storing the result in the destination image. If src1 is an Image and src2 a
 scalar value all the pixels inside src1 are divided by src2 and the result is
-stored into dst. 
+stored into dst.
 If src1 is a scalar value and src2 is an Image the opposite happens: all the pixel values
 of src2 divide the scalar value src1 and the result is stored into dst.
 If src1 and sr2 are both Image(s)
@@ -466,10 +466,39 @@ In any case, the operation performed is dst = src1 / src2.
 @return.
 */
 template<typename ST1, typename ST2, typename ET = double>
-void Div(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true, ET epsilon = std::numeric_limits<double>::min())
+void Div(const ST1 & src1, const ST2 & src2, Image & dst, bool saturate = true, ET epsilon = std::numeric_limits<double>::min())
 {
     DivImpl<ST1, ST2, ET>::_(src1, src2, dst, saturate, epsilon);
 }
+
+
+/** @brief Boolean and between two binary ecvl::Image.
+
+Performs boolean and between two ecvl::Image with DataType::uint8 and ColorType::GRAY.
+The result is stored into dst.
+
+@param[in] src1 First ecvl::Image operand.
+@param[in] src2 Second ecvl::Image operand.
+@param[out] dst Destination ecvl::Image.
+
+@return.
+*/
+void And(const Image& src1, const Image& src2, Image& dst);
+
+
+/** @brief Boolean or between two binary ecvl::Image.
+
+Performs boolean or between two ecvl::Image with DataType::uint8 and ColorType::GRAY.
+The result is stored into dst.
+
+@param[in] src1 First ecvl::Image operand.
+@param[in] src2 Second ecvl::Image operand.
+@param[out] dst Destination ecvl::Image.
+
+@return.
+*/
+void Or(const Image& src1, const Image& src2, Image& dst);
+
 
 /** @brief Divides two Image(s) and stores the result in a third Image.
 

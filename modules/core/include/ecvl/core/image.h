@@ -561,7 +561,7 @@ public:
 
     ConstContiguousView() {}
 
-    ConstContiguousView(Image& img) {
+    ConstContiguousView(const Image& img) {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
