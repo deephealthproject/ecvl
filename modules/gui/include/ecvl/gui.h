@@ -2,7 +2,6 @@
 #define ECVL_GUI_H_
 
 #include <wx/wx.h>
-#include "wx/glcanvas.h"
 #include "wx/notebook.h"
 #undef _
 
@@ -18,8 +17,6 @@ The image is shown with its original size.
 
 */
 void ImShow(const Image& img);
-
-void ImShow3D(const Image& img);
 
 /** @brief Convert an ECVL Image into a wxImage.
 
@@ -38,6 +35,18 @@ wxImage WxFromImg(Image& img);
 */
 
 Image ImgFromWx(const wxImage& wx);
+
+#if defined ECVL_WITH_OPENGL
+/** @brief Displays a 3D Image (volume).
+
+The ImShow3D function instantiates a ShowApp and starts it with a wxEntry() call.
+
+@param[in] img Image to be shown.
+
+*/
+void ImShow3D(const Image& img);
+#endif
+
 } // namespace ecvl
 
 #endif // ECVL_GUI_H_
