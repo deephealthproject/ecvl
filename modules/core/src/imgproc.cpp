@@ -9,6 +9,8 @@
 
 namespace ecvl {
 
+using namespace std;
+
 /** @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
 
 @param[in] interp Interpolation type, see @ref InterpolationType.
@@ -274,7 +276,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_);
 
         const uint8_t* r = src.data_ + ((src.colortype_ == ColorType::RGB) ? 0 : 2) * src.strides_[c_pos];
-        const uint8_t* g = src.data_ +                                         1    * src.strides_[c_pos];
+        const uint8_t* g = src.data_ + 1 * src.strides_[c_pos];
         const uint8_t* b = src.data_ + ((src.colortype_ == ColorType::RGB) ? 2 : 0) * src.strides_[c_pos];
 
         for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
@@ -389,7 +391,7 @@ int OtsuThreshold(const Image& src) {
     }
 
     std::vector<double> hist = Histogram(src);
-    
+
     double mu_t = 0;
     for (size_t i = 1; i < hist.size(); i++) {
         mu_t += hist[i] * i;
@@ -413,6 +415,242 @@ int OtsuThreshold(const Image& src) {
     }
 
     return threshold;
+}
+
+
+void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) {
+
+    if (src.channels_ != "xyc" || ker.channels_ != "xy") {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (ker.elemtype_ != DataType::float64) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if ((ker.dims_[0] % 2 == 0) || (ker.dims_[1] % 2 == 0)) {
+        ECVL_ERROR_WRONG_PARAMS("Kernel sizes must be odd")
+    }
+
+    if (!ker.contiguous_ || !src.contiguous_) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (type == DataType::none) {
+        type = src.elemtype_;
+    }
+
+    Image tmp(src.dims_, type, src.channels_, src.colortype_, src.spacings_);
+
+    int hlf_width = ker.dims_[0] / 2;
+    int hlf_height = ker.dims_[1] / 2;
+
+    TypeInfo_t<DataType::float64>* ker_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(ker.data_);
+
+    uint8_t* tmp_ptr = tmp.data_;
+
+    //auto tmp_it = tmp.ContiguousBegin<TypeInfo_t<DataType::uint8>>();
+    //auto tmp_it_end = tmp.ContiguousEnd<TypeInfo_t<DataType::uint8>>();
+
+    TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
+    for (int chan = 0; chan < tmp.dims_[2]; chan++) {
+
+        for (int r = 0; r < tmp.dims_[1]; r++) {
+            for (int c = 0; c < tmp.dims_[0]; c++) {
+
+                double acc = 0;
+                int i = 0;
+                for (int rk = 0; rk < ker.dims_[1]; rk++) {
+                    for (int ck = 0; ck < ker.dims_[0]; ck++) {
+
+                        int x = c + ck - hlf_width;
+                        if (x < 0) x = 0; else if (x >= tmp.dims_[0]) x = tmp.dims_[0] - 1;
+
+                        int y = r + rk - hlf_height;
+                        if (y < 0) y = 0; else if (y >= tmp.dims_[1]) y = tmp.dims_[1] - 1;
+
+                        acc += ker_data[i] * src_data[x + y * src.strides_[1]];
+
+                        i++;
+                    }
+                }
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
+
+                switch (type) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                }
+
+#undef ECVL_TUPLE
+
+                tmp_ptr += tmp.elemsize_;
+            }
+        }
+
+        src_data += src.strides_[2] / sizeof(*src_data);
+    }
+
+    dst = tmp;
+}
+
+void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type) {
+
+    if (src.channels_ != "xyc") {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if ((kerX.size() % 2 == 0) || (kerY.size() % 2 == 0)) {
+        ECVL_ERROR_WRONG_PARAMS("Kernel sizes must be odd")
+    }
+
+    if (!src.contiguous_) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (type == DataType::none) {
+        type = src.elemtype_;
+    }
+
+    Image tmp1(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
+    Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_);
+
+    int hlf_width = kerX.size() / 2;
+    int hlf_height = kerY.size() / 2;
+
+    // X direction
+    auto tmp1_it = tmp1.ContiguousBegin<TypeInfo_t<DataType::float64>>();
+    TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
+    for (int chan = 0; chan < tmp1.dims_[2]; chan++) {
+
+        for (int r = 0; r < tmp1.dims_[1]; r++) {
+            for (int c = 0; c < tmp1.dims_[0]; c++) {
+
+                double acc = 0;
+                for (unsigned int ck = 0; ck < kerX.size(); ck++) {
+
+                    int x = c + ck - hlf_width;
+                    if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1;
+
+                    acc += kerX[ck] * src_data[x];
+                }
+
+                *tmp1_it = acc;
+                ++tmp1_it;
+            }
+
+            src_data += src.strides_[1] / sizeof(*src_data);
+        }
+    }
+
+    uint8_t* tmp2_ptr = tmp2.data_;
+
+    // Y direction
+    TypeInfo_t<DataType::float64>* tmp1_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(tmp1.data_);
+    for (int chan = 0; chan < tmp2.dims_[2]; chan++) {
+
+        for (int r = 0; r < tmp2.dims_[1]; r++) {
+            for (int c = 0; c < tmp2.dims_[0]; c++) {
+
+                double acc = 0;
+                for (unsigned int rk = 0; rk < kerY.size(); rk++) {
+
+                    int y = r + rk - hlf_height;
+                    if (y < 0) y = 0; else if (y >= tmp2.dims_[1]) y = tmp2.dims_[1] - 1;
+
+                    acc += kerY[rk] * tmp1_data[c + y * tmp1.strides_[1] / sizeof(*tmp1_data)];
+
+                }
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
+
+                switch (type) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                }
+
+#undef ECVL_TUPLE
+
+                tmp2_ptr += tmp2.elemsize_;
+
+            }
+        }
+
+        tmp1_data += tmp1.strides_[2] / sizeof(*tmp1_data);
+    }
+
+    dst = tmp2;
+}
+
+
+void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY) {
+
+    if (sizeX < 0 || (sizeX % 2 != 1)) {
+        ECVL_ERROR_WRONG_PARAMS("sizeX must either be positive and odd or zero")
+    }
+    if (sizeY < 0 || (sizeY % 2 != 1)) {
+        ECVL_ERROR_WRONG_PARAMS("sizeY must either be positive and odd or zero")
+    }
+
+    bool sigmaX_zero = false;
+    if (sigmaX <= 0) {
+        sigmaX_zero = true;
+        if (sizeX == 0) {
+            ECVL_ERROR_WRONG_PARAMS("sigmaX and sizeX can't be both 0")
+        }
+        else {
+            sigmaX = 0.3 * ((sizeX - 1) * 0.5 - 1) + 0.8;
+        }
+    }
+    if (sigmaY <= 0) {
+        if (!sigmaX_zero) {
+            sigmaY = sigmaX;
+        }
+        else if (sizeY == 0) {
+            ECVL_ERROR_WRONG_PARAMS("sigmaX, sigmaY and sizeY can't be 0 at the same time")
+        }
+        else {
+            sigmaY = 0.3 * ((sizeY - 1) * 0.5 - 1) + 0.8;
+        }
+    }
+
+    if (src.channels_ != "xyc") {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    // Find x kernel values
+    vector<double> kernelX(sizeX);
+    double sum = 0;
+    for (int i = 0; i < sizeX; i++) {
+        double coeff = exp(-((i - (sizeX - 1) / 2) * (i - (sizeX - 1) / 2)) / (2 * sigmaX * sigmaX));
+        sum += coeff;
+        kernelX[i] = coeff;
+    }
+    for (int i = 0; i < sizeX; i++) {
+        kernelX[i] /= sum;
+    }
+
+    // Find y kernel values
+    vector<double> kernelY(sizeY);
+    sum = 0;
+    for (int i = 0; i < sizeY; i++) {
+        double coeff = exp(-((i - (sizeY - 1) / 2) * (i - (sizeY - 1) / 2)) / (2 * sigmaY * sigmaY));
+        sum += coeff;
+        kernelY[i] = coeff;
+    }
+    for (int i = 0; i < sizeY; i++) {
+        kernelY[i] /= sum;
+    }
+
+    SeparableFilter2D(src, dst, kernelX, kernelY);
 }
 
 } // namespace ecvl

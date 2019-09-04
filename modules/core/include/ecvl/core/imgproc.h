@@ -155,6 +155,40 @@ The OtsuThreshold function calculates the Otsu threshold value over a given inpu
 */
 int OtsuThreshold(const Image& src);
 
+/** @brief Convolves an Image with a kernel
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] ker Convolution kernel.
+@param[in] type Destination ecvl::DataType. If DataType::none, the same of src is used.
+
+*/
+void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type = DataType::none /* type of border */);
+
+/** @brief Convolves an Image with a couple of 1-dimensional kernels
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] kerX Convolution kernel for the X-axis.
+@param[in] kerY Convolution kernel for the Y-axis.
+@param[in] type Destination ecvl::DataType. If DataType::none, the same of src is used.
+
+*/
+void SeparableFilter2D(const Image& src, Image& dst, const std::vector<double>& kerX, const std::vector<double>& kerY, DataType type = DataType::none);
+
+
+/** @brief Blurs an Image using a Gaussian kernel.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] sizeX Horizontal size of the kernel. Must be positive and odd.
+@param[in] sizeY Vertical size of the kernel. Must be positive and odd.
+@param[in] sigmaX Gaussian kernel standard deviation in X direction.
+@param[in] sigmaY Gaussian kernel standard deviation in Y direction. If zero, sigmaX is used. If both are zero, they are calculted from sizeX and sizeY.
+
+*/
+void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY = 0);
+
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_
