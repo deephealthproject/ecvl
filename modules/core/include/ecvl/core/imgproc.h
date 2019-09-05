@@ -189,6 +189,16 @@ void SeparableFilter2D(const Image& src, Image& dst, const std::vector<double>& 
 */
 void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY = 0);
 
+
+/** @brief Adds Laplace distributed noise to an Image.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] scale Standard deviation of the noise generating distribution. Suggested values are around 255 * 0.05 for uint8 Images.
+
+*/
+void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale);
+
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_

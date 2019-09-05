@@ -1,6 +1,7 @@
 #include "ecvl/core/imgproc.h"
 
 #include <stdexcept>
+#include <random>
 
 #include <opencv2/imgproc.hpp>
 
@@ -651,6 +652,43 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
     }
 
     SeparableFilter2D(src, dst, kernelX, kernelY);
+}
+
+void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale) {
+
+    if (!src.contiguous_) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (scale <= 0) {
+        ECVL_ERROR_WRONG_PARAMS("scale must be >= 0")
+    }
+
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_);
+
+    random_device rd;
+    mt19937 gen(rd());
+    exponential_distribution dist(1/scale);
+
+    for (uint8_t *tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
+        
+        double exp1 = dist(gen);
+        double exp2 = dist(gen);
+        
+        double noise = exp1 - exp2;
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
+
+        switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+        }
+
+#undef ECVL_TUPLE
+
+    }
+
+    dst = tmp;
 }
 
 } // namespace ecvl
