@@ -422,6 +422,23 @@ public:
         static constexpr Table2D<StructDiv, int> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate, 0);
     }
+
+    Image& operator+=(const Image& rhs);
+
+    Image& operator-=(const Image& rhs);
+
+    Image& operator*=(const Image& rhs);
+
+    Image& operator/=(const Image& rhs);
+
+    friend Image operator+(Image lhs, const Image& rhs);
+
+    friend Image operator-(Image lhs, const Image& rhs);
+
+    friend Image operator*(Image lhs, const Image& rhs);
+
+    friend Image operator/(Image lhs, const Image& rhs);
+
 };
 
 #include "iterators_impl.inc.h"

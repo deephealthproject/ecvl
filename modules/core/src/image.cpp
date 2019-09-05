@@ -206,4 +206,45 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
     table(src.elemtype_, dst.elemtype_)(src, dst);
 }
 
+Image& Image::operator+=(const Image& rhs) {
+    Add(rhs);
+    return *this;
+}
+
+Image& Image::operator-=(const Image& rhs) {
+    Sub(rhs);
+    return *this;
+}
+
+Image& Image::operator*=(const Image& rhs) {
+    Mul(rhs);
+    return *this;
+}
+
+Image& Image::operator/=(const Image& rhs) {
+    Div(rhs);
+    return *this;
+}
+
+Image operator+(Image lhs, const Image& rhs) {
+    lhs += rhs;
+    return lhs;
+}
+
+Image operator-(Image lhs, const Image& rhs) {
+    lhs -= rhs;
+    return lhs;
+}
+
+Image operator*(Image lhs, const Image& rhs) {
+    lhs *= rhs;
+    return lhs;
+}
+
+Image operator/(Image lhs, const Image& rhs) {
+    lhs /= rhs;
+    return lhs;
+}
+
+
 } // namespace ecvl
