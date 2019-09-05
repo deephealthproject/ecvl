@@ -199,6 +199,14 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
 */
 void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale);
 
+/** @brief Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma).
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] gamma Exponent for the contrast adjustment.
+*/
+void GammaContrast(const Image& src, Image& dst, double scale);
+
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_

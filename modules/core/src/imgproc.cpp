@@ -691,4 +691,28 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
     dst = tmp;
 }
 
+void GammaContrast(const Image& src, Image& dst, double gamma) {
+
+    if (src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_);
+
+    for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
+
+        switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+        }
+
+#undef ECVL_TUPLE
+
+    }
+
+    dst = tmp;
+}
+
 } // namespace ecvl
