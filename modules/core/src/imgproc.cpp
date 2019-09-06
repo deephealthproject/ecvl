@@ -668,13 +668,13 @@ void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale) {
 
     random_device rd;
     mt19937 gen(rd());
-    exponential_distribution<> dist(1/scale);
+    exponential_distribution<> dist(1 / scale);
 
-    for (uint8_t *tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
-        
+    for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
+
         double exp1 = dist(gen);
         double exp2 = dist(gen);
-        
+
         double noise = exp1 - exp2;
 
 #define ECVL_TUPLE(type, ...) \
@@ -710,6 +710,94 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
 #undef ECVL_TUPLE
 
+    }
+
+    dst = tmp;
+}
+
+void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel) {
+
+    if (src.channels_ != "xyc") {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    int rectX = src.dims_[0] * drop_size;
+    int rectY = src.dims_[1] * drop_size;
+
+    Image tmp = src;
+
+    random_device rd;
+    mt19937 gen(rd());
+    discrete_distribution<> dist({ p, 1 - p });
+
+    if (per_channel) {
+        for (int ch = 0; ch < src.dims_[2]; ch++) {
+
+            uint8_t* tmp_ptr = tmp.Ptr({ 0, 0, ch });
+
+            for (int r = 0; r < src.dims_[1]; r += rectY) {
+                for (int c = 0; c < src.dims_[0]; c += rectX) {
+
+                    if (dist(gen) == 0) {
+
+                        for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
+                            for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+
+                                switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                                }
+
+#undef ECVL_TUPLE
+
+
+
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
+    }
+
+    else {
+        vector<uint8_t*> channel_ptrs;
+        for (int ch = 0; ch < tmp.dims_[2]; ch++) {
+            channel_ptrs.push_back(tmp.Ptr({ 0, 0, ch }));
+        }
+
+        for (int r = 0; r < src.dims_[1]; r += rectY) {
+            for (int c = 0; c < src.dims_[0]; c += rectX) {
+
+                if (dist(gen) == 0) {
+
+                    for (int ch = 0; ch < src.dims_[2]; ch++) {
+                        for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
+                            for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+
+                                switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                                }
+
+#undef ECVL_TUPLE
+
+
+
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        }
     }
 
     dst = tmp;

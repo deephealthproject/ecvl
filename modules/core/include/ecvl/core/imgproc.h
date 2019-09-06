@@ -207,6 +207,17 @@ void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale);
 */
 void GammaContrast(const Image& src, Image& dst, double scale);
 
+/** @brief Sets rectangular areas within an Image to zero.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] p Probability of any rectangle being set to zero.
+@param[in] drop_size Size of rectangles in percentage of the input Image.
+@param[in] per_channel Whether to use the same value for all channels of a pixel or not.
+
+*/
+void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel);
+
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_
