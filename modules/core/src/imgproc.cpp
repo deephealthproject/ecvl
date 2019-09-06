@@ -668,7 +668,7 @@ void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale) {
 
     random_device rd;
     mt19937 gen(rd());
-    exponential_distribution dist(1/scale);
+    exponential_distribution<> dist(1/scale);
 
     for (uint8_t *tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
         
