@@ -3,7 +3,6 @@
 
 #include "core/arithmetic.h"
 #include "core/datatype.h"
-#include "core/filesystem.h"
 #include "core/image.h"
 #include "core/imgcodecs.h"
 #include "core/imgproc.h"

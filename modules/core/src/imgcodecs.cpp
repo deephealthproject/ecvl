@@ -9,26 +9,22 @@
 #include "ecvl/core/support_dcmtk.h"
 #endif
 
+using namespace std::filesystem;
+
 namespace ecvl {
 
-bool ImRead(const std::string& filename, Image& dst)
+bool ImRead(const path& filename, Image& dst)
 {
-    dst = MatToImage(cv::imread(filename));
+    dst = MatToImage(cv::imread(filename.string()));
 
 #ifdef ECVL_WITH_DICOM
     if (dst.IsEmpty()) {
-        DicomRead(filename, dst);
+        DicomRead(filename.string(), dst);
     }
 #endif
 
     return !dst.IsEmpty();
 }
-
-bool ImRead(const filesystem::path& filename, Image& dst)
-{
-    return ImRead(filename.string(), dst);
-}
-
 
 bool ImReadMulti(const std::string& filename, Image& dst) {
 
@@ -39,15 +35,9 @@ bool ImReadMulti(const std::string& filename, Image& dst) {
     return !dst.IsEmpty();
 }
 
-
-bool ImWrite(const std::string& filename, const Image& src) 
+bool ImWrite(const path& filename, const Image& src)
 {
-    return cv::imwrite(filename, ImageToMat(src));
-}
-
-bool ImWrite(const filesystem::path& filename, const Image& src) 
-{
-    return ImWrite(filename.string(), src);
+    return cv::imwrite(filename.string(), ImageToMat(src));
 }
 
 } // namespace ecvl

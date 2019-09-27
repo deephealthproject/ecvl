@@ -66,5 +66,4 @@ TEST(RearrangeChannels, WorksWithVolumeInt16RGB) {
     EXPECT_EQ(view2({ 3, 1, 1, 2 }), 59);
     EXPECT_EQ(view2({ 0, 2, 0, 1 }), 25);
     EXPECT_EQ(view2({ 1, 2, 0, 1 }), 28);
-
 }

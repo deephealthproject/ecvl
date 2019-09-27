@@ -2,13 +2,12 @@
 
 using namespace std;
 using namespace ecvl;
-using namespace filesystem;
 
 int main()
 {
     // Loads an existing image
     Image img;
-    ImRead(path("../data/test.jpg"), img);
+    ImRead("../data/test.jpg", img);
     
     // Iterates over the image with ContiguosIterator
     // and modifies its pixels values on each channel
@@ -24,7 +23,7 @@ int main()
     
 
     // Write the output image
-    ImWrite(path("./test.png"), img);
+    ImWrite("./test.png", img);
 
     return EXIT_SUCCESS;
 }

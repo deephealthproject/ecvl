@@ -3,6 +3,7 @@
 
 #include <eddl/apis/eddl.h>
 #include "ecvl/core/image.h"
+#include <filesystem>
 
 namespace ecvl {
     /** @brief Convert an EDDL Tensor into an ECVL Image.
@@ -65,8 +66,8 @@ namespace ecvl {
     \f$\{number\_of\_samples, number\_of\_colors\_channels, width, height\}\f$
 
     @return EDDL Tensor.
-    */
-    tensor DatasetToTensor(vector<string> dataset, const std::vector<int>& dims);
+*/
+    tensor DatasetToTensor(std::vector<std::filesystem::path> dataset, const std::vector<int>& dims);
 
 } // namespace ecvl 
 

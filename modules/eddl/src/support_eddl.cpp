@@ -5,12 +5,14 @@
 #include "ecvl/core/standard_errors.h"
 
 #include <iostream>
+#include <filesystem>
 
 using namespace eddl;
+using namespace std::filesystem;
 
 namespace ecvl
 {
-    void SetColorType(ColorType& c_type, const int &color_channels)
+    void SetColorType(ColorType& c_type, const int& color_channels)
     {
         if (c_type == ColorType::none)
         {
@@ -140,15 +142,14 @@ namespace ecvl
         return t;
     }
 
-    tensor DatasetToTensor(vector<string> dataset, const std::vector<int>& dims)
+    tensor DatasetToTensor(vector<path> dataset, const std::vector<int>& dims)
     {
-        if (dims.size() != 4)
+        if (dims.size() != 4) {
             ECVL_ERROR_MSG "dims must have 4 dimensions (n_samples, color_channels, height, width )";
-
+        }
         Image tmp;
-        tensor t; 
+        tensor t;
         int i = 0;
-
         tensor stack = T({ dims });
 
         for (auto& elem : dataset) {
@@ -161,4 +162,5 @@ namespace ecvl
 
         return stack;
     }
+
 }

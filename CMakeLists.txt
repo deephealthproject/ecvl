@@ -7,8 +7,8 @@
 # Copyright (c) 2019
 #           Federico Bolelli, <federico.bolelli@unimore.it>
 #           Costantino Grana, <costantino.grana@unimore.it>
-#			Stefano Allegretti, <stefano.allegretti@unimore.it>
-#			Laura Canalini, <laura.canalini@unimore.it>
+#           Stefano Allegretti, <stefano.allegretti@unimore.it>
+#           Laura Canalini, <laura.canalini@unimore.it>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE True) #To always generate position independe
 # BEGIN: Install(first step): must be at the beginning otherwise in case of any failure (i.e. OpenCV not found) won't work
 #--------------------------------------------------------------------------------------------------------
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    message(STATUS "\nHere we are!\n")
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
 endif()
 #--------------------------------------------------------------------------------------------------------
@@ -58,7 +57,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     include(CheckCXXCompilerFlag)
     CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-    
+
     if(COMPILER_SUPPORTS_CXX17 AND NOT CMAKE_CXX_FLAGS MATCHES "-std=c\\+\\+17")
         set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}" CACHE STRING "Enable c++17" FORCE)
     elseif(NOT COMPILER_SUPPORTS_CXX17)
@@ -81,18 +80,18 @@ message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 #--------------------------------------------------------------------------------------------------------
 
 if(MSVC)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: static/dinamic runtime 												
+# BEGIN: static/dinamic runtime
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_SHARED OFF CACHE BOOL "Whether to build static or dinamic libraries")
 
 if(MSVC)
     if(ECVL_SHARED)
-    	message(STATUS "Setting dinamic runtime for MSVC")
+        message(STATUS "Setting dinamic runtime for MSVC")
         foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
             string(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
@@ -101,44 +100,44 @@ if(MSVC)
         foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO ) 
             string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
-	endif()
+    endif()
 endif()
 #--------------------------------------------------------------------------------------------------------
-# END: static/dinamic runtime										
+# END: static/dinamic runtime                                        
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: ECVL_CORE (the main target)	
+# BEGIN: ECVL_CORE (the main target)    
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_TESTS ON CACHE BOOL "Whether to build ECVL tests or not")
 if(${ECVL_TESTS})
     add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
 endif()
 
-add_library(ECVL_CORE STATIC "")
+add_library(ECVL_CORE STATIC)
 add_subdirectory("modules/core")
-target_include_directories(ECVL_CORE PUBLIC	
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules/core/include>  
-	$<INSTALL_INTERFACE:include>
+target_include_directories(ECVL_CORE PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules/core/include>
+    $<INSTALL_INTERFACE:include>
 )
 set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
 set(ECVL_MODULES ECVL_CORE)
 set(ECVL_MODULES_DIRS core)
 #--------------------------------------------------------------------------------------------------------
-# END: ECVL_CORE (the main target)	
+# END: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: OpenCV 	
+# BEGIN: OpenCV
 #--------------------------------------------------------------------------------------------------------
 set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc" CACHE STRING "OpenCV required packages")
 FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
-# END: OpenCV 	
+# END: OpenCV
 #--------------------------------------------------------------------------------------------------------
 
 
@@ -253,8 +252,8 @@ endif()
 
 foreach(MODULE ${ECVL_MODULES})
     string(TOLOWER ${MODULE} LOWER_MODULE)
-	set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_DEBUG "${LOWER_MODULE}d")
-	set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
+    set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_DEBUG "${LOWER_MODULE}d")
+    set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
 endforeach()
 
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
@@ -309,7 +308,7 @@ FOREACH(cur_file ${snippets_sources})
     set(cur_file "snippets/${cur_file}")
     #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
     add_executable(${exe_name} ${cur_file})
-	set_target_properties(${exe_name} PROPERTIES FOLDER "Snippets")
+    set_target_properties(${exe_name} PROPERTIES FOLDER "Snippets")
     target_link_libraries(${exe_name} ${ECVL_MODULES})
 ENDFOREACH()
 #--------------------------------------------------------------------------------------------------------
@@ -321,15 +320,15 @@ ENDFOREACH()
 # BEGIN: Install
 #--------------------------------------------------------------------------------------------------------
 install(TARGETS ${ECVL_MODULES}
-		EXPORT ECVLTargets
-		RUNTIME DESTINATION bin
-		LIBRARY DESTINATION lib
-		ARCHIVE DESTINATION lib
-		)
+        EXPORT ECVLTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        )
 install(EXPORT ECVLTargets DESTINATION ${CMAKE_INSTALL_PREFIX})
 foreach(module_name ${ECVL_MODULES_DIRS})
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/modules/${module_name}/include
-		DESTINATION "."
+        DESTINATION "."
         FILES_MATCHING PATTERN "*.h")
 endforeach()
 message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")   
@@ -340,4 +339,3 @@ install(FILES ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake
 #--------------------------------------------------------------------------------------------------------
 # END: Install
 #--------------------------------------------------------------------------------------------------------
-        

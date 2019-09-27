@@ -74,7 +74,7 @@ constexpr std::array<DataType, DataTypeSize()> DataTypeArray() {
     constexpr std::array<DataType, DataTypeSize()> arr = {
 #define ECVL_TUPLE(name, ...) DataType::name,
 #include "datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE	
+#undef ECVL_TUPLE
     };
     return arr;
     //@endcond

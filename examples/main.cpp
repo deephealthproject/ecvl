@@ -15,7 +15,6 @@
 int main(void)
 {
     using namespace ecvl;
-    using namespace filesystem;
 
     Image nifti_image;
     NiftiRead("C:\\Users\\Stefano\\Desktop\\nifti-images\\1010_brain_mr_02.nii", nifti_image);
@@ -83,10 +82,11 @@ int main(void)
         //
         //Image out1, out2;
         //Flip2D(img, out1);
-        //Mirror2D(img, out2);  
+        //Mirror2D(img, out2);
 
         View<DataType::uint8> cropped1(img, { 0, 0, 2 }, { -1, -1, -1 });
         View<DataType::uint8> cropped2(img, { 100, 100, 2 }, { 200, 200, -1 });
+
         ImWrite("cropped.png", cropped1);
         ImWrite("cropped.png", cropped2);
 
@@ -141,8 +141,6 @@ int main(void)
             std::transform(begin(accum), end(accum), begin(count), pout, std::divides<uint32_t>());
             pout += 32;
         }
-
-
 
         CopyImage(img1, img3, DataType::uint16);
         CopyImage(img1, img4, DataType::uint16);

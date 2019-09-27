@@ -7,6 +7,7 @@
 //#include <nifti/nifti1_io.h>
 
 using namespace std;
+using namespace std::filesystem;
 
 namespace ecvl {
 
@@ -75,7 +76,7 @@ namespace ecvl {
     };
 
     // Home-made variation  
-    bool NiftiRead(const std::string& filename, Image& dst) {
+    bool NiftiRead(const path& filename, Image& dst) {
 
         ifstream is;
         is.exceptions(ifstream::failbit | ifstream::eofbit | ifstream::badbit);
@@ -189,7 +190,7 @@ namespace ecvl {
             is.read(reinterpret_cast<char*>(header.magic), sizeof(char) * 4);
 
             if (strcmp("ni1", header.magic) == 0) {
-                string data_file = filename.substr(0, filename.find_last_of('.') + 1) + "img";
+                string data_file = filename.string().substr(0, filename.string().find_last_of('.') + 1) + "img";
                 is.close();
                 is.open(data_file, ios::binary);
             }
@@ -334,10 +335,6 @@ namespace ecvl {
         return true;
     }
 
-    bool NiftiRead(const ::filesystem::path& filename, Image& dst) {
-        return NiftiRead(filename.string(), dst);
-    }
-
     struct ByteWriter {
 
         ostream& os_;
@@ -359,7 +356,7 @@ namespace ecvl {
 
     };
 
-    bool NiftiWrite(const std::string& filename, const Image& src) {
+    bool NiftiWrite(const path& filename, const Image& src) {
 
         Image tmp;
         bool use_tmp1 = false;
@@ -505,9 +502,6 @@ namespace ecvl {
         return true;
     }
 
-    bool NiftiWrite(const ::filesystem::path& filename, const Image& src) {
-        return NiftiWrite(filename.string(), src);
-    }
 
 #undef DT_NONE         
 #undef DT_UNKNOWN      
