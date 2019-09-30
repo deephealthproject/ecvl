@@ -7,7 +7,7 @@ pipeline {
                     agent {
                         docker { 
                             label 'docker'
-                            image 'stal12/opencv:3.4.6'
+                            image 'stal12/opencv:3.4.6_gcc8'
                         }
                     }
                     stages {
