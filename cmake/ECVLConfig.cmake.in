@@ -31,6 +31,11 @@ if (${ECVL_BUILD_GUI})
     endif()
 endif()
 
+if (${ECVL_PARSER_DATASET})
+    set(YAML_CPP_DIR "@CMAKE_INSTALL_PREFIX@/install/cmake")
+    find_dependency(yaml-cpp)
+endif()
+
 include("@CMAKE_INSTALL_PREFIX@/ECVLTargets.cmake")
 
 foreach(COMPONENT ${ECVL_FIND_COMPONENTS})

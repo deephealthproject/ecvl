@@ -226,3 +226,24 @@ if(${ECVL_TESTS})
     
 endif(${ECVL_TESTS})
 
+# --------------------
+# yaml-cpp
+# --------------------
+if (${ECVL_PARSER_DATASET})
+    ecvl_update_3rdparty(yaml-cpp)
+
+    SET(APPLE_UNIVERSAL_BIN OFF CACHE INTERNAL "" FORCE)
+    SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_MSVC_SHARED_RT OFF CACHE INTERNAL "" FORCE)
+    #SET(MSVC_STHREADED_RT OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_CPP_BUILD_CONTRIB OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_CPP_INSTALL OFF CACHE INTERNAL "" FORCE)
+
+    set(CMAKE_FOLDER 3rdparty/yaml-cpp)
+    add_subdirectory(yaml-cpp)
+    set(CMAKE_FOLDER 3rdparty)
+    target_link_libraries(ECVL_CORE PUBLIC yaml-cpp)
+    message(STATUS "yaml-cpp added")
+endif()

@@ -149,6 +149,7 @@ target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
+set(ECVL_PARSER_DATASET OFF CACHE BOOL "Whether to build yaml support or not")
 
 find_package(Git QUIET)
 #--------------------------------------------------------------------------------------------------------
