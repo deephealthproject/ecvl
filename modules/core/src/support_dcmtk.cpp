@@ -12,6 +12,7 @@
 
 #include <ecvl/core/standard_errors.h>
 
+using namespace std::filesystem;
 namespace ecvl {
 
 bool DicomRead(const std::string& filename, Image& dst) {
@@ -60,7 +61,7 @@ bool DicomRead(const std::string& filename, Image& dst) {
     return return_value;
 }
 
-bool DicomRead(const filesystem::path& filename, Image& dst) {
+bool DicomRead(const path& filename, Image& dst) {
     return DicomRead(filename.string(), dst);
 }
 
@@ -121,7 +122,7 @@ bool DicomWrite(const std::string& filename, const Image& src) {
 
     // Prova per immagini RGB
     dataset->putAndInsertUint16(DCM_SamplesPerPixel, samples_per_pixel);
-    dataset->putAndInsertString(DCM_PhotometricInterpretation, photometric_interpretation.c_str(), photometric_interpretation.length());
+    dataset->putAndInsertString(DCM_PhotometricInterpretation, photometric_interpretation.c_str(), static_cast<uint32_t>(photometric_interpretation.length()));
     if (samples_per_pixel > 1) {
         dataset->putAndInsertUint16(DCM_PlanarConfiguration, planar_configuration);
     }
@@ -153,7 +154,7 @@ bool DicomWrite(const std::string& filename, const Image& src) {
 
 }
 
-bool DicomWrite(const filesystem::path& filename, const Image& src) {
+bool DicomWrite(const path& filename, const Image& src) {
     return DicomWrite(filename.string(), src);
 }
 

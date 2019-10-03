@@ -13,9 +13,9 @@ endmacro()
 
 
 if(${ECVL_WITH_DICOM})
-    
+
     ecvl_update_3rdparty(dcmtk)
-    
+
     SET(BUILD_APPS OFF CACHE INTERNAL "" FORCE)
     SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
     SET(BUILD_SINGLE_SHARED_LIBRARY OFF CACHE INTERNAL "" FORCE)
@@ -94,7 +94,7 @@ if(${ECVL_WITH_DICOM})
     set(CMAKE_FOLDER 3rdparty)
 
     set(DCMTK_LIBS ofstd;oflog;dcmdata;dcmimgle;dcmimage;dcmjpeg)
-    
+
     message(STATUS "DCMTK libs: ${DCMTK_LIBS}")
     target_link_libraries(ECVL_CORE PUBLIC ${DCMTK_LIBS})
 
@@ -103,77 +103,77 @@ if(${ECVL_WITH_DICOM})
         list(APPEND DCMTK_INCLUDE_DIRS "dcmtk/${DCMTK_LIB}/include")
     endforeach()
     message(STATUS "DCMTK incldue dure: ${DCMTK_INCLUDE_DIRS}")
-    
+
     foreach(dcmtk_include_dir ${DCMTK_INCLUDE_DIRS})
         target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${dcmtk_include_dir}> $<INSTALL_INTERFACE:include> )
     endforeach()
     target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/3rdparty/dcmtk/config/include> $<INSTALL_INTERFACE:include> ) # for osconfig.h
     #
-    #target_include_directories(ECVL_CORE PUBLIC	
-    #    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
-    #    $<INSTALL_INTERFACE:include>    
-    #)    
-    
+    #target_include_directories(ECVL_CORE PUBLIC
+    #    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    #    $<INSTALL_INTERFACE:include>
+    #)
+
     target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_dcmtk.h" "../modules/core/src/support_dcmtk.cpp")
 
-endif(${ECVL_WITH_DICOM})  
-    
+endif(${ECVL_WITH_DICOM})
+
 if(${ECVL_WITH_OPENGL})
     if(${ECVL_BUILD_GUI})
-		find_package(OpenGL)
-		if(${OPENGL_FOUND})
-			target_link_libraries(ECVL_GUI PUBLIC OpenGL::GL)
-			target_include_directories(ECVL_GUI PUBLIC ${OPENGL_INCLUDE_DIR})
-			
-			ecvl_update_3rdparty(glm)
-			
-			if (ECVL_STATIC)
-				SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
-				SET(BUILD_STATIC_LIBS ON CACHE INTERNAL "" FORCE)        
-			else()
-				SET(BUILD_SHARED_LIBS ON CACHE INTERNAL "" FORCE)
-				SET(BUILD_STATIC_LIBS OFF CACHE INTERNAL "" FORCE)        
-			endif()
-			SET(GLM_DISABLE_AUTO_DETECTION OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_QUIET OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_CXX_11 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_CXX_14 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_CXX_17 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_CXX_20 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_CXX_98 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_FAST_MATH OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_LANG_EXTENSIONS OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_AVX OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_AVX2 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_SSE2 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_SSE3 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_SSE4_1 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_SSE4_2 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_ENABLE_SIMD_SSSE3 OFF CACHE INTERNAL "" FORCE)
-			SET(GLM_TEST_FORCE_PURE OFF CACHE INTERNAL "" FORCE)
-			
-			set(CMAKE_FOLDER 3rdparty/glm)
-			add_subdirectory(glm)
-			set(CMAKE_FOLDER 3rdparty)
-			target_link_libraries(ECVL_GUI PUBLIC glm)
-		
-			#target_include_directories(ECVL_GUI PUBLIC glad/include)
-			
-            target_include_directories(ECVL_GUI PUBLIC	
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/glad/include>  
+        find_package(OpenGL)
+        if(${OPENGL_FOUND})
+            target_link_libraries(ECVL_GUI PUBLIC OpenGL::GL)
+            target_include_directories(ECVL_GUI PUBLIC ${OPENGL_INCLUDE_DIR})
+
+            ecvl_update_3rdparty(glm)
+
+            if (ECVL_STATIC)
+                SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
+                SET(BUILD_STATIC_LIBS ON CACHE INTERNAL "" FORCE)
+            else()
+                SET(BUILD_SHARED_LIBS ON CACHE INTERNAL "" FORCE)
+                SET(BUILD_STATIC_LIBS OFF CACHE INTERNAL "" FORCE)
+            endif()
+            SET(GLM_DISABLE_AUTO_DETECTION OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_QUIET OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_CXX_11 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_CXX_14 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_CXX_17 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_CXX_20 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_CXX_98 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_FAST_MATH OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_LANG_EXTENSIONS OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_AVX OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_AVX2 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_SSE2 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_SSE3 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_SSE4_1 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_SSE4_2 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_ENABLE_SIMD_SSSE3 OFF CACHE INTERNAL "" FORCE)
+            SET(GLM_TEST_FORCE_PURE OFF CACHE INTERNAL "" FORCE)
+
+            set(CMAKE_FOLDER 3rdparty/glm)
+            add_subdirectory(glm)
+            set(CMAKE_FOLDER 3rdparty)
+            target_link_libraries(ECVL_GUI PUBLIC glm)
+
+            #target_include_directories(ECVL_GUI PUBLIC glad/include)
+
+            target_include_directories(ECVL_GUI PUBLIC
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/glad/include>
                 $<INSTALL_INTERFACE:include>
             )
             install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/glad/include
                 DESTINATION "."
                 FILES_MATCHING PATTERN "*.h")
-            # probabilmente gli header vanno installati a parte
-            
+            # should the header files be installed separately?
+
             target_sources(ECVL_GUI PRIVATE glad/src/glad.cpp)
-		else()
-			set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)" FORCE)
-			message(STATUS "ECVL_WITH_OPENGL disabled: OpenGL not found")
-		endif()
+        else()
+            set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)" FORCE)
+            message(STATUS "ECVL_WITH_OPENGL disabled: OpenGL not found")
+        endif()
     else(${ECVL_BUILD_GUI})
         set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)" FORCE)
         message(STATUS "ECVL_WITH_OPENGL disabled: unmet dependency ECVL_GUI")
@@ -206,7 +206,7 @@ endif(${ECVL_WITH_OPENGL})
 ##return()
 #
 ##add_subdirectory(nifti)
-#  
+#
 ##find_package(NIFTI REQUIRED)
 #add_library(nifti IMPORTED STATIC)
 #target_link_libraries(ECVL_CORE PUBLIC nifti)
@@ -217,13 +217,13 @@ if(${ECVL_TESTS})
     ecvl_update_3rdparty(googletest)
 
     SET(BUILD_GMOCK OFF CACHE INTERNAL "" FORCE)
-    
+
     set(CMAKE_FOLDER 3rdparty/googletest)
     add_subdirectory(googletest)
     set(CMAKE_FOLDER 3rdparty)
-    
+
     include(GoogleTest)
-    
+
 endif(${ECVL_TESTS})
 
 # --------------------
@@ -239,7 +239,7 @@ if (${ECVL_PARSER_DATASET})
     SET(YAML_CPP_BUILD_CONTRIB OFF CACHE INTERNAL "" FORCE)
     SET(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
     SET(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "" FORCE)
-    SET(YAML_CPP_INSTALL OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_CPP_INSTALL ON CACHE INTERNAL "" FORCE)
     SET(BUILD_TESTING OFF CACHE INTERNAL "" FORCE)
 
     set(CMAKE_FOLDER 3rdparty/yaml-cpp)

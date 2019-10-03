@@ -2,7 +2,7 @@
 #define SUPPORT_DCMTK_H_
 
 #include "ecvl/core/image.h"
-#include "ecvl/core/filesystem.h"
+#include <filesystem>
 
 namespace ecvl {
 
@@ -30,7 +30,7 @@ This variant of DicomRead is platform independent.
 
 @return true if the image is correctly read, false otherwise.
 */
-extern bool DicomRead(const filesystem::path& filename, Image& dst);
+extern bool DicomRead(const std::filesystem::path& filename, Image& dst);
 
 /** @brief Saves an image into a specified DICOM file.
 
@@ -55,7 +55,7 @@ This variant of DicomWrite is platform independent.
 
 @return true if the image is correctly written, false otherwise.
 */
-extern bool DicomWrite(const filesystem::path& filename, const Image& src);
+extern bool DicomWrite(const std::filesystem::path& filename, const Image& src);
 
 } // namespace ecvl
 
