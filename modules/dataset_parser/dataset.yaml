@@ -1,0 +1,66 @@
+%YAML:1.2
+---
+# Example of DeepHealth toolkit dataset format
+# Arrays are always 0 based
+
+# Descriptive string used just for pretty reporting (optional)
+name: dataset_name
+
+# Descriptive string to document the file (optional)
+description: >
+  This is an example of long
+  text which describes the use of this dataset and
+  whatever I want to annotate.
+  
+  You can also write multiple paragraphs with the only
+  care of indenting them correctly.
+
+# Array of class names (optional)
+classes: [class_a, class_b, class_c]
+
+# Array of features names (optional)
+features: [feature_1, feature_2, feature_3, feature_4]
+
+# Array of images
+# images are listed as a couple of location (absolute or relative to this file location) and an optional label.
+# location must be unique in the array
+images:
+# label can be a class name (string)...
+# values can be an array with a positional correspondence with the features array...
+  - location: image_path_and_name_1
+    label: [class_b]
+    values: [value_1, null, value_3, null]
+
+# ... or the class index (integer) wrt the classes array
+# ... or a dictionary with the name of the feature coupled with its value
+  - location: image_path_and_name_2
+    label: 2
+    values: { feature_1: value_1, feature_3: value_3 }
+
+# In the case of multi class problems, label can be an array of class names (array of strings)...
+  - location: image_path_and_name_3
+    label: [class_a, class_c]
+
+# ... or an array of class indexes (array of integers)
+  - location: image_path_and_name_4
+    label: [0, 2]
+
+# label can be a path (string) to an image in case of a segmentation task
+  - location: image_path_and_name_5
+    label: path_to_ground_truth_image
+
+# Remember that labels are optional
+  - location: image_path_and_name_6
+  - location: image_path_and_name_7
+
+# When only the location is used, it can be omitted
+  - image_path_and_name_8
+  - image_path_and_name_9
+
+# Split (optional) is a dictionary with three arrays called
+# training, validation, and test. They list the indexes of the images
+# to be used in the three different phases.
+split:
+  training: [0, 1]
+  validation: [2]
+  test: [3]

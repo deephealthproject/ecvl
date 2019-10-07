@@ -359,6 +359,15 @@ public:
 
     /** @brief To check whether the Image is owner of the data. */
     bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
+    
+    /** @brief Returns the number of Image channels. */
+    int Channels() const { 
+        size_t pos = channels_.find('c'); 
+        if (pos != std::string::npos) {
+            return dims_[pos];
+        }
+        return 0;
+    }
 
     /** @brief Returns a non-const pointer to data at given coordinates. */
     uint8_t* Ptr(const std::vector<int>& coords) {
