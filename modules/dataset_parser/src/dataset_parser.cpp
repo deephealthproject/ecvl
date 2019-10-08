@@ -29,7 +29,7 @@ void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
     }
 }
 
-void Dataset::LoadImage(Sample& sample, path& root_path)
+void Dataset::LoadImage(Sample& sample, const path& root_path)
 {
     bool status;
     if (sample.location_.is_absolute()) {
@@ -57,7 +57,7 @@ void Dataset::LoadImage(Sample& sample, path& root_path)
     }
 }
 
-void Dataset::DecodeImages(const YAML::Node& node, path& root_path)
+void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
 {
     // Allocate memory for the images
     this->images_.resize(node.size());
@@ -107,15 +107,15 @@ void Dataset::DecodeImages(const YAML::Node& node, path& root_path)
     }
 }
 
-Dataset::Dataset(path& filename)
+Dataset::Dataset(const path& filename)
 {
-    filename = absolute(filename);
+    path abs_filename = absolute(filename);
     YAML::Node config;
     try {
-        config = YAML::LoadFile(filename.string());
+        config = YAML::LoadFile(abs_filename.string());
     }
     catch (Exception& e) {
-        cout << "ERROR: Unable to read dataset file '" << filename << "'.\n";
+        cout << "ERROR: Unable to read dataset file '" << abs_filename << "'.\n";
         cout << "MSG: " << e.what();
         exit(EXIT_FAILURE);
     }
@@ -136,7 +136,7 @@ Dataset::Dataset(path& filename)
         }
     }
 
-    DecodeImages(config["images"], filename.parent_path());
+    DecodeImages(config["images"], abs_filename.parent_path());
     if (config["split"].IsDefined()) {
         this->split_ = config["split"].as<Split>();
     }
