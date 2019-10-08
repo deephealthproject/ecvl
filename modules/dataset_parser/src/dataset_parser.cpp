@@ -29,7 +29,7 @@ void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
     }
 }
 
-void Dataset::LoadImage(Sample& sample, const path& root_path)
+void Dataset::LoadImage(Sample& sample, const path& root_path, ColorType ctype)
 {
     bool status;
     if (sample.location_.is_absolute()) {
@@ -55,9 +55,13 @@ void Dataset::LoadImage(Sample& sample, const path& root_path)
             ImRead(image_filename, sample.image_);
         }
     }
+
+    if (sample.image_.colortype_ != ctype) {
+        ChangeColorSpace(sample.image_, sample.image_, ctype);
+    }
 }
 
-void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
+void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, ColorType ctype)
 {
     // Allocate memory for the images
     this->images_.resize(node.size());
@@ -103,11 +107,11 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
                 }
             }
         }
-        LoadImage(img, root_path);
+        LoadImage(img, root_path, ctype);
     }
 }
 
-Dataset::Dataset(const path& filename)
+Dataset::Dataset(const path& filename, ColorType ctype)
 {
     path abs_filename = absolute(filename);
     YAML::Node config;
@@ -136,7 +140,7 @@ Dataset::Dataset(const path& filename)
         }
     }
 
-    DecodeImages(config["images"], abs_filename.parent_path());
+    DecodeImages(config["images"], abs_filename.parent_path(), ctype);
     if (config["split"].IsDefined()) {
         this->split_ = config["split"].as<Split>();
     }

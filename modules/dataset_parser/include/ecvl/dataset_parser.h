@@ -38,12 +38,12 @@ public:
     Split split_;
 
     Dataset() {}
-    Dataset(const std::filesystem::path& filename);
+    Dataset(const std::filesystem::path& filename, ecvl::ColorType ctype = ecvl::ColorType::BGR);
 
 private:
     std::map<std::string, int> features_map_;
-    void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path);
-    void LoadImage(Sample& sample, const std::filesystem::path& root_path);
+    void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path, ecvl::ColorType ctype);
+    void LoadImage(Sample& sample, const std::filesystem::path& root_path, ecvl::ColorType ctype);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
 
