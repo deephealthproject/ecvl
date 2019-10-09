@@ -136,7 +136,7 @@ tensor ImageToTensor(const Image& img)
 }
 
 // Generic function to load a Dataset split into EDDL tensors
-void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const std::vector<int>& split, tensor& images, tensor& labels)
+void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const std::vector<int>& split, tensor& images, tensor& labels, ColorType ctype)
 {
     if (size.size() != 2) {
         ECVL_ERROR_MSG "size must have 2 dimensions (height, width)";
@@ -145,7 +145,7 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     Image tmp;
 
     int n_samples = split.size();
-    int n_channels = dataset.images_[0].image_.Channels();
+    int n_channels = dataset.samples_[0].LoadImage(ctype).Channels();
     int n_classes = static_cast<int>(dataset.classes_.size());
     // Allocate memory for EDDL tensors
     images = T({ n_samples, n_channels, size[0], size[1] });
@@ -154,9 +154,9 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     // Fill tensors with data
     int i = 0;
     for (auto& index : split) {
-        const Sample& elem = dataset.images_[index];
+        const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
-        ResizeDim(elem.image_, tmp, { size[1], size[0] });
+        ResizeDim(elem.LoadImage(ctype), tmp, { size[1], size[0] });
         t = ImageToTensor(tmp);
         memcpy(images->data->ptr + t->data->size * i, t->data->ptr, t->data->size * sizeof(float));
 
@@ -172,18 +172,18 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     }
 }
 
-void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels)
+void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
 {
-    DatasetToTensor(dataset, size, dataset.split_.training_, stack, labels);
+    DatasetToTensor(dataset, size, dataset.split_.training_, stack, labels, ctype);
 }
 
-void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels)
+void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
 {
-    DatasetToTensor(dataset, size, dataset.split_.validation_, stack, labels);
+    DatasetToTensor(dataset, size, dataset.split_.validation_, stack, labels, ctype);
 }
 
-void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels)
+void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
 {
-    DatasetToTensor(dataset, size, dataset.split_.test_, stack, labels);
+    DatasetToTensor(dataset, size, dataset.split_.test_, stack, labels, ctype);
 }
 }

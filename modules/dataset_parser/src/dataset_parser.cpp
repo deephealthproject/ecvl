@@ -1,4 +1,5 @@
 #include "ecvl/dataset_parser.h"
+#include <regex>
 
 using namespace std;
 using namespace std::filesystem;
@@ -29,89 +30,88 @@ void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
     }
 }
 
-void Dataset::LoadImage(Sample& sample, const path& root_path, ColorType ctype)
+Image Sample::LoadImage(ColorType ctype) const
 {
     bool status;
-    if (sample.location_.is_absolute()) {
-        // Absolute path
-        status = ImRead(sample.location_, sample.image_);
-    }
-    else {
-        // Relative path
-        path location = root_path / sample.location_;
-        status = ImRead(location, sample.image_);
-    }
+    Image img;
 
+    status = ImRead(location_, img);
     if (!status) {
         // Image not correctly loaded, it is a URL!
         // TODO: Use libcurl instead of system call
-        path image_filename = sample.location_.filename();
-        string cmd = "curl -s -o " + image_filename.string() + " " + sample.location_.string();
+        path image_filename = location_.filename();
+        string cmd = "curl -s -o " + image_filename.string() + " " + location_.string();
         if (system(cmd.c_str()) != 0) {
             // Error, not a path nor a URL
-            cout << ECVL_WARNING_MSG "Cannot load Sample '" + sample.location_.string() + "', wrong path.\n";
+            cout << ECVL_WARNING_MSG "Cannot load Sample '" + location_.string() + "', wrong path.\n";
         }
         else {
-            ImRead(image_filename, sample.image_);
+            ImRead(image_filename, img);
         }
     }
 
-    if (sample.image_.colortype_ != ctype) {
-        ChangeColorSpace(sample.image_, sample.image_, ctype);
+    if (img.colortype_ != ctype) {
+        ChangeColorSpace(img, img, ctype);
     }
+    return img;
 }
 
-void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, ColorType ctype)
+void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
 {
     // Allocate memory for the images
-    this->images_.resize(node.size());
+    this->samples_.resize(node.size());
     int counter = -1;
+    // RegEx which matchs URLs
+    std::regex r{ R"((http(s)?://.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))" };
 
     for (auto& n : node) {
         // iterate over images
-        auto& img = this->images_[++counter];
+        auto& sample = this->samples_[++counter];
         if (n.IsScalar()) {
             // locations is provided as scalar without label or values
-            img.location_ = n.as<string>();
+            sample.location_ = n.as<string>();
         }
         else {
-            img.location_ = n["location"].as<string>();
+            sample.location_ = n["location"].as<string>();
 
             if (n["label"].IsDefined()) {
-                img.label_ = vector<int>();
+                sample.label_ = vector<int>();
                 if (n["label"].IsSequence()) {
                     for (int i = 0; i < n["label"].size(); ++i) {
-                        FindLabel(img, n["label"][i]);
+                        FindLabel(sample, n["label"][i]);
                     }
                 }
                 else {
                     // label is a single value
-                    FindLabel(img, n["label"]);
+                    FindLabel(sample, n["label"]);
                 }
             }
 
             if (n["values"].IsDefined()) {
-                img.values_.emplace(map<int, string>());
+                sample.values_.emplace(map<int, string>());
                 if (n["values"].IsSequence()) {
                     for (int i = 0; i < n["values"].size(); ++i) {
                         if (!n["values"][i].IsNull()) {
-                            img.values_.value()[i] = n["values"][i].as<string>();
+                            sample.values_.value()[i] = n["values"][i].as<string>();
                         }
                     }
                 }
                 else {
                     // values is a dictionary
                     for (YAML::const_iterator it = n["values"].begin(); it != n["values"].end(); ++it) {
-                        img.values_.value()[this->features_map_[it->first.as<string>()]] = it->second.as<string>();
+                        sample.values_.value()[this->features_map_[it->first.as<string>()]] = it->second.as<string>();
                     }
                 }
             }
         }
-        LoadImage(img, root_path, ctype);
+        if (sample.location_.is_relative() && !std::regex_match(sample.location_.string(), r)) {
+            // Convert relative path to absolute
+            sample.location_ = root_path / sample.location_;
+        }
     }
 }
 
-Dataset::Dataset(const path& filename, ColorType ctype)
+Dataset::Dataset(const path& filename)
 {
     path abs_filename = absolute(filename);
     YAML::Node config;
@@ -140,7 +140,7 @@ Dataset::Dataset(const path& filename, ColorType ctype)
         }
     }
 
-    DecodeImages(config["images"], abs_filename.parent_path(), ctype);
+    DecodeImages(config["images"], abs_filename.parent_path());
     if (config["split"].IsDefined()) {
         this->split_ = config["split"].as<Split>();
     }

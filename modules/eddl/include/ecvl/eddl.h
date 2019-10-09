@@ -67,7 +67,7 @@ tensor ImageToTensor(const Image& img);
 @param[out] labels Tensor which contains all the labels.
 
 */
-void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels);
+void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
 
 /** @brief Load the validation split of a Dataset (images and labels) into EDDL tensors.
 
@@ -77,7 +77,7 @@ void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tens
 @param[out] labels Tensor which contains all the labels.
 
 */
-void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels);
+void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
 
 /** @brief Load the test split of a Dataset (images and labels) into EDDL tensors.
 
@@ -87,7 +87,7 @@ void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, te
 @param[out] labels Tensor which contains all the labels.
 
 */
-void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels);
+void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
 } // namespace ecvl
 
 #endif // ECVL_EDDL_H_

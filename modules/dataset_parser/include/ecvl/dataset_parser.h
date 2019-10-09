@@ -14,11 +14,11 @@
 class Sample {
 public:
     std::filesystem::path location_;
-
-    ecvl::Image image_;
     std::optional<std::vector<int>> label_;
     std::optional<std::string> label_path_; // path to ground truth
     std::optional<std::map<int, std::string>> values_; //features
+
+    ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::BGR) const;
 };
 
 class Split {
@@ -34,16 +34,15 @@ public:
     std::string description_ = "This is the DeepHealth example dataset!";
     std::vector<std::string> classes_;
     std::vector<std::string> features_;
-    std::vector<Sample> images_;
+    std::vector<Sample> samples_;
     Split split_;
 
     Dataset() {}
-    Dataset(const std::filesystem::path& filename, ecvl::ColorType ctype = ecvl::ColorType::BGR);
+    Dataset(const std::filesystem::path& filename);
 
 private:
     std::map<std::string, int> features_map_;
-    void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path, ecvl::ColorType ctype);
-    void LoadImage(Sample& sample, const std::filesystem::path& root_path, ecvl::ColorType ctype);
+    void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
 
