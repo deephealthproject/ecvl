@@ -88,6 +88,24 @@ void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, te
 
 */
 void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
+
+class DLDataset : public Dataset {
+public:
+    int batch_size_;
+    int current_batch_ = 0;
+    int n_channels_;
+    ColorType ctype_;
+    std::string split_str_;
+
+    DLDataset(const std::filesystem::path& filename, int batch_size, std::string split, ColorType ctype = ColorType::BGR) :
+        Dataset{ filename },
+        batch_size_{ batch_size },
+        ctype_{ ctype },
+        split_str_{ split },
+        n_channels_{ this->samples_[0].LoadImage(ctype).Channels() }{}
+
+    std::vector<int>& GetSplit();
+};
 } // namespace ecvl
 
 #endif // ECVL_EDDL_H_

@@ -186,4 +186,18 @@ void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& 
 {
     DatasetToTensor(dataset, size, dataset.split_.test_, stack, labels, ctype);
 }
+
+std::vector<int>& DLDataset::GetSplit()
+{
+    if (split_str_ == "training") {
+        return this->split_.training_;
+    }
+    if (split_str_ == "validation") {
+        return this->split_.validation_;
+    }
+    if (split_str_ == "test") {
+        return this->split_.test_;
+    }
+    return vector<int>();
+}
 }
