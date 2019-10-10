@@ -9,6 +9,7 @@
 #           Costantino Grana, <costantino.grana@unimore.it>
 #           Stefano Allegretti, <stefano.allegretti@unimore.it>
 #           Laura Canalini, <laura.canalini@unimore.it>
+#           Michele Cancilla, <michele.cancilla@unimore.it>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -103,12 +104,12 @@ if(MSVC)
     endif()
 endif()
 #--------------------------------------------------------------------------------------------------------
-# END: static/dinamic runtime                                        
+# END: static/dinamic runtime
 #--------------------------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: ECVL_CORE (the main target)    
+# BEGIN: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_TESTS ON CACHE BOOL "Whether to build ECVL tests or not")
 if(${ECVL_TESTS})
@@ -125,7 +126,7 @@ set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
 set(ECVL_MODULES ECVL_CORE)
 set(ECVL_MODULES_DIRS core)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-    target_link_libraries(ECVL_CORE PUBLIC stdc++fs) 
+    target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)
@@ -219,7 +220,9 @@ if(ECVL_BUILD_GUI)
             
             target_link_libraries(ECVL_GUI PUBLIC ECVL_CORE ${wxWidgets_LIBRARIES})
             target_include_directories(ECVL_GUI PUBLIC ${wxWidgets_INCLUDE_DIRS})
-
+            if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+                target_link_libraries(ECVL_GUI stdc++fs)
+            endif()
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
             list(APPEND ECVL_MODULES_DIRS "gui")
@@ -232,17 +235,36 @@ if(ECVL_BUILD_GUI)
         message(STATUS "ECVL_GUI disabled: unmet dependency ECVL_CORE")
     endif()
 endif()
+
+macro(F_BUILD_DATASET_PARSER)
+
+    set(ECVL_DATASET_PARSER ON CACHE BOOL "Whether to build ECVL_DATASET_PARSER or not" FORCE)
+
+    add_library(DATASET_PARSER STATIC "modules/dataset_parser/dataset.yaml")
+    add_subdirectory("modules/dataset_parser")
+    include_directories("modules/dataset_parser/include")
+    target_link_libraries(DATASET_PARSER ECVL_CORE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+        target_link_libraries(DATASET_PARSER stdc++fs) 
+    endif()
+    set_target_properties(DATASET_PARSER PROPERTIES FOLDER "Modules")
+    list(APPEND ECVL_MODULES "DATASET_PARSER")
+    list(APPEND ECVL_MODULES_DIRS "dataset_parser")
+endmacro()
+
 if(ECVL_BUILD_EDDL)
     if(ECVL_BUILD_CORE)
         find_package(EDDL)
         if(EDDL_FOUND)
+            F_BUILD_DATASET_PARSER()
+ 
             add_library(ECVL_EDDL STATIC "")
             add_subdirectory("modules/eddl")
             include_directories("modules/eddl/include")
-           
-            target_link_libraries(ECVL_EDDL ECVL_CORE eddl)
+
+            target_link_libraries(ECVL_EDDL DATASET_PARSER eddl)
             if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-                target_link_libraries(ECVL_EDDL stdc++fs) 
+                target_link_libraries(ECVL_EDDL stdc++fs)
             endif()
             set_target_properties(ECVL_EDDL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDL")
@@ -255,26 +277,13 @@ if(ECVL_BUILD_EDDL)
         set(ECVL_BUILD_EDDL OFF CACHE BOOL "Whether to build ECVL_EDDL or not (requires EDDL)" FORCE)
         message(STATUS "ECVL_EDDL disabled: unmet dependency ECVL_CORE")
     endif()
-endif()
-if(ECVL_DATASET_PARSER)
+elseif(ECVL_DATASET_PARSER)
     if(ECVL_BUILD_CORE)
-        add_library(DATASET_PARSER STATIC "modules/dataset_parser/dataset.yaml")
-        add_subdirectory("modules/dataset_parser")
-        include_directories("modules/dataset_parser/include")
-        target_link_libraries(DATASET_PARSER ${ECVL_MODULES})
-        if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-            target_link_libraries(DATASET_PARSER stdc++fs) 
-        endif()
-        set_target_properties(DATASET_PARSER PROPERTIES FOLDER "Modules")
-        list(APPEND ECVL_MODULES "DATASET_PARSER")
-        list(APPEND ECVL_MODULES_DIRS "dataset_parser")
+        F_BUILD_DATASET_PARSER()
     else()
         set(ECVL_DATASET_PARSER OFF CACHE BOOL "Whether to build ECVL_DATASET_PARSER or not" FORCE)
-        message(STATUS "ECVL_DATASET_PARSER disabled: unmet dependency EDDL")
+        message(STATUS "ECVL_DATASET_PARSER disabled: unmet dependency ECVL_CORE")
     endif()
-else()
-    set(ECVL_DATASET_PARSER OFF CACHE BOOL "Whether to build ECVL_DATASET_PARSER or not" FORCE)
-    message(STATUS "ECVL_DATASET_PARSER disabled: unmet dependency ECVL_CORE")
 endif()
 
 foreach(MODULE ${ECVL_MODULES})

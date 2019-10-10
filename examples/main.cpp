@@ -10,19 +10,13 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
+#include "ecvl/dataset_parser.h"
 //#include "ecvl/gui.h"
 
 int main(void)
 {
     using namespace ecvl;
 
-    Image nifti_image;
-    NiftiRead("C:\\Users\\Stefano\\Desktop\\nifti-images\\1010_brain_mr_02.nii", nifti_image);
-
-    //ImShow3D(nifti_image);
-
-    //Image dicom_image;
-    //ImRead("C:\\Users\\Stefano\\Desktop\\JPEG2000\\image - 000001.dcm", dicom_image);
 
     try {
 
@@ -64,6 +58,14 @@ int main(void)
             return EXIT_FAILURE;
         }
 
+        Dataset d("dataset.yaml");
+        Image nifti_image;
+        NiftiRead("1010_brain_mr_02.nii", nifti_image);
+
+        //ImShow3D(nifti_image);
+
+        //Image dicom_image;
+        //ImRead("C:\\Users\\Stefano\\Desktop\\JPEG2000\\image - 000001.dcm", dicom_image);
         //img.dims_.back() = 1;
         //img.dims_.push_back(3);
 
@@ -99,11 +101,11 @@ int main(void)
         ImRead("../data/Kodak/img0015.png", img2);
 
         ChangeColorSpace(img1, img1, ColorType::RGB);
-        RearrangeChannels(img1, img1, "cxy");
-
-        img1.dims_ = { 3, 3072, 2048, 1 };
-
-        img1.channels_ = "cxyz";
+        //RearrangeChannels(img1, img1, "cxy");
+        //
+        //img1.dims_ = { 3, 3072, 2048, 1 };
+        //
+        //img1.channels_ = "cxyz";
 
         //ImShow3D(img1);
 
@@ -199,7 +201,7 @@ int main(void)
         Div(200, img1, dst3);
 
         Image test({ 1,1,1 }, DataType::uint8, "xyc", ColorType::GRAY);
-        Div(5, 2, test);
+        //Div(5, 2, test); //TODO: Not implemented
 
         //Sub(img1, 100);
         //Sub(100, Sub(img1, 100));
