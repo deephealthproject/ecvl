@@ -223,18 +223,25 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
         ResizeDim(elem.LoadImage(dataset.ctype_), tmp, { size[1], size[0] });
-        unique_ptr<LTensor> t(ImageToTensor(tmp));
+        //unique_ptr<LTensor> t(ImageToTensor(tmp));
+        tensor t(ImageToTensor(tmp));
         memcpy(images->data->ptr + t->data->size * offset, t->data->ptr, t->data->size * sizeof(float));
 
         if (elem.label_) {
             // Copy labels into tensor (labels)
-            vector<float> l(dataset.classes_.size(), 0);
+            vector<float> lab(dataset.classes_.size(), 0);
             for (int j = 0; j < elem.label_.value().size(); ++j) {
-                l[elem.label_.value()[j]] = 1;
+                lab[elem.label_.value()[j]] = 1;
             }
-            memcpy(labels->data->ptr + l.size() * offset, l.data(), l.size() * sizeof(float));
+            memcpy(labels->data->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
         }
         ++offset;
+
+        // Manual destructors of Layer members
+        // TODO EDDL Layers destructors neeeded
+        delete t->input;
+        delete t->target;
+        delete t->delta;
     }
 }
 
