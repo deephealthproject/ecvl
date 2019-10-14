@@ -10,7 +10,7 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/arithmetic.h"
-#include "ecvl/dataset_parser.h"
+//#include "ecvl/dataset_parser.h"
 //#include "ecvl/gui.h"
 
 int main(void)
@@ -58,7 +58,7 @@ int main(void)
             return EXIT_FAILURE;
         }
 
-        Dataset d("dataset.yaml");
+        //Dataset d("dataset.yaml");
         Image nifti_image;
         NiftiRead("1010_brain_mr_02.nii", nifti_image);
 
