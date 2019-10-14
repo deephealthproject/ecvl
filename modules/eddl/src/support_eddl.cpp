@@ -192,12 +192,50 @@ std::vector<int>& DLDataset::GetSplit()
     if (split_str_ == "training") {
         return this->split_.training_;
     }
-    if (split_str_ == "validation") {
+    else if (split_str_ == "validation") {
         return this->split_.validation_;
     }
-    if (split_str_ == "test") {
+    else if (split_str_ == "test") {
         return this->split_.test_;
     }
-    return vector<int>();
+    ECVL_ERROR_NOT_REACHABLE_CODE
 }
+
+void DLDataset::SetSplit(const string& split_str) {
+    this->split_str_ = split_str;
 }
+
+
+void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels)
+{
+    if (size.size() != 2) {
+        ECVL_ERROR_MSG "size must have 2 dimensions (height, width)";
+    }
+    Image tmp;
+    int& bs = dataset.batch_size_;
+
+    // Fill tensors with data
+    int offset = 0;
+    int start = dataset.current_batch_ * bs;
+
+    for (int i = start; i < start + bs; ++i) {
+        const int index = dataset.GetSplit()[i];
+        const Sample& elem = dataset.samples_[index];
+        // Copy image into tensor (images)
+        ResizeDim(elem.LoadImage(dataset.ctype_), tmp, { size[1], size[0] });
+        unique_ptr<LTensor> t(ImageToTensor(tmp));
+        memcpy(images->data->ptr + t->data->size * offset, t->data->ptr, t->data->size * sizeof(float));
+
+        if (elem.label_) {
+            // Copy labels into tensor (labels)
+            vector<float> l(dataset.classes_.size(), 0);
+            for (int j = 0; j < elem.label_.value().size(); ++j) {
+                l[elem.label_.value()[j]] = 1;
+            }
+            memcpy(labels->data->ptr + l.size() * offset, l.data(), l.size() * sizeof(float));
+        }
+        ++offset;
+    }
+}
+
+} // namespace ecvl

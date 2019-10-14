@@ -7,6 +7,27 @@
 #include <filesystem>
 
 namespace ecvl {
+
+class DLDataset : public Dataset {
+public:
+    int batch_size_;
+    int current_batch_ = 0;
+    int n_channels_;
+    ColorType ctype_;
+    std::string split_str_;
+
+    DLDataset(const std::filesystem::path& filename, int batch_size, std::string split, ColorType ctype = ColorType::BGR) :
+        Dataset{ filename },
+        batch_size_{ batch_size },
+        ctype_{ ctype },
+        split_str_{ split },
+        n_channels_{ this->samples_[0].LoadImage(ctype).Channels() }{}
+
+    std::vector<int>& GetSplit();
+    void SetSplit(const std::string& split_str);
+};
+
+
 /** @brief Convert an EDDL Tensor into an ECVL Image.
 
 Tensor dimensions must be \f$C\f$ x \f$Y\f$ x \f$X\f$ or \f$Z\f$ x \f$C\f$ x \f$Y\f$ x \f$X\f$, where: \n
@@ -89,23 +110,16 @@ void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, te
 */
 void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
 
-class DLDataset : public Dataset {
-public:
-    int batch_size_;
-    int current_batch_ = 0;
-    int n_channels_;
-    ColorType ctype_;
-    std::string split_str_;
+/** @brief Load a batch into images and labels EDDL tensors.
 
-    DLDataset(const std::filesystem::path& filename, int batch_size, std::string split, ColorType ctype = ColorType::BGR) :
-        Dataset{ filename },
-        batch_size_{ batch_size },
-        ctype_{ ctype },
-        split_str_{ split },
-        n_channels_{ this->samples_[0].LoadImage(ctype).Channels() }{}
+@param[in] dataset DLDataset object listing all the samples of a split.
+@param[in] size Dimensions (width and height) at which all the images have to be resized.
+@param[out] images Tensor which contains all the images.
+@param[out] labels Tensor which contains all the labels.
 
-    std::vector<int>& GetSplit();
-};
+*/
+void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels);
+
 } // namespace ecvl
 
 #endif // ECVL_EDDL_H_
