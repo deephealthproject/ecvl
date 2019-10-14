@@ -4,7 +4,6 @@ pipeline {
         stage('Parallel Stages') {
             parallel {                                
                 stage('linux') {
-                    timeout(15) {
                         agent {
                             docker { 
                                 label 'docker'
@@ -14,14 +13,18 @@ pipeline {
                         stages {
                             stage('Build') {
                                 steps {
-                                    echo 'Building..'
-                                    cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
-                                 }
+                                    timeout(15) {
+                                        echo 'Building..'
+                                        cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    }
+                                }
                             }
                             stage('Test') {
                                 steps {
-                                    echo 'Testing..'
-                                    ctest arguments: '-C Debug -VV', installation: 'InSearchPath', workingDir: 'build'
+                                    timeout(15) {
+                                        echo 'Testing..'
+                                        ctest arguments: '-C Debug -VV', installation: 'InSearchPath', workingDir: 'build'
+                                    }
                                 }
                             }
                             stage('linux_end') {
@@ -40,14 +43,18 @@ pipeline {
                         stages {
                             stage('Build') {
                                 steps {
-                                    echo 'Building..'
-                                    cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
-                                }
+                                    timeout(15) {
+                                        echo 'Building..'
+                                        cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    }
+                                }    
                             }
                             stage('Test') {
                                 steps {
-                                    echo 'Testing..'
-                                    bat 'cd build && ctest -C Debug -VV'
+                                    timeout(15) {
+                                        echo 'Testing..'
+                                        bat 'cd build && ctest -C Debug -VV'
+                                    }
                                 }
                             }
                             stage('windows_end') {
@@ -70,9 +77,11 @@ pipeline {
                         stages {
                             stage('Update documentation') {
                                 steps {
-                                    bat 'cd doc\\doxygen && doxygen'
-                                    bat 'powershell -Command "(gc %ECVL_DOXYGEN_INPUT_COMMANDS%) -replace \'@local_dir\', \'doc\\html\' | Out-File commands_out.txt"'
-                                    bat 'winscp /ini:nul /script:commands_out.txt'
+                                    timeout(15) {
+                                        bat 'cd doc\\doxygen && doxygen'
+                                        bat 'powershell -Command "(gc %ECVL_DOXYGEN_INPUT_COMMANDS%) -replace \'@local_dir\', \'doc\\html\' | Out-File commands_out.txt"'
+                                        bat 'winscp /ini:nul /script:commands_out.txt'
+                                    }
                                 }
                             }
                         }
