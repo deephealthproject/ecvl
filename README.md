@@ -38,6 +38,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
+| Hamamatsu / NDPI | :large_blue_circle: | :x: | :x: |
 
 ### Image Write
 | Functionality | CPU | GPU | FPGA |
@@ -45,7 +46,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
-
+| Hamamatsu / NDPI | :large_blue_circle: | :x: | :x: |
 
 ### Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
@@ -63,22 +64,22 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Channel Shuffle | :x: | :x: | :x: |
 | Add | :heavy_check_mark: | :x: | :x: |
 | Additive Gaussian Noise | :x: | :x: | :x: |
-| Additive Laplace Noise | :x: | :x: | :x: |
+| Additive Laplace Noise | :heavy_check_mark: | :x: | :x: |
 | Additive Poisson Noise | :x: | :x: | :x: |
 | Impulse Noise | :x: | :x: | :x: |
 | Mul | :x: | :x: | :x: |
 | Dropout | :x: | :x: | :x: |
-| Coarse Dropout | :x: | :x: | :x: |
+| Coarse Dropout | :heavy_check_mark: | :x: | :x: |
 | Salt And Pepper | :x: | :x: | :x: |
 | Salt | :x: | :x: | :x: |
 | Pepper | :x: | :x: | :x: |
 | Invert | :x: | :x: | :x: |
-| Gaussian Blur | :x: | :x: | :x: |
+| Gaussian Blur | :heavy_check_mark: | :x: | :x: |
 | Average Blur | :x: | :x: | :x: |
 | Median Blur | :x: | :x: | :x: |
 | Histogram Equalization | :x: | :x: | :x: |
 | Flip | :heavy_check_mark: | :x: | :x: |
-| Gamma Contrast | :x: | :x: | :x: |
+| Gamma Contrast | :heavy_check_mark: | :x: | :x: |
 
 
 
