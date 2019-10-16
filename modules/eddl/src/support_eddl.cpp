@@ -141,7 +141,6 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     if (size.size() != 2) {
         ECVL_ERROR_MSG "size must have 2 dimensions (height, width)";
     }
-    tensor t;
     Image tmp;
 
     int n_samples = split.size();
@@ -157,9 +156,8 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
         ResizeDim(elem.LoadImage(ctype), tmp, { size[1], size[0] });
-        t = ImageToTensor(tmp);
+        unique_ptr<LTensor> t(ImageToTensor(tmp));
         memcpy(images->data->ptr + t->data->size * i, t->data->ptr, t->data->size * sizeof(float));
-
         if (elem.label_) {
             // Copy labels into tensor (labels)
             vector<float> l(n_classes, 0);
@@ -205,7 +203,6 @@ void DLDataset::SetSplit(const string& split_str) {
     this->split_str_ = split_str;
 }
 
-
 void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels)
 {
     if (size.size() != 2) {
@@ -223,8 +220,7 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
         ResizeDim(elem.LoadImage(dataset.ctype_), tmp, { size[1], size[0] });
-        //unique_ptr<LTensor> t(ImageToTensor(tmp));
-        tensor t(ImageToTensor(tmp));
+        unique_ptr<LTensor> t(ImageToTensor(tmp));
         memcpy(images->data->ptr + t->data->size * offset, t->data->ptr, t->data->size * sizeof(float));
 
         if (elem.label_) {
@@ -236,13 +232,6 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
             memcpy(labels->data->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
         }
         ++offset;
-
-        // Manual destructors of Layer members
-        // TODO EDDL Layers destructors neeeded
-        delete t->input;
-        delete t->target;
-        delete t->delta;
     }
 }
-
 } // namespace ecvl
