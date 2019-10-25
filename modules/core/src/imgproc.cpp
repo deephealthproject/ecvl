@@ -421,7 +421,7 @@ int OtsuThreshold(const Image& src) {
 
 void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) {
 
-    if (src.channels_ != "xyc" || ker.channels_ != "xy") {
+    if (src.channels_ != "xyc" || (ker.channels_ != "xyc" && ker.dims_[2] != 1)) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 

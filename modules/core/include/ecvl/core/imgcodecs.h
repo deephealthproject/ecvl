@@ -8,6 +8,14 @@
 
 namespace ecvl {
 
+enum class ImageFormat {
+    DEFAULT,
+    NIFTI,
+#ifdef ECVL_WITH_DICOM
+    DICOM,
+#endif
+};
+
 /** @brief Loads an image from a file.
 
 The function ImRead loads an image from the specified file. If the image cannot
@@ -20,7 +28,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImRead(const std::filesystem::path& filename, Image& dst);
+bool ImRead(const std::filesystem::path& filename, Image& dst, ImageFormat f = ImageFormat::DEFAULT);
 
 
 /** @brief Loads a multi-page image from a file.
@@ -63,7 +71,7 @@ filename extension. The following sample shows how to create a BGR image and sav
 
 @return true if the image is correctly written, false otherwise.
 */
-bool ImWrite(const std::filesystem::path& filename, const Image& src);
+bool ImWrite(const std::filesystem::path& filename, const Image& src, ImageFormat f = ImageFormat::DEFAULT);
 
 } // namespace ecvl
 

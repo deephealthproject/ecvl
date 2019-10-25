@@ -199,6 +199,7 @@ find_package(Git QUIET)
 # END: download and install GTest
 #--------------------------------------------------------------------------------------------------------
 
+include("3rdparty/dicom.cmake")
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL optional libraries
@@ -221,7 +222,7 @@ if(ECVL_BUILD_GUI)
             target_link_libraries(ECVL_GUI PUBLIC ECVL_CORE ${wxWidgets_LIBRARIES})
             target_include_directories(ECVL_GUI PUBLIC ${wxWidgets_INCLUDE_DIRS})
             if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-                target_link_libraries(ECVL_GUI stdc++fs)
+                target_link_libraries(ECVL_GUI PUBLIC stdc++fs)
             endif()
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
@@ -318,7 +319,7 @@ endif(${ECVL_WITH_OPENGL})
 
 
 #--------------------------------------------------------------------------------------------------------
-# BEGIN: ECVL examples and tests
+# BEGIN: ECVL tests
 #--------------------------------------------------------------------------------------------------------
 if (${ECVL_TESTS})
     target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main)
@@ -329,14 +330,25 @@ if (${ECVL_TESTS})
     #gtest_discover_tests(ECVL_TESTS)
     gtest_add_tests(TARGET ECVL_TESTS)
 endif()
-
-add_executable(EXAMPLES "")
-add_subdirectory(examples)
-target_link_libraries(EXAMPLES ${ECVL_MODULES})
 #--------------------------------------------------------------------------------------------------------
-# END: ECVL examples and tests
+# END: ECVL tests
 #--------------------------------------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Examples
+#--------------------------------------------------------------------------------------------------------
+include(examples/CMakeLists.txt)
+FOREACH(cur_file ${examples_sources})
+    get_filename_component(exe_name ${cur_file} NAME_WE)
+    set(cur_file "examples/${cur_file}")
+    #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
+    add_executable(${exe_name} ${cur_file})
+    set_target_properties(${exe_name} PROPERTIES FOLDER "Examples")
+    target_link_libraries(${exe_name} ${ECVL_MODULES})
+ENDFOREACH()
+#--------------------------------------------------------------------------------------------------------
+# END: Examples
+#--------------------------------------------------------------------------------------------------------
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Snippets

@@ -1,3 +1,4 @@
+#undef UNICODE
 #include "ecvl/core/support_dcmtk.h"
 
 #include <dcmtk/dcmimage/diregist.h>
