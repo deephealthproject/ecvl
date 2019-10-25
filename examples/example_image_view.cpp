@@ -46,6 +46,7 @@ int main(void)
     View<DataType::uint8> cropped1(img, { 0, 0, 2 }, { 200, 200, -1 });
 
     // Change the color space of the Image
+    cout << "Executing ChangeColorSpace" << endl;
     ChangeColorSpace(cropped1, cropped1, ColorType::BGR);
 
     // Also a View can be saved with ImWrite
@@ -55,6 +56,7 @@ int main(void)
     Image img1, img2, img3, img4;
     ImRead("../data/Kodak/img0003.png", img1);
 
+    cout << "Create a thumbnail 32x32 from an Image" << endl;
     CopyImage(View<DataType::uint8>(img1, { 0,0,0 }, { -1,-1,1 }), img2);
     img3.Create({ 32,32,1 }, DataType::uint8, "xyc", ColorType::GRAY);
     std::vector<uint32_t> accum(32);
@@ -84,8 +86,10 @@ int main(void)
         std::transform(begin(accum), end(accum), begin(count), pout, std::divides<uint32_t>());
         pout += 32;
     }
+    ImWrite("thumbnail.jpg", img3);
 
     // Create an empty Image
+    cout << "Create an empty Image" << endl;
     img1.Create({ 3072, 2048, 3 }, DataType::uint8, "xyc", ColorType::BGR);
 
     ImRead("../data/Kodak/img0015.png", img2);
@@ -93,6 +97,7 @@ int main(void)
     CopyImage(img1, img4, DataType::int32);
 
     Image dst1, dst2, dst3, dst4, dst5;
+    cout << "Executing arithmetic functions" << endl;
     // Test add functions
     Add(img1, img2, dst1);
     Add(img1, 100, dst2);
@@ -118,6 +123,7 @@ int main(void)
     Div(200, img1, dst3);
 
     // Create a black mask with a blurred white circle in the center
+    cout << "Create a mask" << endl;
     Image mask(img3.dims_, DataType::float32, img3.channels_, img3.colortype_);
     ContiguousViewXYC<DataType::float32> vmask(mask);
     auto radius = float(std::min(vmask.width() / 2, vmask.height() / 2));
