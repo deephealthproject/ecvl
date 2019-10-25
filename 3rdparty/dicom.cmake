@@ -13,7 +13,7 @@ endmacro()
 
 
 if(${ECVL_WITH_DICOM})
-    #ecvl_update_3rdparty(dcmtk)
+    ecvl_update_3rdparty(dcmtk)
 
     SET(BUILD_APPS OFF CACHE INTERNAL "" FORCE)
     SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
