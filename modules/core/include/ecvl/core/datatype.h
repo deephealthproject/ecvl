@@ -46,7 +46,7 @@ constexpr size_t DataTypeSize() {
     constexpr size_t size = 0
 #define ECVL_TUPLE(name, ...) + 1
 #include "datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE	
+#undef ECVL_TUPLE
         ;
     return size;
 }
@@ -59,7 +59,7 @@ constexpr size_t DataTypeSignedSize() {
     constexpr size_t size = 0
 #define ECVL_TUPLE(name, ...) + 1
 #include "datatype_existing_tuples_signed.inc.h"
-#undef ECVL_TUPLE	
+#undef ECVL_TUPLE
         ;
     return size;
 }

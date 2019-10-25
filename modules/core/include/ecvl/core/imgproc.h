@@ -205,7 +205,7 @@ void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale);
 @param[out] dst Output Image.
 @param[in] gamma Exponent for the contrast adjustment.
 */
-void GammaContrast(const Image& src, Image& dst, double scale);
+void GammaContrast(const Image& src, Image& dst, double gamma);
 
 /** @brief Sets rectangular areas within an Image to zero.
 

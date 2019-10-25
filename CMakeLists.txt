@@ -307,11 +307,11 @@ add_subdirectory(3rdparty)
 set(CMAKE_FOLDER "")
 
 if(${ECVL_WITH_DICOM})
-    add_compile_definitions(ECVL_WITH_DICOM)
+    target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_DICOM)
 endif(${ECVL_WITH_DICOM})
 
 if(${ECVL_WITH_OPENGL})
-    add_compile_definitions(ECVL_WITH_OPENGL)
+    target_compile_definitions(ECVL_GUI PUBLIC ECVL_WITH_OPENGL)
 endif(${ECVL_WITH_OPENGL})
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
