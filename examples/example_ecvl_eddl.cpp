@@ -19,7 +19,7 @@ int main()
     tensor t = ImageToTensor(img);
 
     // Apply eddl functions
-    div(t, 128);
+    eddlT::div(t, 128);
 
     // Convert a tensor into an Image
     cout << "Executing TensorToImage" << endl;
@@ -37,8 +37,8 @@ int main()
     // Allocate memory for x_train and y_train tensors
     std::vector<int> size{ 28,28 };
     cout << "Create x_train and y_train" << endl;
-    tensor x_train = T({ batch_size, d.n_channels_, size[0], size[1] });
-    tensor y_train = T({ batch_size, static_cast<int>(d.classes_.size()) });
+    tensor x_train = eddlT::create({ batch_size, d.n_channels_, size[0], size[1] });
+    tensor y_train = eddlT::create({ batch_size, static_cast<int>(d.classes_.size()) });
 
     // Load a batch of d.batch_size_ images into x_train and corresponding labels in y_train
     // Images are resized to the dimensions specified in size

@@ -2,6 +2,7 @@
 #define ECVL_EDDL_H_
 
 #include <eddl/apis/eddl.h>
+#include <eddl/apis/eddlT.h>
 #include "ecvl/core/image.h"
 #include "ecvl/dataset_parser.h"
 #include <filesystem>

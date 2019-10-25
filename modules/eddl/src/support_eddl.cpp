@@ -27,56 +27,56 @@ void SetColorType(ColorType& c_type, const int& color_channels)
 
 Image TensorToImage(tensor& t, ColorType c_type)
 {
-    if (t->data->ndim != 3 && t->data->ndim != 4) {
+    if (t->ndim != 3 && t->ndim != 4) {
         ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
     }
 
     Image img;
 
-    switch (t->data->ndim) {
+    switch (t->ndim) {
     case 3:
         if (c_type == ColorType::none)
-            SetColorType(c_type, t->data->shape[0]);
-        img.Create({ t->data->shape[2], t->data->shape[1], t->data->shape[0] }, DataType::float32, "xyc", c_type);
+            SetColorType(c_type, t->shape[0]);
+        img.Create({ t->shape[2], t->shape[1], t->shape[0] }, DataType::float32, "xyc", c_type);
         break;
     case 4:
         if (c_type == ColorType::none)
-            SetColorType(c_type, t->data->shape[1]);
-        img.Create({ t->data->shape[3], t->data->shape[2], t->data->shape[0], t->data->shape[1] }, DataType::float32, "xyzc", c_type);
+            SetColorType(c_type, t->shape[1]);
+        img.Create({ t->shape[3], t->shape[2], t->shape[0], t->shape[1] }, DataType::float32, "xyzc", c_type);
         break;
     default:
         ECVL_ERROR_NOT_REACHABLE_CODE
     }
 
-    memcpy(img.data_, t->data->ptr, img.datasize_);
+    memcpy(img.data_, t->ptr, img.datasize_);
 
     return img;
 }
 
 View<DataType::float32> TensorToView(tensor& t, ColorType c_type)
 {
-    if (t->data->ndim != 3 && t->data->ndim != 4) {
+    if (t->ndim != 3 && t->ndim != 4) {
         ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
     }
 
     View<DataType::float32> v;
 
-    switch (t->data->ndim) {
+    switch (t->ndim) {
     case 3:
         if (c_type == ColorType::none)
-            SetColorType(c_type, t->data->shape[0]);
-        v.dims_.push_back(t->data->shape[2]);
-        v.dims_.push_back(t->data->shape[1]);
-        v.dims_.push_back(t->data->shape[0]);
+            SetColorType(c_type, t->shape[0]);
+        v.dims_.push_back(t->shape[2]);
+        v.dims_.push_back(t->shape[1]);
+        v.dims_.push_back(t->shape[0]);
         v.channels_ = "xyc";
         break;
     case 4:
         if (c_type == ColorType::none)
-            SetColorType(c_type, t->data->shape[1]);
-        v.dims_.push_back(t->data->shape[3]);
-        v.dims_.push_back(t->data->shape[2]);
-        v.dims_.push_back(t->data->shape[0]);
-        v.dims_.push_back(t->data->shape[1]);
+            SetColorType(c_type, t->shape[1]);
+        v.dims_.push_back(t->shape[3]);
+        v.dims_.push_back(t->shape[2]);
+        v.dims_.push_back(t->shape[0]);
+        v.dims_.push_back(t->shape[1]);
         v.channels_ = "xyzc";
         break;
     default:
@@ -84,7 +84,7 @@ View<DataType::float32> TensorToView(tensor& t, ColorType c_type)
     }
 
     v.colortype_ = c_type;
-    v.data_ = (uint8_t*)t->data->ptr;
+    v.data_ = (uint8_t*)t->ptr;
     v.elemtype_ = DataType::float32;
     v.elemsize_ = DataTypeSize(DataType::float32);
     v.spacings_ = {};
@@ -120,18 +120,18 @@ tensor ImageToTensor(const Image& img)
     case 3:
         if (tmp.channels_ != "xyc")
             RearrangeChannels(tmp, tmp, "xyc");
-        t = T({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
+        t = eddlT::create({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
         break;
     case 4:
         if (tmp.channels_ != "xyzc")
             RearrangeChannels(tmp, tmp, "xyzc");
-        t = T({ tmp.dims_[2], tmp.dims_[3], tmp.dims_[1], tmp.dims_[0] });
+        t = eddlT::create({ tmp.dims_[2], tmp.dims_[3], tmp.dims_[1], tmp.dims_[0] });
         break;
     default:
         ECVL_ERROR_NOT_REACHABLE_CODE
     }
 
-    memcpy(t->data->ptr, tmp.data_, tmp.datasize_);
+    memcpy(t->ptr, tmp.data_, tmp.datasize_);
     return t;
 }
 
@@ -147,8 +147,8 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     int n_channels = dataset.samples_[0].LoadImage(ctype).Channels();
     int n_classes = static_cast<int>(dataset.classes_.size());
     // Allocate memory for EDDL tensors
-    images = T({ n_samples, n_channels, size[0], size[1] });
-    labels = T({ n_samples, n_classes });
+    images = eddlT::create({ n_samples, n_channels, size[0], size[1] });
+    labels = eddlT::create({ n_samples, n_classes });
 
     // Fill tensors with data
     int i = 0;
@@ -156,15 +156,15 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
         ResizeDim(elem.LoadImage(ctype), tmp, { size[1], size[0] });
-        unique_ptr<LTensor> t(ImageToTensor(tmp));
-        memcpy(images->data->ptr + t->data->size * i, t->data->ptr, t->data->size * sizeof(float));
+        unique_ptr<Tensor> t(ImageToTensor(tmp));
+        memcpy(images->ptr + t->size * i, t->ptr, t->size * sizeof(float));
         if (elem.label_) {
             // Copy labels into tensor (labels)
             vector<float> l(n_classes, 0);
             for (int j = 0; j < elem.label_.value().size(); ++j) {
                 l[elem.label_.value()[j]] = 1;
             }
-            memcpy(labels->data->ptr + l.size() * i, l.data(), l.size() * sizeof(float));
+            memcpy(labels->ptr + l.size() * i, l.data(), l.size() * sizeof(float));
         }
         ++i;
     }
@@ -220,16 +220,15 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
         ResizeDim(elem.LoadImage(dataset.ctype_), tmp, { size[1], size[0] });
-        unique_ptr<LTensor> t(ImageToTensor(tmp));
-        memcpy(images->data->ptr + t->data->size * offset, t->data->ptr, t->data->size * sizeof(float));
-
+        unique_ptr<Tensor> t(ImageToTensor(tmp));
+        memcpy(images->ptr + t->size * offset, t->ptr, t->size * sizeof(float));
         if (elem.label_) {
             // Copy labels into tensor (labels)
             vector<float> lab(dataset.classes_.size(), 0);
             for (int j = 0; j < elem.label_.value().size(); ++j) {
                 lab[elem.label_.value()[j]] = 1;
             }
-            memcpy(labels->data->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
+            memcpy(labels->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
         }
         ++offset;
     }
