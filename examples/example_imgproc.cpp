@@ -41,7 +41,7 @@ int main()
     Rotate2D(img1, tmp, angle);
     ImWrite("img_rotated.jpg", tmp);
 
-    // Rotate an Image of 60°; it is scaled during rotation with a 1.5 scaling factor. resizing the output accordingly scaling the dimentions to a given scale factor res_scale
+    // Rotate an Image of a given angle; it is scaled during rotation with a rot_scale scaling factor. The output is resized accordingly.
     double rot_scale = 1.5;
     cout << "Executing RotateFullImage2D" << endl;
     RotateFullImage2D(img1, tmp, angle, rot_scale);
