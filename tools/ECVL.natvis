@@ -8,7 +8,10 @@
   <Type Name="ecvl::View">
     <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" />
   </Type>
-
+  <Type Name="ecvl::ContiguousViewXYC">
+    <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" />
+  </Type>
+  
   <Type Name="ecvl::Image">
     <Intrinsic Name="dims_size" Expression="dims_._Mypair._Myval2._Mylast - dims_._Mypair._Myval2._Myfirst" />
   
