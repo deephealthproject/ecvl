@@ -35,7 +35,7 @@ project (ecvl CXX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
-set(CMAKE_POSITION_INDEPENDENT_CODE True) #To always generate position independent code
+set(CMAKE_POSITION_INDEPENDENT_CODE True) # To always generate position independent code
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Install(first step): must be at the beginning otherwise in case of any failure (i.e. OpenCV not found) won't work
@@ -205,6 +205,7 @@ include("3rdparty/dicom.cmake")
 # BEGIN: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
+set(ECVL_BUILD_EXAMPLES ON CACHE BOOL "Whether to build ECVL examples or not")
 set(ECVL_BUILD_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
 set(ECVL_BUILD_EDDL ON CACHE BOOL "Whether to build ECVL_EDDL or not (requires EDDL)")
 
@@ -337,35 +338,20 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Examples
 #--------------------------------------------------------------------------------------------------------
-include(examples/CMakeLists.txt)
-FOREACH(cur_file ${examples_sources})
-    get_filename_component(exe_name ${cur_file} NAME_WE)
-    set(cur_file "examples/${cur_file}")
-    #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
-    add_executable(${exe_name} ${cur_file})
-    set_target_properties(${exe_name} PROPERTIES FOLDER "Examples")
-    target_link_libraries(${exe_name} ${ECVL_MODULES})
-ENDFOREACH()
+if (${ECVL_BUILD_EXAMPLES})
+    include(examples/CMakeLists.txt)
+    FOREACH(cur_file ${examples_sources})
+        get_filename_component(exe_name ${cur_file} NAME_WE)
+        set(cur_file "examples/${cur_file}")
+        #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
+        add_executable(${exe_name} ${cur_file})
+        set_target_properties(${exe_name} PROPERTIES FOLDER "Examples")
+        target_link_libraries(${exe_name} ${ECVL_MODULES})
+    ENDFOREACH()
+endif()
 #--------------------------------------------------------------------------------------------------------
 # END: Examples
 #--------------------------------------------------------------------------------------------------------
-
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: Snippets
-#--------------------------------------------------------------------------------------------------------
-include(snippets/CMakeLists.txt)
-FOREACH(cur_file ${snippets_sources})
-    get_filename_component(exe_name ${cur_file} NAME_WE)
-    set(cur_file "snippets/${cur_file}")
-    #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
-    add_executable(${exe_name} ${cur_file})
-    set_target_properties(${exe_name} PROPERTIES FOLDER "Snippets")
-    target_link_libraries(${exe_name} ${ECVL_MODULES})
-ENDFOREACH()
-#--------------------------------------------------------------------------------------------------------
-# END: Snippets
-#--------------------------------------------------------------------------------------------------------
-
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Install
