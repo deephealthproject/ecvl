@@ -20,12 +20,12 @@ if(${ECVL_WITH_OPENGL})
 
             ecvl_update_3rdparty(glm)
 
-            if (ECVL_STATIC)
-                SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
-                SET(BUILD_STATIC_LIBS ON CACHE INTERNAL "" FORCE)
-            else()
+            if (ECVL_SHARED)
                 SET(BUILD_SHARED_LIBS ON CACHE INTERNAL "" FORCE)
                 SET(BUILD_STATIC_LIBS OFF CACHE INTERNAL "" FORCE)
+            else()
+                SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
+                SET(BUILD_STATIC_LIBS ON CACHE INTERNAL "" FORCE)
             endif()
             SET(GLM_DISABLE_AUTO_DETECTION OFF CACHE INTERNAL "" FORCE)
             SET(GLM_QUIET OFF CACHE INTERNAL "" FORCE)
@@ -72,7 +72,6 @@ if(${ECVL_WITH_OPENGL})
         message(STATUS "ECVL_WITH_OPENGL disabled: unmet dependency ECVL_GUI")
     endif(${ECVL_BUILD_GUI})
 endif(${ECVL_WITH_OPENGL})
-
 
 # nifti
 # we use our own functions
