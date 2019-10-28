@@ -11,6 +11,8 @@
 
 #include "yaml-cpp/yaml.h"
 
+namespace ecvl {
+
 class Sample {
 public:
     std::filesystem::path location_;
@@ -46,17 +48,19 @@ private:
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
 
+}
+
 namespace YAML {
 template<>
-struct convert<Split> {
-    /*static Node encode(const Split& rhs)
+struct convert<ecvl::Split> {
+    /*static Node encode(const ecvl::Split& rhs)
     {
         Node node;
         node.push_back(rhs.x);
         return node;
     }*/
 
-    static bool decode(const YAML::Node& node, Split& rhs)
+    static bool decode(const YAML::Node& node, ecvl::Split& rhs)
     {
         if (node["training"].IsDefined()) {
             rhs.training_ = node["training"].as<std::vector<int>>();

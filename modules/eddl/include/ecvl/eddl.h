@@ -87,6 +87,7 @@ tensor ImageToTensor(const Image& img);
 @param[in] size Dimensions (width and height) at which all the images have to be resized.
 @param[out] images Tensor which contains all the images.
 @param[out] labels Tensor which contains all the labels.
+@param[in] ctype ColorType which specifies color space for images in the dataset.
 
 */
 void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
@@ -97,6 +98,7 @@ void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tens
 @param[in] size Dimensions (width and height) at which all the images have to be resized.
 @param[out] images Tensor which contains all the images.
 @param[out] labels Tensor which contains all the labels.
+@param[in] ctype ColorType which specifies color space for images in the dataset.
 
 */
 void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
@@ -107,6 +109,7 @@ void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, te
 @param[in] size Dimensions (width and height) at which all the images have to be resized.
 @param[out] images Tensor which contains all the images.
 @param[out] labels Tensor which contains all the labels.
+@param[in] ctype ColorType which specifies color space for images in the dataset.
 
 */
 void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);

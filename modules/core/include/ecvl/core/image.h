@@ -360,7 +360,7 @@ public:
     /** @brief To check whether the Image is owner of the data. */
     bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
     
-    /** @brief Returns the number of Image channels. */
+    /** @brief Returns the number of channels. */
     int Channels() const { 
         size_t pos = channels_.find('c'); 
         if (pos != std::string::npos) {
