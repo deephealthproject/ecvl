@@ -40,8 +40,19 @@ set(CMAKE_POSITION_INDEPENDENT_CODE True) # To always generate position independ
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Install(first step): must be at the beginning otherwise in case of any failure (i.e. OpenCV not found) won't work
 #--------------------------------------------------------------------------------------------------------
+# Set default install directories
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "..." FORCE)
+    if (WIN32)
+        set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Installation Directory" FORCE)
+    else()
+        set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Installation Directory" FORCE)
+    endif()
+endif()
+
+if (WIN32)
+    SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX})
+else()
+    SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/cmake/ecvl)
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: Install (first step)
@@ -106,7 +117,6 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # END: static/dinamic runtime
 #--------------------------------------------------------------------------------------------------------
-
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL_CORE (the main target)
@@ -362,7 +372,7 @@ install(TARGETS ${ECVL_MODULES}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         )
-install(EXPORT ECVLTargets DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(EXPORT ECVLTargets DESTINATION ${ECVL_CONFIG_INSTALL_PATH})
 foreach(module_name ${ECVL_MODULES_DIRS})
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/modules/${module_name}/include
         DESTINATION "."
@@ -372,7 +382,7 @@ message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake
-        DESTINATION ${CMAKE_INSTALL_PREFIX}) 
+        DESTINATION ${ECVL_CONFIG_INSTALL_PATH}) 
 #--------------------------------------------------------------------------------------------------------
 # END: Install
 #--------------------------------------------------------------------------------------------------------
