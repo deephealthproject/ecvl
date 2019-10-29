@@ -87,6 +87,7 @@ if(${ECVL_WITH_DICOM})
     SET(WITH_SNDFILEINC "" CACHE INTERNAL "" FORCE)
     SET(WITH_ZLIBINC "" CACHE INTERNAL "" FORCE)
     SET(DCMTK_ENABLE_LFS lfs CACHE INTERNAL "" FORCE)
+    SET(CMAKE_DEBUG_POSTFIX "d")
 
     set(CMAKE_FOLDER 3rdparty/dcmtk)
     add_subdirectory(3rdparty/dcmtk)
