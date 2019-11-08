@@ -5,6 +5,14 @@ set(examples_sources
     example_imgcodecs.cpp
     example_imgproc.cpp
 )
+FOREACH(cur_file ${examples_sources})
+    get_filename_component(exe_name ${cur_file} NAME_WE)
+    set(cur_file "examples/${cur_file}")
+    #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
+    add_executable(${exe_name} ${cur_file})
+    set_target_properties(${exe_name} PROPERTIES FOLDER "Examples")
+    target_link_libraries(${exe_name} ${ECVL_MODULES})
+ENDFOREACH()
 
 if(ECVL_BUILD_EDDL)
     add_executable(example_ecvl_eddl "examples/example_ecvl_eddl.cpp")
@@ -46,6 +54,11 @@ if(ECVL_WITH_DICOM)
     add_executable(example_nifti_dicom "examples/example_nifti_dicom.cpp")
     set_target_properties(example_nifti_dicom PROPERTIES FOLDER "Examples")
     target_link_libraries(example_nifti_dicom ${ECVL_MODULES})
+endif()
+if(ECVL_WITH_OPENSLIDE)
+    add_executable(example_openslide "examples/example_openslide.cpp")
+    set_target_properties(example_openslide PROPERTIES FOLDER "Examples")
+    target_link_libraries(example_openslide ${ECVL_MODULES})
 endif()
 
 # Download and unpack ecvl examples data

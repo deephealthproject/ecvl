@@ -34,10 +34,10 @@ bool ImRead(const path& filename, Image& dst, ImageFormat f)
     return !dst.IsEmpty();
 }
 
-bool ImReadMulti(const std::string& filename, Image& dst) {
+bool ImReadMulti(const path& filename, Image& dst) {
 
     std::vector<cv::Mat> v;
-    cv::imreadmulti(filename, v);
+    cv::imreadmulti(filename.string(), v);
     dst = MatVecToImage(v);
 
     return !dst.IsEmpty();

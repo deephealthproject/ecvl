@@ -15,4 +15,8 @@
 #include "core/support_dcmtk.h"
 #endif
 
+#ifdef ECVL_WITH_OPENSLIDE
+#include "core/support_openslide.h"
+#endif
+
 #endif // ECVL_CORE_H_

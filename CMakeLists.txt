@@ -154,14 +154,13 @@ target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 # END: OpenCV
 #--------------------------------------------------------------------------------------------------------
 
-
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
 set(ECVL_DATASET_PARSER OFF CACHE BOOL "Whether to build yaml support or not")
-
+set(ECVL_WITH_OPENSLIDE OFF CACHE BOOL "Whether to build OpenSlide support or not")
 find_package(Git QUIET)
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
@@ -324,6 +323,15 @@ endif(${ECVL_WITH_DICOM})
 if(${ECVL_WITH_OPENGL})
     target_compile_definitions(ECVL_GUI PUBLIC ECVL_WITH_OPENGL)
 endif(${ECVL_WITH_OPENGL})
+
+if(${ECVL_WITH_OPENSLIDE})
+    find_path(OPENSLIDE_INCLUDE_DIRECTORIES openslide.h PATH_SUFFIXES openslide)
+    target_include_directories(ECVL_CORE PUBLIC ${OPENSLIDE_INCLUDE_DIRECTORIES})
+    find_library(OPENSLIDE_LIBRARIES openslide)
+    target_link_libraries(ECVL_CORE PUBLIC ${OPENSLIDE_LIBRARIES})
+    target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_OPENSLIDE)
+    target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_openslide.h" "../modules/core/src/support_openslide.cpp")
+endif()
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
 #--------------------------------------------------------------------------------------------------------
@@ -350,14 +358,6 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 if (${ECVL_BUILD_EXAMPLES})
     include(examples/CMakeLists.txt)
-    FOREACH(cur_file ${examples_sources})
-        get_filename_component(exe_name ${cur_file} NAME_WE)
-        set(cur_file "examples/${cur_file}")
-        #message(STATUS "cur_file: ${cur_file}, exe_name: ${exe_name}")
-        add_executable(${exe_name} ${cur_file})
-        set_target_properties(${exe_name} PROPERTIES FOLDER "Examples")
-        target_link_libraries(${exe_name} ${ECVL_MODULES})
-    ENDFOREACH()
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: Examples
