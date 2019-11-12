@@ -66,7 +66,7 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data")
     message(STATUS "The data folder already exists, download skipped!")
 else()
     message(STATUS "Downloading data files...")
-    file(DOWNLOAD http://imagelab.ing.unimore.it/files/ecvl_data.zip "${CMAKE_CURRENT_SOURCE_DIR}/ecvl_data.zip" STATUS status SHOW_PROGRESS)
+    file(DOWNLOAD http://imagelab.ing.unimore.it/files/DeepHealth/ecvl_data.zip "${CMAKE_CURRENT_SOURCE_DIR}/ecvl_data.zip" STATUS status SHOW_PROGRESS)
 
     list(GET status 0 error_code)
     if(error_code)
