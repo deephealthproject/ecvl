@@ -8,22 +8,34 @@ int main()
 {
     Image img;
 
+    // Image level to be extracted
+    int level = 0;
     //Set the RegionOfInterest informations
-    int x = 11978, y = 30243;
-    int w = 3341, h = 3797;
+    vector<int> dims = {
+        11978, // x
+        30243, // y
+        3341,  // w
+        3797   // h
+    };
 
-    //Read an Hamamatsu file
-    if (!HamamatsuRead("D:/Data/HAMAMATSU/UC2_Dev_ExampleFiles/10-B1-TALG.ndpi", img, x, y, w, h)) {
+    // Read an Hamamatsu file
+    if (!HamamatsuRead("../data/hamamatsu/10-B1-TALG.ndpi", img, level, dims)) {
         return EXIT_FAILURE;
     }
     ImWrite("hamamatsu_1.png", img);
+    cout << "Writing 'hamamatsu_1.png'\n";
 
-    x = 3386, y = 36837;
-    w = 3355, h = 4447;
-    if (!HamamatsuRead("D:/Data/HAMAMATSU/UC2_Dev_ExampleFiles/11-B1TALG.ndpi", img, x, y, w, h)) {
+    dims = {
+        3386,  // x
+        36837, // y
+        3355,  // w
+        4447   // h
+    };
+    if (!HamamatsuRead("../data/hamamatsu/11-B1TALG.ndpi", img, level, dims)) {
         return EXIT_FAILURE;
     }
     ImWrite("hamamatsu_2.png", img);
+    cout << "Writing 'hamamatsu_2.png'\n";
 
     return EXIT_SUCCESS;
 }

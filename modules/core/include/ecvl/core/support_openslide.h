@@ -15,10 +15,14 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @param[in] filename A filesystem::path identifying the file name.
 @param[out] dst Image in which data will be stored.
+@param[in] level Image level to be extracted.
+@param[in] dims std::vector containing { x, y, w, h }.
+            x and y are the top left x-coordinate and y-coordinate, in the level 0 reference frame.
+            w and h are the width and height of the region.
 
 @return true if the image is correctly read, false otherwise.
 */
-extern bool HamamatsuRead(const std::filesystem::path& filename, Image& dst, int x, int y, int w, int h);
+extern bool HamamatsuRead(const std::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
 
 } // namespace ecvl
 
