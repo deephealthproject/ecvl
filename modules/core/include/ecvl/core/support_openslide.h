@@ -6,12 +6,12 @@
 
 namespace ecvl {
 
-/** @brief Loads an image from a HAMAMATSU file.
+/** @brief Loads a region of a whole-slide image file.
 
-Loads an image from the specified HAMAMATSU file. If the image cannot
-be read for any reason, the function creates an empty Image and returns false.
+Loads a region from the specified whole-slide image file. Supported formats are those supported by OpenSlide library.
+If the region cannot be read for any reason, the function creates an empty Image and returns false.
 
-@anchor hamamatsuread_path
+@anchor openslideread_path
 
 @param[in] filename A filesystem::path identifying the file name.
 @param[out] dst Image in which data will be stored.
@@ -22,7 +22,15 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-extern bool HamamatsuRead(const std::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
+extern bool OpenSlideRead(const std::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
+
+/** @brief Get width and height for each level of a whole-slide image. 
+
+@param[in] filename A filesystem::path identifying the file name.
+@param[out] levels A std::vector of array containing two elements, width and height respectively.
+            levels[k] are the dimensions of level k.
+*/
+void OpenSlideGetLevels(const std::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
 
 } // namespace ecvl
 
