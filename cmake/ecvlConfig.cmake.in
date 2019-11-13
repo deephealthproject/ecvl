@@ -45,7 +45,7 @@ if (${ECVL_DATASET_PARSER})
     find_dependency(yaml-cpp)
 endif()
 
-include("@ECVL_CONFIG_INSTALL_PATH@/ECVLTargets.cmake")
+include("@ECVL_CONFIG_INSTALL_PATH@/ecvlTargets.cmake")
 
 foreach(COMPONENT ${ECVL_FIND_COMPONENTS})
     string(TOUPPER ${COMPONENT} UPPER_COMPONENT)

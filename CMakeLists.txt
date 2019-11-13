@@ -299,8 +299,9 @@ endif()
 
 foreach(MODULE ${ECVL_MODULES})
     string(TOLOWER ${MODULE} LOWER_MODULE)
-    set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_DEBUG "${LOWER_MODULE}d")
-    set_target_properties(${MODULE} PROPERTIES OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
+    set_target_properties(${MODULE} PROPERTIES
+        OUTPUT_NAME_DEBUG "${LOWER_MODULE}d"
+        OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
 endforeach()
 
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
@@ -367,12 +368,12 @@ endif()
 # BEGIN: Install
 #--------------------------------------------------------------------------------------------------------
 install(TARGETS ${ECVL_MODULES}
-        EXPORT ECVLTargets
+        EXPORT ecvlTargets
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         )
-install(EXPORT ECVLTargets DESTINATION ${ECVL_CONFIG_INSTALL_PATH})
+install(EXPORT ecvlTargets DESTINATION ${ECVL_CONFIG_INSTALL_PATH})
 foreach(module_name ${ECVL_MODULES_DIRS})
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/modules/${module_name}/include
         DESTINATION "."
@@ -380,8 +381,8 @@ foreach(module_name ${ECVL_MODULES_DIRS})
 endforeach()
 message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")   
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECVLConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/cmake/ECVLConfig.cmake
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ecvlConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/ecvlConfig.cmake @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/cmake/ecvlConfig.cmake
         DESTINATION ${ECVL_CONFIG_INSTALL_PATH}) 
 #--------------------------------------------------------------------------------------------------------
 # END: Install
