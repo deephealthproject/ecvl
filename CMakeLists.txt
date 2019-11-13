@@ -58,6 +58,10 @@ endif()
 # END: Install (first step)
 #--------------------------------------------------------------------------------------------------------
 
+# SET BUILD TYPE (RELEASE/DEBUG)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Check for c++17 support
