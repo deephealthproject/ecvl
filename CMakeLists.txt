@@ -49,10 +49,10 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     endif()
 endif()
 
-if (WIN32)
-    SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX})
-else()
+if (CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
     SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/cmake/ecvl)
+else()
+    SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX})
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: Install (first step)
