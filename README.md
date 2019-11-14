@@ -14,13 +14,12 @@
 
 The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/). It is automatically updated at each commit/push to the master branch.
 
-## Requirements (mandatory)
+## Requirements
 - CMake 3.13 or later;
 - C++ Compiler with C++17 support;
 - OpenCV 3.0 or later (https://opencv.org/).
 
-## Requirements (optional)
-
+### Optional
 - wxWidgets (https://www.wxwidgets.org/), required by the ECVL GUI module;
 - OpenGL 3.3 or later, required by the 3D viewer.
 
