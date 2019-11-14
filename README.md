@@ -37,7 +37,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
-| Hamamatsu / NDPI | :large_blue_circle: | :x: | :x: |
+| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
 
 ### Image Write
 | Functionality | CPU | GPU | FPGA |
@@ -45,7 +45,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
-| Hamamatsu / NDPI | :large_blue_circle: | :x: | :x: |
+| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :large_blue_circle: | :x: | :x: |
 
 ### Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
@@ -79,7 +79,3 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Histogram Equalization | :x: | :x: | :x: |
 | Flip | :heavy_check_mark: | :x: | :x: |
 | Gamma Contrast | :heavy_check_mark: | :x: | :x: |
-
-
-
-
