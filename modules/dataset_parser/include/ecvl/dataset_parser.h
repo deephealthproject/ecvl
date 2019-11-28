@@ -12,15 +12,14 @@
 #include "yaml-cpp/yaml.h"
 
 namespace ecvl {
-
 class Sample {
 public:
     std::filesystem::path location_;
     std::optional<std::vector<int>> label_;
-    std::optional<std::string> label_path_; // path to ground truth
+    std::optional<std::filesystem::path> label_path_; // path to ground truth
     std::optional<std::map<int, std::string>> values_; //features
 
-    ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::BGR) const;
+    ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::BGR, const bool& is_gt = false) const;
 };
 
 class Split {
@@ -47,7 +46,6 @@ private:
     void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
-
 }
 
 namespace YAML {

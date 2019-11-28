@@ -144,7 +144,7 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     Image tmp;
 
     int n_samples = split.size();
-    int n_channels = dataset.samples_[0].LoadImage(ctype).Channels();
+    int n_channels = dataset.samples_[0].LoadImage(ctype, false).Channels();
     int n_classes = static_cast<int>(dataset.classes_.size());
     // Allocate memory for EDDL tensors
     images = eddlT::create({ n_samples, n_channels, size[0], size[1] });
@@ -155,7 +155,7 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
     for (auto& index : split) {
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
-        ResizeDim(elem.LoadImage(ctype), tmp, { size[1], size[0] });
+        ResizeDim(elem.LoadImage(ctype, false), tmp, { size[1], size[0] });
         unique_ptr<Tensor> t(ImageToTensor(tmp));
         memcpy(images->ptr + t->size * i, t->ptr, t->size * sizeof(float));
         if (elem.label_) {
@@ -199,7 +199,8 @@ std::vector<int>& DLDataset::GetSplit()
     ECVL_ERROR_NOT_REACHABLE_CODE
 }
 
-void DLDataset::SetSplit(const string& split_str) {
+void DLDataset::SetSplit(const string& split_str)
+{
     this->split_str_ = split_str;
 }
 
@@ -219,7 +220,7 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
         const int index = dataset.GetSplit()[i];
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
-        ResizeDim(elem.LoadImage(dataset.ctype_), tmp, { size[1], size[0] });
+        ResizeDim(elem.LoadImage(dataset.ctype_, false), tmp, { size[1], size[0] });
         unique_ptr<Tensor> t(ImageToTensor(tmp));
         memcpy(images->ptr + t->size * offset, t->ptr, t->size * sizeof(float));
         if (elem.label_) {
@@ -229,6 +230,12 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
                 lab[elem.label_.value()[j]] = 1;
             }
             memcpy(labels->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
+        }
+        else if (elem.label_path_) {
+            // Copy labels into tensor (labels)
+            ResizeDim(elem.LoadImage(dataset.ctype_gt_, true), tmp, { size[1], size[0] });
+            unique_ptr<Tensor> t_gt(ImageToTensor(tmp));
+            memcpy(labels->ptr + t_gt->size * offset, t_gt->ptr, t_gt->size * sizeof(float));
         }
         ++offset;
     }

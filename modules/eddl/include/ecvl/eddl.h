@@ -15,12 +15,14 @@ public:
     int current_batch_ = 0;
     int n_channels_;
     ColorType ctype_;
+    ColorType ctype_gt_;
     std::string split_str_;
 
-    DLDataset(const std::filesystem::path& filename, int batch_size, std::string split, ColorType ctype = ColorType::BGR) :
+    DLDataset(const std::filesystem::path& filename, int batch_size, std::string split, ColorType ctype = ColorType::BGR, ColorType ctype_gt = ColorType::GRAY) :
         Dataset{ filename },
         batch_size_{ batch_size },
         ctype_{ ctype },
+        ctype_gt_{ ctype_gt },
         split_str_{ split },
         n_channels_{ this->samples_[0].LoadImage(ctype).Channels() }{}
 

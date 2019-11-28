@@ -30,12 +30,18 @@ void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
     }
 }
 
-Image Sample::LoadImage(ColorType ctype) const
+Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
 {
     bool status;
     Image img;
 
-    status = ImRead(location_, img);
+    if (!is_gt) {
+        status = ImRead(location_, img);
+    }
+    else {
+        status = ImRead(label_path_.value(), img);
+    }
+
     if (!status) {
         // Image not correctly loaded, it is a URL!
         // TODO: Use libcurl instead of system call
@@ -107,6 +113,8 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
         if (sample.location_.is_relative() && !std::regex_match(sample.location_.string(), r)) {
             // Convert relative path to absolute
             sample.location_ = root_path / sample.location_;
+            if(sample.label_path_.has_value())
+                sample.label_path_ = root_path / sample.label_path_.value();
         }
     }
 }
