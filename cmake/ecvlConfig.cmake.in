@@ -22,8 +22,8 @@ if(${ECVL_WITH_DICOM})
 endif()
 
 if (${ECVL_BUILD_EDDL})
-    set(EDDL_DIR "@EDDL_DIR@")
-    find_dependency(EDDL)
+    set(eddl_DIR "@eddl_DIR@")
+    find_dependency(eddl)
 endif()
 
 if (${ECVL_BUILD_GUI})
