@@ -32,7 +32,7 @@ int main()
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
-    DLDataset d("mnist/mnist.yml", batch_size, "training", ColorType::GRAY);
+    DLDataset d("mnist/mnist.yml", batch_size, ColorType::GRAY);
 
     // Allocate memory for x_train and y_train tensors
     std::vector<int> size{ 28,28 };
