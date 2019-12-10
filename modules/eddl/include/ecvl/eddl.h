@@ -12,22 +12,24 @@ namespace ecvl {
 class DLDataset : public Dataset {
 public:
     int batch_size_;
-    int current_batch_ = 0;
+    std::array<int, 3> current_batch_ = { 0,0,0 }; //training, validation and test indexes
     int n_channels_;
     ColorType ctype_;
     ColorType ctype_gt_;
-    std::string split_str_;
+    int current_split_ = 0;
 
-    DLDataset(const std::filesystem::path& filename, int batch_size, std::string split, ColorType ctype = ColorType::BGR, ColorType ctype_gt = ColorType::GRAY) :
+    DLDataset(const std::filesystem::path& filename, int batch_size, ColorType ctype = ColorType::BGR, ColorType ctype_gt = ColorType::GRAY) :
         Dataset{ filename },
         batch_size_{ batch_size },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt },
-        split_str_{ split },
         n_channels_{ this->samples_[0].LoadImage(ctype).Channels() }{}
 
     std::vector<int>& GetSplit();
+    void ResetCurrentBatch();
+    void ResetAllBatches();
     void SetSplit(const std::string& split_str);
+    void LoadBatch(const std::vector<int>& size, tensor& images, tensor& labels);
 };
 
 
@@ -115,17 +117,6 @@ void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, te
 
 */
 void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels, ColorType ctype = ColorType::BGR);
-
-/** @brief Load a batch into images and labels EDDL tensors.
-
-@param[in] dataset DLDataset object listing all the samples of a split.
-@param[in] size Dimensions (width and height) at which all the images have to be resized.
-@param[out] images Tensor which contains all the images.
-@param[out] labels Tensor which contains all the labels.
-
-*/
-void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels);
-
 } // namespace ecvl
 
 #endif // ECVL_EDDL_H_

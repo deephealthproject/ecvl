@@ -187,45 +187,65 @@ void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& 
 
 std::vector<int>& DLDataset::GetSplit()
 {
-    if (split_str_ == "training") {
+    if (current_split_ == 0) {
         return this->split_.training_;
     }
-    else if (split_str_ == "validation") {
+    else if (current_split_ == 1) {
         return this->split_.validation_;
     }
-    else if (split_str_ == "test") {
+    else {
         return this->split_.test_;
     }
-    ECVL_ERROR_NOT_REACHABLE_CODE
 }
 
 void DLDataset::SetSplit(const string& split_str)
 {
-    this->split_str_ = split_str;
+    if (split_str == "training") {
+        this->current_split_ = 0;
+    }
+    else if (split_str == "validation") {
+        this->current_split_ = 1;
+    }
+    else if (split_str == "test") {
+        this->current_split_ = 2;
+    }
 }
 
-void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images, tensor& labels)
+void DLDataset::ResetCurrentBatch()
+{
+    this->current_batch_[current_split_] = 0;
+}
+
+void DLDataset::ResetAllBatches()
+{
+    this->current_batch_.fill(0);
+}
+
+void DLDataset::LoadBatch(const std::vector<int>& size, tensor& images, tensor& labels)
 {
     if (size.size() != 2) {
         ECVL_ERROR_MSG "size must have 2 dimensions (height, width)";
     }
+
+    int& bs = batch_size_;
     Image tmp;
-    int& bs = dataset.batch_size_;
+    int offset = 0, start = 0;
+
+    // Move to next samples
+    start = current_batch_[current_split_] * bs;
+    current_batch_[current_split_]++;
 
     // Fill tensors with data
-    int offset = 0;
-    int start = dataset.current_batch_ * bs;
-
     for (int i = start; i < start + bs; ++i) {
-        const int index = dataset.GetSplit()[i];
-        const Sample& elem = dataset.samples_[index];
+        const int index = GetSplit()[i];
+        const Sample& elem = samples_[index];
         // Copy image into tensor (images)
-        ResizeDim(elem.LoadImage(dataset.ctype_, false), tmp, { size[1], size[0] });
+        ResizeDim(elem.LoadImage(ctype_, false), tmp, { size[1], size[0] });
         unique_ptr<Tensor> t(ImageToTensor(tmp));
         memcpy(images->ptr + t->size * offset, t->ptr, t->size * sizeof(float));
         if (elem.label_) {
             // Copy labels into tensor (labels)
-            vector<float> lab(dataset.classes_.size(), 0);
+            vector<float> lab(classes_.size(), 0);
             for (int j = 0; j < elem.label_.value().size(); ++j) {
                 lab[elem.label_.value()[j]] = 1;
             }
@@ -233,7 +253,7 @@ void LoadBatch(DLDataset& dataset, const std::vector<int>& size, tensor& images,
         }
         else if (elem.label_path_) {
             // Copy labels into tensor (labels)
-            ResizeDim(elem.LoadImage(dataset.ctype_gt_, true), tmp, { size[1], size[0] });
+            ResizeDim(elem.LoadImage(ctype_gt_, true), tmp, { size[1], size[0] });
             unique_ptr<Tensor> t_gt(ImageToTensor(tmp));
             memcpy(labels->ptr + t_gt->size * offset, t_gt->ptr, t_gt->size * sizeof(float));
         }

@@ -43,7 +43,7 @@ int main()
     // Load a batch of d.batch_size_ images into x_train and corresponding labels in y_train
     // Images are resized to the dimensions specified in size
     cout << "Executing LoadBatch" << endl;
-    LoadBatch(d, size, x_train, y_train);
+    d.LoadBatch(size, x_train, y_train);
 
     // Load all the split (e.g., Test) images in x_test and corresponding labels in y_test
     tensor x_test;
