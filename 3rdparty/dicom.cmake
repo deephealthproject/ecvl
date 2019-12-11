@@ -87,7 +87,6 @@ if(${ECVL_WITH_DICOM})
     SET(WITH_SNDFILEINC "" CACHE INTERNAL "" FORCE)
     SET(WITH_ZLIBINC "" CACHE INTERNAL "" FORCE)
     SET(DCMTK_ENABLE_LFS lfs CACHE INTERNAL "" FORCE)
-    SET(CMAKE_DEBUG_POSTFIX "d")
 
     set(CMAKE_FOLDER 3rdparty/dcmtk)
     add_subdirectory(3rdparty/dcmtk)
@@ -102,12 +101,21 @@ if(${ECVL_WITH_DICOM})
     foreach(DCMTK_LIB config ${DCMTK_LIBS})
         list(APPEND DCMTK_INCLUDE_DIRS "dcmtk/${DCMTK_LIB}/include")
     endforeach()
+
+    foreach(DCMTK_LIB ${DCMTK_LIBS})
+        set_target_properties(${DCMTK_LIB} PROPERTIES
+        OUTPUT_NAME_DEBUG "${DCMTK_LIB}d"
+        OUTPUT_NAME_RELEASE "${DCMTK_LIB}")
+    endforeach()
+
     message(STATUS "DCMTK incldue dure: ${DCMTK_INCLUDE_DIRS}")
 
     foreach(dcmtk_include_dir ${DCMTK_INCLUDE_DIRS})
         target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${dcmtk_include_dir}> $<INSTALL_INTERFACE:include> )
     endforeach()
-    target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/3rdparty/dcmtk/config/include> $<INSTALL_INTERFACE:include> ) # for osconfig.h
+    target_include_directories(ECVL_CORE PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/3rdparty/dcmtk/config/include> $<INSTALL_INTERFACE:include> ) 
+
+    # for osconfig.h
     #
     #target_include_directories(ECVL_CORE PUBLIC
     #    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
