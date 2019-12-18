@@ -1,5 +1,7 @@
 #include "ecvl/core.h"
 
+#include <iostream>
+
 using namespace std;
 using namespace ecvl;
 
@@ -18,6 +20,16 @@ int main()
     }
 
     ImWrite("./test.png", img);
+
+    if (!ImRead("./test.png", img)) {
+        return EXIT_FAILURE;
+    }
+    cout << "Successfully read a color image" << endl;
+
+    if (!ImRead("./test.png", img, ImReadMode::GRAYSCALE)) {
+        return EXIT_FAILURE;
+    }
+    cout << "Successfully read a grayscale image" << endl;
 
     return EXIT_SUCCESS;
 }

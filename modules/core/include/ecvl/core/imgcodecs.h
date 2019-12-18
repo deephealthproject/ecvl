@@ -7,18 +7,16 @@
 #include "image.h"
 
 namespace ecvl {
+/** @brief Enum class representing the ECVL ImRead flags.
 
-/**  @brief ImageFormat is an enum class which defines
-the images format to employ.
-
- @anchor ImageFormat
+    @anchor ImReadMode
  */
-enum class ImageFormat {
-    DEFAULT, /**< Any common format */
-    NIFTI,   /**< NIfTI data format */
-#ifdef ECVL_WITH_DICOM
-    DICOM,   /**< DICOM data format */
-#endif
+enum class ImReadMode {
+    //IMREAD_UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
+    GRAYSCALE = 0,  //!< If set, always convert image to the single channel grayscale image (codec internal conversion).
+    COLOR = 1,  //!< If set, always convert image to the 3 channel BGR color image.
+    //IMREAD_ANYDEPTH = 2,  //!< If set, return 16-bit/32-bit image when the input has the corresponding depth, otherwise convert it to 8-bit.
+    //IMREAD_ANYCOLOR = 4,  //!< If set, the image is read in any possible color format.
 };
 
 /** @brief Loads an image from a file.
@@ -30,12 +28,11 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @param[in] filename A std::filesystem::path identifying the file name.
 @param[out] dst Image in which data will be stored.
-@param[in] f A ImageFormat indicating the image format to read.
+@param[in] flags An ImReadMode indicating how to read the image.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImRead(const std::filesystem::path& filename, Image& dst, ImageFormat f = ImageFormat::DEFAULT);
-
+bool ImRead(const std::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
 
 /** @brief Loads a multi-page image from a file.
 
@@ -59,18 +56,14 @@ filename extension. The following sample shows how to create a BGR image and sav
 
 @param[in] filename A std::filesystem::path identifying the output file name.
 @param[in] src Image to be saved.
-@param[in] f A ImageFormat indicating the image format to write.
 
 @return true if the image is correctly written, false otherwise.
 */
-bool ImWrite(const std::filesystem::path& filename, const Image& src, ImageFormat f = ImageFormat::DEFAULT);
-
+bool ImWrite(const std::filesystem::path& filename, const Image& src);
 
 /** @example example_imgcodecs.cpp
- An example imgcodecs functionalities.
+ Imgcodecs example.
 */
-
 } // namespace ecvl
 
 #endif // !ECVL_IMGCODECS_H_
-

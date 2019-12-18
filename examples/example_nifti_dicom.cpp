@@ -9,7 +9,7 @@ int main()
     // Open a nifti image
     Image nifti_image;
     cout << "Reading a nifti Image" << endl;
-    if (!ImRead("../data/nifti/LR_nifti.nii", nifti_image, ImageFormat::NIFTI)) {
+    if (!NiftiRead("../data/nifti/LR_nifti.nii", nifti_image)) {
         return EXIT_FAILURE;
     }
 
@@ -20,12 +20,12 @@ int main()
 
     // Save an Image in the nifti format
     cout << "Save a nifti Image" << endl;
-    ImWrite("nifti_gamma.nii", nifti_image, ImageFormat::NIFTI);
+    NiftiWrite("nifti_gamma.nii", nifti_image);
 
     // Open a dicom image
     Image dicom_image;
     cout << "Reading a dicom Image" << endl;
-    if (!ImRead("../data/isic_dicom/ISIC_0000008.dcm", dicom_image, ImageFormat::DICOM)) {
+    if (!DicomRead("../data/isic_dicom/ISIC_0000008.dcm", dicom_image)) {
         return EXIT_FAILURE;
     }
 
@@ -40,7 +40,7 @@ int main()
 
     // Save an Image in the dicom format
     cout << "Save a dicom Image" << endl;
-    ImWrite("dicom_thresholded.dcm", dicom_image, ImageFormat::DICOM);
+    DicomWrite("dicom_thresholded.dcm", dicom_image);
 
     // Any Image can be saved in the nifti or dicom format
     Image img;
@@ -51,9 +51,9 @@ int main()
     ChangeColorSpace(img, img, ColorType::RGB);
 
     cout << "Save a nifti from .jpg Image" << endl;
-    ImWrite("nifti_mirror.nii", img, ImageFormat::NIFTI);
+    NiftiWrite("nifti_mirror.nii", img);
     cout << "Save a dicom from .jpg Image" << endl;
-    ImWrite("dicom_mirror.dcm", img, ImageFormat::DICOM);
+    DicomWrite("dicom_mirror.dcm", img);
 
     return EXIT_SUCCESS;
 }
