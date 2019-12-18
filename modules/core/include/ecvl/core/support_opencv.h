@@ -15,7 +15,7 @@ ecvl::Image MatToImage(const cv::Mat& m);
 
 /** @brief Convert a std::vector<cv::Mat> into an ecvl::Image.
 
-@param[in] m Input std::vector of OpenCV Mat.
+@param[in] v Input std::vector of OpenCV Mat.
 
 @return ECVL image.
 */

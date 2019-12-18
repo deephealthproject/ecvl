@@ -12,33 +12,64 @@
 #include "yaml-cpp/yaml.h"
 
 namespace ecvl {
+/** @brief Sample image in a dataset.
+
+This class provides the information to describe a dataset sample.
+`label_` and `label_path_` are mutually exclusive.
+@anchor Sample
+*/
 class Sample {
 public:
-    std::filesystem::path location_;
-    std::optional<std::vector<int>> label_;
-    std::optional<std::filesystem::path> label_path_; // path to ground truth
-    std::optional<std::map<int, std::string>> values_; //features
+    std::filesystem::path location_; /**< @brief Absolute path of the sample. */
+    std::optional<std::vector<int>> label_; /**< @brief Vector of sample labels. */
+    std::optional<std::filesystem::path> label_path_; /**< @brief Absolute path of sample ground truth. */
+    std::optional<std::map<int, std::string>> values_; /**< @brief Map (`map<feature-index,feature-value>`) which stores the features of a sample. */
 
+    /** @brief Return an Image of the dataset.
+
+    The LoadImage() function opens the sample image, from `location_` or `label_path_` depending on `is_gt` parameter.
+
+    @param[in] ctype ecvl::ColorType of the returned Image.
+    @param[in] is_gt Whether to load the sample image or its ground truth.
+
+    @return Image containing the loaded sample.
+    */
     ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::BGR, const bool& is_gt = false) const;
 };
 
+/** @brief Splits of a dataset.
+
+This class provides the splits a dataset can have: training, validation, and test.
+
+@anchor Split
+*/
 class Split {
 public:
-    std::vector<int> training_;
-    std::vector<int> validation_;
-    std::vector<int> test_;
+    std::vector<int> training_;   /**< @brief Vector containing samples of training split. */
+    std::vector<int> validation_; /**< @brief Vector containing samples of validation split. */
+    std::vector<int> test_;       /**< @brief Vector containing samples of test split. */
 };
 
+/** @brief DeepHealth Dataset.
+
+This class implements the DeepHealth Dataset Format (https://github.com/deephealthproject/ecvl/wiki/DeepHealth-Toolkit-Dataset-Format).
+
+@anchor Dataset
+*/
 class Dataset {
 public:
-    std::string name_ = "DeepHealth dataset";
-    std::string description_ = "This is the DeepHealth example dataset!";
-    std::vector<std::string> classes_;
-    std::vector<std::string> features_;
-    std::vector<Sample> samples_;
-    Split split_;
+    std::string name_ = "DeepHealth dataset"; /**< @brief Name of the Dataset. */
+    std::string description_ = "This is the DeepHealth example dataset!"; /**< @brief Description of the Dataset. */
+    std::vector<std::string> classes_; /**< @brief Vector with all the classes available in the Dataset. */
+    std::vector<std::string> features_; /**< @brief Vector with all the features available in the Dataset. */
+    std::vector<Sample> samples_; /**< @brief Vector containing all the Dataset samples. See @ref Sample. */
+    Split split_; /**< @brief Splits of the Dataset. See @ref Split. */
 
     Dataset() {}
+
+    /**
+    @param[in] filename Path to the Dataset file.
+    */
     Dataset(const std::filesystem::path& filename);
 
 private:
@@ -46,9 +77,14 @@ private:
     void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
-}
+} // namespace ecvl
 
+/** @cond HIDDEN_SECTIONS */
 namespace YAML {
+/**
+    Enable YAML decoding of Split.
+    Hidden from docs.
+*/
 template<>
 struct convert<ecvl::Split> {
     /*static Node encode(const ecvl::Split& rhs)
@@ -72,6 +108,7 @@ struct convert<ecvl::Split> {
         return true;
     }
 };
-}
+} // namespace YAML
+/** @endcond */
 
 #endif // ECVL_DATASET_PARSER_H_

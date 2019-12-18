@@ -4,14 +4,12 @@
 #include "datatype.h"
 
 namespace ecvl {
-
 // TODO internal doc
 template<
-    template<DataType DT, typename ...> class _StructFun, 
+    template<DataType DT, typename ...> class _StructFun,
     typename ...Args
 >
 struct Table1D {
-
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), Args...>::_);
 
     template<int i>
@@ -39,11 +37,10 @@ struct Table1D {
 
 // TODO internal doc
 template<
-    template<DataType, typename ...>class _StructFun, 
+    template<DataType, typename ...>class _StructFun,
     typename ...Args
 >
 struct SignedTable1D {
-
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), Args...>::_);
 
     template<int i>
@@ -69,14 +66,12 @@ struct SignedTable1D {
     fun_type data[DataTypeSignedSize()];
 };
 
-
 // TODO internal doc
 template<
-    template<DataType, DataType, typename ...>class _StructFun, 
+    template<DataType, DataType, typename ...>class _StructFun,
     typename ...Args
 >
 struct Table2D {
-
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0), Args...>::_);
 
     template<int i>
@@ -106,14 +101,12 @@ struct Table2D {
     fun_type data[DataTypeSize() * DataTypeSize()];
 };
 
-
 // TODO internal doc
 template<
-    template<DataType, DataType, typename ...>class _StructFun, 
+    template<DataType, DataType, typename ...>class _StructFun,
     typename ...Args
 >
 struct SignedTable2D {
-
     using fun_type = decltype(&_StructFun<static_cast<DataType>(0), static_cast<DataType>(0), Args...>::_);
 
     template<int i>
@@ -142,10 +135,6 @@ struct SignedTable2D {
 
     fun_type data[DataTypeSignedSize() * DataTypeSignedSize()];
 };
-
-
-
 } // namespace ecvl
 
 #endif // !DATATYPE_MATRIX_H_
-

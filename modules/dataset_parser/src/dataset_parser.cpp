@@ -80,9 +80,11 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
         else {
             sample.location_ = n["location"].as<string>();
 
+            // Load labels
             if (n["label"].IsDefined()) {
                 sample.label_ = vector<int>();
                 if (n["label"].IsSequence()) {
+                    // values is a list
                     for (int i = 0; i < n["label"].size(); ++i) {
                         FindLabel(sample, n["label"][i]);
                     }
@@ -93,9 +95,11 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
                 }
             }
 
+            // Load features
             if (n["values"].IsDefined()) {
                 sample.values_.emplace(map<int, string>());
                 if (n["values"].IsSequence()) {
+                    // values is a list
                     for (int i = 0; i < n["values"].size(); ++i) {
                         if (!n["values"][i].IsNull()) {
                             sample.values_.value()[i] = n["values"][i].as<string>();
@@ -113,8 +117,9 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
         if (sample.location_.is_relative() && !std::regex_match(sample.location_.string(), r)) {
             // Convert relative path to absolute
             sample.location_ = root_path / sample.location_;
-            if(sample.label_path_.has_value())
+            if (sample.label_path_.has_value()) {
                 sample.label_path_ = root_path / sample.label_path_.value();
+            }
         }
     }
 }

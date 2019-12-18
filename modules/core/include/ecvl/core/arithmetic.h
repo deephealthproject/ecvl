@@ -9,7 +9,6 @@
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
-
 /************************************************************************************/
 /*   Unary Arithmetic Operations over Images (source and destination are the same)  */
 /************************************************************************************/
@@ -80,7 +79,6 @@ parameter to false.
 */
 void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate = true);
 
-
 /************************************************************************************/
 /*  Addition                                                                        */
 /************************************************************************************/
@@ -89,7 +87,6 @@ void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bo
 template<typename ST1, typename ST2>
 struct AddImpl {
     static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -100,21 +97,18 @@ struct AddImpl {
 template<typename ST2>
 struct AddImpl<Image, ST2> {
     static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         CopyImage(src1, dst);
         static constexpr Table1D<ImageScalarAddImpl, ST2> table;
         table(dst.elemtype_)(dst, src2, saturate);
     }
-
 };
 
 // Template partial-specialized proxy for Add procedure (scalar + Image)
 template<typename ST1>
 struct AddImpl<ST1, Image> {
     static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate) {
-
         AddImpl<Image, ST1>::_(src2, src1, dst, saturate);
     }
 };
@@ -123,7 +117,6 @@ struct AddImpl<ST1, Image> {
 template<>
 struct AddImpl<Image, Image> {
     static void _(const Image& src1, const Image& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         CopyImage(src1, dst);
@@ -161,13 +154,11 @@ void Add(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true)
     AddImpl<ST1, ST2>::_(src1, src2, dst, saturate);
 }
 
-
 /************************************************************************************/
 /*  Subtraction                                                                     */
 /************************************************************************************/
 
-
-// Template specialization for the in-place subtraction between scalar and Image. 
+// Template specialization for the in-place subtraction between scalar and Image.
 template<DataType DT, typename T>
 struct ScalarImageSubImpl {
     static void _(T value, Image& img, bool saturate)
@@ -190,7 +181,6 @@ struct ScalarImageSubImpl {
 template<typename ST1, typename ST2>
 struct SubImpl {
     static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -201,7 +191,6 @@ struct SubImpl {
 template<typename ST2>
 struct SubImpl<Image, ST2> {
     static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         CopyImage(src1, dst);
@@ -214,7 +203,6 @@ struct SubImpl<Image, ST2> {
 template<typename ST1>
 struct SubImpl<ST1, Image> {
     static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         CopyImage(src2, dst);
@@ -227,7 +215,6 @@ struct SubImpl<ST1, Image> {
 template<>
 struct SubImpl<Image, Image> {
     static void _(const Image& src1, const Image& src2, Image& dst, bool saturate) {
-
         // TODO add appropriate checks
 
         CopyImage(src1, dst);
@@ -267,18 +254,14 @@ void Sub(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true)
     SubImpl<ST1, ST2>::_(src1, src2, dst, saturate);
 }
 
-
-
 /************************************************************************************/
 /*  Multiplication                                                                  */
 /************************************************************************************/
-
 
 // Template non-specialized proxy for Mul procedure (scalar * scalar)
 template<typename ST1, typename ST2>
 struct MulImpl {
     static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate) {
-
         // TODO Mul appropriate checks
 
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -289,7 +272,6 @@ struct MulImpl {
 template<typename ST2>
 struct MulImpl<Image, ST2> {
     static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate) {
-
         // TODO Mul appropriate checks
 
         CopyImage(src1, dst);
@@ -302,7 +284,6 @@ struct MulImpl<Image, ST2> {
 template<typename ST1>
 struct MulImpl<ST1, Image> {
     static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate) {
-
         MulImpl<Image, ST1>::_(src2, src1, dst, saturate);
     }
 };
@@ -311,7 +292,6 @@ struct MulImpl<ST1, Image> {
 template<>
 struct MulImpl<Image, Image> {
     static void _(const Image& src1, const Image& src2, Image& dst, bool saturate) {
-
         // TODO Mul appropriate checks
 
         CopyImage(src1, dst);
@@ -349,15 +329,11 @@ void Mul(const ST1& src1, const ST2& src2, Image& dst, bool saturate = true)
     MulImpl<ST1, ST2>::_(src1, src2, dst, saturate);
 }
 
-
-
 /************************************************************************************/
 /*  Division                                                                        */
 /************************************************************************************/
 
-
-
-// Template specialization for the in-place division between scalar and Image. 
+// Template specialization for the in-place division between scalar and Image.
 template<DataType DT, typename T, typename ET>
 struct ScalarImageDivImpl {
     static void _(T value, Image& img, bool saturate, ET epsilon)
@@ -380,7 +356,6 @@ struct ScalarImageDivImpl {
 template<typename ST1, typename ST2, typename ET>
 struct DivImpl {
     static void _(const ST1& src1, const ST2& src2, Image& dst, bool saturate, ET epsilon) {
-
         // TODO add appropriate checks
 
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -391,7 +366,6 @@ struct DivImpl {
 template<typename ST2, typename ET>
 struct DivImpl<Image, ST2, ET> {
     static void _(const Image& src1, const ST2& src2, Image& dst, bool saturate, ET epsilon) {
-
         // TODO add appropriate checks
 
         CopyImage(src1, dst);
@@ -410,7 +384,6 @@ struct DivImpl<Image, ST2, ET> {
 template<typename ST1, typename ET>
 struct DivImpl<ST1, Image, ET> {
     static void _(const ST1& src1, const Image& src2, Image& dst, bool saturate, ET epsilon) {
-
         // TODO add appropriate checks
 
         CopyImage(src2, dst);
@@ -424,7 +397,6 @@ struct DivImpl<ST1, Image, ET> {
 template<typename ET>
 struct DivImpl<Image, Image, ET> {
     static void _(const Image& src1, const Image& src2, Image& dst, bool saturate, ET epsilon) {
-
         // TODO add appropriate checks
 
         CopyImage(src1, dst);
@@ -471,7 +443,6 @@ void Div(const ST1 & src1, const ST2 & src2, Image & dst, bool saturate = true, 
     DivImpl<ST1, ST2, ET>::_(src1, src2, dst, saturate, epsilon);
 }
 
-
 /** @brief Boolean and between two binary ecvl::Image.
 
 Performs boolean and between two ecvl::Image with DataType::uint8 and ColorType::GRAY.
@@ -485,7 +456,6 @@ The result is stored into dst.
 */
 void And(const Image& src1, const Image& src2, Image& dst);
 
-
 /** @brief Boolean or between two binary ecvl::Image.
 
 Performs boolean or between two ecvl::Image with DataType::uint8 and ColorType::GRAY.
@@ -498,7 +468,6 @@ The result is stored into dst.
 @return.
 */
 void Or(const Image& src1, const Image& src2, Image& dst);
-
 
 /** @brief Divides two Image(s) and stores the result in a third Image.
 
@@ -536,8 +505,6 @@ parameter to false.
 //    CopyImage(src1, dst, dst_type);
 //    Div(dst, src2);
 //}
-
 } // namespace ecvl
 
 #endif // !ECVL_ARITHMETIC_H_
-

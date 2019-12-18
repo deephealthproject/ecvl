@@ -79,6 +79,10 @@ private:
     ConstContiguousIterator & ContiguousIncrementPos();
 };
 
+/** @example example_core_iterators.cpp
+ Iterators example.
+*/
+
 } // namespace ecvl
 
 #endif // !ECVL_ITERATORS_H_

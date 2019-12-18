@@ -47,6 +47,9 @@ The ImShow3D function instantiates a ShowApp and starts it with a wxEntry() call
 void ImShow3D(const Image& img);
 #endif
 
+/** @example example_ecvl_gui.cpp
+ Example of ECVL gui.
+*/
 } // namespace ecvl
 
 #endif // ECVL_GUI_H_

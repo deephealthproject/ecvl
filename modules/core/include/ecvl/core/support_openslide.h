@@ -32,6 +32,9 @@ extern bool OpenSlideRead(const std::filesystem::path& filename, Image& dst, con
 */
 void OpenSlideGetLevels(const std::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
 
+/** @example example_openslide.cpp
+ Openslide support example.
+*/
 } // namespace ecvl
 
 #endif // SUPPORT_OPENSLIDE_H_

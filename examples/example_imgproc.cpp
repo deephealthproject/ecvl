@@ -19,7 +19,7 @@ int main()
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
     ImWrite("img_resized.jpg", tmp);
 
-    // Resize an Image by scaling the dimentions to a given scale factor res_scale (optional: InterpolationType)
+    // Resize an Image by scaling the dimensions to a given scale factor res_scale (optional: InterpolationType)
     vector<double> res_scale = { 2,2 };
     cout << "Executing ResizeScale" << endl;
     ResizeScale(img1, tmp, res_scale, InterpolationType::cubic);

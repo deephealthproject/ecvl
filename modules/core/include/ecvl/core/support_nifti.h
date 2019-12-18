@@ -32,7 +32,6 @@ The function NiftiWrite saves the input image into a specified file, with the NI
 @return true if the image is correctly written, false otherwise.
 */
 bool NiftiWrite(const std::filesystem::path& filename, const Image& src);
-
 } // namespace ecvl 
 
 #endif // ECVL_SUPPORT_NIFTI_H_

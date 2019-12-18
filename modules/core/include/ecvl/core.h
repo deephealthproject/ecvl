@@ -7,6 +7,7 @@
 #include "core/imgcodecs.h"
 #include "core/imgproc.h"
 #include "core/iterators.h"
+#include "core/macros.h"
 #include "core/memorymanager.h"
 #include "core/support_opencv.h"
 #include "core/support_nifti.h"

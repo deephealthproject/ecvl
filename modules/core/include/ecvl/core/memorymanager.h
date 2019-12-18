@@ -1,5 +1,5 @@
-#ifndef ECVL_MEMORYMANAGER_H
-#define ECVL_MEMORYMANAGER_H
+#ifndef ECVL_MEMORYMANAGER_H_
+#define ECVL_MEMORYMANAGER_H_
 
 #include <cstdint>
 #include <cstring>
@@ -41,4 +41,4 @@ public:
     static ShallowMemoryManager* GetInstance();
 };
 
-#endif // ECVL_MEMORYMANAGER_H
+#endif // ECVL_MEMORYMANAGER_H_

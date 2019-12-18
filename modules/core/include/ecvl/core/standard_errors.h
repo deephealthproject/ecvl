@@ -1,5 +1,5 @@
-#ifndef ECV_STANDARD_ERRORS_H_
-#define ECV_STANDARD_ERRORS_H_
+#ifndef ECVL_STANDARD_ERRORS_H_
+#define ECVL_STANDARD_ERRORS_H_
 
 #define ECVL_ERROR_MSG "[Error]: "
 #define ECVL_WARNING_MSG "[Warning]: "
@@ -15,4 +15,4 @@
 
 #define ECVL_ERROR_DIVISION_BY_ZERO throw std::runtime_error(ECVL_ERROR_MSG "Division by zero is not allowed.");
 
-#endif // !ECV_STANDARD_ERRORS_H_
+#endif // !ECVL_STANDARD_ERRORS_H_

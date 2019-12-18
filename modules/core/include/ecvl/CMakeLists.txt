@@ -14,6 +14,7 @@ target_sources(ECVL_CORE
 	core/imgproc.h
 	core/iterators.h
 	core/iterators_impl.inc.h
+	core/macros.h
 	core/memorymanager.h
     core/standard_errors.h
 	core/support_opencv.h

@@ -6,10 +6,9 @@
 #include <array>
 
 namespace ecvl {
-
 /**  @brief DataType is an enum class which defines
 data types allowed for images.
- 
+
  @anchor DataType
  */
 enum class DataType {
@@ -28,7 +27,7 @@ Given one of the @ref DataType, the function returns its size in bytes.
  */
 uint8_t DataTypeSize(DataType dt);
 
-/**  @brief 
+/**  @brief
  */
 template<ecvl::DataType> struct TypeInfo { using basetype = void; };
 #define ECVL_TUPLE(name, size, type, ...) template<> struct TypeInfo<ecvl::DataType::name> { using basetype = type; };
@@ -80,8 +79,6 @@ constexpr std::array<DataType, DataTypeSize()> DataTypeArray() {
     //@endcond
 }
 
-
-
 /**  @brief Function to get a std::array with all the signed DataType values at compile time.
 
 @return A std::array with all the signed DataType values.
@@ -91,12 +88,11 @@ constexpr std::array<DataType, DataTypeSignedSize()> DataTypeSignedArray() {
     constexpr std::array<DataType, DataTypeSignedSize()> arr = {
 #define ECVL_TUPLE(name, ...) DataType::name,
 #include "datatype_existing_tuples_signed.inc.h"
-#undef ECVL_TUPLE	
+#undef ECVL_TUPLE
     };
     return arr;
     //@endcond
 }
-
 } // namespace ecvl
 
 #endif // ECVL_DATATYPE_H_

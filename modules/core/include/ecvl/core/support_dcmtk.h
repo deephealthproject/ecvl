@@ -33,6 +33,9 @@ The function DicomWrite saves the input image into a specified file, with the DI
 */
 extern bool DicomWrite(const std::filesystem::path& filename, const Image& src);
 
+/** @example example_nifti_dicom.cpp
+ Nifti and Dicom support example.
+*/
 } // namespace ecvl
 
 #endif // SUPPORT_DCMTK_H_
