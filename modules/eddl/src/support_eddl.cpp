@@ -14,25 +14,17 @@ namespace ecvl
 {
 void SetColorType(ColorType& c_type, const int& color_channels)
 {
-    if (c_type == ColorType::none) {
-        switch (color_channels) {
-        case 1:     c_type = ColorType::GRAY;      break;
-        case 3:     c_type = ColorType::BGR;       break;
-        case 4:     c_type = ColorType::RGBA;      break;
-        default:
-            c_type = ColorType::none;
-        }
+    switch (color_channels) {
+    case 1:     c_type = ColorType::GRAY;      break;
+    case 3:     c_type = ColorType::BGR;       break;
+    case 4:     c_type = ColorType::RGBA;      break;
+    default:
+        c_type = ColorType::none;
     }
 }
 
-Image TensorToImage(tensor& t, ColorType c_type)
+void TensorToImage(tensor& t, Image& img, ColorType c_type)
 {
-    if (t->ndim != 3 && t->ndim != 4) {
-        ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
-    }
-
-    Image img;
-
     switch (t->ndim) {
     case 3:
         if (c_type == ColorType::none)
@@ -45,22 +37,14 @@ Image TensorToImage(tensor& t, ColorType c_type)
         img.Create({ t->shape[3], t->shape[2], t->shape[0], t->shape[1] }, DataType::float32, "xyzc", c_type);
         break;
     default:
-        ECVL_ERROR_NOT_REACHABLE_CODE
-    }
-
-    memcpy(img.data_, t->ptr, img.datasize_);
-
-    return img;
-}
-
-View<DataType::float32> TensorToView(tensor& t, ColorType c_type)
-{
-    if (t->ndim != 3 && t->ndim != 4) {
         ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
     }
 
-    View<DataType::float32> v;
+    memcpy(img.data_, t->ptr, img.datasize_);
+}
 
+void TensorToView(tensor& t, View<DataType::float32>& v, ColorType c_type)
+{
     switch (t->ndim) {
     case 3:
         if (c_type == ColorType::none)
@@ -80,7 +64,7 @@ View<DataType::float32> TensorToView(tensor& t, ColorType c_type)
         v.channels_ = "xyzc";
         break;
     default:
-        ECVL_ERROR_NOT_REACHABLE_CODE
+        ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
     }
 
     v.colortype_ = c_type;
@@ -102,29 +86,29 @@ View<DataType::float32> TensorToView(tensor& t, ColorType c_type)
     // Compute datasize
     v.datasize_ = v.elemsize_;
     v.datasize_ = std::accumulate(begin(v.dims_), end(v.dims_), v.datasize_, std::multiplies<size_t>());
-
-    return v;
 }
 
-tensor ImageToTensor(const Image& img)
+void ImageToTensor(const Image& img, tensor& t)
 {
-    if (img.dims_.size() != 3 && img.dims_.size() != 4) {
-        ECVL_ERROR_MSG "Image must have 3 or 4 dimensions";
-    }
-
     Image tmp;
-    tensor t;
-    CopyImage(img, tmp, DataType::float32);
 
-    switch (tmp.dims_.size()) {
+    switch (img.dims_.size()) {
     case 3:
-        if (tmp.channels_ != "xyc")
-            RearrangeChannels(tmp, tmp, "xyc");
+        if (img.channels_ != "xyc") {
+            RearrangeChannels(img, tmp, "xyc", DataType::float32);
+        }
+        else {
+            CopyImage(img, tmp, DataType::float32);
+        }
         t = eddlT::create({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
         break;
     case 4:
-        if (tmp.channels_ != "xyzc")
-            RearrangeChannels(tmp, tmp, "xyzc");
+        if (img.channels_ != "xyzc") {
+            RearrangeChannels(img, tmp, "xyzc", DataType::float32);
+        }
+        else {
+            CopyImage(img, tmp, DataType::float32);
+        }
         t = eddlT::create({ tmp.dims_[2], tmp.dims_[3], tmp.dims_[1], tmp.dims_[0] });
         break;
     default:
@@ -132,9 +116,36 @@ tensor ImageToTensor(const Image& img)
     }
 
     memcpy(t->ptr, tmp.data_, tmp.datasize_);
-    return t;
 }
 
+void ImageToTensor(Image& img, tensor& t, const int& offset)
+{
+    Image tmp;
+    int tot_dims = 0;
+
+    switch (img.dims_.size()) {
+    case 3:
+        if (img.channels_ != "xyc")
+            RearrangeChannels(img, tmp, "xyc", DataType::float32);
+        tot_dims = img.dims_[0] * img.dims_[1] * img.dims_[2];
+        break;
+    case 4:
+        if (img.channels_ != "xyzc")
+            RearrangeChannels(img, tmp, "xyzc", DataType::float32);
+        tot_dims = img.dims_[0] * img.dims_[1] * img.dims_[2] * img.dims_[3];
+        break;
+    default:
+        ECVL_ERROR_MSG "Image must have 3 or 4 dimensions";
+    }
+
+    if (tmp.elemtype_ != DataType::float32) {
+        CopyImage(img, tmp, DataType::float32);
+    }
+
+    memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
+}
+
+/** @cond HIDDEN_SECTIONS */
 // Generic function to load a Dataset split into EDDL tensors
 void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const std::vector<int>& split, tensor& images, tensor& labels, ColorType ctype)
 {
@@ -156,8 +167,7 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
         const Sample& elem = dataset.samples_[index];
         // Copy image into tensor (images)
         ResizeDim(elem.LoadImage(ctype, false), tmp, { size[1], size[0] });
-        unique_ptr<Tensor> t(ImageToTensor(tmp));
-        memcpy(images->ptr + t->size * i, t->ptr, t->size * sizeof(float));
+        ImageToTensor(tmp, images, i);
         if (elem.label_) {
             // Copy labels into tensor (labels)
             vector<float> l(n_classes, 0);
@@ -169,6 +179,7 @@ void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const
         ++i;
     }
 }
+/** @endcond */
 
 void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
 {
@@ -221,10 +232,10 @@ void DLDataset::ResetAllBatches()
     this->current_batch_.fill(0);
 }
 
-void DLDataset::LoadBatch(const std::vector<int>& size, tensor& images, tensor& labels)
+void DLDataset::LoadBatch(tensor& images, tensor& labels)
 {
-    if (size.size() != 2) {
-        ECVL_ERROR_MSG "size must have 2 dimensions (height, width)";
+    if (resize_dims_.size() != 2) {
+        ECVL_ERROR_MSG "resize_dims_ must have 2 dimensions (height, width)";
     }
 
     int& bs = batch_size_;
@@ -239,10 +250,11 @@ void DLDataset::LoadBatch(const std::vector<int>& size, tensor& images, tensor& 
     for (int i = start; i < start + bs; ++i) {
         const int index = GetSplit()[i];
         const Sample& elem = samples_[index];
+        // Read and resize (HxW -> WxH) image
+        ResizeDim(elem.LoadImage(ctype_, false), tmp, { resize_dims_[1], resize_dims_[0] });
         // Copy image into tensor (images)
-        ResizeDim(elem.LoadImage(ctype_, false), tmp, { size[1], size[0] });
-        unique_ptr<Tensor> t(ImageToTensor(tmp));
-        memcpy(images->ptr + t->size * offset, t->ptr, t->size * sizeof(float));
+        ImageToTensor(tmp, images, offset);
+
         if (elem.label_) {
             // Copy labels into tensor (labels)
             vector<float> lab(classes_.size(), 0);
@@ -252,10 +264,10 @@ void DLDataset::LoadBatch(const std::vector<int>& size, tensor& images, tensor& 
             memcpy(labels->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
         }
         else if (elem.label_path_) {
+            // Read and resize (HxW -> WxH) ground truth image
+            ResizeDim(elem.LoadImage(ctype_gt_, true), tmp, { resize_dims_[1], resize_dims_[0] });
             // Copy labels into tensor (labels)
-            ResizeDim(elem.LoadImage(ctype_gt_, true), tmp, { size[1], size[0] });
-            unique_ptr<Tensor> t_gt(ImageToTensor(tmp));
-            memcpy(labels->ptr + t_gt->size * offset, t_gt->ptr, t_gt->size * sizeof(float));
+            ImageToTensor(tmp, labels, offset);
         }
         ++offset;
     }
