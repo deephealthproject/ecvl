@@ -46,6 +46,110 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
     }
 }
 
+void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels, DataType new_type)
+{
+    if (src.elemtype_ == DataType::none)
+        throw std::runtime_error("Why should you copy a Image with none DataType into another?");
+
+    if (&src == &dst) {
+        if (src.elemtype_ != new_type && new_type != DataType::none) {
+            throw std::runtime_error("src and dst cannot be the same image while changing the type");
+            return;
+        }
+        if (src.channels_ == channels) {
+            return;
+        }
+    }
+
+    if (channels.size() != src.channels_.size()) {
+        ECVL_ERROR_WRONG_PARAMS("channels.size() does not match src.channels_.size()")
+    }
+
+    if (src.channels_ == channels) {
+        CopyImage(src, dst, new_type);
+        return;
+    }
+
+    if (src.elemtype_ == new_type) {
+        RearrangeChannels(src, dst, channels);
+        return;
+    }
+
+    // bindings[new_pos] = old_pos
+    std::vector<int> bindings(src.channels_.size());
+    std::vector<int> new_dims(src.dims_);
+    std::vector<float> new_spacings(src.spacings_.size());
+
+    // Check if rearranging is required
+    for (size_t old_pos = 0; old_pos < src.channels_.size(); old_pos++) {
+        char c = src.channels_[old_pos];
+        size_t new_pos = channels.find(c);
+        if (new_pos == std::string::npos) {
+            ECVL_ERROR_WRONG_PARAMS("channels contains wrong characters")
+        }
+        else {
+            bindings[new_pos] = old_pos;
+            new_dims[new_pos] = src.dims_[old_pos];
+            if (new_spacings.size() == new_dims.size()) {   // spacings is not a mandatory field
+                new_spacings[new_pos] = src.spacings_[old_pos];
+            }
+        }
+    }
+
+    if (new_type == DataType::none) {
+        // Get type from dst or src
+        if (dst.IsEmpty()) {
+            RearrangeChannels(src, dst, channels);
+            return;
+        }
+        if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemtype_ != dst.elemtype_) {
+            // Destination needs to be resized
+            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                throw std::runtime_error("Trying to resize an Image which doesn't own data.");
+            }
+            if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemsize_ != dst.elemsize_) {
+                dst = Image(new_dims, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_, channels, src.colortype_);
+            }
+        }
+        if (src.colortype_ != dst.colortype_) {
+            // Destination needs to change its color space
+            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
+            }
+            dst.colortype_ = src.colortype_;
+        }
+    }
+    else {
+        if (dst.IsEmpty()) {
+            dst = Image(new_dims, new_type, channels, src.colortype_);
+        }
+        else {
+            if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemtype_ != new_type) {
+                // Destination needs to be resized
+                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                    throw std::runtime_error("Trying to resize an Image which doesn't own data.");
+                }
+                if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemsize_ != DataTypeSize(new_type)) {
+                    dst = Image(new_dims, new_type, channels, src.colortype_);
+                }
+                else {
+                    dst.elemtype_ = new_type;
+                }
+            }
+            if (src.colortype_ != dst.colortype_) {
+                // Destination needs to change its color space
+                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                    throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
+                }
+                dst.colortype_ = src.colortype_;
+            }
+        }
+    }
+
+    static constexpr Table2D<StructRearrangeImage> table;
+    table(src.elemtype_, dst.elemtype_)(src, dst, bindings);
+}
+
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels)
 {
     // Check if rearranging is required
@@ -138,6 +242,10 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     dst = std::move(tmp);
 }
 
+void RearrangeChannels(const Image& src, Image& dst, const std::string& channels, DataType new_type) {
+    RearrangeAndCopy(src, dst, channels, new_type);
+}
+
 void CopyImage(const Image& src, Image& dst, DataType new_type)
 {
     // TODO consider spacings
@@ -204,6 +312,10 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
 
     static constexpr Table2D<StructCopyImage> table;
     table(src.elemtype_, dst.elemtype_)(src, dst);
+}
+
+void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels) {
+    RearrangeAndCopy(src, dst, channels, new_type);
 }
 
 Image& Image::operator+=(const Image& rhs) {

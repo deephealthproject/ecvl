@@ -16,7 +16,6 @@
 #include "standard_errors.h"
 
 namespace ecvl {
-
 class MetaData {
 public:
     virtual bool Query(const std::string& name, std::string& value) const = 0;
@@ -47,7 +46,6 @@ class ConstView;
 
 #include "arithmetic_impl.inc.h"
 
-
 /** @brief Image class
 
 */
@@ -64,8 +62,8 @@ public:
                                          has to move to reach the next pixel/voxel
                                          on the correspondent size. */
     std::string         channels_;  /**< @brief String which describes how Image planes
-                                         are organized. 
-                                         
+                                         are organized.
+
                                          A single character provides
                                          the information related to the corresponding
                                          channel. The possible values are:
@@ -86,8 +84,8 @@ public:
                                          ColorType::BGR. In this case the color dimension
                                          is the one which changes faster as it is done
                                          in other libraries such as OpenCV. */
-    ColorType           colortype_; /**< @brief Image ColorType. 
-                                    
+    ColorType           colortype_; /**< @brief Image ColorType.
+
                                          If this is different from ColorType::none
                                          the channels_ string must contain a 'c' and the
                                          corresponding dimension must have the appropriate
@@ -95,38 +93,38 @@ public:
 
     std::vector<float> spacings_;   /**< @brief Space between pixels/voxels. */
                                     /**< Vector with the same size as @ref dims_, storing the
-                                         distance in mm between consecutive pixels/voxels 
+                                         distance in mm between consecutive pixels/voxels
                                          on every axis. */
 
-    uint8_t*            data_;      /**< @brief Pointer to Image data. 
-                                    
+    uint8_t*            data_;      /**< @brief Pointer to Image data.
+
                                          If the Image is not the owner
-                                         of data, for example when using Image views, this 
+                                         of data, for example when using Image views, this
                                          attribute will point to the data of another Image.
-                                         The possession or not of the data depends on the 
+                                         The possession or not of the data depends on the
                                          MemoryManager. */
     size_t              datasize_;  /**< @brief Size of Image data in bytes. */
     bool                contiguous_;/**< @brief Whether the image is stored contiguously or not in memory. */
 
     MetaData* meta_;                /**< @brief Pointer to Image MetaData. */
-    MemoryManager* mem_;            /**< @brief Pointer to the MemoryManager employed by the Image. 
-                                    
-                                         It can be DefaultMemoryManager or ShallowMemoryManager. The 
+    MemoryManager* mem_;            /**< @brief Pointer to the MemoryManager employed by the Image.
+
+                                         It can be DefaultMemoryManager or ShallowMemoryManager. The
                                          former is responsible for allocating and deallocating data,
                                          when using the DefaultMemoryManager the Image is the owner
                                          of data. When ShallowMemoryManager is employed the Image
                                          does not own data and operations on memory are not allowed
                                          or does not produce any effect.*/
 
-    /** @brief Generic non-const Begin Iterator.
-    
-    This function gives you a non-const generic Begin Iterator that can be used both for contiguous and 
-    non-contiguous non-const Images. It is useful to iterate over a non-const Image. If the Image is contiguous 
-    prefer the use of ContiguousIterato which in most cases improve the performance.
-    */
+                                         /** @brief Generic non-const Begin Iterator.
+
+                                         This function gives you a non-const generic Begin Iterator that can be used both for contiguous and
+                                         non-contiguous non-const Images. It is useful to iterate over a non-const Image. If the Image is contiguous
+                                         prefer the use of ContiguousIterato which in most cases improve the performance.
+                                         */
     template<typename T>
-    Iterator<T> Begin() { return Iterator<T>(*this); }  
-    
+    Iterator<T> Begin() { return Iterator<T>(*this); }
+
     /** @brief Generic non-const End Iterator.
 
     This function gives you a non-const generic End Iterator that can be used both for contiguous and
@@ -138,19 +136,19 @@ public:
     /** @brief Generic const Begin Iterator.
 
     This function gives you a const generic Begin Iterator that can be used both for contiguous and
-    non-contiguous const Images. It is useful to iterate over a const Image. If the Image is contiguous 
+    non-contiguous const Images. It is useful to iterate over a const Image. If the Image is contiguous
     prefer the use of ConstContiguousIterator which in most cases improve the performance.
     */
     template<typename T>
-    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }  
-    
+    ConstIterator<T> Begin() const { return ConstIterator<T>(*this); }
+
     /** @brief Generic const End Iterator.
 
     This function gives you a const generic End Iterator that can be used both for contiguous and
     non-contiguous const Images. It is useful to iterate over a const Image.
     */
     template<typename T>
-    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }  
+    ConstIterator<T> End() const { return ConstIterator<T>(*this, dims_); }
 
     /** @brief Contiguous non-const Begin Iterator.
 
@@ -160,7 +158,7 @@ public:
     */
     template<typename T>
     ContiguousIterator<T> ContiguousBegin() { return ContiguousIterator<T>(*this); }
-    
+
     /** @brief Contiguous non-const End Iterator.
 
     This function gives you a contiguous non-const End Iterator that can be used only for contiguous
@@ -171,13 +169,13 @@ public:
 
     /** @brief Contiguous const Begin Iterator.
 
-    This function gives you a contiguous const Begin Iterator that can be used only for contiguous Images. 
-    If the Image is contiguous it is preferable to the non-contiguous iterator since it has usually better 
+    This function gives you a contiguous const Begin Iterator that can be used only for contiguous Images.
+    If the Image is contiguous it is preferable to the non-contiguous iterator since it has usually better
     performance.
     */
     template<typename T>
     ConstContiguousIterator<T> ContiguousBegin() const { return ConstContiguousIterator<T>(*this); }
-    
+
     /** @brief Contiguous const End Iterator.
 
     This function gives you a contiguous const End Iterator that can be used only for contiguous Images.
@@ -213,7 +211,7 @@ public:
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{ dims },
-        spacings_{spacings},
+        spacings_{ spacings },
         strides_{},
         channels_{ move(channels) },
         colortype_{ colortype },
@@ -236,9 +234,9 @@ public:
     }
 
     /** @brief Copy constructor.
-    
+
     The copy constructor creates an new Image copying (Deep Copy) the input one.
-    The new Image will be contiguous regardless of the contiguity of the to be 
+    The new Image will be contiguous regardless of the contiguity of the to be
     copied Image.
     */
     Image(const Image& img) :
@@ -310,19 +308,18 @@ public:
     }
 
     friend void swap(Image& lhs, Image& rhs) {
-        using std::swap;
-        swap(lhs.elemtype_, rhs.elemtype_);
-        swap(lhs.elemsize_, rhs.elemsize_);
-        swap(lhs.dims_, rhs.dims_);
-        swap(lhs.spacings_, rhs.spacings_);
-        swap(lhs.strides_, rhs.strides_);
-        swap(lhs.channels_, rhs.channels_);
-        swap(lhs.colortype_, rhs.colortype_);
-        swap(lhs.data_, rhs.data_);
-        swap(lhs.datasize_, rhs.datasize_);
-        swap(lhs.contiguous_, rhs.contiguous_);
-        swap(lhs.meta_, rhs.meta_);
-        swap(lhs.mem_, rhs.mem_);
+        std::swap(lhs.elemtype_, rhs.elemtype_);
+        std::swap(lhs.elemsize_, rhs.elemsize_);
+        std::swap(lhs.dims_, rhs.dims_);
+        std::swap(lhs.spacings_, rhs.spacings_);
+        std::swap(lhs.strides_, rhs.strides_);
+        std::swap(lhs.channels_, rhs.channels_);
+        std::swap(lhs.colortype_, rhs.colortype_);
+        std::swap(lhs.data_, rhs.data_);
+        std::swap(lhs.datasize_, rhs.datasize_);
+        std::swap(lhs.contiguous_, rhs.contiguous_);
+        std::swap(lhs.meta_, rhs.meta_);
+        std::swap(lhs.mem_, rhs.mem_);
     }
 
     Image& operator=(Image rhs) {
@@ -331,17 +328,18 @@ public:
     }
 
     /** @brief Allocates new contiguous data if needed.
-    
+
     The Create method allocates Image data as specified by the input parameters.
     The procedures tries to avoid the allocation of new memory when possible.
     The resulting image will be contiguous in any case.
-    Calling this method on an Image that does not own data will always cause 
+    Calling this method on an Image that does not own data will always cause
     a new allocation, and the Image will become the owner of the data.
 
     @param[in] dims New Image dimensions.
     @param[in] elemtype New Image DataType.
     @param[in] channels New Image channels.
     @param[in] colortype New Image colortype.
+    @param[in] spacings New Image spacings.
     */
     void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings = std::vector<float>());
 
@@ -359,10 +357,10 @@ public:
 
     /** @brief To check whether the Image is owner of the data. */
     bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
-    
+
     /** @brief Returns the number of channels. */
-    int Channels() const { 
-        size_t pos = channels_.find('c'); 
+    int Channels() const {
+        size_t pos = channels_.find('c');
         if (pos != std::string::npos) {
             return dims_[pos];
         }
@@ -378,7 +376,7 @@ public:
     const uint8_t* Ptr(const std::vector<int>& coords) const {
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
-    }    
+    }
 
     /** @brief In-place addition of a scalar value. */
     template<typename T>
@@ -386,9 +384,9 @@ public:
         static constexpr Table1D<ImageScalarAddImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
-    
+
     /** @brief In-place addition of an Image. */
-    void Add(const Image& rhs, bool saturate = true) {    
+    void Add(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructAdd> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
@@ -412,13 +410,13 @@ public:
         static constexpr Table1D<ImageScalarMulImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
-    
+
     /** @brief In-place multiplication for an Image. */
     void Mul(const Image& rhs, bool saturate = true) {
         static constexpr Table2D<StructMul> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
-    
+
     /** @brief In-place division for a scalar value. */
     template<typename T>
     void Div(const T& rhs, bool saturate = true) {
@@ -447,7 +445,6 @@ public:
     friend Image operator*(Image lhs, const Image& rhs);
 
     friend Image operator/(Image lhs, const Image& rhs);
-
 };
 
 #include "iterators_impl.inc.h"
@@ -646,7 +643,6 @@ public:
     ContiguousIterator<basetype> End() { return ContiguousIterator<basetype>(*this, dims_); }
 };
 
-
 /** @brief Changes the order of the Image dimensions.
 
 The RearrangeChannels procedure changes the order of the input Image dimensions saving
@@ -658,10 +654,23 @@ number of channels of the input Image must be the same of required channels.
 @param[out] dst The output rearranged Image. Can be the src Image.
 @param[in] channels Desired order of Image channels.
 
+@anchor RearrangeChannels
 */
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels);
 
-// Template copy image
+/** @brief Same as RearrangeChannels(), with the chance to specify the DataType of the output Image.
+
+@param[in] src Input Image on which to rearrange dimensions.
+@param[out] dst The output rearranged Image. Can be the src Image.
+@param[in] channels Desired order of Image channels.
+@param[in] new_type Desired type for the destination Image after the copy. If none the destination
+            Image will preserve its type if it is not empty, otherwise it will have the same type of the
+            source Image.
+
+*/
+void RearrangeChannels(const Image& src, Image& dst, const std::string& channels, DataType new_type);
+
+/** @brief Copy Images of different DataTypes. */
 template<DataType SDT, DataType DDT>
 struct StructCopyImage {
     static void _(const Image& src, Image& dst)
@@ -678,43 +687,80 @@ struct StructCopyImage {
     }
 };
 
+/** @brief Rearrange channels between Images of different DataTypes. */
+template<DataType SDT, DataType DDT>
+struct StructRearrangeImage {
+    static void _(const Image& src, Image& dst, const std::vector<int>& bindings)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+        ConstView<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto id = vdst.Begin();
+
+        for (size_t tmp_pos = 0; tmp_pos < dst.datasize_; tmp_pos += dst.elemsize_, ++id) {
+            int x = tmp_pos;
+            int src_pos = 0;
+            for (int i = dst.dims_.size() - 1; i >= 0; i--) {
+                src_pos += (x / dst.strides_[i]) * src.strides_[bindings[i]];
+                x %= dst.strides_[i];
+            }
+
+            *id = static_cast<dsttype>(*(vsrc.data_ + src_pos));
+        }
+    }
+};
+
 /** @brief Copies the source Image into the destination Image.
 
 The CopyImage() procedure takes an Image and copies its data into the destination Image.
 Source and destination cannot be the same Image. Source cannot be a Image with DataType::none.
-The optional new_type parameter can 
-be used to change the DataType of the destination Image. This function is mainly designed to 
+The optional new_type parameter can
+be used to change the DataType of the destination Image. This function is mainly designed to
 change the DataType of an Image, copying its data into a new Image or to copy an Image into a
-View as a patch. So if you just want to copy an Image as it is, use the copy constructor or = 
-instead. Anyway, the procedure will handle all the possible situations that may happen trying 
+View as a patch. So if you just want to copy an Image as it is, use the copy constructor or =
+instead. Anyway, the procedure will handle all the possible situations that may happen trying
 to avoid unnecessary allocations.
 When the DataType is not specified the function will have the following behaviors:
-    - if the destination Image is empty the source will be directly copied into the destination. 
-    - if source and destination have different size in memory or different channels and the destination 
-        is the owner of data, the procedure will overwrite the destination Image creating a new Image 
-        (channels and dimensions will be the same of the source Image, pixels type (DataType) will be the 
+    - if the destination Image is empty the source will be directly copied into the destination.
+    - if source and destination have different size in memory or different channels and the destination
+        is the owner of data, the procedure will overwrite the destination Image creating a new Image
+        (channels and dimensions will be the same of the source Image, pixels type (DataType) will be the
         same of the destination Image if they are not none or the same of the source otherwise).
     - if source and destination have different size in memory or different channels and the destination is not
         the owner of data, the procedure will throw an exception.
-    - if source and destination have different color types and the destination is the owner of 
+    - if source and destination have different color types and the destination is the owner of
         data, the procedure produces a destination Image with the same color type of the source.
-    - if source and destination have different color types and the destination is not the owner 
+    - if source and destination have different color types and the destination is not the owner
         of data, the procedure will throw an exception.
-    - if source and destination are the same Image, there are two options. If new_type is the same of the two 
+    - if source and destination are the same Image, there are two options. If new_type is the same of the two
         Image(s) or it is DataType::none, nothing happens. Otherwise, an exception is thrown.
-When the DataType is specified the function will have the same behavior, but the destination Image will have 
+When the DataType is specified the function will have the same behavior, but the destination Image will have
 the specified DataType.
 
 @param[in] src Source Image to be copied into destination Image.
 @param[out] dst Destination Image that will hold a copy of the source Image. Cannot be the source Image.
-@param[in] new_type Desired type for the destination Image after the copy. If none (default) the destination 
-            Image will preserve its type if it is not empty, otherwise it will have the same type of the 
-            source Image. 
+@param[in] new_type Desired type for the destination Image after the copy. If none (default) the destination
+            Image will preserve its type if it is not empty, otherwise it will have the same type of the
+            source Image.
+
+@anchor CopyImage
 */
 void CopyImage(const Image& src, Image& dst, DataType new_type = DataType::none);
 
+/** @brief Same as CopyImage(), with the chance to specify the channels order of the output Image.
+
+@param[in] src Source Image to be copied into destination Image.
+@param[out] dst Destination Image that will hold a copy of the source Image. Cannot be the source Image.
+@param[in] new_type Desired type for the destination Image after the copy. If none (default) the destination
+            Image will preserve its type if it is not empty, otherwise it will have the same type of the
+            source Image.
+@param[in] channels Desired order of Image channels.
+*/
+void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels);
+
+/** @example example_image_view.cpp
+ Example of basic Image and View functions.
+*/
 } // namespace ecvl
 
 #endif // !ECVL_IMAGE_H_
-
-
