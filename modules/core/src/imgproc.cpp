@@ -691,6 +691,40 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
     dst = tmp;
 }
 
+void AdditivePoissonNoise(const Image& src, Image& dst, double lambda) {
+
+    if (!src.contiguous_) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (lambda <= 0) {
+        ECVL_ERROR_WRONG_PARAMS("lambda must be >= 0")
+    }
+
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_);
+
+    random_device rd;
+    mt19937 gen(rd());
+    poisson_distribution<> dist(lambda);
+
+    for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
+
+        double noise = dist(gen);
+
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
+
+        switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+        }
+
+#undef ECVL_TUPLE
+
+    }
+
+    dst = tmp;
+}
+
 void GammaContrast(const Image& src, Image& dst, double gamma) {
 
     if (src.elemtype_ != DataType::uint8) {

@@ -199,6 +199,15 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
 */
 void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale);
 
+/** @brief Adds Poisson distributed noise to an Image.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] lambda Lambda parameter of the Poisson distribution.
+
+*/
+void AdditivePoissonNoise(const Image& src, Image& dst, double lambda);
+
 /** @brief Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma).
 
 @param[in] src Input Image.
