@@ -837,4 +837,94 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs
     dst = tmp;
 }
 
+void IntegralImage(const Image& src, Image& dst, DataType dst_type)
+{
+    if (src.channels_ != "xyc" || src.Channels() != 1 || src.elemtype_ != DataType::uint8 || dst_type != DataType::float64) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    Image out({ src.dims_[0] + 1, src.dims_[1] + 1, src.dims_[2] }, dst_type, src.channels_, ColorType::GRAY);
+
+    ConstContiguousViewXYC<DataType::uint8> vsrc(src);
+    ContiguousViewXYC<DataType::float64> vdst(out);
+
+    switch (out.elemtype_) {
+    case DataType::float64:
+        for (int y = 0; y < vdst.height(); ++y) {
+            for (int x = 0; x < vdst.width(); ++x) {
+                if (!x || !y) {
+                    vdst(x, y, 0) = 0.;
+                }
+                else {
+                    vdst(x, y, 0) = vsrc(x - 1, y - 1, 0) + vdst(x - 1, y, 0) + vdst(x, y - 1, 0) - vdst(x - 1, y - 1, 0);
+                }
+            }
+        }
+        break;
+    }
+
+    dst = std::move(out);
+}
+
+void NonMaximaSuppression(const Image& src, Image& dst)
+{
+    if (src.channels_ != "xyc" || src.Channels() != 1 || src.elemtype_ != DataType::int32) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    Image out(src);
+    memset(out.data_, 0, out.datasize_);
+
+    ConstContiguousViewXYC<DataType::int32> vsrc(src);
+    ContiguousViewXYC<DataType::int32> vout(out);
+
+    for (int y = 1; y < vout.height() - 1; ++y) {
+        for (int x = 1; x < vout.width() - 1; ++x) {
+            int cur = vsrc(x, y, 0);
+            if (cur < vsrc(x - 1, y - 1, 0) ||
+                cur < vsrc(x - 1, y, 0) ||
+                cur < vsrc(x - 1, y + 1, 0) ||
+                cur < vsrc(x, y - 1, 0) ||
+                cur < vsrc(x, y + 1, 0) ||
+                cur < vsrc(x + 1, y - 1, 0) ||
+                cur < vsrc(x + 1, y, 0) ||
+                cur < vsrc(x + 1, y + 1, 0)) {
+                continue;
+            }
+
+            vout(x, y, 0) = cur;
+        }
+    }
+
+    dst = std::move(out);
+}
+
+vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n)
+{
+    if (src.channels_ != "xyc" || src.Channels() != 1 || src.elemtype_ != DataType::int32) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    ConstContiguousViewXYC<DataType::int32> vsrc(src);
+    using pqt = pair<int32_t, Point2i>;
+    vector<pqt> pq(n, make_pair(std::numeric_limits<int32_t>::min(), Point2i{ -1,-1 }));
+    for (int y = 0; y < vsrc.height(); ++y) { // rows
+        for (int x = 0; x < vsrc.width(); ++x) { // cols
+            int32_t cur_value = vsrc(x, y, 0);
+            if (cur_value > pq.front().first) {
+                pop_heap(begin(pq), end(pq), greater<pqt>{});
+                pq.back() = make_pair(cur_value, Point2i{ x,y });
+                push_heap(begin(pq), end(pq), greater<pqt>{});
+            }
+        }
+    }
+
+    vector<ecvl::Point2i> max_coords;
+    max_coords.reserve(n);
+    for (const auto& x : pq) {
+        max_coords.push_back(x.second);
+    }
+    return max_coords;
+}
+
 } // namespace ecvl

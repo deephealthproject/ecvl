@@ -6,6 +6,17 @@
 #include <array>
 
 namespace ecvl {
+
+typedef std::array<int, 2> Point2i;
+typedef std::array<double, 2> Point2d;
+
+/** @brief Calculate the distance squared between two ecvl::Point2i.
+
+@param[in] a First point integer coordinates.
+@param[in] b Second point integer coordinates.
+*/
+double SqDist(const Point2i& a, const Point2i& b);
+
 /**  @brief DataType is an enum class which defines
 data types allowed for images.
 

@@ -221,6 +221,29 @@ void GammaContrast(const Image& src, Image& dst, double gamma);
 */
 void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel);
 
+/** @brief Calculate the integral image of the source Image.
+
+@param[in] src Input Image. It must be with ColorType::GRAY, "xyc" and DataType::uint8.
+@param[out] dst Output Image.
+@param[in] dst_type DataType of the destination Image.
+*/
+void IntegralImage(const Image& src, Image& dst, DataType dst_type = DataType::float64);
+
+/** @brief Calculate the Non-Maxima suppression of the source Image.
+
+@param[in] src Input Image. It must be with ColorType::GRAY, "xyc" and DataType::int32.
+@param[out] dst Output Image.
+*/
+void NonMaximaSuppression(const Image& src, Image& dst);
+
+/** @brief Get the `n` maximum values that are in the source Image.
+
+@param[in] src Input Image. It must be with ColorType::GRAY, "xyc" and DataType::int32.
+@param[in] n How many values must be returned.
+@return vector of Point2i containing the coordinates of the n max values of the Image.
+*/
+std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
+
 /** @example example_imgproc.cpp
  Imgproc example.
 */
