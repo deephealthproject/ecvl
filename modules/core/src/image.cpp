@@ -4,7 +4,6 @@
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
-
 void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings)
 {
     if (IsEmpty() || !IsOwner()) {
@@ -155,7 +154,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     // Check if rearranging is required
     if (src.channels_ == channels) {
         // if not, check if dst==src
-        if (&src != &dst) { // if no, copy            
+        if (&src != &dst) { // if no, copy
             dst = src;
         }
         return;
@@ -187,7 +186,6 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings);
 
     for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
-
         int x = tmp_pos;
         int src_pos = 0;
         for (int i = tmp.dims_.size() - 1; i >= 0; i--) {
@@ -242,7 +240,8 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     dst = std::move(tmp);
 }
 
-void RearrangeChannels(const Image& src, Image& dst, const std::string& channels, DataType new_type) {
+void RearrangeChannels(const Image& src, Image& dst, const std::string& channels, DataType new_type)
+{
     RearrangeAndCopy(src, dst, channels, new_type);
 }
 
@@ -314,49 +313,56 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
     table(src.elemtype_, dst.elemtype_)(src, dst);
 }
 
-void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels) {
+void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels)
+{
     RearrangeAndCopy(src, dst, channels, new_type);
 }
 
-Image& Image::operator+=(const Image& rhs) {
+Image& Image::operator+=(const Image& rhs)
+{
     Add(rhs);
     return *this;
 }
 
-Image& Image::operator-=(const Image& rhs) {
+Image& Image::operator-=(const Image& rhs)
+{
     Sub(rhs);
     return *this;
 }
 
-Image& Image::operator*=(const Image& rhs) {
+Image& Image::operator*=(const Image& rhs)
+{
     Mul(rhs);
     return *this;
 }
 
-Image& Image::operator/=(const Image& rhs) {
+Image& Image::operator/=(const Image& rhs)
+{
     Div(rhs);
     return *this;
 }
 
-Image operator+(Image lhs, const Image& rhs) {
+Image operator+(Image lhs, const Image& rhs)
+{
     lhs += rhs;
     return lhs;
 }
 
-Image operator-(Image lhs, const Image& rhs) {
+Image operator-(Image lhs, const Image& rhs)
+{
     lhs -= rhs;
     return lhs;
 }
 
-Image operator*(Image lhs, const Image& rhs) {
+Image operator*(Image lhs, const Image& rhs)
+{
     lhs *= rhs;
     return lhs;
 }
 
-Image operator/(Image lhs, const Image& rhs) {
+Image operator/(Image lhs, const Image& rhs)
+{
     lhs /= rhs;
     return lhs;
 }
-
-
 } // namespace ecvl

@@ -307,7 +307,8 @@ public:
         img.data_ = nullptr;
     }
 
-    friend void swap(Image& lhs, Image& rhs) {
+    friend void swap(Image& lhs, Image& rhs)
+    {
         std::swap(lhs.elemtype_, rhs.elemtype_);
         std::swap(lhs.elemsize_, rhs.elemsize_);
         std::swap(lhs.dims_, rhs.dims_);
@@ -322,7 +323,8 @@ public:
         std::swap(lhs.mem_, rhs.mem_);
     }
 
-    Image& operator=(Image rhs) {
+    Image& operator=(Image rhs)
+    {
         swap(*this, rhs);
         return *this;
     }
@@ -347,7 +349,8 @@ public:
 
     If the Image is the owner of data they will be deallocate. Otherwise nothing will happen.
     */
-    ~Image() {
+    ~Image()
+    {
         if (mem_)
             mem_->Deallocate(data_);
     }
@@ -359,7 +362,8 @@ public:
     bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
 
     /** @brief Returns the number of channels. */
-    int Channels() const {
+    int Channels() const
+    {
         size_t pos = channels_.find('c');
         if (pos != std::string::npos) {
             return dims_[pos];
@@ -368,64 +372,74 @@ public:
     }
 
     /** @brief Returns a non-const pointer to data at given coordinates. */
-    uint8_t* Ptr(const std::vector<int>& coords) {
+    uint8_t* Ptr(const std::vector<int>& coords)
+    {
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
     }
     /** @brief Returns a const pointer to data at given coordinates. */
-    const uint8_t* Ptr(const std::vector<int>& coords) const {
+    const uint8_t* Ptr(const std::vector<int>& coords) const
+    {
         assert(coords.size() == strides_.size());
         return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
     }
 
     /** @brief In-place addition of a scalar value. */
     template<typename T>
-    void Add(const T& rhs, bool saturate = true) {
+    void Add(const T& rhs, bool saturate = true)
+    {
         static constexpr Table1D<ImageScalarAddImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place addition of an Image. */
-    void Add(const Image& rhs, bool saturate = true) {
+    void Add(const Image& rhs, bool saturate = true)
+    {
         static constexpr Table2D<StructAdd> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place subtraction of a scalar value. */
     template<typename T>
-    void Sub(const T& rhs, bool saturate = true) {
+    void Sub(const T& rhs, bool saturate = true)
+    {
         static constexpr Table1D<ImageScalarSubImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place subtraction of an Image. */
-    void Sub(const Image& rhs, bool saturate = true) {
+    void Sub(const Image& rhs, bool saturate = true)
+    {
         static constexpr Table2D<StructSub> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place multiplication for a scalar value. */
     template<typename T>
-    void Mul(const T& rhs, bool saturate = true) {
+    void Mul(const T& rhs, bool saturate = true)
+    {
         static constexpr Table1D<ImageScalarMulImpl, T> table;
         table(elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place multiplication for an Image. */
-    void Mul(const Image& rhs, bool saturate = true) {
+    void Mul(const Image& rhs, bool saturate = true)
+    {
         static constexpr Table2D<StructMul> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place division for a scalar value. */
     template<typename T>
-    void Div(const T& rhs, bool saturate = true) {
+    void Div(const T& rhs, bool saturate = true)
+    {
         static constexpr Table1D<ImageScalarDivImpl, int> table;
         table(elemtype_)(*this, rhs, saturate, 0);
     }
 
     /** @brief In-place division for an Image. */
-    void Div(const Image& rhs, bool saturate = true) {
+    void Div(const Image& rhs, bool saturate = true)
+    {
         static constexpr Table2D<StructDiv, int> table;
         table(elemtype_, rhs.elemtype_)(*this, rhs, saturate, 0);
     }
@@ -509,8 +523,39 @@ public:
         contiguous_ = false;
     }
 
-    basetype& operator()(const std::vector<int>& coords) {
+    basetype& operator()(const std::vector<int>& coords)
+    {
         return *reinterpret_cast<basetype*>(Ptr(coords));
+    }
+
+    void Create(const std::vector<int>& dims, std::string channels, ColorType colortype, uint8_t* ptr, const std::vector<float>& spacings = std::vector<float>())
+    {
+        // Compute datasize
+        size_t new_datasize = DataTypeSize(DT);
+        new_datasize = std::accumulate(begin(dims), end(dims), new_datasize, std::multiplies<size_t>());
+
+        if (datasize_ != new_datasize) {
+            datasize_ = new_datasize;
+        }
+
+        elemtype_ = DT;
+        elemsize_ = DataTypeSize(elemtype_);
+        dims_ = dims;   // A check could be added to save this copy
+        spacings_ = spacings;
+        channels_ = std::move(channels);
+        colortype_ = colortype;
+        datasize_ = new_datasize;
+
+        // Compute strides
+        strides_ = { elemsize_ };
+        int dsize = dims_.size();
+        for (int i = 0; i < dsize - 1; ++i) {
+            strides_.push_back(strides_[i] * dims_[i]);
+        }
+
+        data_ = ptr;
+        mem_ = ShallowMemoryManager::GetInstance();
+        return;
     }
 
     Iterator<basetype> Begin() { return Iterator<basetype>(*this); }
@@ -524,7 +569,8 @@ public:
 
     ConstView() {}
 
-    ConstView(const Image& img) {
+    ConstView(const Image& img)
+    {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
@@ -539,7 +585,8 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    const basetype& operator()(const std::vector<int>& coords) {
+    const basetype& operator()(const std::vector<int>& coords)
+    {
         return *reinterpret_cast<const basetype*>(Ptr(coords));
     }
 
@@ -554,7 +601,8 @@ public:
 
     ContiguousView() {}
 
-    ContiguousView(Image& img) {
+    ContiguousView(Image& img)
+    {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
@@ -569,7 +617,8 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    basetype& operator()(const std::vector<int>& coords) {
+    basetype& operator()(const std::vector<int>& coords)
+    {
         return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
@@ -584,7 +633,8 @@ public:
 
     ConstContiguousView() {}
 
-    ConstContiguousView(const Image& img) {
+    ConstContiguousView(const Image& img)
+    {
         elemtype_ = img.elemtype_;
         elemsize_ = img.elemsize_;
         dims_ = img.dims_;
@@ -599,7 +649,8 @@ public:
         mem_ = ShallowMemoryManager::GetInstance();
     }
 
-    const basetype& operator()(const std::vector<int>& coords) {
+    const basetype& operator()(const std::vector<int>& coords)
+    {
         return *reinterpret_cast<const basetype*>(Ptr(coords));
     }
 
@@ -612,7 +663,8 @@ class ContiguousViewXYC : public Image {
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
-    ContiguousViewXYC(Image& img) {
+    ContiguousViewXYC(Image& img)
+    {
         if (img.channels_ != "xyc")
             throw std::runtime_error("ContiguousView2D can be built only from \"xyc\" images");
         if (!img.contiguous_)
@@ -635,12 +687,51 @@ public:
     int height() const { return dims_[1]; }
     int channels() const { return dims_[2]; }
 
-    basetype& operator()(int x, int y, int c) {
+    basetype& operator()(int x, int y, int c)
+    {
         return *reinterpret_cast<basetype*>(data_ + c * strides_[2] + y * strides_[1] + x * strides_[0]);
     }
 
     ContiguousIterator<basetype> Begin() { return ContiguousIterator<basetype>(*this); }
     ContiguousIterator<basetype> End() { return ContiguousIterator<basetype>(*this, dims_); }
+};
+
+template <DataType DT>
+class ConstContiguousViewXYC : public Image {
+public:
+    using basetype = typename TypeInfo<DT>::basetype;
+
+    ConstContiguousViewXYC(const Image& img)
+    {
+        if (img.channels_ != "xyc")
+            throw std::runtime_error("ContiguousView2D can be built only from \"xyc\" images");
+        if (!img.contiguous_)
+            throw std::runtime_error("ContiguousView2D can be built only from images with contiguous data");
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        spacings_ = img.spacings_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        mem_ = ShallowMemoryManager::GetInstance();
+    }
+
+    int width() const { return dims_[0]; }
+    int height() const { return dims_[1]; }
+    int channels() const { return dims_[2]; }
+
+    const basetype& operator()(int x, int y, int c) const
+    {
+        return *reinterpret_cast<basetype*>(data_ + c * strides_[2] + y * strides_[1] + x * strides_[0]);
+    }
+
+    ConstContiguousIterator<basetype> Begin() { return ConstContiguousIterator<basetype>(*this); }
+    ConstContiguousIterator<basetype> End() { return ConstContiguousIterator<basetype>(*this, dims_); }
 };
 
 /** @brief Changes the order of the Image dimensions.

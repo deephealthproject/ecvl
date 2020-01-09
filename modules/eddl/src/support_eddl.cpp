@@ -27,13 +27,15 @@ void TensorToImage(tensor& t, Image& img, ColorType c_type)
 {
     switch (t->ndim) {
     case 3:
-        if (c_type == ColorType::none)
+        if (c_type == ColorType::none) {
             SetColorType(c_type, t->shape[0]);
+        }
         img.Create({ t->shape[2], t->shape[1], t->shape[0] }, DataType::float32, "xyc", c_type);
         break;
     case 4:
-        if (c_type == ColorType::none)
+        if (c_type == ColorType::none) {
             SetColorType(c_type, t->shape[1]);
+        }
         img.Create({ t->shape[3], t->shape[2], t->shape[0], t->shape[1] }, DataType::float32, "xyzc", c_type);
         break;
     default:
@@ -47,45 +49,20 @@ void TensorToView(tensor& t, View<DataType::float32>& v, ColorType c_type)
 {
     switch (t->ndim) {
     case 3:
-        if (c_type == ColorType::none)
+        if (c_type == ColorType::none) {
             SetColorType(c_type, t->shape[0]);
-        v.dims_.push_back(t->shape[2]);
-        v.dims_.push_back(t->shape[1]);
-        v.dims_.push_back(t->shape[0]);
-        v.channels_ = "xyc";
+        }
+        v.Create({ t->shape[2], t->shape[1], t->shape[0] }, "xyc", c_type, (uint8_t*)t->ptr);
         break;
     case 4:
-        if (c_type == ColorType::none)
+        if (c_type == ColorType::none) {
             SetColorType(c_type, t->shape[1]);
-        v.dims_.push_back(t->shape[3]);
-        v.dims_.push_back(t->shape[2]);
-        v.dims_.push_back(t->shape[0]);
-        v.dims_.push_back(t->shape[1]);
-        v.channels_ = "xyzc";
+        }
+        v.Create({ t->shape[3], t->shape[2], t->shape[0], t->shape[1] }, "xyzc", c_type, (uint8_t*)t->ptr);
         break;
     default:
         ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
     }
-
-    v.colortype_ = c_type;
-    v.data_ = (uint8_t*)t->ptr;
-    v.elemtype_ = DataType::float32;
-    v.elemsize_ = DataTypeSize(DataType::float32);
-    v.spacings_ = {};
-    v.contiguous_ = true;
-    v.meta_ = { nullptr };
-    v.mem_ = ShallowMemoryManager::GetInstance();
-
-    // Compute strides
-    v.strides_ = { v.elemsize_ };
-    int dsize = v.dims_.size();
-    for (int i = 0; i < dsize - 1; ++i) {
-        v.strides_.push_back(v.strides_[i] * v.dims_[i]);
-    }
-
-    // Compute datasize
-    v.datasize_ = v.elemsize_;
-    v.datasize_ = std::accumulate(begin(v.dims_), end(v.dims_), v.datasize_, std::multiplies<size_t>());
 }
 
 void ImageToTensor(const Image& img, tensor& t)
