@@ -56,11 +56,16 @@ int main()
     cout << "Executing OtsuThreshold" << endl;
     double thresh = OtsuThreshold(tmp);
     
-    //Apply a fixed threshold to an input Image (optioanl: ThresholdingType)
+    //Apply a fixed threshold to an input Image (optional: ThresholdingType)
     double maxval = 255;
     cout << "Executing Threshold" << endl;
     Threshold(tmp, tmp, thresh, maxval);
     ImWrite("img_thresh.jpg", tmp);
+
+    // Label connected components in a binary Image
+    Image labels;
+    ConnectedComponentsLabeling(tmp, labels);
+    ImWrite("img_labels.jpg", labels);
 
     // Create and populate a kernel Image. Kernel must be float64, "xyc" and with one color channel
     Image kernel({ 3, 3, 1 }, DataType::float64, "xyc", ColorType::GRAY);

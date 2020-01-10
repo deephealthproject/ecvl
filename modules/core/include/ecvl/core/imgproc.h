@@ -247,6 +247,14 @@ std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 /** @example example_imgproc.cpp
  Imgproc example.
 */
+
+/** @brief Labels connected components in an binary Image
+
+@param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
+@param[out] dst Output Image.
+*/
+void ConnectedComponentsLabeling(const Image& src, Image& dst);
+
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_

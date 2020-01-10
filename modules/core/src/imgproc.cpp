@@ -755,8 +755,8 @@ void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, boo
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    int rectX = src.dims_[0] * drop_size;
-    int rectY = src.dims_[1] * drop_size;
+    int rectX = static_cast<int>(src.dims_[0] * drop_size);
+    int rectY = static_cast<int>(src.dims_[1] * drop_size);
 
     Image tmp = src;
 
@@ -926,5 +926,377 @@ vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n)
     }
     return max_coords;
 }
+
+
+// Union-Find (UF) with path compression (PC) as in:
+// Two Strategies to Speed up Connected Component Labeling Algorithms
+// Kesheng Wu, Ekow Otoo, Kenji Suzuki
+struct UFPC {
+    // Maximum number of labels (included background) = 2^(sizeof(unsigned) x 8)
+    unsigned* P_;
+    unsigned length_;
+
+    unsigned NewLabel() {
+        P_[length_] = length_;
+        return length_++;
+    }
+
+    unsigned Merge(unsigned i, unsigned j)
+    {
+        // FindRoot(i)
+        unsigned root(i);
+        while (P_[root] < root) {
+            root = P_[root];
+        }
+        if (i != j) {
+            // FindRoot(j)
+            unsigned root_j(j);
+            while (P_[root_j] < root_j) {
+                root_j = P_[root_j];
+            }
+            if (root > root_j) {
+                root = root_j;
+            }
+            // SetRoot(j, root);
+            while (P_[j] < j) {
+                unsigned t = P_[j];
+                P_[j] = root;
+                j = t;
+            }
+            P_[j] = root;
+        }
+        // SetRoot(i, root);
+        while (P_[i] < i) {
+            unsigned t = P_[i];
+            P_[i] = root;
+            i = t;
+        }
+        P_[i] = root;
+        return root;
+    }
+
+};
+
+void ConnectedComponentsLabeling(const Image& src, Image& dst)
+{
+    if (src.dims_.size() != 3 || src.channels_ != "xyc" || src.Channels() != 1 || src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    Image tmp(src.dims_, DataType::int32, "xyc", ColorType::GRAY);
+
+    const int h = src.dims_[1];
+    const int w = src.dims_[0];
+
+    UFPC ufpc;
+    unsigned* &P = ufpc.P_;
+    unsigned& P_length = ufpc.length_;
+
+    P = new unsigned[((size_t)((h + 1) / 2) * (size_t)((w + 1) / 2) + 1)];
+    P[0] = 0;	 // First label is for background pixels
+    P_length = 1;
+
+    int e_rows = h & 0xfffffffe;
+    bool o_rows = h % 2 == 1;
+    int e_cols = w & 0xfffffffe;
+    bool o_cols = w % 2 == 1;
+
+                           // We work with 2x2 blocks
+                           // +-+-+-+
+                           // |P|Q|R|
+                           // +-+-+-+
+                           // |S|X|
+                           // +-+-+
+
+                           // The pixels are named as follows
+                           // +---+---+---+
+                           // |a b|c d|e f|
+                           // |g h|i j|k l|
+                           // +---+---+---+
+                           // |m n|o p|
+                           // |q r|s t|
+                           // +---+---+
+
+                           // Pixels a, f, l, q are not needed, since we need to understand the
+                           // the connectivity between these blocks and those pixels only matter
+                           // when considering the outer connectivities
+
+                           // A bunch of defines used to check if the pixels are foreground,
+                           // without going outside the image limits.
+
+                           // First scan
+
+    // Define Conditions and Actions
+    {
+#define CONDITION_B img_row_prev_prev[c-1]>0
+#define CONDITION_C img_row_prev_prev[c]>0
+#define CONDITION_D img_row_prev_prev[c+1]>0
+#define CONDITION_E img_row_prev_prev[c+2]>0
+
+#define CONDITION_G img_row_prev[c-2]>0
+#define CONDITION_H img_row_prev[c-1]>0
+#define CONDITION_I img_row_prev[c]>0
+#define CONDITION_J img_row_prev[c+1]>0
+#define CONDITION_K img_row_prev[c+2]>0
+
+#define CONDITION_M img_row[c-2]>0
+#define CONDITION_N img_row[c-1]>0
+#define CONDITION_O img_row[c]>0
+#define CONDITION_P img_row[c+1]>0
+
+#define CONDITION_R img_row_fol[c-1]>0
+#define CONDITION_S img_row_fol[c]>0
+#define CONDITION_T img_row_fol[c+1]>0
+
+        // Action 1: No action
+#define ACTION_1 img_labels_row[c] = 0; 
+                               // Action 2: New label (the block has foreground pixels and is not connected to anything else)
+#define ACTION_2 img_labels_row[c] = ufpc.NewLabel(); 
+                               //Action 3: Assign label of block P
+#define ACTION_3 img_labels_row[c] = img_labels_row_prev_prev[c - 2];
+                               // Action 4: Assign label of block Q 
+#define ACTION_4 img_labels_row[c] = img_labels_row_prev_prev[c];
+                               // Action 5: Assign label of block R
+#define ACTION_5 img_labels_row[c] = img_labels_row_prev_prev[c + 2];
+                               // Action 6: Assign label of block S
+#define ACTION_6 img_labels_row[c] = img_labels_row[c - 2]; 
+                               // Action 7: Merge labels of block P and Q
+#define ACTION_7 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]);
+                               //Action 8: Merge labels of block P and R
+#define ACTION_8 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]);
+                               // Action 9 Merge labels of block P and S
+#define ACTION_9 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row[c - 2]);
+                               // Action 10 Merge labels of block Q and R
+#define ACTION_10 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]);
+                               // Action 11: Merge labels of block Q and S
+#define ACTION_11 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row[c - 2]);
+                               // Action 12: Merge labels of block R and S
+#define ACTION_12 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c + 2], img_labels_row[c - 2]);
+                               // Action 13: Merge labels of block P, Q and R
+#define ACTION_13 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row_prev_prev[c + 2]);
+                               // Action 14: Merge labels of block P, Q and S
+#define ACTION_14 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row[c - 2]);
+                               //Action 15: Merge labels of block P, R and S
+#define ACTION_15 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
+                               //Action 16: labels of block Q, R and S
+#define ACTION_16 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
+    }
+
+    if (h == 1) {
+        // Single line
+        int r = 0;
+        const unsigned char* const img_row = src.Ptr({ 0, 0, 0 });
+        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, 0, 0 }));
+        int c = -2;
+#include "labeling_bolelli_2019_forest_singleline.inc"
+    }
+    else {
+        // More than one line
+
+        // First couple of lines
+        {
+            int r = 0;
+            const unsigned char* const img_row = src.Ptr({ 0, 0, 0 });
+            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, 0, 0 }));
+            const unsigned char* const img_row_fol = img_row + src.strides_[1];
+
+            int c = -2;
+
+#include "labeling_bolelli_2019_forest_firstline.inc"
+        }
+
+        // Every other line but the last one if image has an odd number of rows
+        for (int r = 2; r < e_rows; r += 2) {
+            // Get rows pointer
+            const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
+            const unsigned char* const img_row_prev = img_row - src.strides_[1];
+            const unsigned char* const img_row_prev_prev = img_row_prev - src.strides_[1];
+            const unsigned char* const img_row_fol = img_row + src.strides_[1];
+            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+            unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * tmp.strides_[1]));
+
+            int c = -2;
+            goto tree_0;
+
+#include "labeling_bolelli_2019_forest.inc"
+        }
+
+        // Last line (in case the rows are odd)
+        if (o_rows)
+        {
+            int r = h - 1;
+            const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
+            const unsigned char* const img_row_prev = img_row - src.strides_[1];
+            const unsigned char* const img_row_prev_prev = img_row_prev - src.strides_[1];
+            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+            unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * tmp.strides_[1]));
+
+            int c = -2;
+#include "labeling_bolelli_2019_forest_lastline.inc"
+        }
+    }
+
+
+    // Undef Conditions and Actions
+    {
+#undef ACTION_1
+#undef ACTION_2
+#undef ACTION_3
+#undef ACTION_4
+#undef ACTION_5
+#undef ACTION_6
+#undef ACTION_7
+#undef ACTION_8
+#undef ACTION_9
+#undef ACTION_10
+#undef ACTION_11
+#undef ACTION_12
+#undef ACTION_13
+#undef ACTION_14
+#undef ACTION_15
+#undef ACTION_16
+
+
+#undef CONDITION_B
+#undef CONDITION_C
+#undef CONDITION_D
+#undef CONDITION_E
+
+#undef CONDITION_G
+#undef CONDITION_H
+#undef CONDITION_I
+#undef CONDITION_J
+#undef CONDITION_K
+
+#undef CONDITION_M
+#undef CONDITION_N
+#undef CONDITION_O
+#undef CONDITION_P
+
+#undef CONDITION_R
+#undef CONDITION_S
+#undef CONDITION_T
+    }
+
+    // Flatten
+    unsigned k = 1;
+    for (unsigned i = 1; i < P_length; ++i) {
+        if (P[i] < i) {
+            P[i] = P[P[i]];
+        }
+        else {
+            P[i] = k;
+            k = k + 1;
+        }
+    }
+    
+    unsigned int n_labels_ = k;
+
+    // Second scan
+    int r = 0;
+    for (; r < e_rows; r += 2) {
+        // Get rows pointer
+        const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
+        const unsigned char* const img_row_fol = img_row + src.strides_[1];
+
+        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+        unsigned* const img_labels_row_fol = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) + tmp.strides_[1]));
+
+        int c = 0;
+        for (; c < e_cols; c += 2) {
+            int iLabel = img_labels_row[c];
+            if (iLabel > 0) {
+                iLabel = P[iLabel];
+                if (img_row[c] > 0)
+                    img_labels_row[c] = iLabel;
+                else
+                    img_labels_row[c] = 0;
+                if (img_row[c + 1] > 0)
+                    img_labels_row[c + 1] = iLabel;
+                else
+                    img_labels_row[c + 1] = 0;
+                if (img_row_fol[c] > 0)
+                    img_labels_row_fol[c] = iLabel;
+                else
+                    img_labels_row_fol[c] = 0;
+                if (img_row_fol[c + 1] > 0)
+                    img_labels_row_fol[c + 1] = iLabel;
+                else
+                    img_labels_row_fol[c + 1] = 0;
+            }
+            else {
+                img_labels_row[c] = 0;
+                img_labels_row[c + 1] = 0;
+                img_labels_row_fol[c] = 0;
+                img_labels_row_fol[c + 1] = 0;
+            }
+        }
+        // Last column if the number of columns is odd
+        if (o_cols) {
+            int iLabel = img_labels_row[c];
+            if (iLabel > 0) {
+                iLabel = P[iLabel];
+                if (img_row[c] > 0)
+                    img_labels_row[c] = iLabel;
+                else
+                    img_labels_row[c] = 0;
+                if (img_row_fol[c] > 0)
+                    img_labels_row_fol[c] = iLabel;
+                else
+                    img_labels_row_fol[c] = 0;
+            }
+            else {
+                img_labels_row[c] = 0;
+                img_labels_row_fol[c] = 0;
+            }
+        }
+    }
+    // Last row if the number of rows is odd
+    if (o_rows) {
+        // Get rows pointer
+        const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
+        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+
+        int c = 0;
+        for (; c < e_cols; c += 2) {
+            int iLabel = img_labels_row[c];
+            if (iLabel > 0) {
+                iLabel = P[iLabel];
+                if (img_row[c] > 0)
+                    img_labels_row[c] = iLabel;
+                else
+                    img_labels_row[c] = 0;
+                if (img_row[c + 1] > 0)
+                    img_labels_row[c + 1] = iLabel;
+                else
+                    img_labels_row[c + 1] = 0;
+            }
+            else {
+                img_labels_row[c] = 0;
+                img_labels_row[c + 1] = 0;
+            }
+        }
+        // Last column if the number of columns is odd
+        if (o_cols) {
+            int iLabel = img_labels_row[c];
+            if (iLabel > 0) {
+                iLabel = P[iLabel];
+                if (img_row[c] > 0)
+                    img_labels_row[c] = iLabel;
+                else
+                    img_labels_row[c] = 0;
+            }
+            else {
+                img_labels_row[c] = 0;
+            }
+        }
+    }
+
+    delete[] P;
+
+    dst = move(tmp);
+
+}
+
 
 } // namespace ecvl
