@@ -67,6 +67,10 @@ int main()
     ConnectedComponentsLabeling(tmp, labels);
     ImWrite("img_labels.jpg", labels);
 
+    // Find contours in a binary Image
+    vector<vector<ecvl::Point2i>> contours;
+    FindContours(tmp, contours);
+
     // Create and populate a kernel Image. Kernel must be float64, "xyc" and with one color channel
     Image kernel({ 3, 3, 1 }, DataType::float64, "xyc", ColorType::GRAY);
     auto i = kernel.Begin<double>(), e = kernel.End<double>();

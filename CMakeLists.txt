@@ -154,6 +154,8 @@ set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc" CACHE STRING "OpenCV requi
 FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
+message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+target_compile_definitions(ECVL_CORE PUBLIC OpenCV_VERSION_MAJOR=${OpenCV_VERSION_MAJOR})
 #--------------------------------------------------------------------------------------------------------
 # END: OpenCV
 #--------------------------------------------------------------------------------------------------------

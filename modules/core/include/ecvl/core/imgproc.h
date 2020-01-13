@@ -19,13 +19,13 @@ enum class ThresholdingType {
     @anchor InterpolationType
  */
 enum class InterpolationType {
-    nearest,    /**< Nearest neighbor interpolation  */
+    nearest,    /**< Nearest neighbor interpolation */
     linear,     /**< Bilinear interpolation */
     area,       /**< Resampling using pixel area relation.
                      It may be a preferred method for image decimation,
                      as it gives moire-free results. But when the image
-                     is zoomed, it is similar to the nearest method.*/
-    cubic,      /**< Bicubic interpolation  */
+                     is zoomed, it is similar to the nearest method. */
+    cubic,      /**< Bicubic interpolation */
     lanczos4    /**< Lanczos interpolation over 8x8 neighborhood */
 };
 
@@ -255,6 +255,12 @@ std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 */
 void ConnectedComponentsLabeling(const Image& src, Image& dst);
 
+/** @brief Finds contours in a binary image
+
+@param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
+@param[out] dst Output countours.
+*/
+void FindContours(const Image& src, std::vector<std::vector<Point2i>>& contours);
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_

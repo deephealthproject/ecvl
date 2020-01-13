@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <random>
+#include <vector>
 
 #include <opencv2/imgproc.hpp>
 
@@ -9,7 +10,6 @@
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
-
 using namespace std;
 
 /** @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
@@ -18,7 +18,8 @@ using namespace std;
 
 @return Associated OpenCV enum value.
 */
-static int GetOpenCVInterpolation(InterpolationType interp) {
+static int GetOpenCVInterpolation(InterpolationType interp)
+{
     switch (interp) {
     case InterpolationType::nearest:    return cv::INTER_NEAREST;
     case InterpolationType::linear:     return cv::INTER_LINEAR;
@@ -168,9 +169,8 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
     }
 }
 
-
-inline void RGB2GRAYGeneric(const uint8_t* r, const uint8_t* g, const uint8_t* b, uint8_t* dst, DataType dt) {
-
+inline void RGB2GRAYGeneric(const uint8_t* r, const uint8_t* g, const uint8_t* b, uint8_t* dst, DataType dt)
+{
     // 0.299 * R + 0.587 * G + 0.114 * B
 
 #define DEREF(ptr, type)            *reinterpret_cast<TypeInfo_t<DataType::type>*>(ptr)
@@ -196,7 +196,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 
     if (src.colortype_ == new_type) {
         // if not, check if dst==src
-        if (&src != &dst) { // if no, copy            
+        if (&src != &dst) { // if no, copy
             dst = src;
         }
         return;
@@ -265,7 +265,6 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     }
 
     if ((src.colortype_ == ColorType::RGB || src.colortype_ == ColorType::BGR) && new_type == ColorType::GRAY) {
-
         size_t c_pos = src.channels_.find('c');
         if (c_pos == std::string::npos) {
             ECVL_ERROR_WRONG_PARAMS("Malformed src image")
@@ -281,7 +280,6 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         const uint8_t* b = src.data_ + ((src.colortype_ == ColorType::RGB) ? 2 : 0) * src.strides_[c_pos];
 
         for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
-
             int x = tmp_pos;
             int src_pos = 0;
             for (int i = tmp.dims_.size() - 1; i >= 0; i--) {
@@ -292,7 +290,6 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             }
 
             RGB2GRAYGeneric(r + src_pos, g + src_pos, b + src_pos, tmp.data_ + tmp_pos, src.elemtype_);
-
         }
         dst = tmp;
         return;
@@ -345,12 +342,12 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     ECVL_ERROR_NOT_REACHABLE_CODE
 }
 
-void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type) {
+void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
+{
     cv::Mat m;
 
     int t_type;
-    switch (thresh_type)
-    {
+    switch (thresh_type) {
     case ecvl::ThresholdingType::BINARY:        t_type = cv::THRESH_BINARY;      break;
     case ecvl::ThresholdingType::BINARY_INV:    t_type = cv::THRESH_BINARY_INV;  break;
     default:
@@ -361,8 +358,8 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     dst = MatToImage(m);
 }
 
-std::vector<double> Histogram(const Image& src) {
-
+std::vector<double> Histogram(const Image& src)
+{
     if (src.elemtype_ != DataType::uint8 || src.colortype_ != ColorType::GRAY) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -382,7 +379,8 @@ std::vector<double> Histogram(const Image& src) {
     return hist;
 }
 
-int OtsuThreshold(const Image& src) {
+int OtsuThreshold(const Image& src)
+{
     if (src.colortype_ != ColorType::GRAY) { // What if the Image has ColorType::none?
         throw std::runtime_error("The OtsuThreshold requires a grayscale Image");
     }
@@ -403,7 +401,6 @@ int OtsuThreshold(const Image& src) {
     double sigma_max = 0;
     int threshold = 0;
     for (size_t k = 0; k < hist.size() - 1; k++) {
-
         w_k += hist[k];
         mu_k += hist[k] * k;
 
@@ -412,15 +409,13 @@ int OtsuThreshold(const Image& src) {
             sigma_max = sigma;
             threshold = k;
         }
-
     }
 
     return threshold;
 }
 
-
-void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) {
-
+void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
+{
     if (src.channels_ != "xyc" || (ker.channels_ != "xyc" && ker.dims_[2] != 1)) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -459,15 +454,12 @@ void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) {
 
     TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
     for (int chan = 0; chan < tmp.dims_[2]; chan++) {
-
         for (int r = 0; r < tmp.dims_[1]; r++) {
             for (int c = 0; c < tmp.dims_[0]; c++) {
-
                 double acc = 0;
                 int i = 0;
                 for (int rk = 0; rk < ker.dims_[1]; rk++) {
                     for (int ck = 0; ck < ker.dims_[0]; ck++) {
-
                         int x = c + ck - hlf_width;
                         if (x < 0) x = 0; else if (x >= tmp.dims_[0]) x = tmp.dims_[0] - 1;
 
@@ -499,8 +491,8 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
     dst = tmp;
 }
 
-void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type) {
-
+void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type)
+{
     if (src.channels_ != "xyc") {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -531,13 +523,10 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
     auto tmp1_it = tmp1.ContiguousBegin<TypeInfo_t<DataType::float64>>();
     TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
     for (int chan = 0; chan < tmp1.dims_[2]; chan++) {
-
         for (int r = 0; r < tmp1.dims_[1]; r++) {
             for (int c = 0; c < tmp1.dims_[0]; c++) {
-
                 double acc = 0;
                 for (unsigned int ck = 0; ck < kerX.size(); ck++) {
-
                     int x = c + ck - hlf_width;
                     if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1;
 
@@ -557,18 +546,14 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
     // Y direction
     TypeInfo_t<DataType::float64>* tmp1_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(tmp1.data_);
     for (int chan = 0; chan < tmp2.dims_[2]; chan++) {
-
         for (int r = 0; r < tmp2.dims_[1]; r++) {
             for (int c = 0; c < tmp2.dims_[0]; c++) {
-
                 double acc = 0;
                 for (unsigned int rk = 0; rk < kerY.size(); rk++) {
-
                     int y = r + rk - hlf_height;
                     if (y < 0) y = 0; else if (y >= tmp2.dims_[1]) y = tmp2.dims_[1] - 1;
 
                     acc += kerY[rk] * tmp1_data[c + y * tmp1.strides_[1] / sizeof(*tmp1_data)];
-
                 }
 
 #define ECVL_TUPLE(type, ...) \
@@ -581,7 +566,6 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = 
 #undef ECVL_TUPLE
 
                 tmp2_ptr += tmp2.elemsize_;
-
             }
         }
 
@@ -591,9 +575,8 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = 
     dst = tmp2;
 }
 
-
-void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY) {
-
+void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
+{
     if (sizeX < 0 || (sizeX % 2 != 1)) {
         ECVL_ERROR_WRONG_PARAMS("sizeX must either be positive and odd or zero")
     }
@@ -654,8 +637,8 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
     SeparableFilter2D(src, dst, kernelX, kernelY);
 }
 
-void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale) {
-
+void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale)
+{
     if (!src.contiguous_) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -671,7 +654,6 @@ void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale) {
     exponential_distribution<> dist(1 / scale);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
-
         double exp1 = dist(gen);
         double exp2 = dist(gen);
 
@@ -685,14 +667,13 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
         }
 
 #undef ECVL_TUPLE
-
     }
 
     dst = tmp;
 }
 
-void AdditivePoissonNoise(const Image& src, Image& dst, double lambda) {
-
+void AdditivePoissonNoise(const Image& src, Image& dst, double lambda)
+{
     if (!src.contiguous_) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -708,7 +689,6 @@ void AdditivePoissonNoise(const Image& src, Image& dst, double lambda) {
     poisson_distribution<> dist(lambda);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
-
         double noise = dist(gen);
 
 #define ECVL_TUPLE(type, ...) \
@@ -719,14 +699,13 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
         }
 
 #undef ECVL_TUPLE
-
     }
 
     dst = tmp;
 }
 
-void GammaContrast(const Image& src, Image& dst, double gamma) {
-
+void GammaContrast(const Image& src, Image& dst, double gamma)
+{
     if (src.elemtype_ != DataType::uint8) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -734,7 +713,6 @@ void GammaContrast(const Image& src, Image& dst, double gamma) {
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
-
 #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
 
@@ -743,14 +721,13 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
         }
 
 #undef ECVL_TUPLE
-
     }
 
     dst = tmp;
 }
 
-void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel) {
-
+void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel)
+{
     if (src.channels_ != "xyc") {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
@@ -766,17 +743,13 @@ void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, boo
 
     if (per_channel) {
         for (int ch = 0; ch < src.dims_[2]; ch++) {
-
             uint8_t* tmp_ptr = tmp.Ptr({ 0, 0, ch });
 
             for (int r = 0; r < src.dims_[1]; r += rectY) {
                 for (int c = 0; c < src.dims_[0]; c += rectX) {
-
                     if (dist(gen) == 0) {
-
                         for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
                             for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
-
 #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
@@ -785,14 +758,9 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rd
                                 }
 
 #undef ECVL_TUPLE
-
-
-
                             }
                         }
-
                     }
-
                 }
             }
         }
@@ -806,13 +774,10 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rd
 
         for (int r = 0; r < src.dims_[1]; r += rectY) {
             for (int c = 0; c < src.dims_[0]; c += rectX) {
-
                 if (dist(gen) == 0) {
-
                     for (int ch = 0; ch < src.dims_[2]; ch++) {
                         for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
                             for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
-
 #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
@@ -821,15 +786,10 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs
                                 }
 
 #undef ECVL_TUPLE
-
-
-
                             }
                         }
                     }
-
                 }
-
             }
         }
     }
@@ -927,7 +887,6 @@ vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n)
     return max_coords;
 }
 
-
 // Union-Find (UF) with path compression (PC) as in:
 // Two Strategies to Speed up Connected Component Labeling Algorithms
 // Kesheng Wu, Ekow Otoo, Kenji Suzuki
@@ -936,7 +895,8 @@ struct UFPC {
     unsigned* P_;
     unsigned length_;
 
-    unsigned NewLabel() {
+    unsigned NewLabel()
+    {
         P_[length_] = length_;
         return length_++;
     }
@@ -974,7 +934,6 @@ struct UFPC {
         P_[i] = root;
         return root;
     }
-
 };
 
 void ConnectedComponentsLabeling(const Image& src, Image& dst)
@@ -989,7 +948,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
     const int w = src.dims_[0];
 
     UFPC ufpc;
-    unsigned* &P = ufpc.P_;
+    unsigned*& P = ufpc.P_;
     unsigned& P_length = ufpc.length_;
 
     P = new unsigned[((size_t)((h + 1) / 2) * (size_t)((w + 1) / 2) + 1)];
@@ -1001,32 +960,32 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
     int e_cols = w & 0xfffffffe;
     bool o_cols = w % 2 == 1;
 
-                           // We work with 2x2 blocks
-                           // +-+-+-+
-                           // |P|Q|R|
-                           // +-+-+-+
-                           // |S|X|
-                           // +-+-+
+    // We work with 2x2 blocks
+    // +-+-+-+
+    // |P|Q|R|
+    // +-+-+-+
+    // |S|X|
+    // +-+-+
 
-                           // The pixels are named as follows
-                           // +---+---+---+
-                           // |a b|c d|e f|
-                           // |g h|i j|k l|
-                           // +---+---+---+
-                           // |m n|o p|
-                           // |q r|s t|
-                           // +---+---+
+    // The pixels are named as follows
+    // +---+---+---+
+    // |a b|c d|e f|
+    // |g h|i j|k l|
+    // +---+---+---+
+    // |m n|o p|
+    // |q r|s t|
+    // +---+---+
 
-                           // Pixels a, f, l, q are not needed, since we need to understand the
-                           // the connectivity between these blocks and those pixels only matter
-                           // when considering the outer connectivities
+    // Pixels a, f, l, q are not needed, since we need to understand the
+    // the connectivity between these blocks and those pixels only matter
+    // when considering the outer connectivities
 
-                           // A bunch of defines used to check if the pixels are foreground,
-                           // without going outside the image limits.
+    // A bunch of defines used to check if the pixels are foreground,
+    // without going outside the image limits.
 
-                           // First scan
+    // First scan
 
-    // Define Conditions and Actions
+// Define Conditions and Actions
     {
 #define CONDITION_B img_row_prev_prev[c-1]>0
 #define CONDITION_C img_row_prev_prev[c]>0
@@ -1049,17 +1008,17 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
 #define CONDITION_T img_row_fol[c+1]>0
 
         // Action 1: No action
-#define ACTION_1 img_labels_row[c] = 0; 
+#define ACTION_1 img_labels_row[c] = 0;
                                // Action 2: New label (the block has foreground pixels and is not connected to anything else)
-#define ACTION_2 img_labels_row[c] = ufpc.NewLabel(); 
+#define ACTION_2 img_labels_row[c] = ufpc.NewLabel();
                                //Action 3: Assign label of block P
 #define ACTION_3 img_labels_row[c] = img_labels_row_prev_prev[c - 2];
-                               // Action 4: Assign label of block Q 
+                               // Action 4: Assign label of block Q
 #define ACTION_4 img_labels_row[c] = img_labels_row_prev_prev[c];
                                // Action 5: Assign label of block R
 #define ACTION_5 img_labels_row[c] = img_labels_row_prev_prev[c + 2];
                                // Action 6: Assign label of block S
-#define ACTION_6 img_labels_row[c] = img_labels_row[c - 2]; 
+#define ACTION_6 img_labels_row[c] = img_labels_row[c - 2];
                                // Action 7: Merge labels of block P and Q
 #define ACTION_7 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]);
                                //Action 8: Merge labels of block P and R
@@ -1122,8 +1081,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
         }
 
         // Last line (in case the rows are odd)
-        if (o_rows)
-        {
+        if (o_rows) {
             int r = h - 1;
             const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
             const unsigned char* const img_row_prev = img_row - src.strides_[1];
@@ -1135,7 +1093,6 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
 #include "labeling_bolelli_2019_forest_lastline.inc"
         }
     }
-
 
     // Undef Conditions and Actions
     {
@@ -1155,7 +1112,6 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
 #undef ACTION_14
 #undef ACTION_15
 #undef ACTION_16
-
 
 #undef CONDITION_B
 #undef CONDITION_C
@@ -1189,7 +1145,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
             k = k + 1;
         }
     }
-    
+
     unsigned int n_labels_ = k;
 
     // Second scan
@@ -1295,8 +1251,31 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
     delete[] P;
 
     dst = move(tmp);
-
 }
 
+void FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
+{
+    if (src.dims_.size() != 3 || src.channels_ != "xyc" || src.Channels() != 1 || src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
 
+    cv::Mat cv_src = ecvl::ImageToMat(src);
+
+    vector<vector<cv::Point>> cv_contours;
+    vector<cv::Vec4i> hierarchy;
+#if OpenCV_VERSION_MAJOR > 3
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+#else
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::CV_RETR_CCOMP, cv::CV_CHAIN_APPROX_SIMPLE);
+#endif // OpenCV_VERSION_MAJOR > 3
+
+    contours.resize(cv_contours.size());
+    for (int i = 0; i < cv_contours.size(); ++i) {
+        vector<ecvl::Point2i> t(cv_contours[i].size());
+        for (int j = 0; j < cv_contours[i].size(); ++j) {
+            t[j] = Point2i{ cv_contours[i][j].x, cv_contours[i][j].y };
+        }
+        contours[i] = t;
+    }
+}
 } // namespace ecvl
