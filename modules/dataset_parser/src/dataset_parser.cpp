@@ -35,27 +35,34 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
     bool status;
     Image img;
 
-    if (!is_gt) {
-        status = ImRead(location_, img);
-    }
-    else {
-        status = ImRead(label_path_.value(), img);
-    }
+    auto location = is_gt ? label_path_.value() : location_;
+
+    // Let's try with PNG and JPG
+    status = ImRead(location, img);
 
     if (!status) {
+        // DICOM
+        status = DicomRead(location, img);
+    }
+    if (!status) {
+        // NIFTI
+        status = NiftiRead(location, img);
+    }
+    if (!status) { 
         // Image not correctly loaded, it is a URL!
         // TODO: Use libcurl instead of system call
-        path image_filename = location_.filename();
-        string cmd = "curl -s -o " + image_filename.string() + " " + location_.string();
+        path image_filename = location.filename();
+        string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
         if (system(cmd.c_str()) != 0) {
             // Error, not a path nor a URL
-            cout << ECVL_WARNING_MSG "Cannot load Sample '" + location_.string() + "', wrong path.\n";
+            cout << ECVL_WARNING_MSG "Cannot load Sample '" + location.string() + "', wrong path.\n";
         }
         else {
             ImRead(image_filename, img);
         }
     }
 
+    // TODO: Fix this!!!! If image fails to load we need to remove the sample from the dataset.
     if (img.colortype_ != ctype) {
         ChangeColorSpace(img, img, ctype);
     }
@@ -68,7 +75,7 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
     this->samples_.resize(node.size());
     int counter = -1;
     // RegEx which matchs URLs
-    std::regex r{ R"((http(s)?://.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))" };
+    std::regex r{ R"((http(s)?://.)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))" };
 
     for (auto& n : node) {
         // iterate over images
