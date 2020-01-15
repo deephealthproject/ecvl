@@ -16,8 +16,8 @@ The ECVL documentation is available online [here](http://imagelab.ing.unimore.it
 
 ## Requirements
 - CMake 3.13 or later;
-- C++ Compiler with C++17 support;
-- OpenCV 3.0 or later (https://opencv.org/).
+- C++ Compiler with C++17 support (e.g. gcc-8 or later, Visual Studio 2017 or later);
+- OpenCV 3.0 or later (https://opencv.org).
 
 ### Optional
 - wxWidgets (https://www.wxwidgets.org/), required by the ECVL GUI module;
@@ -45,7 +45,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :large_blue_circle: | :x: | :x: |
+| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
 
 ### Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
