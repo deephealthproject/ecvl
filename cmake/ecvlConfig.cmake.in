@@ -7,6 +7,17 @@ SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
 SET(ECVL_DATASET_PARSER @ECVL_DATASET_PARSER@)
 
 set(OpenCV_DIR "@OpenCV_DIR@")
+# ECVL - European Computer Vision Library
+# Version: 0.1
+# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# Authors: 
+#    Costantino Grana (costantino.grana@unimore.it)
+#    Federico Bolelli (federico.bolelli@unimore.it)
+#    Michele Cancilla (michele.cancilla@unimore.it)
+#    Laura Canalini (laura.canalini@unimore.it)
+#    Stefano Allegretti (stefano.allegretti@unimore.it)
+# All rights reserved.
+
 find_dependency(OpenCV)
 
 #set(NIFTI_DIR "@ECVL_CONFIG_INSTALL_PATH@")
