@@ -48,9 +48,9 @@ public:
         const int batch_size,
         const std::vector<int>& resize_dims,
         ColorType ctype = ColorType::BGR,
-        ColorType ctype_gt = ColorType::GRAY) :
+        ColorType ctype_gt = ColorType::GRAY, bool verify = false) :
 
-        Dataset{ filename },
+        Dataset{ filename, verify },
         batch_size_{ batch_size },
         resize_dims_{ resize_dims },
         n_channels_{ this->samples_[0].LoadImage(ctype).Channels() },
