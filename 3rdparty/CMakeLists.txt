@@ -108,7 +108,7 @@ if(${ECVL_TESTS})
 
     ecvl_update_3rdparty(googletest)
 
-    SET(BUILD_GMOCK OFF CACHE INTERNAL "" FORCE)
+    SET(BUILD_GMOCK ON CACHE INTERNAL "" FORCE)
 
     set(CMAKE_FOLDER 3rdparty/googletest)
     add_subdirectory(googletest)

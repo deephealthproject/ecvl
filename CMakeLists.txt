@@ -328,7 +328,7 @@ endif()
 # BEGIN: ECVL tests
 #--------------------------------------------------------------------------------------------------------
 if (${ECVL_TESTS})
-    target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main)
+    target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main gmock)
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
         target_link_libraries(ECVL_TESTS stdc++fs) 
     endif()
