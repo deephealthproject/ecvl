@@ -6,8 +6,8 @@
 |:-------:|:----------:|:------:|:------:|
 | Windows (CPU) | VS 15.9.11 | 3.4.6  |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/windows_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
 | Linux (CPU)   | GCC 5.5.0  | 3.4.6  |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/linux_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
-| Windows (GPU) | VS 15.9.11 | 3.4.6  |        |
-| Linux (GPU)   | GCC 5.5.0  | 3.4.6  |        |
+| Windows (GPU) | VS 15.9.11 | 3.4.6  |  Not available yet        |
+| Linux (GPU)   | GCC 5.5.0  | 3.4.6  |  Not available yet        |
 
 
 ## Documentation
