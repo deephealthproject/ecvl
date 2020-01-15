@@ -45,7 +45,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :large_blue_circle: | :x: | :x: |
+| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
 
 ### Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
