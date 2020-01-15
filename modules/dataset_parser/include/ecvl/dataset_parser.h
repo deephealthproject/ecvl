@@ -83,11 +83,11 @@ public:
     /**
     @param[in] filename Path to the Dataset file.
     */
-    Dataset(const std::filesystem::path& filename);
+    Dataset(const std::filesystem::path& filename, bool verify = false);
 
 private:
     std::map<std::string, int> features_map_;
-    void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path);
+    void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path, bool verify);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
 } // namespace ecvl

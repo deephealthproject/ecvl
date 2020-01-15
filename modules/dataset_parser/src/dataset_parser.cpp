@@ -47,8 +47,27 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
 {
     bool status;
     Image img;
+    static std::regex r{ R"(https?://.*)" };
 
     auto location = is_gt ? label_path_.value() : location_;
+    if (std::regex_match(location.string(), r)) {
+        // TODO: Use libcurl instead of system call
+        path image_filename = location.filename();
+        string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
+        if (system(cmd.c_str()) != 0) {
+            // Failed to download image
+            cerr << ECVL_ERROR_MSG "Cannot download image '" + location.string() + "'.\n";
+            ECVL_ERROR_CANNOT_LOAD_FROM_URL
+        }
+        else {
+            location = image_filename;
+        }
+    }
+    
+    if (!filesystem::exists(location)) {
+        cerr << ECVL_ERROR_MSG "image " << location << " does not exist" << endl;
+        ECVL_ERROR_FILE_DOES_NOT_EXIST
+    }
 
     // Let's try with PNG and JPG
     status = ImRead(location, img);
@@ -64,33 +83,25 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
         status = NiftiRead(location, img);
     }
     if (!status) {
-        // Image not correctly loaded, it is a URL!
-        // TODO: Use libcurl instead of system call
-        path image_filename = location.filename();
-        string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
-        if (system(cmd.c_str()) != 0) {
-            // Error, not a path nor a URL
-            cout << ECVL_WARNING_MSG "Cannot load Sample '" + location.string() + "', wrong path.\n";
-        }
-        else {
-            ImRead(image_filename, img);
-        }
+        // Image not correctly loaded
+        cerr << ECVL_ERROR_MSG "Cannot load image '" + location.string() + "'.\n";
+        ECVL_ERROR_CANNOT_LOAD_IMAGE
     }
 
-    // TODO: Fix this!!!! If image fails to load we need to remove the sample from the dataset.
     if (img.colortype_ != ctype) {
         ChangeColorSpace(img, img, ctype);
     }
     return img;
 }
 
-void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
+void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool verify)
 {
     // Allocate memory for the images
     this->samples_.resize(node.size());
     int counter = -1;
     // RegEx which matchs URLs
-    std::regex r{ R"((http(s)?://.)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))" };
+    //std::regex r{ R"((http(s)?://.)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))" };
+    std::regex r{ R"(https?://.*)" };
 
     for (auto& n : node) {
         // iterate over images
@@ -143,15 +154,25 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
                 sample.label_path_ = root_path / sample.label_path_.value();
             }
         }
+        if (verify) {
+            if (!filesystem::exists(sample.location_)) {
+                cerr << ECVL_WARNING_MSG "sample file " << sample.location_ << " does not exist" << endl;
+            }
+            if (sample.label_path_.has_value()) {
+                if (!filesystem::exists(sample.label_path_.value())) {
+                    cerr << ECVL_WARNING_MSG "label file " << sample.label_path_.value() << " does not exist" << endl;
+                }
+            }
+        }
     }
 }
 
-Dataset::Dataset(const path& filename)
+Dataset::Dataset(const path& filename, bool verify)
 {
     path abs_filename = absolute(filename);
 
     if (!filesystem::exists(abs_filename)) {
-        cout << "ERROR: dataset file " << filename << " does not exist" << endl;
+        cerr << ECVL_ERROR_MSG "dataset file " << filename << " does not exist" << endl;
         ECVL_ERROR_FILE_DOES_NOT_EXIST
     }
 
@@ -160,8 +181,8 @@ Dataset::Dataset(const path& filename)
         config = YAML::LoadFile(abs_filename.string());
     }
     catch (const YAML::BadFile& e) {
-        cout << "ERROR: parse of dataset file " << filename << " failed." << endl;
-        cout << "MSG: " << e.what();
+        cerr << ECVL_ERROR_MSG "parse of dataset file " << filename << " failed." << endl;
+        cerr << "MSG: " << e.what();
         ECVL_ERROR_NOT_REACHABLE_CODE
     }
 
@@ -181,7 +202,7 @@ Dataset::Dataset(const path& filename)
         }
     }
 
-    DecodeImages(config["images"], abs_filename.parent_path());
+    DecodeImages(config["images"], abs_filename.parent_path(), verify);
     if (config["split"].IsDefined()) {
         this->split_ = config["split"].as<Split>();
     }

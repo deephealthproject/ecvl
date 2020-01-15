@@ -9,9 +9,7 @@
 #    Stefano Allegretti (stefano.allegretti@unimore.it)
 # All rights reserved.
 
-add_subdirectory("include/ecvl")
-add_subdirectory(src)
-
-if (${ECVL_TESTS})
-    add_subdirectory(test)
-endif()
+target_sources(ECVL_TESTS
+	PRIVATE
+        test_dataset_parser.cpp
+)
