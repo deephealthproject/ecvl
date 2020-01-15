@@ -40,10 +40,12 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
     // Let's try with PNG and JPG
     status = ImRead(location, img);
 
+#ifdef ECVL_WITH_DICOM
     if (!status) {
         // DICOM
         status = DicomRead(location, img);
     }
+#endif
     if (!status) {
         // NIFTI
         status = NiftiRead(location, img);
