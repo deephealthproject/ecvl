@@ -50,7 +50,7 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
         // NIFTI
         status = NiftiRead(location, img);
     }
-    if (!status) { 
+    if (!status) {
         // Image not correctly loaded, it is a URL!
         // TODO: Use libcurl instead of system call
         path image_filename = location.filename();
@@ -136,14 +136,20 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path)
 Dataset::Dataset(const path& filename)
 {
     path abs_filename = absolute(filename);
+
+    if (!filesystem::exists(abs_filename)) {
+        cout << "ERROR: dataset file " << filename << " does not exist" << endl;
+        ECVL_ERROR_FILE_DOES_NOT_EXIST
+    }
+
     YAML::Node config;
     try {
         config = YAML::LoadFile(abs_filename.string());
     }
-    catch (Exception& e) {
-        cout << "ERROR: Unable to read dataset file '" << abs_filename << "'.\n";
+    catch (const YAML::BadFile& e) {
+        cout << "ERROR: parse of dataset file " << filename << " failed." << endl;
         cout << "MSG: " << e.what();
-        exit(EXIT_FAILURE);
+        ECVL_ERROR_NOT_REACHABLE_CODE
     }
 
     if (config["name"].IsDefined()) {
