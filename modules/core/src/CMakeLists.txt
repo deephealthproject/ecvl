@@ -20,3 +20,10 @@ target_sources(ECVL_CORE
         support_nifti.cpp
         arithmetic.cpp
 )
+
+if(${ECVL_WITH_FPGA})
+    target_sources(ECVL_CORE
+            PRIVATE
+            imgproc_fpga.cpp
+    )
+endif()

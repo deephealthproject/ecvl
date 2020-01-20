@@ -110,3 +110,7 @@ if (${ECVL_DATASET_PARSER})
     target_link_libraries(ECVL_CORE PUBLIC yaml-cpp)
     message(STATUS "yaml-cpp added")
 endif()
+
+if(${ECVL_WITH_FPGA})
+    ecvl_update_3rdparty(xfopencv)
+endif()

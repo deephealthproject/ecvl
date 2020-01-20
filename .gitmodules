@@ -10,3 +10,6 @@
 [submodule "3rdparty/yaml-cpp"]
 	path = 3rdparty/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "3rdparty/xfopencv"]
+	path = 3rdparty/xfopencv
+	url = https://github.com/Xilinx/xfopencv

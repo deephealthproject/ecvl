@@ -13,6 +13,10 @@
 
 #include "ecvl/core/imgproc.h"
 
+#ifdef ECVL_WITH_FPGA
+#include "ecvl/core/imgproc_fpga.h"
+#endif
+
 #include <stdexcept>
 #include <random>
 #include <vector>
@@ -55,9 +59,15 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
             throw std::runtime_error("Number of dimensions specified doesn't match image dimensions");
         }
 
+#ifdef ECVL_WITH_FPGA
+        cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8U);
+        ResizeDim_FPGA(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
+        dst = ecvl::MatToImage(m);
+#else
         cv::Mat m;
         cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
         dst = ecvl::MatToImage(m);
+#endif
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED

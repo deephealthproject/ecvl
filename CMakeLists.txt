@@ -146,6 +146,7 @@ set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
 set(ECVL_DATASET_PARSER OFF CACHE BOOL "Whether to build yaml support or not")
 set(ECVL_WITH_OPENSLIDE OFF CACHE BOOL "Whether to build OpenSlide support or not")
+set(ECVL_WITH_FPGA OFF CACHE BOOL "Whether to build ECVL with FPGA support")
 find_package(Git QUIET)
 
 include("3rdparty/dicom.cmake")
@@ -270,6 +271,23 @@ if(${ECVL_WITH_OPENSLIDE})
     else()
         message(WARNING "Could NOT find OpenSlide")
     endif()
+endif()
+
+# uncomment this if host code needs access to Vivado HLS headers
+# (beware it will generate a conflict between the system-wide and vivado-provided OpenCV library)
+#set(VIVADO_DIR "/opt/Xilinx/Vivado/2019.1" CACHE PATH "Xilinx Vivado install directory (needed for FPGA support)")
+
+if(${ECVL_WITH_FPGA})
+    FIND_PACKAGE(OpenCL REQUIRED)
+    target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_FPGA)
+    target_include_directories(ECVL_CORE PUBLIC ${OpenCL_INCLUDE_DIRS})
+    target_link_libraries(ECVL_CORE PUBLIC ${OpenCL_LIBRARY})
+    # include xcl2.{cpp,hpp}
+    target_sources(ECVL_CORE PRIVATE "../3rdparty/xfopencv/examples_sdaccel/resize/xcl2.cpp")
+    target_include_directories(ECVL_CORE PRIVATE "3rdparty/xfopencv/examples_sdaccel/resize")
+    # include Vivado HLS types
+    #target_include_directories(ECVL_CORE PRIVATE "${VIVADO_DIR}/include")
+    message(STATUS "OpenCL added")
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
