@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -63,25 +63,14 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
             location = image_filename;
         }
     }
-    
+
     if (!filesystem::exists(location)) {
         cerr << ECVL_ERROR_MSG "image " << location << " does not exist" << endl;
         ECVL_ERROR_FILE_DOES_NOT_EXIST
     }
 
-    // Let's try with PNG and JPG
     status = ImRead(location, img);
 
-#ifdef ECVL_WITH_DICOM
-    if (!status) {
-        // DICOM
-        status = DicomRead(location, img);
-    }
-#endif
-    if (!status) {
-        // NIFTI
-        status = NiftiRead(location, img);
-    }
     if (!status) {
         // Image not correctly loaded
         cerr << ECVL_ERROR_MSG "Cannot load image '" + location.string() + "'.\n";
@@ -100,7 +89,6 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
     this->samples_.resize(node.size());
     int counter = -1;
     // RegEx which matchs URLs
-    //std::regex r{ R"((http(s)?://.)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))" };
     std::regex r{ R"(https?://.*)" };
 
     for (auto& n : node) {

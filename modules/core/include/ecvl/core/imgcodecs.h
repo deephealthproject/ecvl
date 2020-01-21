@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -34,7 +34,7 @@ enum class ImReadMode {
 
 /** @brief Loads an image from a file.
 
-The function ImRead loads an image from the specified file. If the image cannot
+The function ImRead loads an image from the specified file (jpg, png, dicom or nifti). If the image cannot
 be read for any reason, the function creates an empty Image and returns false.
 
 @anchor imread_path
