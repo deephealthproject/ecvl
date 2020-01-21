@@ -50,7 +50,7 @@ int main(void)
 
     // Read ECVL image from file
     Image img;
-    if (!ImRead("../data/test.jpg", img)) {
+    if (!ImRead("../examples/data/test.jpg", img)) {
         return EXIT_FAILURE;
     }
 
@@ -67,7 +67,7 @@ int main(void)
 
     //Create a thumbnail 32x32 from an Image
     Image img1, img2, img3, img4;
-    ImRead("../data/Kodak/img0003.png", img1);
+    ImRead("../examples/data/img0003.png", img1);
 
     cout << "Create a thumbnail 32x32 from an Image" << endl;
     CopyImage(View<DataType::uint8>(img1, { 0,0,0 }, { -1,-1,1 }), img2);
@@ -105,7 +105,7 @@ int main(void)
     cout << "Create an empty Image" << endl;
     img1.Create({ 3072, 2048, 3 }, DataType::uint8, "xyc", ColorType::BGR);
 
-    ImRead("../data/Kodak/img0015.png", img2);
+    ImRead("../examples/data/img0015.png", img2);
     CopyImage(img1, img3, DataType::uint16);
     CopyImage(img1, img4, DataType::int32);
 

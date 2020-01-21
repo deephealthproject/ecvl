@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -20,16 +20,15 @@ using namespace std;
 
 int main()
 {
-    filesystem::path filename("../data/hamamatsu/10-B1-TALG.ndpi");
+    filesystem::path filename("../examples/data/hamamatsu/test3-DAPI 2 (387).ndpi");
     Image img;
     vector<array<int, 2>> levels;
 
     // Get dimensions of each level
     OpenSlideGetLevels(filename, levels);
 
-    // For each level extracts a region of dimensions equal to those of the last level, starting from coordinates (0,0) 
-    for (int i = 0; i < levels.size(); ++i)
-    {
+    // For each level extracts a region of dimensions equal to those of the last level, starting from coordinates (0,0)
+    for (int i = 0; i < levels.size(); ++i) {
         vector<int> dims = {
             0, // x
             0, // y
@@ -45,15 +44,15 @@ int main()
         cout << "Writing 'hamamatsu_level_" << i << ".png'\n";
     }
 
-    filename = "../data/hamamatsu/11-B1TALG.ndpi";
+    filename = "../examples/data/hamamatsu/test3-FITC 2 (485).ndpi";
     // Image level to be extracted
     int level = 0;
     // Set the RegionOfInterest informations
     vector<int> dims = {
-        3386,  // x
-        36837, // y
-        3355,  // w
-        4447   // h
+        1000,  // x
+        1000, // y
+        500,  // w
+        500   // h
     };
     if (!OpenSlideRead(filename, img, level, dims)) {
         return EXIT_FAILURE;

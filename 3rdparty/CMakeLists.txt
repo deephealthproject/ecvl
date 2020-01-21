@@ -12,7 +12,7 @@ macro(ecvl_update_3rdparty SUBMODULE)
 endmacro()
 
 if(${ECVL_WITH_OPENGL})
-    if(${ECVL_BUILD_GUI})
+    if(${ECVL_BUILD_GUI} AND wxWidgets_FOUND)
         find_package(OpenGL)
         if(${OPENGL_FOUND})
             target_link_libraries(ECVL_GUI PUBLIC OpenGL::GL)
@@ -67,42 +67,11 @@ if(${ECVL_WITH_OPENGL})
             set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)" FORCE)
             message(STATUS "ECVL_WITH_OPENGL disabled: OpenGL not found")
         endif()
-    else(${ECVL_BUILD_GUI})
+    else()
         set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)" FORCE)
         message(STATUS "ECVL_WITH_OPENGL disabled: unmet dependency ECVL_GUI")
-    endif(${ECVL_BUILD_GUI})
-endif(${ECVL_WITH_OPENGL})
-
-# nifti
-# we use our own functions
-#set(CMAKE_FOLDER 3rdparty/nifti)
-#add_subdirectory(nifti)
-#target_link_libraries(ECVL_CORE PUBLIC nifti)
-#set(CMAKE_FOLDER 3rdparty)
-
-# prova externalproject
-
-#include(ExternalProject)
-#
-#ExternalProject_Add(nifti
-#  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/nifti
-#  BINARY_DIR ${CMAKE_BINARY_DIR}/nifti
-#  DOWNLOAD_COMMAND ""
-#  UPDATE_COMMAND ""
-#  CMAKE_CACHE_ARGS
-#    #-Foo_DIR:PATH=${CMAKE_BINARY_DIR}/Foo-build
-#    #-DAwesome_ENABLE_EXTRA:BOOL=${Awesome_ENABLE_EXTRA}
-#    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}/3rdparty
-#  #INSTALL_COMMAND ""
-#  )
-##return()
-#
-##add_subdirectory(nifti)
-#
-##find_package(NIFTI REQUIRED)
-#add_library(nifti IMPORTED STATIC)
-#target_link_libraries(ECVL_CORE PUBLIC nifti)
-
+    endif()
+endif()
 
 if(${ECVL_TESTS})
 
@@ -124,15 +93,16 @@ endif(${ECVL_TESTS})
 if (${ECVL_DATASET_PARSER})
     ecvl_update_3rdparty(yaml-cpp)
 
-    SET(APPLE_UNIVERSAL_BIN OFF CACHE INTERNAL "" FORCE)
-    SET(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_APPLE_UNIVERSAL_BIN OFF CACHE INTERNAL "" FORCE)
+    SET(YAML_BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
     SET(YAML_MSVC_SHARED_RT OFF CACHE INTERNAL "" FORCE)
-    #SET(MSVC_STHREADED_RT OFF CACHE INTERNAL "" FORCE)
     SET(YAML_CPP_BUILD_CONTRIB OFF CACHE INTERNAL "" FORCE)
     SET(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
     SET(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "" FORCE)
     SET(YAML_CPP_INSTALL ON CACHE INTERNAL "" FORCE)
-    SET(BUILD_TESTING OFF CACHE INTERNAL "" FORCE)
+    
+    mark_as_advanced(YAML_BUILD_SHARED_LIBS)
+    mark_as_advanced(YAML_MSVC_STHREADED_RT)
 
     set(CMAKE_FOLDER 3rdparty/yaml-cpp)
     add_subdirectory(yaml-cpp)

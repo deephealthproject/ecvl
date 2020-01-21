@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -32,14 +32,14 @@ int main()
         }
     }
 
-    ImWrite("./test.png", img);
+    ImWrite("example_imgcodecs.png", img);
 
-    if (!ImRead("./test.png", img)) {
+    if (!ImRead("example_imgcodecs.png", img)) {
         return EXIT_FAILURE;
     }
     cout << "Successfully read a color image" << endl;
 
-    if (!ImRead("./test.png", img, ImReadMode::GRAYSCALE)) {
+    if (!ImRead("example_imgcodecs.png", img, ImReadMode::GRAYSCALE)) {
         return EXIT_FAILURE;
     }
     cout << "Successfully read a grayscale image" << endl;

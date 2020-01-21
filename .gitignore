@@ -2,8 +2,7 @@
 /[Bb]uild*
 /[Bb]in*
 
-/data*
-/ecvl_data.zip
+**/data*
 
 #############################
 # Begin: Documentation      #

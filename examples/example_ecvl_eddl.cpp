@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -23,7 +23,7 @@ int main()
 {
     // Open an Image
     Image img;
-    if (!ImRead("../data/test.jpg", img)) {
+    if (!ImRead("../examples/data/test.jpg", img)) {
         return EXIT_FAILURE;
     }
 
@@ -47,7 +47,7 @@ int main()
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
-    DLDataset d("mnist/mnist.yml", batch_size, { 28,56 }, ColorType::GRAY);
+    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, { 28,28 }, ColorType::GRAY);
 
     // Allocate memory for x_train and y_train tensors
     cout << "Create x_train and y_train" << endl;

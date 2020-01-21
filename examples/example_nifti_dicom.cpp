@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -22,7 +22,7 @@ int main()
     // Open a nifti image
     Image nifti_image;
     cout << "Reading a nifti Image" << endl;
-    if (!NiftiRead("../data/nifti/LR_nifti.nii", nifti_image)) {
+    if (!NiftiRead("../examples/data/nifti/LR_nifti.nii", nifti_image)) {
         return EXIT_FAILURE;
     }
 
@@ -38,7 +38,7 @@ int main()
     // Open a dicom image
     Image dicom_image;
     cout << "Reading a dicom Image" << endl;
-    if (!DicomRead("../data/isic_dicom/ISIC_0000008.dcm", dicom_image)) {
+    if (!DicomRead("../examples/data/dicom/ISIC_0000008.dcm", dicom_image)) {
         return EXIT_FAILURE;
     }
 
@@ -57,7 +57,7 @@ int main()
 
     // Any Image can be saved in the nifti or dicom format
     Image img;
-    if (!ImRead("../data/test.jpg", img)) {
+    if (!ImRead("../examples/data/test.jpg", img)) {
         return EXIT_FAILURE;
     }
     Mirror2D(img, img);

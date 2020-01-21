@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -21,7 +21,7 @@ int main()
 {
     // Open an Image
     Image img1, tmp;
-    if (!ImRead("../data/test.jpg", img1)) {
+    if (!ImRead("../examples/data/test.jpg", img1)) {
         return EXIT_FAILURE;
     }
 
@@ -68,7 +68,7 @@ int main()
     // Calculate the Otsu thresholding value (the Image must be GRAY)
     cout << "Executing OtsuThreshold" << endl;
     double thresh = OtsuThreshold(tmp);
-    
+
     //Apply a fixed threshold to an input Image (optional: ThresholdingType)
     double maxval = 255;
     cout << "Executing Threshold" << endl;
@@ -114,7 +114,7 @@ int main()
     cout << "Executing AdditiveLaplaceNoise" << endl;
     AdditiveLaplaceNoise(img1, tmp, stddev);
     ImWrite("img_laplacenoise.jpg", tmp);
-    
+
     // Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma)
     int gamma = 3;
     cout << "Executing GammaContrast" << endl;

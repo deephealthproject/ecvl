@@ -87,6 +87,8 @@ if(${ECVL_WITH_DICOM})
     SET(WITH_SNDFILEINC "" CACHE INTERNAL "" FORCE)
     SET(WITH_ZLIBINC "" CACHE INTERNAL "" FORCE)
     SET(DCMTK_ENABLE_LFS lfs CACHE INTERNAL "" FORCE)
+    mark_as_advanced(DCMTK_ENABLE_LFS)
+    mark_as_advanced(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL)
 
     set(CMAKE_FOLDER 3rdparty/dcmtk)
     add_subdirectory(3rdparty/dcmtk)

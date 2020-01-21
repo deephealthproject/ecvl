@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -21,14 +21,14 @@ int main()
 {
     // Open an Image
     Image img;
-    if (!ImRead("../data/test.jpg", img)) {
+    if (!ImRead("../examples/data/test.jpg", img)) {
         return EXIT_FAILURE;
     }
     ImWrite("img_orig.jpg", img);
 
     // Display an Image in a window
     ImShow(img);
-    
+
     // Create a black Image 1000x1000
     Image black({ 1000, 1000, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
     auto i = black.Begin<uint8_t>(), e = black.End<uint8_t>();

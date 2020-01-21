@@ -1,7 +1,7 @@
 # ECVL - European Computer Vision Library
 # Version: 0.1
 # copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-# Authors: 
+# Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
 #    Michele Cancilla (michele.cancilla@unimore.it)
@@ -79,7 +79,6 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: static/dinamic runtime
 #--------------------------------------------------------------------------------------------------------
@@ -105,6 +104,7 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------
+set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
 set(ECVL_TESTS ON CACHE BOOL "Whether to build ECVL tests or not")
 if(${ECVL_TESTS})
     add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
@@ -125,7 +125,6 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------
-
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: OpenCV
@@ -148,60 +147,17 @@ set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (req
 set(ECVL_DATASET_PARSER OFF CACHE BOOL "Whether to build yaml support or not")
 set(ECVL_WITH_OPENSLIDE OFF CACHE BOOL "Whether to build OpenSlide support or not")
 find_package(Git QUIET)
+
+include("3rdparty/dicom.cmake")
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
 #--------------------------------------------------------------------------------------------------------
 
-
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: download and install GTest
-#--------------------------------------------------------------------------------------------------------
-#set(CMAKE_FOLDER GTest)
-#configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-#execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-#  RESULT_VARIABLE result
-#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-#if(result)
-#  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-#endif()
-#execute_process(COMMAND ${CMAKE_COMMAND} --build .
-#  RESULT_VARIABLE result
-#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
-#if(result)
-#  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-#endif()
-#
-## Prevent overriding the parent project's compiler/linker
-## settings on Windows
-#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-#
-## Add googletest directly to our build. This defines
-## the gtest and gtest_main targets.
-#add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-#                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-#                 EXCLUDE_FROM_ALL)
-#
-## The gtest/gtest_main targets carry header search path
-## dependencies automatically when using CMake 2.8.11 or
-## later. Otherwise we have to add them here ourselves.
-#if (CMAKE_VERSION VERSION_LESS 2.8.11)
-#  include_directories("${gtest_SOURCE_DIR}/include")
-#endif()
-#
-#include(GoogleTest)
-#set(CMAKE_FOLDER "")
-#--------------------------------------------------------------------------------------------------------
-# END: download and install GTest
-#--------------------------------------------------------------------------------------------------------
-
-include("3rdparty/dicom.cmake")
-
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
-set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
-set(ECVL_BUILD_EXAMPLES ON CACHE BOOL "Whether to build ECVL examples or not")
-set(ECVL_BUILD_GUI ON CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
+set(ECVL_BUILD_EXAMPLES OFF CACHE BOOL "Whether to build ECVL examples or not")
+set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
 set(ECVL_BUILD_EDDL ON CACHE BOOL "Whether to build ECVL_EDDL or not (requires eddl)")
 
 if(ECVL_BUILD_GUI)
@@ -224,8 +180,7 @@ if(ECVL_BUILD_GUI)
             list(APPEND ECVL_MODULES "ECVL_GUI")
             list(APPEND ECVL_MODULES_DIRS "gui")
         else()
-            set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
-            message(STATUS "ECVL_GUI disabled: unmet dependency wxWidgets")
+            message(WARNING "Could NOT find wxWidgets")
         endif()
     else()
         set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)" FORCE)
@@ -266,9 +221,6 @@ if(ECVL_BUILD_EDDL)
             set_target_properties(ECVL_EDDL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDL")
             list(APPEND ECVL_MODULES_DIRS "eddl")
-        else()
-            set(ECVL_BUILD_EDDL OFF CACHE BOOL "Whether to build ECVL_EDDL or not (requires eddl)" FORCE)
-            message(STATUS "ECVL_EDDL disabled: unmet dependency eddl")
         endif()
     else()
         set(ECVL_BUILD_EDDL OFF CACHE BOOL "Whether to build ECVL_EDDL or not (requires eddl)" FORCE)
@@ -295,7 +247,6 @@ message(STATUS "Modules to be built: ${ECVL_MODULES}")
 # END: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
 
-
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
@@ -313,16 +264,19 @@ endif(${ECVL_WITH_OPENGL})
 
 if(${ECVL_WITH_OPENSLIDE})
     find_path(OPENSLIDE_INCLUDE_DIRECTORIES openslide.h PATH_SUFFIXES openslide DOC "Path to directory containing openslide.h")
-    target_include_directories(ECVL_CORE PUBLIC ${OPENSLIDE_INCLUDE_DIRECTORIES})
     find_library(OPENSLIDE_LIBRARIES openslide DOC "Path to libopenslide.lib")
-    target_link_libraries(ECVL_CORE PUBLIC ${OPENSLIDE_LIBRARIES})
-    target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_OPENSLIDE)
-    target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_openslide.h" "../modules/core/src/support_openslide.cpp")
+    if(OPENSLIDE_LIBRARIES AND OPENSLIDE_INCLUDE_DIRECTORIES)
+        target_include_directories(ECVL_CORE PUBLIC ${OPENSLIDE_INCLUDE_DIRECTORIES})
+        target_link_libraries(ECVL_CORE PUBLIC ${OPENSLIDE_LIBRARIES})
+        target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_OPENSLIDE)
+        target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_openslide.h" "../modules/core/src/support_openslide.cpp")
+    else()
+        message(WARNING "Could NOT find OpenSlide")
+    endif()
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
 #--------------------------------------------------------------------------------------------------------
-
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL tests
