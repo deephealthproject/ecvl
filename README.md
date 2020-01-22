@@ -15,13 +15,57 @@
 The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/). It is automatically updated at each commit/push to the master branch.
 
 ## Requirements
-- CMake 3.13 or later;
-- C++ Compiler with C++17 support (e.g. gcc-8 or later, Visual Studio 2017 or later);
-- OpenCV 3.0 or later (https://opencv.org).
+- CMake 3.13 or later
+- C++ Compiler with C++17 support (e.g. gcc-8 or later, Visual Studio 2017 or later)
+- [OpenCV](https://opencv.org) 3.0 or later
 
 ### Optional
-- wxWidgets (https://www.wxwidgets.org/), required by the ECVL GUI module;
-- OpenGL 3.3 or later, required by the 3D viewer.
+- [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled
+  - OpenGL 3.3 or later, required by the 3D viewer enabled by `ECVL_BUILD_GUI` flag
+- [OpenSlide](https://github.com/openslide/openslide), required by `ECVL_WITH_OPENSLIDE` flag
+
+## Installation
+Clone and install ECVL with:
+```bash
+git clone https://github.com/deephealthproject/ecvl.git
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+make install
+```
+
+CMake flags and options:
+- `-DECVL_TESTS` (default `ON`): Compiles tests
+- `-DECVL_BUILD_EXAMPLES` (default `OFF`): Compiles examples and downloads examples data 
+- `-DECVL_DATASET_PARSER` (default `OFF`): Compiles dataset parser module
+- `-DECVL_BUILD_EDDL` (default `ON`): Compiles eddl integration module (it automatically enables `ECVL_DATASET_PARSER` option)
+- `-DECVL_BUILD_GUI` (default `OFF`): Compiles GUI module
+- `-DECVL_WITH_OPENGL` (default `OFF`): Enables 3D GUI functionalities
+- `-DECVL_WITH_DICOM` (default `OFF`): Enables DICOM format support
+- `-DECVL_WITH_OPENSLIDE` (default `OFF`): Enables OpenSlide whole-slide image support
+
+#### ECVL installation example
+ECVL installation with all options enabled and required libraries installed in "non-standard" system directories:
+```bash
+git clone https://github.com/deephealthproject/ecvl.git
+mkdir build && cd build
+cmake \
+  -DECVL_BUILD_EXAMPLES=ON \
+  -DECVL_BUILD_EDDL=ON \
+  -DECVL_DATASET_PARSER=ON \
+  -DECVL_BUILD_GUI=ON \
+  -DECVL_WITH_OPENGL=ON \
+  -DECVL_WITH_DICOM=ON \
+  -DECVL_WITH_OPENSLIDE=ON \
+  -DCMAKE_INSTALL_PREFIX=install \
+  -DOpenCV_DIR=/home/<user>/opencv/build \
+  -Deddl_DIR=/home/<user>/eddl/build/cmake \
+  -DOPENSLIDE_INCLUDE_DIRECTORIES=/home/<user>/openslide_src/include/openslide \
+  -DOPENSLIDE_LIBRARIES=/home/<user>/openslide_src/lib/libopenslide.so \
+  -DwxWidgets_CONFIG_EXECUTABLE=/home/<user>/wxWidgets/build/install/bin/wx-config ..
+make -j$(nproc)
+make install
+```
 
 ## ImageWatch plugin for Microsoft Visual Studio
 
@@ -45,7 +89,6 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Standard Formats | :heavy_check_mark: | :x: | :x: |
 | NIfTI | :heavy_check_mark: | :x: | :x: |
 | DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
 
 ### Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
