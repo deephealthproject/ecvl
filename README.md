@@ -99,26 +99,42 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 | Div | :heavy_check_mark: | :x: | :x: |
 | Neg | :heavy_check_mark: | :x: | :x: |
 
+### Image Manipulation
+| Functionality | CPU | GPU | FPGA |
+|--|--|--|--|
+| ChangeColorSpace | :heavy_check_mark: | :x: | :x: |
+| Flip | :heavy_check_mark: | :x: | :x: |
+| HConcat | :heavy_check_mark: | :x: | :x: |
+| Mirror | :heavy_check_mark: | :x: | :x: |
+| ResizeDim | :heavy_check_mark: | :x: | :x: |
+| ResizeScale | :heavy_check_mark: | :x: | :x: |
+| Rotate | :heavy_check_mark: | :x: | :x: |
+| RotateFullImage | :heavy_check_mark: | :x: | :x: |
+| Stack | :heavy_check_mark: | :x: | :x: |
+| VConcat | :heavy_check_mark: | :x: | :x: |
 
 ### Pre- Post-processing and Augmentation
 | Functionality | CPU | GPU | FPGA |
 |--|--|--|--|
-| Channel Shuffle | :x: | :x: | :x: |
-| Add | :heavy_check_mark: | :x: | :x: |
 | Additive Gaussian Noise | :x: | :x: | :x: |
 | Additive Laplace Noise | :heavy_check_mark: | :x: | :x: |
-| Additive Poisson Noise | :x: | :x: | :x: |
-| Impulse Noise | :x: | :x: | :x: |
-| Mul | :x: | :x: | :x: |
-| Dropout | :x: | :x: | :x: |
-| Coarse Dropout | :heavy_check_mark: | :x: | :x: |
-| Salt And Pepper | :x: | :x: | :x: |
-| Salt | :x: | :x: | :x: |
-| Pepper | :x: | :x: | :x: |
-| Invert | :x: | :x: | :x: |
-| Gaussian Blur | :heavy_check_mark: | :x: | :x: |
+| Additive Poisson Noise | :heavy_check_mark: | :x: | :x: |
 | Average Blur | :x: | :x: | :x: |
-| Median Blur | :x: | :x: | :x: |
-| Histogram Equalization | :x: | :x: | :x: |
-| Flip | :heavy_check_mark: | :x: | :x: |
+| Channel Shuffle | :x: | :x: | :x: |
+| Coarse Dropout | :heavy_check_mark: | :x: | :x: |
+| Connected Components Labeling | :heavy_check_mark: | :x: | :x: |
+| Dropout | :x: | :x: | :x: |
+| Filter2D | :heavy_check_mark: | :x: | :x: |
+| FindContours | :heavy_check_mark: | :x: | :x: |
 | Gamma Contrast | :heavy_check_mark: | :x: | :x: |
+| Gaussian Blur | :heavy_check_mark: | :x: | :x: |
+| Histogram Equalization | :x: | :x: | :x: |
+| Impulse Noise | :x: | :x: | :x: |
+| Integral Image | :heavy_check_mark: | :x: | :x: |
+| Median Blur | :x: | :x: | :x: |
+| Non Maxima Suppression | :heavy_check_mark: | :x: | :x: |
+| Pepper | :x: | :x: | :x: |
+| Salt | :x: | :x: | :x: |
+| Salt And Pepper | :x: | :x: | :x: |
+| SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
+| Threshold | :heavy_check_mark: | :x: | :x: |
