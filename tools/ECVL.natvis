@@ -11,23 +11,23 @@
   <Type Name="ecvl::ContiguousViewXYC">
     <UIVisualizer ServiceId="{A452AFEA-3DF6-46BB-9177-C0B08F318025}" Id="1" />
   </Type>
-  
+
   <Type Name="ecvl::Image">
     <Intrinsic Name="dims_size" Expression="dims_._Mypair._Myval2._Mylast - dims_._Mypair._Myval2._Myfirst" />
-  
+
     <DisplayString Condition="dims_size()==1">
-	{{{elemtype_}, {dims_[0]}, {channels_}, {colortype_}}}
+      {{{elemtype_}, {dims_[0]}, {channels_}, {colortype_}}}
     </DisplayString>
     <DisplayString Condition="dims_size()==2">
-	{{{elemtype_}, {dims_[0]} x {dims_[1]}, {channels_}, {colortype_}}}
+      {{{elemtype_}, {dims_[0]} x {dims_[1]}, {channels_}, {colortype_}}}
     </DisplayString>
     <DisplayString Condition="dims_size()==3">
-	{{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {channels_}, {colortype_}}}
+      {{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]}, {channels_}, {colortype_}}}
     </DisplayString>
     <DisplayString Condition="dims_size()==4">
-	{{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]} x {dims_[3]}, {channels_}, {colortype_}}}
+      {{{elemtype_}, {dims_[0]} x {dims_[1]} x {dims_[2]} x {dims_[3]}, {channels_}, {colortype_}}}
     </DisplayString>
-    
+
     <Expand>
       <Synthetic Name="[type]" Condition="elemtype_==DataType::uint8">
         <DisplayString>UINT8</DisplayString>
@@ -60,7 +60,7 @@
         <DisplayString>RGB</DisplayString>
       </Synthetic>
       <!-- END: set channels for known ColorType Images -->
-      
+
       <!-- BEGIN: to handle "xyc" Images -->
       <Item Name="[width]"  Condition="channels_[2]=='c'">dims_[0]</Item>
       <Item Name="[height]" Condition="channels_[2]=='c'">dims_[1]</Item>
@@ -68,12 +68,12 @@
       <Item Name="[stride]" Condition="channels_[2]=='c'">strides_[1]</Item>
       <Synthetic Name="[data]" Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[2]=='c'">
         <DisplayString>
-	      {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
-	    </DisplayString>
+          {(void*)(data_+0*strides_[2])};{(void*)(data_+1*strides_[2])};{(void*)(data_+2*strides_[2])}
+        </DisplayString>
       </Synthetic>
       <Item Name="[data]" Condition="colortype_==ColorType::GRAY &amp;&amp; channels_[2]=='c'">data_</Item>
       <!-- END: to handle "xyc" Images -->
-      
+
       <!-- BEGIN: to handle "cxy" Images -->
       <Item Name="[width]"  Condition="channels_[0]=='c'">dims_[1]</Item>
       <Item Name="[height]" Condition="channels_[0]=='c'">dims_[2]</Item>
@@ -88,7 +88,11 @@
       <Item Name="[depth]" Condition="channels_[3]=='c'">dims_[2]</Item>
       <Item Name="[planes]" Condition="channels_[3]=='c'">dims_[3]</Item>
       <Item Name="[stride]" Condition="channels_[3]=='c'">strides_[1]</Item>
-      <Item Name="[data]"   Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[3]=='c'">data_</Item>
+      <Synthetic Name="[data]" Condition="(colortype_==ColorType::BGR || colortype_==ColorType::RGB) &amp;&amp; channels_[3]=='c'">
+        <DisplayString>
+          {(void*)(data_+0*strides_[3])};{(void*)(data_+1*strides_[3])};{(void*)(data_+2*strides_[3])}
+        </DisplayString>
+      </Synthetic>
       <Item Name="[data]"   Condition="colortype_==ColorType::GRAY &amp;&amp; channels_[3]=='c'">data_</Item>
       <!-- END: to handle "xyzc" Images -->
 
