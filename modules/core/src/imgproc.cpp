@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -13,8 +13,9 @@
 
 #include "ecvl/core/imgproc.h"
 
-#include <stdexcept>
+#include <iostream>
 #include <random>
+#include <stdexcept>
 #include <vector>
 
 #include <opencv2/imgproc.hpp>
@@ -864,7 +865,6 @@ void NonMaximaSuppression(const Image& src, Image& dst)
                 cur < vsrc(x + 1, y + 1, 0)) {
                 continue;
             }
-
             vout(x, y, 0) = cur;
         }
     }
@@ -1289,6 +1289,117 @@ void FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
             t[j] = Point2i{ cv_contours[i][j].x, cv_contours[i][j].y };
         }
         contours[i] = t;
+    }
+}
+
+void Stack(const vector<Image>& src, Image& dst)
+{
+    const int n_images = static_cast<int>(src.size());
+    const auto& src_0 = src[0];
+
+    // Check if src images have the same dimensions
+    for (int i = 0; i < n_images; ++i) {
+        if (src[i].IsEmpty()) {
+            ECVL_ERROR_EMPTY_IMAGE
+        }
+        if (src_0.dims_ != src[i].dims_) {
+            cerr << ECVL_ERROR_MSG "Cannot stack images with different dimensions.\n";
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
+    }
+
+    // If src is a vector of xyc Image
+    if (src_0.channels_ == "xyc") {
+        Image tmp({ src_0.dims_[0], src_0.dims_[1], n_images, src_0.dims_[2] }, src_0.elemtype_, "xyzc", src_0.colortype_);
+
+        for (int i = 0; i < n_images; ++i) {
+            for (int j = 0; j < src[i].Channels(); ++j) {
+                memcpy(tmp.data_ + src[i].strides_[2] * (i + j * n_images), src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
+            }
+        }
+        dst = std::move(tmp);
+    }
+    else {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+}
+
+void HConcat(const vector<Image>& src, Image& dst)
+{
+    const int n_images = static_cast<int>(src.size());
+    const auto& src_0 = src[0];
+
+    // If src is a vector of xyc Image
+    if (src_0.channels_ == "xyc") {
+        // Check if src images have the same y or c dimensions
+        for (int i = 0; i < n_images; ++i) {
+            if (src[i].IsEmpty()) {
+                ECVL_ERROR_EMPTY_IMAGE
+            }
+            if (src_0.dims_[1] != src[i].dims_[1] || src_0.dims_[2] != src[i].dims_[2]) {
+                cerr << ECVL_ERROR_MSG "Cannot concatenate images with different dimensions.\n";
+                ECVL_ERROR_NOT_IMPLEMENTED
+            }
+        }
+
+        vector<int> cumul_strides;
+        int sum = 0;
+        for (int i = 0; i < n_images; ++i) {
+            cumul_strides.push_back(sum);
+            sum += src[i].strides_[1];
+        }
+        Image tmp({ sum, src_0.dims_[1], src_0.dims_[2] }, src_0.elemtype_, src_0.channels_, src_0.colortype_);
+
+        // Fill each tmp color plane by row
+        for (int i = 0; i < src_0.Channels(); ++i) {
+            for (int r = 0; r < src_0.dims_[1]; ++r) {
+                for (int c = 0; c < n_images; ++c) {
+                    memcpy(tmp.data_ + cumul_strides[c] + r * tmp.strides_[1] + i * tmp.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
+                }
+            }
+        }
+        dst = std::move(tmp);
+    }
+    else {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+}
+
+void VConcat(const vector<Image>& src, Image& dst)
+{
+    const int n_images = static_cast<int>(src.size());
+    const auto& src_0 = src[0];
+
+    // If src is a vector of xyc Image
+    if (src_0.channels_ == "xyc") {
+        // Check if src images have the same x or c dimensions
+        for (int i = 0; i < n_images; ++i) {
+            if (src[i].IsEmpty()) {
+                ECVL_ERROR_EMPTY_IMAGE
+            }
+            if (src_0.dims_[0] != src[i].dims_[0] || src_0.dims_[2] != src[i].dims_[2]) {
+                cerr << ECVL_ERROR_MSG "Cannot concatenate images with different dimensions.\n";
+                ECVL_ERROR_NOT_IMPLEMENTED
+            }
+        }
+        vector<int> cumul_strides;
+        int sum = 0;
+        for (int i = 0; i < n_images; ++i) {
+            cumul_strides.push_back(sum);
+            sum += src[i].strides_[2];
+        }
+        Image tmp({ src_0.dims_[0], sum / src_0.strides_[1], src_0.dims_[2] }, src_0.elemtype_, src_0.channels_, src_0.colortype_);
+
+        // Fill each tmp color plane concatenating every src color plane
+        for (int i = 0; i < src_0.Channels(); ++i) {
+            for (int c = 0; c < n_images; ++c) {
+                memcpy(tmp.data_ + cumul_strides[c] + i * tmp.strides_[2], src[c].data_ + i * src[c].strides_[2], src[c].strides_[2]);
+            }
+        }
+        dst = std::move(tmp);
+    }
+    else {
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 } // namespace ecvl

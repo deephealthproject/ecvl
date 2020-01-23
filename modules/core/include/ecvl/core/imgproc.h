@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -192,7 +192,7 @@ void SeparableFilter2D(const Image& src, Image& dst, const std::vector<double>& 
 @param[in] sizeX Horizontal size of the kernel. Must be positive and odd.
 @param[in] sizeY Vertical size of the kernel. Must be positive and odd.
 @param[in] sigmaX Gaussian kernel standard deviation in X direction.
-@param[in] sigmaY Gaussian kernel standard deviation in Y direction. If zero, sigmaX is used. If both are zero, they are calculted from sizeX and sizeY.
+@param[in] sigmaY Gaussian kernel standard deviation in Y direction. If zero, sigmaX is used. If both are zero, they are calculated from sizeX and sizeY.
 
 */
 void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY = 0);
@@ -257,10 +257,6 @@ void NonMaximaSuppression(const Image& src, Image& dst);
 */
 std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 
-/** @example example_imgproc.cpp
- Imgproc example.
-*/
-
 /** @brief Labels connected components in an binary Image
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
@@ -271,9 +267,34 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst);
 /** @brief Finds contours in a binary image
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
-@param[out] dst Output countours.
+@param[out] dst Output contours.
 */
 void FindContours(const Image& src, std::vector<std::vector<Point2i>>& contours);
+
+/** @brief Stack a sequence of Images along a new depth dimension (images dimensions must match)
+
+@param[in] src vector of input Images. It must be with channels "xyc".
+@param[out] dst Output Image.
+*/
+void Stack(const std::vector<Image>& src, Image& dst);
+
+/** @brief Horizontal concatenation of images (with the same number of rows)
+
+@param[in] src vector of input Images. It must be with channels "xyc".
+@param[out] dst Output Image.
+*/
+void HConcat(const std::vector<Image>& src, Image& dst);
+
+/** @brief Vertical concatenation of images (with the same number of columns)
+
+@param[in] src vector of input Images. It must be with channels "xyc".
+@param[out] dst Output Image.
+*/
+void VConcat(const std::vector<Image>& src, Image& dst);
+
+/** @example example_imgproc.cpp
+ Imgproc example.
+*/
 } // namespace ecvl
 
 #endif // ECVL_IMGPROC_H_

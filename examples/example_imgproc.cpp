@@ -20,7 +20,7 @@ using namespace std;
 int main()
 {
     // Open an Image
-    Image img1, tmp;
+    Image img1, img2, tmp;
     if (!ImRead("../examples/data/test.jpg", img1)) {
         return EXIT_FAILURE;
     }
@@ -128,6 +128,36 @@ int main()
     cout << "Executing CoarseDropout" << endl;
     CoarseDropout(img1, tmp, prob, drop_size, per_channel);
     ImWrite("img_coarsedropout.jpg", tmp);
+
+    //Horizontal concatenation of images
+    vector<Image> images;
+    if (!ImRead("../examples/data/img0003.png", img1)) {
+        return EXIT_FAILURE;
+    }
+    if (!ImRead("../examples/data/img0015.png", img2)) {
+        return EXIT_FAILURE;
+    }
+    images.push_back(img1);
+    images.push_back(img2);
+    images.push_back(img1);
+    images.push_back(img2);
+
+    ResizeDim(images[1], images[1], { images[1].dims_[0] / 2, images[1].dims_[1] });
+    cout << "Executing HConcat" << endl;
+    HConcat(images, tmp);
+    ImWrite("img_hconcat.jpg", tmp);
+
+    images.erase(images.begin() + 1);
+    // Vertical concatenation of different images
+    ResizeDim(images[1], images[1], { images[1].dims_[0] , images[1].dims_[1] / 2 });
+    cout << "Executing VConcat" << endl;
+    VConcat(images, tmp);
+    ImWrite("img_vconcat.jpg", tmp);
+    images.erase(images.begin() + 1);
+
+    // Stack a sequence of Images along a new depth dimension (xyc -> xyzc)
+    cout << "Executing Stack of images xyc creating a xyzc Image" << endl;
+    Stack(images, tmp);
 
     return EXIT_SUCCESS;
 }
