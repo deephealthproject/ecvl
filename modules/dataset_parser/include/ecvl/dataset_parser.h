@@ -33,7 +33,7 @@ This class provides the information to describe a dataset sample.
 */
 class Sample {
 public:
-    std::filesystem::path location_; /**< @brief Absolute path of the sample. */
+    std::vector<std::filesystem::path> location_; /**< @brief Absolute path of the sample. */
     std::optional<std::vector<int>> label_; /**< @brief Vector of sample labels. */
     std::optional<std::filesystem::path> label_path_; /**< @brief Absolute path of sample ground truth. */
     std::optional<std::map<int, std::string>> values_; /**< @brief Map (`map<feature-index,feature-value>`) which stores the features of a sample. */

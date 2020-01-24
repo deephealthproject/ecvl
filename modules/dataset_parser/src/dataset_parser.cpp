@@ -47,39 +47,49 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
 {
     bool status;
     Image img;
+    vector<Image> images;
     static std::regex r{ R"(https?://.*)" };
 
-    auto location = is_gt ? label_path_.value() : location_;
-    if (std::regex_match(location.string(), r)) {
-        // TODO: Use libcurl instead of system call
-        path image_filename = location.filename();
-        string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
-        if (system(cmd.c_str()) != 0) {
-            // Failed to download image
-            cerr << ECVL_ERROR_MSG "Cannot download image '" + location.string() + "'.\n";
-            ECVL_ERROR_CANNOT_LOAD_FROM_URL
+    for (int i = 0; i < location_.size(); ++i) {
+        auto location = is_gt ? label_path_.value() : location_[i];
+        if (std::regex_match(location.string(), r)) {
+            // TODO: Use libcurl instead of system call
+            path image_filename = location.filename();
+            string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
+            if (system(cmd.c_str()) != 0) {
+                // Failed to download image
+                cerr << ECVL_ERROR_MSG "Cannot download image '" + location.string() + "'.\n";
+                ECVL_ERROR_CANNOT_LOAD_FROM_URL
+            }
+            else {
+                location = image_filename;
+            }
         }
-        else {
-            location = image_filename;
+
+        if (!filesystem::exists(location)) {
+            cerr << ECVL_ERROR_MSG "image " << location << " does not exist" << endl;
+            ECVL_ERROR_FILE_DOES_NOT_EXIST
         }
+
+        status = ImRead(location, img);
+
+        if (!status) {
+            // Image not correctly loaded
+            cerr << ECVL_ERROR_MSG "Cannot load image '" + location.string() + "'.\n";
+            ECVL_ERROR_CANNOT_LOAD_IMAGE
+        }
+
+        if (img.colortype_ != ctype) {
+            ChangeColorSpace(img, img, ctype);
+        }
+
+        images.push_back(img);
     }
 
-    if (!filesystem::exists(location)) {
-        cerr << ECVL_ERROR_MSG "image " << location << " does not exist" << endl;
-        ECVL_ERROR_FILE_DOES_NOT_EXIST
+    if (images.size() > 1) {
+        Stack(images, img);
     }
 
-    status = ImRead(location, img);
-
-    if (!status) {
-        // Image not correctly loaded
-        cerr << ECVL_ERROR_MSG "Cannot load image '" + location.string() + "'.\n";
-        ECVL_ERROR_CANNOT_LOAD_IMAGE
-    }
-
-    if (img.colortype_ != ctype) {
-        ChangeColorSpace(img, img, ctype);
-    }
     return img;
 }
 
@@ -94,12 +104,29 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
     for (auto& n : node) {
         // iterate over images
         auto& sample = this->samples_[++counter];
+        sample.location_ = vector<path>();
+
         if (n.IsScalar()) {
             // locations is provided as scalar without label or values
-            sample.location_ = n.as<string>();
+            sample.location_.push_back(n.as<string>());
         }
-        else {
-            sample.location_ = n["location"].as<string>();
+        else if (n.IsSequence()) {
+            sample.location_.resize(n.size());
+            for (int i = 0; i < n.size(); ++i) {
+                sample.location_[i] = n[i].as<string>();
+            }
+        }
+        else { // location optionally has labels and values
+            if (n["location"].IsSequence()) {
+                // values is a list
+                sample.location_.resize(n["location"].size());
+                for (int i = 0; i < n["location"].size(); ++i) {
+                    sample.location_[i] = n["location"][i].as<string>();
+                }
+            }
+            else {
+                sample.location_.push_back(n["location"].as<string>());
+            }
 
             // Load labels
             if (n["label"].IsDefined()) {
@@ -135,20 +162,23 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
                 }
             }
         }
-        if (sample.location_.is_relative() && !std::regex_match(sample.location_.string(), r)) {
-            // Convert relative path to absolute
-            sample.location_ = root_path / sample.location_;
-            if (sample.label_path_.has_value()) {
-                sample.label_path_ = root_path / sample.label_path_.value();
+
+        for (int i = 0; i < sample.location_.size(); ++i) {
+            if (sample.location_[i].is_relative() && !std::regex_match(sample.location_[i].string(), r)) {
+                // Convert relative path to absolute
+                sample.location_[i] = root_path / sample.location_[i];
+                if (sample.label_path_.has_value()) {
+                    sample.label_path_ = root_path / sample.label_path_.value();
+                }
             }
-        }
-        if (verify) {
-            if (!filesystem::exists(sample.location_)) {
-                cerr << ECVL_WARNING_MSG "sample file " << sample.location_ << " does not exist" << endl;
-            }
-            if (sample.label_path_.has_value()) {
-                if (!filesystem::exists(sample.label_path_.value())) {
-                    cerr << ECVL_WARNING_MSG "label file " << sample.label_path_.value() << " does not exist" << endl;
+            if (verify) {
+                if (!filesystem::exists(sample.location_[i])) {
+                    cerr << ECVL_WARNING_MSG "sample file " << sample.location_[i] << " does not exist" << endl;
+                }
+                if (sample.label_path_.has_value()) {
+                    if (!filesystem::exists(sample.label_path_.value())) {
+                        cerr << ECVL_WARNING_MSG "label file " << sample.label_path_.value() << " does not exist" << endl;
+                    }
                 }
             }
         }

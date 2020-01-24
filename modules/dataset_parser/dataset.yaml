@@ -49,6 +49,10 @@ images:
   - location: image_path_and_name_5
     label: path_to_ground_truth_image
 
+# Locations can also be an array of images with the same dimensions which must be merged into a single one...
+  - location: [image_path_and_name_plane_1, image_path_and_name_plane_2, image_path_and_name_plane_3]
+    label: 0
+
 # Remember that labels are optional
   - location: image_path_and_name_6
   - location: image_path_and_name_7
@@ -56,6 +60,7 @@ images:
 # When only the location is used, it can be omitted
   - image_path_and_name_8
   - image_path_and_name_9
+  - [image_path_and_name_plane_4, image_path_and_name_plane_5, image_path_and_name_plane_6, image_path_and_name_plane_7]
 
 # Split (optional) is a dictionary with three arrays called
 # training, validation, and test. They list the indexes of the images
