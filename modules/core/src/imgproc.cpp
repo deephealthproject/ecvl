@@ -60,8 +60,9 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
         }
 
 #ifdef ECVL_WITH_FPGA
-        cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8U);
-        ResizeDim_FPGA(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
+        cv::Mat src_mat = ImageToMat(src);
+        cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(src_mat.channels()));
+        ResizeDim_FPGA(src_mat, m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
         dst = ecvl::MatToImage(m);
 #else
         cv::Mat m;

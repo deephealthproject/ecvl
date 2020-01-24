@@ -2,9 +2,8 @@
 
 #include <vector>
 
-#include <CL/cl.h>
+#define CL_HPP_ENABLE_EXCEPTIONS
 #include "xcl2.hpp"
-//#include "ap_int.h"
 
 namespace ecvl {
 
@@ -30,12 +29,11 @@ void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp
     cl::Program program(context, devices, bins);
     cl::Kernel krnl(program,"resize_accel");
 
-    cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols); // TODO check src datatype
-    cl::Buffer imageFromDevice(context,CL_MEM_WRITE_ONLY, dsize.area());
+    cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels()); // TODO check src datatype
+    cl::Buffer imageFromDevice(context,CL_MEM_WRITE_ONLY, dst.rows * dst.cols * dst.channels());
 
     /* Copy input vectors to memory */
-    //q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols, (ap_uint<INPUT_PTR_WIDTH>*)src.data);
-    q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols, src.data);
+    q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols * src.channels(), src.data);
 
     krnl.setArg(0, imageToDevice);
     krnl.setArg(1, imageFromDevice);
@@ -58,7 +56,7 @@ void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp
     diff_prof = end-start;
     std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
 
-    q.enqueueReadBuffer(imageFromDevice, CL_TRUE, 0, dsize.area(), dst.data);
+    q.enqueueReadBuffer(imageFromDevice, CL_TRUE, 0, dst.rows * dst.cols * dst.channels(), dst.data);
 
     q.finish();
 }
