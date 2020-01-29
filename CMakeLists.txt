@@ -233,6 +233,33 @@ if(ECVL_DATASET_PARSER AND NOT eddl_FOUND)
     endif()
 endif()
 
+set(ECVL_KERNELS_MODE "sw_emu" CACHE STRING "Kernel build type (sw_emu, hw_emu, hw)")
+if(${ECVL_WITH_FPGA})
+    add_custom_target(kernels DEPENDS xclbin/ecvl_kernels.xclbin)
+    set(ECVL_KERNELS_SRC)
+    add_subdirectory(kernels)
+
+    set(XOS)
+    foreach(KERNEL_SRC ${ECVL_KERNELS_SRC})
+        get_filename_component(KERNEL_NAME ${KERNEL_SRC} NAME_WLE)
+
+        set(XO "xclbin/${KERNEL_NAME}.xo")
+
+        add_custom_command(OUTPUT ${XO}
+            COMMAND xocc
+            ARGS -c  --kernel ${KERNEL_NAME} -I${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/xfopencv/include --xp prop:kernel.resize_accel.kernel_flags="-std=c++0x"  -o xclbin/${KERNEL_NAME}.xo -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${KERNEL_SRC} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
+            COMMENT "Compiling ${KERNEL_NAME} kernel"
+            DEPENDS ${KERNEL_SRC})
+        list(APPEND XOS ${XO})
+    endforeach()
+
+    add_custom_command(OUTPUT xclbin/ecvl_kernels.xclbin
+        COMMAND xocc
+        ARGS -l --xp vivado_prop:run.impl_1.strategy=Performance_Explore -o xclbin/ecvl_kernels.xclbin -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${XOS} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
+        COMMENT "Generating xclbin"
+        DEPENDS ${XOS})
+endif()
+
 foreach(MODULE ${ECVL_MODULES})
     string(TOLOWER ${MODULE} LOWER_MODULE)
     set_target_properties(${MODULE} PROPERTIES

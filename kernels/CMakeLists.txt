@@ -1,0 +1,4 @@
+set(ECVL_KERNELS_SRC
+	"${CMAKE_CURRENT_SOURCE_DIR}/resize_accel.cpp"
+	PARENT_SCOPE
+)
