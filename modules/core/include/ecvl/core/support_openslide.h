@@ -1,8 +1,8 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -18,7 +18,6 @@
 #include <filesystem>
 
 namespace ecvl {
-
 /** @brief Loads a region of a whole-slide image file.
 
 Loads a region from the specified whole-slide image file. Supported formats are those supported by OpenSlide library.
@@ -37,13 +36,15 @@ If the region cannot be read for any reason, the function creates an empty Image
 */
 extern bool OpenSlideRead(const std::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
 
-/** @brief Get width and height for each level of a whole-slide image. 
+/** @brief Get width and height for each level of a whole-slide image.
 
 @param[in] filename A filesystem::path identifying the file name.
 @param[out] levels A std::vector of array containing two elements, width and height respectively.
             levels[k] are the dimensions of level k.
+
+@return true if the image is correctly read, false otherwise.
 */
-void OpenSlideGetLevels(const std::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
+extern bool OpenSlideGetLevels(const std::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
 
 /** @example example_openslide.cpp
  Openslide support example.
