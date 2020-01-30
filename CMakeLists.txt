@@ -235,7 +235,6 @@ endif()
 
 set(ECVL_KERNELS_MODE "sw_emu" CACHE STRING "Kernel build type (sw_emu, hw_emu, hw)")
 if(${ECVL_WITH_FPGA})
-    add_custom_target(kernels DEPENDS xclbin/ecvl_kernels.xclbin)
     set(ECVL_KERNELS_SRC)
     add_subdirectory(kernels)
 
@@ -258,6 +257,8 @@ if(${ECVL_WITH_FPGA})
         ARGS -l --xp vivado_prop:run.impl_1.strategy=Performance_Explore -o xclbin/ecvl_kernels.xclbin -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${XOS} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
         COMMENT "Generating xclbin"
         DEPENDS ${XOS})
+
+    add_custom_target(kernels DEPENDS xclbin/ecvl_kernels.xclbin SOURCES ${ECVL_KERNELS_SRC})
 endif()
 
 foreach(MODULE ${ECVL_MODULES})
