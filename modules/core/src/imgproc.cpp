@@ -1,8 +1,8 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* copyright (c) 2020, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -368,7 +368,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
 {
-    cv::Mat m;
+
 
     int t_type;
     switch (thresh_type) {
@@ -378,8 +378,17 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
         ECVL_ERROR_NOT_REACHABLE_CODE
     }
 
+#ifdef ECVL_WITH_FPGA
+    cv::Mat src_mat1 = ImageToMat(src);
+    //Only suport for threshold binary
+    cv::Mat m = src_mat1;
+    Threshold_FPGA(src_mat1, m, thresh, maxval);
+    dst = ecvl::MatToImage(m);
+#else
+    cv::Mat m;
     cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
     dst = MatToImage(m);
+#endif
 }
 
 std::vector<double> Histogram(const Image& src)

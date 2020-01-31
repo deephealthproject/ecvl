@@ -6,6 +6,7 @@
 namespace ecvl {
 
 void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp);
+void Threshold_FPGA(const cv::Mat& src,  cv::Mat& dst, double thresh, double maxval);
 
 }
 
