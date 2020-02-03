@@ -35,7 +35,8 @@ void TensorToImage(tensor& t, Image& img)
         img.Create({ t->shape[3], t->shape[2], t->shape[0] * t->shape[1] }, DataType::float32, "xyo", ColorType::none);
         break;
     default:
-        ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
+        cerr << ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }
 
     memcpy(img.data_, t->ptr, img.datasize_);
@@ -51,7 +52,8 @@ void TensorToView(tensor& t, View<DataType::float32>& v)
         v.Create({ t->shape[3], t->shape[2], t->shape[0] * t->shape[1] }, "xyo", ColorType::none, (uint8_t*)t->ptr);
         break;
     default:
-        ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
+        cerr << ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }
 }
 
@@ -61,7 +63,7 @@ void ImageToTensor(const Image& img, tensor& t)
     string channels;
 
     if (img.dims_.size() != 3) {
-        ECVL_ERROR_MSG "Image must have 3 dimensions 'xy[czo]' (in any order)";
+        cerr << ECVL_ERROR_MSG "Image must have 3 dimensions 'xy[czo]' (in any order)" << endl;
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
@@ -101,7 +103,7 @@ void ImageToTensor(const Image& img, tensor& t, const int& offset)
     string channels;
 
     if (img.dims_.size() != 3) {
-        ECVL_ERROR_MSG "Image must have 3 dimensions 'xy[czo]' (in any order)";
+        cerr << ECVL_ERROR_MSG "Image must have 3 dimensions 'xy[czo]' (in any order)" << endl;
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
@@ -132,10 +134,10 @@ void ImageToTensor(const Image& img, tensor& t, const int& offset)
 
     tot_dims = accumulate(img.dims_.begin(), img.dims_.end(), 1, std::multiplies<int>());
 
-    for (int i = 0; i < t->ndim; ++i) {
-        if (t->shape[i] != img.dims_[i]) {
-            // ERROR
-        }
+    // Check if the current image exceeds the total size of the tensor
+    if (t->size < tot_dims * (offset + 1)) {
+        cerr << ECVL_ERROR_MSG "Size of the images exceeds those of the tensor" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }
 
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
@@ -146,7 +148,8 @@ void ImageToTensor(const Image& img, tensor& t, const int& offset)
 void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const std::vector<int>& split, tensor& images, tensor& labels, ColorType ctype)
 {
     if (size.size() != 2) {
-        ECVL_ERROR_MSG "size must have 2 dimensions (height, width)";
+        cerr << ECVL_ERROR_MSG "size must have 2 dimensions (height, width)" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }
     Image tmp;
 
@@ -231,12 +234,33 @@ void DLDataset::ResetAllBatches()
 void DLDataset::LoadBatch(tensor& images, tensor& labels)
 {
     if (resize_dims_.size() != 2) {
-        ECVL_ERROR_MSG "resize_dims_ must have 2 dimensions (height, width)";
+        cerr << ECVL_ERROR_MSG "resize_dims_ must have 2 dimensions (height, width)" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }
 
     int& bs = batch_size_;
     Image tmp;
     int offset = 0, start = 0;
+
+    // Check if tensors size matches with batch dimensions
+    // size of images tensor must be equal to batch_size * number_of_image_channels * image_width * image_height
+    if (images->size != bs * n_channels_ * resize_dims_[0] * resize_dims_[1]) {
+        cerr << ECVL_ERROR_MSG "images tensor must have N = batch_size, C = number_of_image_channels, H = image_height, W = image_width" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
+    }
+
+    // if it is a classification problem, size of labels tensor must be equal to batch_size * number_of_classes
+    if (samples_[0].label_.has_value()) {
+        if (labels->size != bs * classes_.size()) {
+            cerr << ECVL_ERROR_MSG "labels tensor must have N = batch_size, C = number_of_classes" << endl;
+            ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
+        }
+    }
+    // otherwise is a segmentation problem so size of labels tensor must be equal to batch_size * number_of_label_channels * image_width * image_height
+    else if (labels->size != bs * n_channels_ * resize_dims_[0] * resize_dims_[1]) {
+        cerr << ECVL_ERROR_MSG "labels tensor must have N = batch_size, C = number_of_label_channels, H = image_height, W = image_width" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
+    }
 
     // Move to next samples
     start = current_batch_[current_split_] * bs;

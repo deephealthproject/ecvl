@@ -29,5 +29,6 @@
 #define ECVL_ERROR_FILE_DOES_NOT_EXIST throw std::runtime_error(ECVL_ERROR_MSG "File does not exist");
 #define ECVL_ERROR_CANNOT_LOAD_FROM_URL throw std::runtime_error(ECVL_ERROR_MSG "Cannot load from URL");
 #define ECVL_ERROR_CANNOT_LOAD_IMAGE throw std::runtime_error(ECVL_ERROR_MSG "Cannot load image");
+#define ECVL_ERROR_INCOMPATIBLE_DIMENSIONS throw std::runtime_error(ECVL_ERROR_MSG "Incompatible dimensions");
 
 #endif // !ECVL_STANDARD_ERRORS_H_
