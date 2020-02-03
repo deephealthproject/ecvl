@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -377,11 +377,15 @@ public:
     /** @brief Returns the number of channels. */
     int Channels() const
     {
-        size_t pos = channels_.find('c');
-        if (pos != std::string::npos) {
-            return dims_[pos];
+        if (int c = channels_.find('c'); c != std::string::npos) {
+            return dims_[c];
         }
-        return 0;
+        if (int c = channels_.find('z'); c != std::string::npos) {
+            return dims_[c];
+        }
+        if (int c = channels_.find('o'); c != std::string::npos) {
+            return dims_[c];
+        }
     }
 
     /** @brief Returns a non-const pointer to data at given coordinates. */

@@ -51,7 +51,7 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
         ECVL_ERROR_EMPTY_IMAGE
     }
 
-    if (src.channels_ == "xyc") {
+    if (src.channels_ == "xyc" || src.channels_ == "cxy" || src.channels_ == "xyz" || src.channels_ == "zxy" || src.channels_ == "xyo" || src.channels_ == "oxy") {
         if (newdims.size() != 2) {
             throw std::runtime_error("Number of dimensions specified doesn't match image dimensions");
         }
@@ -1310,7 +1310,7 @@ void Stack(const vector<Image>& src, Image& dst)
 
     // If src is a vector of xyc Image
     if (src_0.channels_ == "xyc") {
-        Image tmp({ src_0.dims_[0], src_0.dims_[1], n_images, src_0.dims_[2] }, src_0.elemtype_, "xyzc", src_0.colortype_);
+        Image tmp({ src_0.dims_[0], src_0.dims_[1], n_images * src_0.dims_[2] }, src_0.elemtype_, "xyo", src_0.colortype_);
 
         for (int i = 0; i < n_images; ++i) {
             for (int j = 0; j < src[i].Channels(); ++j) {

@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -16,7 +16,6 @@
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
-
 Image MatToImage(const cv::Mat& m)
 {
     Image img;
@@ -110,7 +109,9 @@ Image MatToImage(const cv::Mat& m)
 
 cv::Mat ImageToMat(const Image& img)
 {
-    if (img.channels_ != "cxy" && img.channels_ != "xyc") {
+    if (img.channels_ != "cxy" && img.channels_ != "xyc" &&
+        img.channels_ != "zxy" && img.channels_ != "xyz" &&
+        img.channels_ != "oxy" && img.channels_ != "xyo") {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
     if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY) {
@@ -118,13 +119,23 @@ cv::Mat ImageToMat(const Image& img)
     }
 
     Image tmp;
+    if (img.channels_.find('c') != std::string::npos) {
     RearrangeChannels(img, tmp, "cxy");
 
+    }
+    else if (img.channels_.find('z') != std::string::npos) {
+        RearrangeChannels(img, tmp, "zxy");
+
+    }
+    else if (img.channels_.find('o') != std::string::npos) {
+        RearrangeChannels(img, tmp, "oxy");
+
+    }
+
     int type;
-    switch (tmp.elemtype_)
-    {
-    case DataType::uint8:   type = CV_MAKETYPE(CV_8U,  tmp.dims_[0]); break;
-    case DataType::int8:    type = CV_MAKETYPE(CV_8S,  tmp.dims_[0]); break;
+    switch (tmp.elemtype_) {
+    case DataType::uint8:   type = CV_MAKETYPE(CV_8U, tmp.dims_[0]); break;
+    case DataType::int8:    type = CV_MAKETYPE(CV_8S, tmp.dims_[0]); break;
     case DataType::uint16:  type = CV_MAKETYPE(CV_16U, tmp.dims_[0]); break;
     case DataType::int16:   type = CV_MAKETYPE(CV_16S, tmp.dims_[0]); break;
     case DataType::int32:   type = CV_MAKETYPE(CV_32S, tmp.dims_[0]); break;
@@ -142,7 +153,8 @@ cv::Mat ImageToMat(const Image& img)
     return m;
 }
 
-Image MatVecToImage(const std::vector<cv::Mat>& v) {
+Image MatVecToImage(const std::vector<cv::Mat>& v)
+{
     Image img;
 
     if (v.empty())
@@ -218,14 +230,11 @@ Image MatVecToImage(const std::vector<cv::Mat>& v) {
         std::vector<cv::Mat> channels;
         // For every channel
         for (int i = 0; i < img.dims_.back(); i++) {
-            
             // For every slice
             for (size_t j = 0; j < v.size(); j++) {
-
                 cv::split(v[j], channels);
 
                 memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2], channels[i].data, img.strides_[img.strides_.size() - 2]);
-
             }
         }
     }
@@ -233,8 +242,6 @@ Image MatVecToImage(const std::vector<cv::Mat>& v) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-
     return img;
 }
-
 } // namespace ecvl 

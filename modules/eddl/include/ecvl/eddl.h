@@ -84,66 +84,54 @@ public:
 
 /** @brief Convert an EDDL Tensor into an ECVL Image.
 
-Tensor dimensions must be \f$C\f$ x \f$Y\f$ x \f$X\f$ or \f$Z\f$ x \f$C\f$ x \f$Y\f$ x \f$X\f$, where: \n
-\f$Z\f$ = depth \n
-\f$C\f$ = color channels \n
-\f$Y\f$ = height \n
-\f$X\f$ = width
+Tensor dimensions must be \f$C\f$ x \f$H\f$ x \f$W\f$ or \f$N\f$ x \f$C\f$ x \f$H\f$ x \f$W\f$, where: \n
+\f$N\f$ = batch size \n
+\f$C\f$ = channels \n
+\f$H\f$ = height \n
+\f$W\f$ = width
 
 @param[in] t Input EDDL Tensor.
-@param[out] img Output ECVL Image.
-@param[in] c_type ecvl::ColorType of input data (optional). \n
-If c_type is ColorType::none (default), it is assumed that: \n
-If the input has 4 channels, the color type is assumed to be ColorType::RGBA. \n
-If the input has 3 channels, the color type is assumed to be ColorType::BGR. \n
-If the input has 1 channels, the color type is assumed to be ColorType::GRAY. \n
-In any other case, the color type is assumed to be ColorType::none.
+@param[out] img Output ECVL Image. It is a "xyo" with DataType::float32 and ColorType::none Image.
 
 */
-void TensorToImage(tensor& t, Image& img, ColorType c_type = ColorType::none);
+void TensorToImage(tensor& t, Image& img);
 
 /** @brief Convert an EDDL Tensor into an ECVL View.
 
-Tensor dimensions must be \f$C\f$ x \f$Y\f$ x \f$X\f$ or \f$Z\f$ x \f$C\f$ x \f$Y\f$ x \f$X\f$, where: \n
-\f$Z\f$ = depth \n
-\f$C\f$ = color channels \n
-\f$Y\f$ = height \n
-\f$X\f$ = width
+Tensor dimensions must be \f$C\f$ x \f$H\f$ x \f$W\f$ or \f$N\f$ x \f$C\f$ x \f$H\f$ x \f$W\f$, where: \n
+\f$N\f$ = batch size \n
+\f$C\f$ = channels \n
+\f$H\f$ = height \n
+\f$W\f$ = width
 
 @param[in] t Input EDDL Tensor.
-@param[out] v Output ECVL View.
-@param[in] c_type ecvl::ColorType of input data (optional). \n
-If c_type is ColorType::none (default), it is assumed that: \n
-If the input has 4 channels, the color type is assumed to be ColorType::RGBA. \n
-If the input has 3 channels, the color type is assumed to be ColorType::BGR. \n
-If the input has 1 channels, the color type is assumed to be ColorType::GRAY. \n
-In any other case, the color type is assumed to be ColorType::none.
+@param[out] v Output ECVL View. It is a "xyo" with ColorType::none View.
 
 */
-void TensorToView(tensor& t, View<DataType::float32>& v, ColorType c_type = ColorType::none);
-
-/** @brief Insert an ECVL Image into an EDDL Tensor.
-
-This function is useful to insert into an EDDL Tensor more than one image, specifying how many images are already stored in the Tensor.
-
-@param[in] img Input ECVL Image.
-@param[out] t Output EDDL Tensor. It must be created with the right dimensions before calling this function.
-@param[in] offset How many images are already stored in the Tensor.
-
-*/
-void ImageToTensor(Image& img, tensor& t, const int& offset);
+void TensorToView(tensor& t, View<DataType::float32>& v);
 
 /** @brief Convert an ECVL Image into an EDDL Tensor.
 
-Image must have 3 or 4 dimensions. \n
-If the Image has 3 dimensions, the output Tensor will be created with shape \f$C\f$ x \f$Y\f$ x \f$X\f$. \n
-If the Image has 4 dimensions, the output Tensor will be created with shape \f$Z\f$ x \f$C\f$ x \f$Y\f$ x \f$X\f$.
+Image must have 3 dimensions "xy[czo]" (in any order). \n
+Output Tensor will be created with shape \f$C\f$ x \f$H\f$ x \f$W\f$. \n
 
 @param[in] img Input ECVL Image.
 @param[out] t Output EDDL Tensor. It is created inside the function.
 
 */
 void ImageToTensor(const Image& img, tensor& t);
+
+/** @brief Insert an ECVL Image into an EDDL Tensor.
+
+This function is useful to insert into an EDDL Tensor more than one image, specifying how many images are already stored in the Tensor.
+Image must have 3 dimensions "xy[czo]" (in any order). \n
+
+@param[in] img Input ECVL Image.
+@param[out] t Output EDDL Tensor. It must be created with the right dimensions before calling this function.
+@param[in] offset How many images are already stored in the Tensor.
+
+*/
+void ImageToTensor(const Image& img, tensor& t, const int& offset);
 
 /** @brief Load the training split of a Dataset (images and labels) into EDDL tensors.
 

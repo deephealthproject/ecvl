@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -25,31 +25,14 @@ using namespace std::filesystem;
 
 namespace ecvl
 {
-void SetColorType(ColorType& c_type, const int& color_channels)
-{
-    switch (color_channels) {
-    case 1:     c_type = ColorType::GRAY;      break;
-    case 3:     c_type = ColorType::BGR;       break;
-    case 4:     c_type = ColorType::RGBA;      break;
-    default:
-        c_type = ColorType::none;
-    }
-}
-
-void TensorToImage(tensor& t, Image& img, ColorType c_type)
+void TensorToImage(tensor& t, Image& img)
 {
     switch (t->ndim) {
     case 3:
-        if (c_type == ColorType::none) {
-            SetColorType(c_type, t->shape[0]);
-        }
-        img.Create({ t->shape[2], t->shape[1], t->shape[0] }, DataType::float32, "xyc", c_type);
+        img.Create({ t->shape[2], t->shape[1], t->shape[0] }, DataType::float32, "xyo", ColorType::none);
         break;
     case 4:
-        if (c_type == ColorType::none) {
-            SetColorType(c_type, t->shape[1]);
-        }
-        img.Create({ t->shape[3], t->shape[2], t->shape[0], t->shape[1] }, DataType::float32, "xyzc", c_type);
+        img.Create({ t->shape[3], t->shape[2], t->shape[0] * t->shape[1] }, DataType::float32, "xyo", ColorType::none);
         break;
     default:
         ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
@@ -58,20 +41,14 @@ void TensorToImage(tensor& t, Image& img, ColorType c_type)
     memcpy(img.data_, t->ptr, img.datasize_);
 }
 
-void TensorToView(tensor& t, View<DataType::float32>& v, ColorType c_type)
+void TensorToView(tensor& t, View<DataType::float32>& v)
 {
     switch (t->ndim) {
     case 3:
-        if (c_type == ColorType::none) {
-            SetColorType(c_type, t->shape[0]);
-        }
-        v.Create({ t->shape[2], t->shape[1], t->shape[0] }, "xyc", c_type, (uint8_t*)t->ptr);
+        v.Create({ t->shape[2], t->shape[1], t->shape[0] }, "xyo", ColorType::none, (uint8_t*)t->ptr);
         break;
     case 4:
-        if (c_type == ColorType::none) {
-            SetColorType(c_type, t->shape[1]);
-        }
-        v.Create({ t->shape[3], t->shape[2], t->shape[0], t->shape[1] }, "xyzc", c_type, (uint8_t*)t->ptr);
+        v.Create({ t->shape[3], t->shape[2], t->shape[0] * t->shape[1] }, "xyo", ColorType::none, (uint8_t*)t->ptr);
         break;
     default:
         ECVL_ERROR_MSG "Tensor dims must be C x H x W or N x C x H x W";
@@ -81,55 +58,84 @@ void TensorToView(tensor& t, View<DataType::float32>& v, ColorType c_type)
 void ImageToTensor(const Image& img, tensor& t)
 {
     Image tmp;
+    string channels;
 
-    switch (img.dims_.size()) {
-    case 3:
-        if (img.channels_ != "xyc") {
-            RearrangeChannels(img, tmp, "xyc", DataType::float32);
-        }
-        else {
-            CopyImage(img, tmp, DataType::float32);
-        }
-        t = eddlT::create({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
-        break;
-    case 4:
-        if (img.channels_ != "xyzc") {
-            RearrangeChannels(img, tmp, "xyzc", DataType::float32);
-        }
-        else {
-            CopyImage(img, tmp, DataType::float32);
-        }
-        t = eddlT::create({ tmp.dims_[2], tmp.dims_[3], tmp.dims_[1], tmp.dims_[0] });
-        break;
-    default:
-        ECVL_ERROR_NOT_REACHABLE_CODE
+    if (img.dims_.size() != 3) {
+        ECVL_ERROR_MSG "Image must have 3 dimensions 'xy[czo]' (in any order)";
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
+
+    // If img is one of: cxy, cyx, xcy, ycx... convert it to xyc
+    if (img.channels_.find('c') != string::npos && img.channels_ != "xyc") {
+        channels = "xyc";
+    }
+    // If img is one of: zxy, zyx, xzy, yzx... convert it to xyz
+    else if (img.channels_.find('z') != string::npos && img.channels_ != "xyz") {
+        channels = "xyz";
+    }
+    // If img is one of: oxy, oyx, xoy, yox... convert it to xyo
+    else if (img.channels_.find('o') != string::npos && img.channels_ != "xyo") {
+        channels = "xyo";
+    }
+    else if (img.channels_.find('o') == string::npos &&
+        img.channels_.find('c') == string::npos &&
+        img.channels_.find('z') == string::npos) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (channels.size() > 0) {
+        RearrangeChannels(img, tmp, channels, DataType::float32);
+    }
+    else {
+        CopyImage(img, tmp, DataType::float32);
+    }
+    t = eddlT::create({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
 
     memcpy(t->ptr, tmp.data_, tmp.datasize_);
 }
 
-void ImageToTensor(Image& img, tensor& t, const int& offset)
+void ImageToTensor(const Image& img, tensor& t, const int& offset)
 {
     Image tmp;
     int tot_dims = 0;
+    string channels;
 
-    switch (img.dims_.size()) {
-    case 3:
-        if (img.channels_ != "xyc")
-            RearrangeChannels(img, tmp, "xyc", DataType::float32);
-        tot_dims = img.dims_[0] * img.dims_[1] * img.dims_[2];
-        break;
-    case 4:
-        if (img.channels_ != "xyzc")
-            RearrangeChannels(img, tmp, "xyzc", DataType::float32);
-        tot_dims = img.dims_[0] * img.dims_[1] * img.dims_[2] * img.dims_[3];
-        break;
-    default:
-        ECVL_ERROR_MSG "Image must have 3 or 4 dimensions";
+    if (img.dims_.size() != 3) {
+        ECVL_ERROR_MSG "Image must have 3 dimensions 'xy[czo]' (in any order)";
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    if (tmp.elemtype_ != DataType::float32) {
+    // If img is one of: cxy, cyx, xcy, ycx... convert it to xyc
+    if (img.channels_.find('c') != string::npos && img.channels_ != "xyc") {
+        channels = "xyc";
+    }
+    // If img is one of: zxy, zyx, xzy, yzx... convert it to xyz
+    else if (img.channels_.find('z') != string::npos && img.channels_ != "xyz") {
+        channels = "xyz";
+    }
+    // If img is one of: oxy, oyx, xoy, yox... convert it to xyo
+    else if (img.channels_.find('o') != string::npos && img.channels_ != "xyo") {
+        channels = "xyo";
+    }
+    else if (img.channels_.find('o') == string::npos &&
+        img.channels_.find('c') == string::npos &&
+        img.channels_.find('z') == string::npos) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    if (channels.size() > 0) {
+        RearrangeChannels(img, tmp, channels, DataType::float32);
+    }
+    else {
         CopyImage(img, tmp, DataType::float32);
+    }
+
+    tot_dims = accumulate(img.dims_.begin(), img.dims_.end(), 1, std::multiplies<int>());
+
+    for (int i = 0; i < t->ndim; ++i) {
+        if (t->shape[i] != img.dims_[i]) {
+            // ERROR
+        }
     }
 
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
