@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -25,7 +25,9 @@ int main()
     vector<array<int, 2>> levels;
 
     // Get dimensions of each level
-    OpenSlideGetLevels(filename, levels);
+    if (!OpenSlideGetLevels(filename, levels)) {
+        return EXIT_FAILURE;
+    }
 
     // For each level extracts a region of dimensions equal to those of the last level, starting from coordinates (0,0)
     for (int i = 0; i < levels.size(); ++i) {
