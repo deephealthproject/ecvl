@@ -126,6 +126,80 @@ void Threshold_FPGA(const cv::Mat& src, cv::Mat& dst, double thresh, double maxv
 
 }
 
+uint8_t OtsuThreshold_FPGA(const cv::Mat& src){
+
+  printf("Host program OtsuThreshold \n");
+  int height = src.rows;
+  int width = src.cols;
+
+  uint8_t threshReturn;
+
+  std::vector<cl::Device> devices = xcl::get_xil_devices();
+  cl::Device device = devices[0];
+  cl::Context context(device);
+
+  cl::CommandQueue q(context, device,CL_QUEUE_PROFILING_ENABLE);
+
+
+  std::string device_name = device.getInfo<CL_DEVICE_NAME>();
+  std::string binaryFile = xcl::find_binary_file(device_name,"ecvl_kernels");
+  cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
+  devices.resize(1);
+  cl::Program program(context, devices, bins);
+  cl::Kernel krnl(program,"otsuThreshold_accel");
+
+
+  std::vector<cl::Memory> inBufVec, outBufVec;
+  cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY,(height*width));
+
+  //buffer to pass the uint8t threshold to the kernel
+  cl::Buffer uintToDevice(context,CL_MEM_READ_WRITE,sizeof(uint8_t));
+
+
+  q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, (height*width), src.data);
+
+
+
+  // Set the kernel arguments
+  krnl.setArg(0, imageToDevice);
+  krnl.setArg(1, height);
+  krnl.setArg(2, width);
+  krnl.setArg(3, uintToDevice);
+
+  // Profiling Objects
+  cl_ulong start= 0;
+  cl_ulong end = 0;
+  double diff_prof = 0.0f;
+  cl::Event event_sp;
+
+
+  // Launch the kernel
+  printf("Launching kernel: OtsuThreshold \n");
+  q.enqueueTask(krnl,NULL,&event_sp);
+  clWaitForEvents(1, (const cl_event*) &event_sp);
+  printf("Launched kernel: OtsuThreshold \n");
+
+
+  event_sp.getProfilingInfo(CL_PROFILING_COMMAND_START,&start);
+  event_sp.getProfilingInfo(CL_PROFILING_COMMAND_END,&end);
+  diff_prof = end-start;
+  std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
+
+
+  //Copying Device result data to Host memory
+  //q.enqueueReadBuffer(imageFromDevice, CL_TRUE, 0, (height*width), dst.data);
+  
+  //queue to get de data from the buffer when the kernel has finished
+  q.enqueueReadBuffer(uintToDevice, CL_TRUE, 0, sizeof(uint8_t), &threshReturn);
+  printf("Finish kernel: OtsuThreshold\n");
+  q.finish();
+
+
+  return threshReturn;
+
+
+}
+
 
 
 }

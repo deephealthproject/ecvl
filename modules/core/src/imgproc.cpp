@@ -422,6 +422,10 @@ int OtsuThreshold(const Image& src)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
+#ifdef ECVL_WITH_FPGA
+    int threshold = 0;
+    threshold = OtsuThreshold_FPGA(ImageToMat(src));
+#else
     std::vector<double> hist = Histogram(src);
 
     double mu_t = 0;
@@ -443,6 +447,7 @@ int OtsuThreshold(const Image& src)
             threshold = k;
         }
     }
+#endif
 
     return threshold;
 }
