@@ -17,7 +17,7 @@ The ECVL documentation is available online [here](http://imagelab.ing.unimore.it
 ## Requirements
 - CMake 3.13 or later
 - C++ Compiler with C++17 support (e.g. gcc-8 or later, Visual Studio 2017 or later)
-- [OpenCV](https://opencv.org) 3.0 or later
+- [OpenCV](https://opencv.org) 3.0 or later (modules required: `core`, `imgproc`, `imgcodecs`, `photo`)
 
 ### Optional
 - [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled

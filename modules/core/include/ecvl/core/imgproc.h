@@ -196,15 +196,16 @@ void SeparableFilter2D(const Image& src, Image& dst, const std::vector<double>& 
 
 */
 void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY = 0);
+void GaussianBlur(const Image& src, Image& dst, double sigma);
 
 /** @brief Adds Laplace distributed noise to an Image.
 
 @param[in] src Input Image.
 @param[out] dst Output Image.
-@param[in] scale Standard deviation of the noise generating distribution. Suggested values are around 255 * 0.05 for uint8 Images.
+@param[in] std_dev Standard deviation of the noise generating distribution. Suggested values are around 255 * 0.05 for uint8 Images.
 
 */
-void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale);
+void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev);
 
 /** @brief Adds Poisson distributed noise to an Image.
 
@@ -291,6 +292,38 @@ void HConcat(const std::vector<Image>& src, Image& dst);
 @param[out] dst Output Image.
 */
 void VConcat(const std::vector<Image>& src, Image& dst);
+
+enum class MorphTypes {
+    MORPH_ERODE   , /**< see #erode */
+    MORPH_DILATE  , /**< see #dilate */
+    MORPH_OPEN    , /**< an opening operation  \f[\texttt{dst} = \mathrm{open} ( \texttt{src} , \texttt{element} )= \mathrm{dilate} ( \mathrm{erode} ( \texttt{src} , \texttt{element} ))\f] */
+    MORPH_CLOSE   , /**< a closing operation */
+                    /**< \f[\texttt{dst} = \mathrm{close} ( \texttt{src} , \texttt{element} )= \mathrm{erode} ( \mathrm{dilate} ( \texttt{src} , \texttt{element} ))\f]*/
+    MORPH_GRADIENT, /**< a morphological gradient */
+                    /**< \f[\texttt{dst} = \mathrm{morph\_grad} ( \texttt{src} , \texttt{element} )= \mathrm{dilate} ( \texttt{src} , \texttt{element} )- \mathrm{erode} ( \texttt{src} , \texttt{element} )\f] */
+    MORPH_TOPHAT  , /**< "top hat" */
+                    /**< \f[\texttt{dst} = \mathrm{tophat} ( \texttt{src} , \texttt{element} )= \texttt{src} - \mathrm{open} ( \texttt{src} , \texttt{element} )\f] */
+    MORPH_BLACKHAT, /**< "black hat" */
+                    /**< \f[\texttt{dst} = \mathrm{blackhat} ( \texttt{src} , \texttt{element} )= \mathrm{close} ( \texttt{src} , \texttt{element} )- \texttt{src}\f] */
+    MORPH_HITMISS   /**< "hit or miss" */
+                    /**<   .- Only supported for CV_8UC1 binary images. A tutorial can be found in the documentation */
+};
+
+void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel,
+    Point2i anchor = { -1, -1 },
+    int iterations = 1,
+    int borderType = 1 /*BORDER_CONSTANT*/,
+    const int& 	borderValue = 0/*morphologyDefaultBorderValue()*/
+);
+enum class InpaintTypes
+{
+    INPAINT_NS, //!< Use Navier-Stokes based method
+    INPAINT_TELEA //!< Use the algorithm proposed by Alexandru Telea @cite Telea04
+};
+
+void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag = InpaintTypes::INPAINT_TELEA);
+
+void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev);
 
 /** @example example_imgproc.cpp
  Imgproc example.

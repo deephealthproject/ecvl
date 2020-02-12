@@ -57,12 +57,12 @@ Image MatToImage(const cv::Mat& m)
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
 
-        if (m.type() == CV_8UC1) { // Guess this is a gray level image
+        if (m.type() == CV_8UC1 || m.type() == CV_16UC1 || m.type() == CV_32FC1 || m.type() == CV_64FC1) { // Guess this is a gray level image
             img.channels_ += "c";
             img.dims_.push_back(1); // Add another dim for color planes (but it is one dimensional)
             img.colortype_ = ColorType::GRAY;
         }
-        else if (m.type() == CV_8UC3) { // Guess this is a BGR image
+        else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3 ) { // Guess this is a BGR image
             img.channels_ += "c";
             img.dims_.push_back(3); // Add another dim for color planes
             img.colortype_ = ColorType::BGR;
@@ -120,16 +120,13 @@ cv::Mat ImageToMat(const Image& img)
 
     Image tmp;
     if (img.channels_.find('c') != std::string::npos) {
-    RearrangeChannels(img, tmp, "cxy");
-
+        RearrangeChannels(img, tmp, "cxy");
     }
     else if (img.channels_.find('z') != std::string::npos) {
         RearrangeChannels(img, tmp, "zxy");
-
     }
     else if (img.channels_.find('o') != std::string::npos) {
         RearrangeChannels(img, tmp, "oxy");
-
     }
 
     int type;

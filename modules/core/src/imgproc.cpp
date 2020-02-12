@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <opencv2/imgproc.hpp>
+#include <opencv2/photo.hpp>
 
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/standard_errors.h"
@@ -651,21 +652,33 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
     SeparableFilter2D(src, dst, kernelX, kernelY);
 }
 
-void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale)
+void GaussianBlur(const Image& src, Image& dst, double sigma)
+{
+    int size = ((sigma - 0.8) / 0.3 + 1) / 0.5 + 1;
+
+    // Check if computed size is even
+    size = size % 2 == 0 ? size + 1 : size;
+    // Check if computed size is less than 3, the smallest kernel size allowed
+    size = size < 3 ? 3 : size;
+
+    GaussianBlur(src, dst, size, size, sigma, sigma);
+}
+
+void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)
 {
     if (!src.contiguous_) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    if (scale <= 0) {
-        ECVL_ERROR_WRONG_PARAMS("scale must be >= 0")
+    if (std_dev <= 0) {
+        ECVL_ERROR_WRONG_PARAMS("std_dev must be >= 0")
     }
 
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_);
 
     random_device rd;
     mt19937 gen(rd());
-    exponential_distribution<> dist(1 / scale);
+    exponential_distribution<> dist(1 / std_dev);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
         double exp1 = dist(gen);
@@ -748,6 +761,13 @@ void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, boo
 
     int rectX = static_cast<int>(src.dims_[0] * drop_size);
     int rectY = static_cast<int>(src.dims_[1] * drop_size);
+
+    if (rectX == 0) {
+        ++rectX;
+    }
+    if (rectY == 0) {
+        ++rectY;
+    }
 
     Image tmp = src;
 
@@ -1400,6 +1420,48 @@ void VConcat(const vector<Image>& src, Image& dst)
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED
+    }
+}
+
+void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue)
+{
+    using namespace cv;
+    Mat src_(ImageToMat(src));
+    Mat kernel_(ImageToMat(kernel));
+    Mat dst_;
+    Point anchor_{ anchor[0], anchor[1] };
+
+    int op_ = static_cast<int>(op);
+    morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, borderType, borderValue);
+
+    dst = MatToImage(dst_);
+}
+
+void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag)
+{
+    using namespace cv;
+    Mat src_(ImageToMat(src));
+    Mat inpaintMask_(ImageToMat(inpaintMask));
+    Mat dst_;
+    int flag_ = static_cast<int>(flag);
+
+    cv::inpaint(src_, inpaintMask_, dst_, inpaintRadius, flag_);
+
+    dst = MatToImage(dst_);
+}
+
+void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev)
+{
+    using namespace cv;
+    Mat src_(ImageToMat(src));
+    Scalar mean_, stddev_;
+    mean.clear();
+    stddev.clear();
+
+    meanStdDev(src_, mean_, stddev_);
+    for (int i = 0; i < src.Channels(); ++i) {
+        mean.push_back(mean_[i]);
+        stddev.push_back(stddev_[i]);
     }
 }
 } // namespace ecvl
