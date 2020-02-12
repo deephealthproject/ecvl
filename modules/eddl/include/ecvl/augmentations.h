@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -17,6 +17,7 @@
 #include "ecvl/core/imgproc.h"
 #include <array>
 #include <map>
+#include <memory>
 #include <random>
 
 namespace ecvl {
@@ -57,7 +58,7 @@ private:
 template <typename Base, typename ... Ts>
 std::vector<std::unique_ptr<Base>> make_vector_of_unique(Ts&&... t)
 {
-    std::unique_ptr<Base> init[] = { make_unique<Ts>(std::forward<Ts>(t))... };
+    std::unique_ptr<Base> init[] = { std::make_unique<Ts>(std::forward<Ts>(t))... };
     return std::vector<std::unique_ptr<Base>> {
         std::make_move_iterator(std::begin(init)),
             std::make_move_iterator(std::end(init))};
@@ -75,7 +76,7 @@ public:
     template<typename T, typename... Args>
     void Add(Args&&... args)
     {
-        augs_.emplace_back(make_unique<T>(std::forward<Args>(args)...));
+        augs_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
     }
 
     virtual void RealApply(ecvl::Image& img) override
