@@ -386,6 +386,7 @@ public:
         if (int c = channels_.find('o'); c != std::string::npos) {
             return dims_[c];
         }
+        return 0;
     }
 
     /** @brief Returns a non-const pointer to data at given coordinates. */

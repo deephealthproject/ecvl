@@ -11,6 +11,9 @@
 * All rights reserved.
 */
 
-#include <gtest/gtest.h>
+#include <ecvl/augmentations.h>
 
-#include "ecvl/support_eddl.h"
+namespace ecvl
+{
+std::default_random_engine AugmentationParam::re_(std::random_device{}());
+} // namespace ecvl

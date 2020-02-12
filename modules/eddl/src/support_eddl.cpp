@@ -11,7 +11,7 @@
 * All rights reserved.
 */
 
-#include <ecvl/eddl.h>
+#include <ecvl/support_eddl.h>
 
 #include "ecvl/core/imgproc.h"
 #include "ecvl/core/imgcodecs.h"
@@ -143,64 +143,12 @@ void ImageToTensor(const Image& img, tensor& t, const int& offset)
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
 }
 
-/** @cond HIDDEN_SECTIONS */
-// Generic function to load a Dataset split into EDDL tensors
-void DatasetToTensor(const Dataset& dataset, const std::vector<int>& size, const std::vector<int>& split, tensor& images, tensor& labels, ColorType ctype)
-{
-    if (size.size() != 2) {
-        cerr << ECVL_ERROR_MSG "size must have 2 dimensions (height, width)" << endl;
-        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
-    }
-    Image tmp;
-
-    int n_samples = split.size();
-    int n_channels = dataset.samples_[0].LoadImage(ctype, false).Channels();
-    int n_classes = static_cast<int>(dataset.classes_.size());
-    // Allocate memory for EDDL tensors
-    images = eddlT::create({ n_samples, n_channels, size[0], size[1] });
-    labels = eddlT::create({ n_samples, n_classes });
-
-    // Fill tensors with data
-    int i = 0;
-    for (auto& index : split) {
-        const Sample& elem = dataset.samples_[index];
-        // Copy image into tensor (images)
-        ResizeDim(elem.LoadImage(ctype, false), tmp, { size[1], size[0] });
-        ImageToTensor(tmp, images, i);
-        if (elem.label_) {
-            // Copy labels into tensor (labels)
-            vector<float> l(n_classes, 0);
-            for (int j = 0; j < elem.label_.value().size(); ++j) {
-                l[elem.label_.value()[j]] = 1;
-            }
-            memcpy(labels->ptr + l.size() * i, l.data(), l.size() * sizeof(float));
-        }
-        ++i;
-    }
-}
-/** @endcond */
-
-void TrainingToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
-{
-    DatasetToTensor(dataset, size, dataset.split_.training_, stack, labels, ctype);
-}
-
-void ValidationToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
-{
-    DatasetToTensor(dataset, size, dataset.split_.validation_, stack, labels, ctype);
-}
-
-void TestToTensor(const Dataset& dataset, const std::vector<int>& size, tensor& stack, tensor& labels, ColorType ctype)
-{
-    DatasetToTensor(dataset, size, dataset.split_.test_, stack, labels, ctype);
-}
-
 std::vector<int>& DLDataset::GetSplit()
 {
-    if (current_split_ == 0) {
+    if (current_split_ == SplitType::training) {
         return this->split_.training_;
     }
-    else if (current_split_ == 1) {
+    else if (current_split_ == SplitType::validation) {
         return this->split_.validation_;
     }
     else {
@@ -208,22 +156,14 @@ std::vector<int>& DLDataset::GetSplit()
     }
 }
 
-void DLDataset::SetSplit(const string& split_str)
+void DLDataset::SetSplit(const SplitType& split)
 {
-    if (split_str == "training") {
-        this->current_split_ = 0;
-    }
-    else if (split_str == "validation") {
-        this->current_split_ = 1;
-    }
-    else if (split_str == "test") {
-        this->current_split_ = 2;
-    }
+    this->current_split_ = split;
 }
 
 void DLDataset::ResetCurrentBatch()
 {
-    this->current_batch_[current_split_] = 0;
+    this->current_batch_[+current_split_] = 0;
 }
 
 void DLDataset::ResetAllBatches()
@@ -263,15 +203,24 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     }
 
     // Move to next samples
-    start = current_batch_[current_split_] * bs;
-    current_batch_[current_split_]++;
+    start = current_batch_[+current_split_] * bs;
+    ++current_batch_[+current_split_];
+
+    if (GetSplit().size() < start + bs) {
+        cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
+        ECVL_ERROR_CANNOT_LOAD_IMAGE
+    }
 
     // Fill tensors with data
     for (int i = start; i < start + bs; ++i) {
         const int index = GetSplit()[i];
         const Sample& elem = samples_[index];
         // Read and resize (HxW -> WxH) image
-        ResizeDim(elem.LoadImage(ctype_, false), tmp, { resize_dims_[1], resize_dims_[0] });
+        tmp = elem.LoadImage(ctype_, false);
+
+        // Apply chain of augmentations only to sample image
+        augs_.Apply(current_split_, tmp);
+
         // Copy image into tensor (images)
         ImageToTensor(tmp, images, offset);
 
