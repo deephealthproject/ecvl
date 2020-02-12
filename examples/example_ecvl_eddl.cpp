@@ -80,9 +80,9 @@ int main()
 
     DatasetAugmentations dataset_augmentations{ {move(training_augs), nullptr, move(test_augs) } };
 
-    int batch_size = 2;
+    int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
-    DLDataset d("../examples/data/mnist/mnist2.yml", batch_size, move(dataset_augmentations), ColorType::GRAY);
+    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, move(dataset_augmentations), ColorType::GRAY);
 
     // Allocate memory for x and y tensors
     cout << "Create x and y" << endl;

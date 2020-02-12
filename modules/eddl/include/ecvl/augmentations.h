@@ -41,16 +41,16 @@ public:
 class Augmentation {
 public:
     std::map<std::string, AugmentationParam> params_;
-    void Apply(ecvl::Image& img)
+    void Apply(ecvl::Image& img, ecvl::Image& gt = Image())
     {
         for (auto& x : params_) {
             x.second.GenerateValue();
         }
-        RealApply(img);
+        RealApply(img, gt);
     }
     virtual ~Augmentation() = default;
 private:
-    virtual void RealApply(ecvl::Image& img) = 0;
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) = 0;
 };
 
 // vector<move_only> cannot be construct from initializer list :-/
@@ -79,10 +79,10 @@ public:
         augs_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
     }
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         for (auto& x : augs_) {
-            x->Apply(img);
+            x->Apply(img, gt);
         }
     }
 };
@@ -99,23 +99,12 @@ public:
     {
         params_["angle"] = AugmentationParam(angle[0], angle[1]);
     }
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         Rotate2D(img, img, params_["angle"].value_, center_, scale_, interp_);
-    }
-};
-
-class AugRotateFullImage : public Augmentation {
-    double scale_;
-    InterpolationType interp_;
-public:
-    AugRotateFullImage(std::array<double, 2> angle, double scale = 1., InterpolationType interp = InterpolationType::linear) : scale_(scale), interp_(interp)
-    {
-        params_["angle"] = AugmentationParam(angle[0], angle[1]);
-    }
-    virtual void RealApply(ecvl::Image& img) override
-    {
-        RotateFullImage2D(img, img, params_["angle"].value_, scale_, interp_);
+        if (!gt.IsEmpty()) {
+            Rotate2D(gt, gt, params_["angle"].value_, center_, scale_, interp_);
+        }
     }
 };
 
@@ -126,9 +115,12 @@ public:
 
     AugResizeDim(std::vector<int> dims, InterpolationType interp = InterpolationType::linear) : dims_{ std::move(dims) }, interp_(interp) {}
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         ResizeDim(img, img, dims_, interp_);
+        if (!gt.IsEmpty()) {
+            ResizeDim(gt, gt, dims_, interp_);
+        }
     }
 };
 
@@ -139,9 +131,12 @@ public:
 
     AugResizeScale(std::vector<double> scale, InterpolationType interp = InterpolationType::linear) : scale_{ std::move(scale) }, interp_(interp) {}
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         ResizeScale(img, img, scale_, interp_);
+        if (!gt.IsEmpty()) {
+            ResizeScale(gt, gt, scale_, interp_);
+        }
     }
 };
 
@@ -152,10 +147,13 @@ public:
     {
         params_["p"] = AugmentationParam(0, 1);
     }
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         if (params_["p"].value_ <= p_) {
             Flip2D(img, img);
+            if (!gt.IsEmpty()) {
+                Flip2D(gt, gt);
+            }
         }
     }
 };
@@ -167,10 +165,13 @@ public:
     {
         params_["p"] = AugmentationParam(0, 1);
     }
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         if (params_["p"].value_ <= p_) {
             Mirror2D(img, img);
+            if (!gt.IsEmpty()) {
+                Mirror2D(gt, gt);
+            }
         }
     }
 };
@@ -183,7 +184,7 @@ public:
         params_["sigma"] = AugmentationParam(sigma[0], sigma[1]);
     }
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         GaussianBlur(img, img, params_["sigma"].value_);
     }
@@ -197,7 +198,7 @@ public:
         params_["std_dev"] = AugmentationParam(std_dev[0], std_dev[1]);
     }
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
     }
@@ -211,7 +212,7 @@ public:
         params_["lambda"] = AugmentationParam(lambda[0], lambda[1]);
     }
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         AdditivePoissonNoise(img, img, params_["lambda"].value_);
     }
@@ -225,7 +226,7 @@ public:
         params_["gamma"] = AugmentationParam(gamma[0], gamma[1]);
     }
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         GammaContrast(img, img, params_["gamma"].value_);
     }
@@ -243,7 +244,7 @@ public:
         params_["per_channel"] = AugmentationParam(0, 1);
     }
 
-    virtual void RealApply(ecvl::Image& img) override
+    virtual void RealApply(ecvl::Image& img, ecvl::Image& gt = Image()) override
     {
         bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
         CoarseDropout(img, img, params_["p"].value_, params_["drop_size"].value_, per_channel);

@@ -179,7 +179,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     }
 
     int& bs = batch_size_;
-    Image tmp;
+    Image img, gt;
     int offset = 0, start = 0;
 
     // Check if tensors size matches with batch dimensions
@@ -216,15 +216,12 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
         const int index = GetSplit()[i];
         const Sample& elem = samples_[index];
         // Read and resize (HxW -> WxH) image
-        tmp = elem.LoadImage(ctype_, false);
-
-        // Apply chain of augmentations only to sample image
-        augs_.Apply(current_split_, tmp);
-
-        // Copy image into tensor (images)
-        ImageToTensor(tmp, images, offset);
+        img = elem.LoadImage(ctype_, false);
 
         if (elem.label_) {
+            // Apply chain of augmentations only to sample image
+            augs_.Apply(current_split_, img);
+
             // Copy labels into tensor (labels)
             vector<float> lab(classes_.size(), 0);
             for (int j = 0; j < elem.label_.value().size(); ++j) {
@@ -233,11 +230,18 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
             memcpy(labels->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
         }
         else if (elem.label_path_) {
-            // Read and resize (HxW -> WxH) ground truth image
-            ResizeDim(elem.LoadImage(ctype_gt_, true), tmp, { resize_dims_[1], resize_dims_[0] });
+            gt = elem.LoadImage(ctype_gt_, true);
+
+            // Apply chain of augmentations only to sample image
+            augs_.Apply(current_split_, img, gt);
+
             // Copy labels into tensor (labels)
-            ImageToTensor(tmp, labels, offset);
+            ImageToTensor(gt, labels, offset);
         }
+
+        // Copy image into tensor (images)
+        ImageToTensor(img, images, offset);
+
         ++offset;
     }
 }

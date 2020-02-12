@@ -33,10 +33,10 @@ public:
 
     DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr }) : augs_{ std::move(augs) } {}
 
-    void Apply(SplitType st, Image& img)
+    void Apply(SplitType st, Image& img, Image& gt = Image())
     {
         if (augs_[+st]) { // Magic + operator
-            augs_[+st]->Apply(img);
+            augs_[+st]->Apply(img, gt);
         }
     }
 };
