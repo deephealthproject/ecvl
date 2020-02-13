@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -33,7 +33,7 @@ public:
 
     DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr }) : augs_{ std::move(augs) } {}
 
-    void Apply(SplitType st, Image& img, Image& gt = Image())
+    void Apply(SplitType st, Image& img, const Image& gt = Image())
     {
         if (augs_[+st]) { // Magic + operator
             augs_[+st]->Apply(img, gt);
