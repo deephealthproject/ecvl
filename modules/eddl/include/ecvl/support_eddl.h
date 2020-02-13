@@ -51,6 +51,7 @@ class DLDataset : public Dataset {
 public:
     int batch_size_; /**< @brief Size of each dataset mini batch. */
     int n_channels_; /**< @brief Number of color channels of the images. */
+    int n_channels_gt_; /**< @brief Number of color channels of the ground truth. */
     SplitType current_split_ = SplitType::training; /**< @brief Current split from which images are loaded. */
     std::vector<int> resize_dims_; /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
     std::array<int, 3> current_batch_ = { 0,0,0 }; /**< @brief Number of batches already loaded for each split. */
@@ -69,12 +70,12 @@ public:
         const int batch_size,
         DatasetAugmentations augs = DatasetAugmentations(),
         ColorType ctype = ColorType::BGR,
-        ColorType ctype_gt = ColorType::GRAY, bool verify = false) :
+        ColorType ctype_gt = ColorType::GRAY, 
+        bool verify = false) :
 
         Dataset{ filename, verify },
         batch_size_{ batch_size },
         augs_(std::move(augs)),
-        n_channels_{ this->samples_[0].LoadImage(ctype).Channels() },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt }
     {
@@ -85,6 +86,13 @@ public:
         int x = tmp.channels_.find('x');
         assert(y != std::string::npos && x != std::string::npos);
         resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
+
+        // Initialize n_channels_
+        n_channels_ =  tmp.Channels();
+        // Initialize n_channels_gt_ if exists
+        if (this->samples_[0].label_path_.has_value()){
+            n_channels_gt_ = this->samples_[0].LoadImage(ctype_gt_, true).Channels();
+        }
     }
 
     /** @brief Returns the current Split.

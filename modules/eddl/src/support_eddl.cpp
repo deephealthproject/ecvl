@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -197,7 +197,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
         }
     }
     // otherwise is a segmentation problem so size of labels tensor must be equal to batch_size * number_of_label_channels * image_width * image_height
-    else if (labels->size != bs * n_channels_ * resize_dims_[0] * resize_dims_[1]) {
+    else if (labels->size != bs * n_channels_gt_ * resize_dims_[0] * resize_dims_[1]) {
         cerr << ECVL_ERROR_MSG "labels tensor must have N = batch_size, C = number_of_label_channels, H = image_height, W = image_width" << endl;
         ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }
