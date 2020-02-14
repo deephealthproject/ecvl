@@ -213,29 +213,32 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
 
     // Fill tensors with data
     for (int i = start; i < start + bs; ++i) {
+        // Read the image
         const int index = GetSplit()[i];
         const Sample& elem = samples_[index];
-        // Read and resize (HxW -> WxH) image
         img = elem.LoadImage(ctype_, false);
 
+        // Classification problem
         if (elem.label_) {
             // Apply chain of augmentations only to sample image
             augs_.Apply(current_split_, img);
 
-            // Copy labels into tensor (labels)
+            // Copy label into tensor (labels)
             vector<float> lab(classes_.size(), 0);
             for (int j = 0; j < elem.label_.value().size(); ++j) {
                 lab[elem.label_.value()[j]] = 1;
             }
             memcpy(labels->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
         }
+        // Segmentation problem
         else if (elem.label_path_) {
+            // Read the ground truth
             gt = elem.LoadImage(ctype_gt_, true);
 
-            // Apply chain of augmentations only to sample image
+            // Apply chain of augmentations to sample image and corresponding ground truth
             augs_.Apply(current_split_, img, gt);
 
-            // Copy labels into tensor (labels)
+            // Copy label into tensor (labels)
             ImageToTensor(gt, labels, offset);
         }
 

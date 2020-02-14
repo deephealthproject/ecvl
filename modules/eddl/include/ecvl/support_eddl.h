@@ -25,8 +25,18 @@
 inline constexpr unsigned operator+ (name const val) { return static_cast<unsigned>(val); }
 
 namespace ecvl {
+/** @brief Enum class representing the DLDataset supported splits.
+
+@anchor SplitType
+*/
 UNSIGNED_ENUM_CLASS(SplitType, training, validation, test)
 
+/** @brief Dataset Augmentations.
+
+This class represent the augmentations which will be applied to each split.
+
+@anchor DatasetAugmentations
+*/
 class DatasetAugmentations {
 public:
     std::array<unique_ptr<Augmentation>, 3> augs_;
@@ -50,27 +60,29 @@ This class extends the DeepHealth Dataset with Deep Learning specific members.
 class DLDataset : public Dataset {
 public:
     int batch_size_; /**< @brief Size of each dataset mini batch. */
-    int n_channels_; /**< @brief Number of color channels of the images. */
-    int n_channels_gt_; /**< @brief Number of color channels of the ground truth. */
+    int n_channels_; /**< @brief Number of channels of the images. */
+    int n_channels_gt_; /**< @brief Number of channels of the ground truth images. */
     SplitType current_split_ = SplitType::training; /**< @brief Current split from which images are loaded. */
     std::vector<int> resize_dims_; /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
     std::array<int, 3> current_batch_ = { 0,0,0 }; /**< @brief Number of batches already loaded for each split. */
     ColorType ctype_; /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_; /**< @brief ecvl::ColorType of the Dataset ground truth images. */
-    DatasetAugmentations augs_;
+    DatasetAugmentations augs_; /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
 
     /**
     @param[in] filename Path to the Dataset file.
     @param[in] batch_size Size of each dataset mini batch.
-    @param[in] augs Array with three Augmentation to be applied .
+    @param[in] augs Array with three DatasetAugmentations (training, validation and test) to be applied to the Dataset images (and ground truth if exists) for each split.
+                    If no augmentation is required or the split doesn't exist, nullptr has to be passed.
     @param[in] ctype ecvl::ColorType of the Dataset images.
     @param[in] ctype_gt ecvl::ColorType of the Dataset ground truth images.
+    @param[in] verify If true, a list of all the images in the Dataset file which don't exist is printed with an ECVL_WARNING_MSG.
     */
     DLDataset(const std::filesystem::path& filename,
         const int batch_size,
         DatasetAugmentations augs = DatasetAugmentations(),
         ColorType ctype = ColorType::BGR,
-        ColorType ctype_gt = ColorType::GRAY, 
+        ColorType ctype_gt = ColorType::GRAY,
         bool verify = false) :
 
         Dataset{ filename, verify },
@@ -80,7 +92,7 @@ public:
         ctype_gt_{ ctype_gt }
     {
         Image tmp = this->samples_[0].LoadImage(ctype);
-        // Check the images dimensions after augmentations are performed
+        // Initialize resize_dims_ after that augmentations on images are performed
         augs_.Apply(current_split_, tmp);
         int y = tmp.channels_.find('y');
         int x = tmp.channels_.find('x');
@@ -88,15 +100,15 @@ public:
         resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
 
         // Initialize n_channels_
-        n_channels_ =  tmp.Channels();
+        n_channels_ = tmp.Channels();
         // Initialize n_channels_gt_ if exists
-        if (this->samples_[0].label_path_.has_value()){
+        if (this->samples_[0].label_path_.has_value()) {
             n_channels_gt_ = this->samples_[0].LoadImage(ctype_gt_, true).Channels();
         }
     }
 
-    /** @brief Returns the current Split.
-    @return Current Split in use.
+    /** @brief Returns the image indexes of the current Split.
+    @return vector of image indexes of the Split in use.
     */
     std::vector<int>& GetSplit();
 
@@ -107,10 +119,9 @@ public:
     void ResetAllBatches();
 
     /** @brief Set the current Split.
-    @param[in] split_str std::string representing the Split to set.
-        split_str can assume one of the following values: "training", "validation", and "test".
+    @param[in] split ecvl::SplitType representing the Split to set ("training", "validation", or "test").
     */
-    void SetSplit(const SplitType& split_str);
+    void SetSplit(const SplitType& split);
 
     /** @brief Load a batch into _images_ and _labels_ `tensor`.
     @param[out] images `tensor` which stores the batch of images.
