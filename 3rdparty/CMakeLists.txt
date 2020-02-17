@@ -47,7 +47,7 @@ if(${ECVL_WITH_OPENGL})
             SET(GLM_TEST_FORCE_PURE OFF CACHE INTERNAL "" FORCE)
 
             set(CMAKE_FOLDER 3rdparty/glm)
-            add_subdirectory(glm)
+            add_subdirectory(glm EXCLUDE_FROM_ALL)
             set(CMAKE_FOLDER 3rdparty)
             target_link_libraries(ECVL_GUI PUBLIC glm)
 
@@ -80,7 +80,7 @@ if(${ECVL_TESTS})
     SET(BUILD_GMOCK ON CACHE INTERNAL "" FORCE)
 
     set(CMAKE_FOLDER 3rdparty/googletest)
-    add_subdirectory(googletest)
+    add_subdirectory(googletest EXCLUDE_FROM_ALL)
     set(CMAKE_FOLDER 3rdparty)
 
     include(GoogleTest)
@@ -105,7 +105,7 @@ if (${ECVL_DATASET_PARSER})
     mark_as_advanced(YAML_MSVC_STHREADED_RT)
 
     set(CMAKE_FOLDER 3rdparty/yaml-cpp)
-    add_subdirectory(yaml-cpp)
+    add_subdirectory(yaml-cpp EXCLUDE_FROM_ALL)
     set(CMAKE_FOLDER 3rdparty)
     target_link_libraries(ECVL_CORE PUBLIC yaml-cpp)
     message(STATUS "yaml-cpp added")

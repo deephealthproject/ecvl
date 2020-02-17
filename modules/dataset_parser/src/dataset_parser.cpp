@@ -198,7 +198,7 @@ Dataset::Dataset(const path& filename, bool verify)
     try {
         config = YAML::LoadFile(abs_filename.string());
     }
-    catch (const YAML::BadFile& e) {
+    catch (const YAML::Exception& e) {
         cerr << ECVL_ERROR_MSG "parse of dataset file " << filename << " failed." << endl;
         cerr << "MSG: " << e.what();
         ECVL_ERROR_NOT_REACHABLE_CODE

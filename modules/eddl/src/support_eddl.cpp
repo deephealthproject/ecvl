@@ -143,12 +143,12 @@ void ImageToTensor(const Image& img, tensor& t, const int& offset)
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
 }
 
-std::vector<int>& DLDataset::GetSplit()
+std::vector<int>& DLDataset::GetSplit(const SplitType& split)
 {
-    if (current_split_ == SplitType::training) {
+    if (split == SplitType::training) {
         return this->split_.training_;
     }
-    else if (current_split_ == SplitType::validation) {
+    else if (split == SplitType::validation) {
         return this->split_.validation_;
     }
     else {
@@ -156,9 +156,19 @@ std::vector<int>& DLDataset::GetSplit()
     }
 }
 
+std::vector<int>& DLDataset::GetSplit()
+{
+    return GetSplit(current_split_);
+}
+
 void DLDataset::SetSplit(const SplitType& split)
 {
-    this->current_split_ = split;
+    if (GetSplit(split).size() > 0) {
+        this->current_split_ = split;
+    }
+    else {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
 }
 
 void DLDataset::ResetCurrentBatch()

@@ -27,6 +27,7 @@
 #define ECVL_ERROR_NOT_ALLOWED_ON_UNSIGNED_IMG throw std::runtime_error(ECVL_ERROR_MSG "Operation not allowed on unsigned Image");
 #define ECVL_ERROR_DIVISION_BY_ZERO throw std::runtime_error(ECVL_ERROR_MSG "Division by zero is not allowed.");
 #define ECVL_ERROR_FILE_DOES_NOT_EXIST throw std::runtime_error(ECVL_ERROR_MSG "File does not exist");
+#define ECVL_ERROR_SPLIT_DOES_NOT_EXIST throw std::runtime_error(ECVL_ERROR_MSG "This split does not exist in the dataset file");
 #define ECVL_ERROR_CANNOT_LOAD_FROM_URL throw std::runtime_error(ECVL_ERROR_MSG "Cannot load from URL");
 #define ECVL_ERROR_CANNOT_LOAD_IMAGE throw std::runtime_error(ECVL_ERROR_MSG "Cannot load image");
 #define ECVL_ERROR_INCOMPATIBLE_DIMENSIONS throw std::runtime_error(ECVL_ERROR_MSG "Incompatible dimensions");
