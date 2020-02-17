@@ -116,7 +116,7 @@ public:
     @param[in] split ecvl::SplitType representing the Split to get ("training", "validation", or "test").
     @return vector of image indexes of the requested Split.
     */
-    std::vector<int>& DLDataset::GetSplit(const SplitType& split);
+    std::vector<int>& GetSplit(const SplitType& split);
 
     /** @brief Reset the batch counter of the current Split. */
     void ResetCurrentBatch();
