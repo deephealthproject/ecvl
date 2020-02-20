@@ -91,7 +91,7 @@ if(${ECVL_WITH_DICOM})
     mark_as_advanced(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL)
 
     set(CMAKE_FOLDER 3rdparty/dcmtk)
-    add_subdirectory(3rdparty/dcmtk EXCLUDE_FROM_ALL)
+    add_subdirectory(3rdparty/dcmtk)
     set(CMAKE_FOLDER 3rdparty)
 
     set(DCMTK_LIBS ofstd;oflog;dcmdata;dcmimgle;dcmimage;dcmjpeg)
