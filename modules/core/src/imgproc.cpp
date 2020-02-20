@@ -1297,9 +1297,9 @@ void FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
     vector<vector<cv::Point>> cv_contours;
     vector<cv::Vec4i> hierarchy;
 #if OpenCV_VERSION_MAJOR > 3
-    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 #else
-    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
 #endif // OpenCV_VERSION_MAJOR > 3
 
     contours.resize(cv_contours.size());
