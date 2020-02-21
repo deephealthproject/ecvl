@@ -44,6 +44,34 @@ CMake flags and options:
 - `-DECVL_WITH_DICOM` (default `OFF`): Enables DICOM format support
 - `-DECVL_WITH_OPENSLIDE` (default `OFF`): Enables OpenSlide whole-slide image support
 
+### Conda
+
+
+You will need an anaconda package manager such as [miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+```bash
+sudo apt install -y gcc-8 g++-8
+git clone https://github.com/deephealthproject/ecvl.git
+cd ecvl
+conda env create -f environment.yml
+conda activate ecvl
+mkdir build && cd build
+export CC=/usr/bin/gcc-8 && export CXX=/usr/bin/g++-8 && \
+cmake \
+  -DECVL_BUILD_EXAMPLES=ON \
+  -DECVL_BUILD_EDDL=ON \
+  -DECVL_DATASET_PARSER=ON \
+  -DECVL_BUILD_GUI=OFF \
+  -DECVL_WITH_OPENGL=OFF \
+  -DECVL_WITH_DICOM=ON \
+  -DECVL_WITH_OPENSLIDE=ON \
+  -DCMAKE_INSTALL_PREFIX=install \
+  -Deddl_DIR=/home/<user>/eddl/build/cmake \ # Must be installed manually
+  ..
+make -j$(nproc)
+make install
+```
+
 #### ECVL installation example
 ECVL installation with all options enabled and required libraries installed in "non-standard" system directories:
 ```bash
