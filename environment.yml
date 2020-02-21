@@ -1,0 +1,24 @@
+name: ecvl
+channels:
+  - conda-forge
+  - defaults
+  - anaconda
+  - philbrik # wget for windows
+  - bioconda # needed for openslide
+dependencies:
+  - git >= 2.19.1
+  - cmake >= 3.13
+  - gtest >= 1.8.0
+  - opencv
+  - openslide
+  # eddl dependencies
+  - graphviz >= 2.38.0
+  - wget >= 1.19.5
+  - openmp >= 6.0.0
+  - blas >= 1.1
+  - eigen >= 3.3.7
+  - cudatoolkit >= 6.0
+  - zlib >= 1.2.8
+  #- benchmark >= 1.5.0
+  - protobuf >= 3.6.1
+  - libprotobuf >= 3.6.1
