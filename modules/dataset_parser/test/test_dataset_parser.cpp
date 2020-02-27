@@ -16,10 +16,12 @@
 #include "ecvl/dataset_parser.h"
 #include <fstream>
 
+#include "dataset_path.h"
+
 using namespace ecvl;
 
 TEST(DatasetParser, LoadExistingDataset) {
-    Dataset d("../examples/data/mnist/mnist.yml");
+    Dataset d(CMAKE_CURRENT_SOURCE_DIR "/examples/data/mnist/mnist.yml");
     EXPECT_EQ(d.name_, "MNIST");
     std::vector<std::string> classes{ "0","1","2","3","4","5","6","7","8","9" };
     EXPECT_EQ(d.classes_.size(), 10);

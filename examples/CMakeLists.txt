@@ -74,3 +74,5 @@ else()
         file(REMOVE "${CMAKE_CURRENT_SOURCE_DIR}/examples/data/mnist.zip")
     endif()
 endif()
+
+configure_file("${CMAKE_SOURCE_DIR}/modules/dataset_parser/test/dataset_path.h.cmake" "${CMAKE_SOURCE_DIR}/modules/dataset_parser/test/dataset_path.h")
