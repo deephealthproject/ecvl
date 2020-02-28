@@ -283,6 +283,9 @@ if (${ECVL_TESTS})
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
         target_link_libraries(ECVL_TESTS stdc++fs) 
     endif()
+    if (${ECVL_BUILD_EXAMPLES})
+        target_compile_definitions(ECVL_TESTS PUBLIC ECVL_WITH_EXAMPLES)
+    endif()
     enable_testing()
     #gtest_discover_tests(ECVL_TESTS)
     gtest_add_tests(TARGET ECVL_TESTS)
@@ -295,7 +298,6 @@ endif()
 # BEGIN: Examples
 #--------------------------------------------------------------------------------------------------------
 if (${ECVL_BUILD_EXAMPLES})
-    target_compile_definitions(ECVL_TESTS PUBLIC ECVL_WITH_EXAMPLES)
     include(examples/CMakeLists.txt)
 endif()
 #--------------------------------------------------------------------------------------------------------
