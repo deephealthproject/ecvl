@@ -4,12 +4,7 @@ pipeline {
         stage('Parallel Stages') {
             parallel {                                
                 stage('linux') {
-                    agent {
-                        docker { 
-                            label 'docker'
-                            image 'stal12/opencv:3.4.6_gcc8'
-                        }
-                    }
+                    agent { dockerfile true }
                     stages {
                         stage('Build') {
                             steps {
