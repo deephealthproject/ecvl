@@ -15,7 +15,9 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EXAMPLES=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET_PARSER=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET_PARSER=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                        [args: '-j$(nproc)', withCmake: true]
+                                    ]
                                 }
                             }
                         }
