@@ -295,6 +295,7 @@ endif()
 # BEGIN: Examples
 #--------------------------------------------------------------------------------------------------------
 if (${ECVL_BUILD_EXAMPLES})
+    target_compile_definitions(ECVL_TESTS PUBLIC ECVL_WITH_EXAMPLES)
     include(examples/CMakeLists.txt)
 endif()
 #--------------------------------------------------------------------------------------------------------
