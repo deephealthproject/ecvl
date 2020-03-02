@@ -65,7 +65,7 @@ pipeline {
                     }
                 }
                 stage('documentation') {
-                    when { 
+                    when {
                         branch 'master'
                         beforeAgent true
                     }
@@ -77,8 +77,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     bat 'cd doc\\doxygen && doxygen'
-                                    bat 'powershell -Command "(gc %ECVL_DOXYGEN_INPUT_COMMANDS%) -replace \'@local_dir\', \'doc\\html\' | Out-File commands_out.txt"'
-                                    bat 'winscp /ini:nul /script:commands_out.txt'
+                                    bat 'powershell "%ECVL_DOXYGEN_SCRIPT_PATH%/update_doc_script.ps1"'
                                 }
                             }
                         }
