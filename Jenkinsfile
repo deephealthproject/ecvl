@@ -2,12 +2,12 @@ pipeline {
     agent none
     stages {
         stage('Parallel Stages') {
-            parallel {                                
+            parallel {
                 stage('linux') {
                     agent {
                         docker { 
                             label 'docker'
-                            image 'stal12/opencv:3.4.6_gcc8'
+                            image 'pritt/ecvl:latest'
                         }
                     }
                     stages {
@@ -15,7 +15,9 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET_PARSER=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                        [args: '-j', withCmake: true]
+                                    ]
                                 }
                             }
                         }
@@ -64,7 +66,7 @@ pipeline {
                 }
                 stage('documentation') {
                     when { 
-                        branch 'master' 
+                        branch 'master'
                         beforeAgent true
                     }
                     agent {
