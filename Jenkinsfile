@@ -77,7 +77,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     bat 'cd doc\\doxygen && doxygen'
-                                    bat 'powershell "%ECVL_DOXYGEN_SCRIPT_PATH%/update_doc_script.ps1"'
+                                    bat '"../../doxygen_git/update_doc_script.bat"'
                                 }
                             }
                         }
