@@ -16,7 +16,7 @@ pipeline {
                                 timeout(15) {
                                     echo 'Building..'
                                     cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET_PARSER=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
-                                        [args: '-j', withCmake: true]
+                                        [args: '-j4', withCmake: true]
                                     ]
                                 }
                             }
@@ -45,7 +45,10 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    bat 'powershell ../../ecvl_dependencies/ecvl_dependencies.ps1'
+                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET_PARSER=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=%OPENSLIDE_LIBRARIES_DIR%\libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                        [args: '-j4', withCmake: true]
+                                    ]
                                 }
                             }    
                         }
