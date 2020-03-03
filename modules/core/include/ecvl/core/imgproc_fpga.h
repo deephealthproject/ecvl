@@ -8,6 +8,7 @@ namespace ecvl {
 void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp);
 void Threshold_FPGA(const cv::Mat& src,  cv::Mat& dst, double thresh, double maxval);
 uint8_t OtsuThreshold_FPGA(const cv::Mat& src);
+void warpTransform_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Mat& rotMatrix, cv::Size dsize, int interp);
 
 }
 

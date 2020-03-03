@@ -36,6 +36,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common/xf_utility.h"
 #include "imgproc/xf_threshold.hpp"
 
+
+//#include <time.h>
+
+
 // port widths
 #define INPUT_PTR_WIDTH  256
 #define OUTPUT_PTR_WIDTH 256
@@ -84,7 +88,15 @@ void otsuThreshold_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, int rows_in, int col
 
 #pragma HLS DATAFLOW
 
+
+	//clock_t t;
+
 	xf::Array2xfMat<INPUT_PTR_WIDTH,XF_8UC1,HEIGHT,WIDTH,NPC>(img_inp,in_mat);
+	//t = clock();
   xf::OtsuThreshold<XF_8UC1, HEIGHT, WIDTH, NPC>(in_mat, *thresh);
+	// t = clock() - t;
+	// double time_taken = ((double)t)/CLOCKS_PER_SEC; // calculate the elapsed time
+	// printf("Tiempo de ejecucion otsuThreshold_accel en FPGA: %f\n", time_taken);
+
 }
 }

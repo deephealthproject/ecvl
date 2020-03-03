@@ -12,7 +12,7 @@
 */
 
 #include "ecvl/core/imgproc.h"
-
+#include <chrono>
 #ifdef ECVL_WITH_FPGA
 #include "ecvl/core/imgproc_fpga.h"
 #endif
@@ -25,7 +25,7 @@
 
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/standard_errors.h"
-
+#include <iostream>
 namespace ecvl {
 using namespace std;
 
@@ -64,10 +64,17 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
         cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(src_mat.channels()));
         ResizeDim_FPGA(src_mat, m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
         dst = ecvl::MatToImage(m);
+
 #else
+        using namespace std::chrono;
         cv::Mat m;
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
         cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
         dst = ecvl::MatToImage(m);
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+        std::cout << "Tiempo de ejecucion ResizeDim en cpu: " << time_span.count() << " seconds.";
+        std::cout << std::endl;
 #endif
     }
     else {
@@ -89,9 +96,24 @@ void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales
         int nw = lround(src.dims_[0] * scales[0]);
         int nh = lround(src.dims_[1] * scales[1]);
 
-        cv::Mat m;
-        cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
+
+#ifdef ECVL_WITH_FPGA
+        printf("height %d\n", nh);
+        cv::Mat src_mat = ImageToMat(src);
+        cv::Mat m = cv::Mat::zeros(cv::Size(nw,nh), CV_8UC(src_mat.channels()));
+        ResizeDim_FPGA(src_mat, m, cv::Size(nw,nh), GetOpenCVInterpolation(interp));
         dst = ecvl::MatToImage(m);
+#else
+        using namespace std::chrono;
+        cv::Mat m;
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+        cv::resize(ImageToMat(src), m, cv::Size(nw,nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+        dst = ecvl::MatToImage(m);
+        duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+        std::cout << "Tiempo de ejecucion ResizeDim en cpu: " << time_span.count() << " seconds.";
+        std::cout << std::endl;
+#endif
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -150,9 +172,18 @@ void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std:
     if (src.channels_ == "xyc") {
         cv::Mat rot_matrix;
         rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
+
+#ifdef ECVL_WITH_FPGA
+        cv::Mat src_mat = ImageToMat(src);
+        cv::Mat m = cv::Mat::zeros({ src.dims_[0], src.dims_[1] }, CV_8UC(src_mat.channels()));
+        warpTransform_FPGA(src_mat, m,rot_matrix,{ src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
+        dst = ecvl::MatToImage(m);
+#else
         cv::Mat m;
         cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
         dst = ecvl::MatToImage(m);
+#endif
+
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -385,9 +416,15 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     Threshold_FPGA(src_mat1, m, thresh, maxval);
     dst = ecvl::MatToImage(m);
 #else
+    using namespace std::chrono;
     cv::Mat m;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
     dst = MatToImage(m);
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion Threshold en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
 #endif
 }
 
@@ -429,6 +466,8 @@ int OtsuThreshold(const Image& src)
     std::vector<double> hist = Histogram(src);
 
     double mu_t = 0;
+    using namespace std::chrono;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     for (size_t i = 1; i < hist.size(); i++) {
         mu_t += hist[i] * i;
     }
@@ -447,6 +486,10 @@ int OtsuThreshold(const Image& src)
             threshold = k;
         }
     }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion Otsu_Threshold en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
 #endif
 
     return threshold;

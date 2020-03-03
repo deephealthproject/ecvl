@@ -27,7 +27,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
-// #pragma once 
+// #pragma once
 // #ifndef _XF_THRESHOLD_CONFIG_H_
 // #define _XF_THRESHOLD_CONFIG_H_
 
