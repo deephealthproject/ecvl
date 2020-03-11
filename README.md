@@ -12,7 +12,7 @@
 
 ## Documentation
 
-The ECVL documentation is available online [here](http://imagelab.ing.unimore.it/ecvl/). It is automatically updated at each commit/push to the master branch.
+The ECVL documentation is available online [here](https://deephealthproject.github.io/ecvl/). It is automatically updated at each commit/push to the master branch.
 
 ## Requirements
 - CMake 3.13 or later
