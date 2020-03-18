@@ -24,7 +24,7 @@ using namespace std::filesystem;
 int main()
 {
     path dateset_root_folder_classification("../examples/data/fake_classification_dataset");
-    path dateset_root_folder_segmentation("../examples/data/fake_segmentation_dataset_1");
+    path dateset_root_folder_segmentation("../examples/data/fake_segmentation_dataset");
     Dataset d_classification, d_segmentation;
 
     // Classification dataset
