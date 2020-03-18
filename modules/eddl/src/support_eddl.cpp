@@ -258,4 +258,48 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
         ++offset;
     }
 }
+
+void DLDataset::LoadBatch(tensor& images)
+{
+    if (resize_dims_.size() != 2) {
+        cerr << ECVL_ERROR_MSG "resize_dims_ must have 2 dimensions (height, width)" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
+    }
+
+    int& bs = batch_size_;
+    Image img;
+    int offset = 0, start = 0;
+
+    // Check if tensors size matches with batch dimensions
+    // size of images tensor must be equal to batch_size * number_of_image_channels * image_width * image_height
+    if (images->size != bs * n_channels_ * resize_dims_[0] * resize_dims_[1]) {
+        cerr << ECVL_ERROR_MSG "images tensor must have N = batch_size, C = number_of_image_channels, H = image_height, W = image_width" << endl;
+        ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
+    }
+
+    // Move to next samples
+    start = current_batch_[+current_split_] * bs;
+    ++current_batch_[+current_split_];
+
+    if (GetSplit().size() < start + bs) {
+        cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
+        ECVL_ERROR_CANNOT_LOAD_IMAGE
+    }
+
+    // Fill tensors with data
+    for (int i = start; i < start + bs; ++i) {
+        // Read the image
+        const int index = GetSplit()[i];
+        const Sample& elem = samples_[index];
+        img = elem.LoadImage(ctype_, false);
+
+        // Apply chain of augmentations only to sample image
+        augs_.Apply(current_split_, img);
+
+        // Copy image into tensor (images)
+        ImageToTensor(img, images, offset);
+
+        ++offset;
+    }
+}
 } // namespace ecvl
