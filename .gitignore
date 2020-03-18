@@ -2,7 +2,7 @@
 /[Bb]uild*
 /[Bb]in*
 
-**/data*
+**/data/*
 
 #############################
 # Begin: Documentation      #
