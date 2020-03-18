@@ -37,8 +37,8 @@ make install
 CMake flags and options:
 - `-DECVL_TESTS` (default `ON`): Compiles tests
 - `-DECVL_BUILD_EXAMPLES` (default `OFF`): Compiles examples and downloads examples data 
-- `-DECVL_DATASET_PARSER` (default `OFF`): Compiles dataset parser module
-- `-DECVL_BUILD_EDDL` (default `ON`): Compiles eddl integration module (it automatically enables `ECVL_DATASET_PARSER` option)
+- `-DECVL_DATASET` (default `OFF`): Compiles dataset module
+- `-DECVL_BUILD_EDDL` (default `ON`): Compiles eddl integration module (it automatically enables `ECVL_DATASET` option)
 - `-DECVL_BUILD_GUI` (default `OFF`): Compiles GUI module
 - `-DECVL_WITH_OPENGL` (default `OFF`): Enables 3D GUI functionalities
 - `-DECVL_WITH_DICOM` (default `OFF`): Enables DICOM format support
@@ -52,7 +52,7 @@ mkdir build && cd build
 cmake \
   -DECVL_BUILD_EXAMPLES=ON \
   -DECVL_BUILD_EDDL=ON \
-  -DECVL_DATASET_PARSER=ON \
+  -DECVL_DATASET=ON \
   -DECVL_BUILD_GUI=ON \
   -DECVL_WITH_OPENGL=ON \
   -DECVL_WITH_DICOM=ON \
