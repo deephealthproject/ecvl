@@ -33,7 +33,7 @@ var searchData=
   ['int32',['int32',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a0241adbbd83925f051b694d40f02747f',1,'ecvl']]],
   ['int64',['int64',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857aff9b3f96d37353c528517bc3656a00a8',1,'ecvl']]],
   ['int8',['int8',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a27c006cc56b1ba88f960cf8b5144fcac',1,'ecvl']]],
-  ['integer',['integer',['../structecvl_1_1_table1_d_1_1integer.html',1,'ecvl::Table1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table1_d_1_1integer.html',1,'ecvl::SignedTable1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table2_d_1_1integer.html',1,'ecvl::Table2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table2_d_1_1integer.html',1,'ecvl::SignedTable2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;']]],
+  ['integer',['integer',['../structecvl_1_1_signed_table1_d_1_1integer.html',1,'ecvl::SignedTable1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table2_d_1_1integer.html',1,'ecvl::Table2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table2_d_1_1integer.html',1,'ecvl::SignedTable2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table1_d_1_1integer.html',1,'ecvl::Table1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;']]],
   ['integralimage',['IntegralImage',['../namespaceecvl.html#abd1bed8d85c640bf76e16d28884b1715',1,'ecvl']]],
   ['interpolationtype',['InterpolationType',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c',1,'ecvl']]],
   ['is_5f',['is_',['../structecvl_1_1_endian_reader.html#a022457b553fcadff7330a5313f3fc8f8',1,'ecvl::EndianReader']]],

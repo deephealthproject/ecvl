@@ -120,6 +120,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a26ae39bc2426816e364559ded105225e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c507f92b0c6ba0dff187add10b9a316"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#a6c507f92b0c6ba0dff187add10b9a316">Dataset</a> (const std::filesystem::path &amp;filename, bool verify=false)</td></tr>
 <tr class="separator:a6c507f92b0c6ba0dff187add10b9a316"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee9d2ca0df0478f6df2223e6cb83e44a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#aee9d2ca0df0478f6df2223e6cb83e44a">Dump</a> (const std::filesystem::path &amp;file_path)</td></tr>
+<tr class="memdesc:aee9d2ca0df0478f6df2223e6cb83e44a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dump the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> into a YAML file following the DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Format.  <a href="#aee9d2ca0df0478f6df2223e6cb83e44a">More...</a><br /></td></tr>
+<tr class="separator:aee9d2ca0df0478f6df2223e6cb83e44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -147,7 +150,7 @@ Public Attributes</h2></td></tr>
 <p>This class implements the DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Format (<a href="https://github.com/deephealthproject/ecvl/wiki/DeepHealth-Toolkit-Dataset-Format">https://github.com/deephealthproject/ecvl/wiki/DeepHealth-Toolkit-Dataset-Format</a>).</p>
 <p><a class="anchor" id="Dataset"></a></p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00072">72</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00082">82</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a26ae39bc2426816e364559ded105225e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26ae39bc2426816e364559ded105225e">&#9670;&nbsp;</a></span>Dataset() <span class="overload">[1/2]</span></h2>
@@ -172,7 +175,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00081">81</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00091">91</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -210,6 +213,36 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aee9d2ca0df0478f6df2223e6cb83e44a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee9d2ca0df0478f6df2223e6cb83e44a">&#9670;&nbsp;</a></span>Dump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Dataset::Dump </td>
+          <td>(</td>
+          <td class="paramtype">const std::filesystem::path &amp;&#160;</td>
+          <td class="paramname"><em>file_path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Dump the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> into a YAML file following the DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Format. </p>
+<p>The YAML file is saved into the dataset root directory. Samples paths are relative to the dataset root directory.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">file_path</td><td>Where to save the YAML file. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8cpp_source.html#l00189">189</a> of file <a class="el" href="dataset__parser_8cpp_source.html">dataset_parser.cpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a9672b0f97b835937662c656793fbadaa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9672b0f97b835937662c656793fbadaa">&#9670;&nbsp;</a></span>classes_</h2>
@@ -227,7 +260,7 @@ Public Attributes</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a20">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00076">76</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00086">86</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -245,7 +278,7 @@ Public Attributes</h2></td></tr>
 
 <p>Description of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00075">75</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00085">85</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -263,7 +296,7 @@ Public Attributes</h2></td></tr>
 
 <p>Vector with all the features available in the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00077">77</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00087">87</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +314,7 @@ Public Attributes</h2></td></tr>
 
 <p>Name of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00074">74</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00084">84</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -299,7 +332,7 @@ Public Attributes</h2></td></tr>
 
 <p>Vector containing all the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> samples. See <a class="el" href="classecvl_1_1_sample.html#Sample">Sample</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00078">78</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00088">88</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -317,7 +350,7 @@ Public Attributes</h2></td></tr>
 
 <p>Splits of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. See <a class="el" href="classecvl_1_1_split.html#Split">Split</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00079">79</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00089">89</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>

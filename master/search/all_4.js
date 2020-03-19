@@ -1,10 +1,14 @@
 var searchData=
 [
+  ['d_5f',['d_',['../classecvl_1_1_generate_dataset.html#a73e86c05ee393218a3c03d619f9b0a9e',1,'ecvl::GenerateDataset']]],
   ['data',['data',['../structecvl_1_1_table1_d.html#a53fc9338d4fca0ca12249ba18b8050d5',1,'ecvl::Table1D::data()'],['../structecvl_1_1_signed_table1_d.html#a8b44ee3447f8a14b68f02239a270652b',1,'ecvl::SignedTable1D::data()'],['../structecvl_1_1_table2_d.html#afdf88cc4aaacdf66bf54b4255e627ab3',1,'ecvl::Table2D::data()'],['../structecvl_1_1_signed_table2_d.html#ae42832157b76dfd39e1371f883c347be',1,'ecvl::SignedTable2D::data()']]],
   ['data_5f',['data_',['../classecvl_1_1_image.html#ac3bdae3b8e7b4b02fa137f4a4c900cc2',1,'ecvl::Image']]],
   ['dataset',['Dataset',['../classecvl_1_1_dataset.html',1,'ecvl::Dataset'],['../classecvl_1_1_dataset.html#a26ae39bc2426816e364559ded105225e',1,'ecvl::Dataset::Dataset()'],['../classecvl_1_1_dataset.html#a6c507f92b0c6ba0dff187add10b9a316',1,'ecvl::Dataset::Dataset(const std::filesystem::path &amp;filename, bool verify=false)']]],
+  ['dataset_5fgenerator_2ecpp',['dataset_generator.cpp',['../dataset__generator_8cpp.html',1,'']]],
+  ['dataset_5fgenerator_2eh',['dataset_generator.h',['../dataset__generator_8h.html',1,'']]],
   ['dataset_5fparser_2ecpp',['dataset_parser.cpp',['../dataset__parser_8cpp.html',1,'']]],
   ['dataset_5fparser_2eh',['dataset_parser.h',['../dataset__parser_8h.html',1,'']]],
+  ['dataset_5froot_5fdirectory_5f',['dataset_root_directory_',['../classecvl_1_1_generate_dataset.html#a4195973aa92b02320314209f5d67ff31',1,'ecvl::GenerateDataset']]],
   ['datasetaugmentations',['DatasetAugmentations',['../classecvl_1_1_dataset_augmentations.html',1,'ecvl::DatasetAugmentations'],['../classecvl_1_1_dataset_augmentations.html#ac48437d3503c2e1c00f4667418fb38ef',1,'ecvl::DatasetAugmentations::DatasetAugmentations()']]],
   ['datasize_5f',['datasize_',['../classecvl_1_1_image.html#a1855a32639c8385ba96f9e151ca882d2',1,'ecvl::Image']]],
   ['datatype',['DataType',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857',1,'ecvl']]],
@@ -62,5 +66,6 @@ var searchData=
   ['dt_5fuint8',['DT_UINT8',['../support__nifti_8cpp.html#a0d8921207937a0471c45a6f493943cc3',1,'support_nifti.cpp']]],
   ['dt_5funknown',['DT_UNKNOWN',['../support__nifti_8cpp.html#a293ce58a2d39f35c52f7f4516a857057',1,'support_nifti.cpp']]],
   ['dt_5funsigned_5fchar',['DT_UNSIGNED_CHAR',['../support__nifti_8cpp.html#a9c05253305ada0f09ebdd058c5f8dad3',1,'support_nifti.cpp']]],
+  ['dump',['Dump',['../classecvl_1_1_dataset.html#aee9d2ca0df0478f6df2223e6cb83e44a',1,'ecvl::Dataset']]],
   ['documentation',['Documentation',['../index.html',1,'']]]
 ];

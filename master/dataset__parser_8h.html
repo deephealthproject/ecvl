@@ -87,13 +87,16 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_e05d7e2b1ecd646af5bb94391405f3b5.html">modules</a></li><li class="navelem"><a class="el" href="dir_dd5c8d4dd85c70ef88e0f2cb9499df8c.html">dataset_parser</a></li><li class="navelem"><a class="el" href="dir_d8b942a4b81d297a31381f7751ccdae6.html">include</a></li><li class="navelem"><a class="el" href="dir_dcddfb610a44412af4e83a4a08490c94.html">ecvl</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_e05d7e2b1ecd646af5bb94391405f3b5.html">modules</a></li><li class="navelem"><a class="el" href="dir_bb75e3f82f9b951b795ca0d986771018.html">dataset</a></li><li class="navelem"><a class="el" href="dir_aad08ddf8403ad27a0f1a3fdbd528e9f.html">include</a></li><li class="navelem"><a class="el" href="dir_cae586c60c54442eadaa6121b4981918.html">ecvl</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">dataset_parser.h File Reference</div>  </div>
 </div><!--header-->
@@ -124,7 +127,58 @@ Classes</h2></td></tr>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceecvl"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html">ecvl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a7abd0c9096c474e1463ee8458447c34d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dataset__parser_8h.html#a7abd0c9096c474e1463ee8458447c34d">UNSIGNED_ENUM_CLASS</a>(name, ...)</td></tr>
+<tr class="separator:a7abd0c9096c474e1463ee8458447c34d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ad4c37278cb980c0477ef2ab5b2740569"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">ecvl::SplitType</a> : unsigned { <a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214">ecvl::SplitType::training</a>, 
+<a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569aa617908b172c473cb8e8cda059e55bf0">ecvl::SplitType::validation</a>, 
+<a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569a098f6bcd4621d373cade4e832627b4f6">ecvl::SplitType::test</a>
+ }</td></tr>
+<tr class="memdesc:ad4c37278cb980c0477ef2ab5b2740569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum class representing the DLDataset supported splits.  <a href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">More...</a><br /></td></tr>
+<tr class="separator:ad4c37278cb980c0477ef2ab5b2740569"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:af7e9ec15cba92409e1f55ed63dafee47"><td class="memItemLeft" align="right" valign="top">constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">ecvl::operator+</a> (SplitType const val)</td></tr>
+<tr class="separator:af7e9ec15cba92409e1f55ed63dafee47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a7abd0c9096c474e1463ee8458447c34d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7abd0c9096c474e1463ee8458447c34d">&#9670;&nbsp;</a></span>UNSIGNED_ENUM_CLASS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UNSIGNED_ENUM_CLASS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">enum class</span> name : unsigned { __VA_ARGS__ };\</div><div class="line">inline constexpr <span class="keywordtype">unsigned</span> <a class="code" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">operator+ </a>(name <span class="keyword">const</span> val) { <span class="keywordflow">return</span> static_cast&lt;unsigned&gt;(val); }</div><div class="ttc" id="namespaceecvl_html_af7e9ec15cba92409e1f55ed63dafee47"><div class="ttname"><a href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">ecvl::operator+</a></div><div class="ttdeci">constexpr unsigned operator+(SplitType const val)</div><div class="ttdef"><b>Definition:</b> <a href="dataset__parser_8h_source.html#l00037">dataset_parser.h:37</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00028">28</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -11,5 +11,6 @@ var searchData=
   ['none',['none',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a334c4a4c42fdb79d7ebc3e73b517e6f8',1,'ecvl::none()'],['../namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a334c4a4c42fdb79d7ebc3e73b517e6f8',1,'ecvl::none()']]],
   ['nonmaximasuppression',['NonMaximaSuppression',['../namespaceecvl.html#ab74faee8c2b550b7bee1fe07e0791c80',1,'ecvl']]],
   ['normalizetouint8',['NormalizeToUint8',['../namespaceecvl.html#afab209f3b11607e2e8fa2030a485de36',1,'ecvl']]],
-  ['normalizetouint8struct',['NormalizeToUint8Struct',['../structecvl_1_1_normalize_to_uint8_struct.html',1,'ecvl']]]
+  ['normalizetouint8struct',['NormalizeToUint8Struct',['../structecvl_1_1_normalize_to_uint8_struct.html',1,'ecvl']]],
+  ['num_5fsamples_5f',['num_samples_',['../classecvl_1_1_generate_dataset.html#ae0b9aad46da54a92124c577a0fe7877d',1,'ecvl::GenerateDataset']]]
 ];

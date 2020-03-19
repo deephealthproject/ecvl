@@ -94,8 +94,6 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">support_eddl.h File Reference</div>  </div>
@@ -123,24 +121,8 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceecvl"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html">ecvl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a7abd0c9096c474e1463ee8458447c34d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="support__eddl_8h.html#a7abd0c9096c474e1463ee8458447c34d">UNSIGNED_ENUM_CLASS</a>(name, ...)</td></tr>
-<tr class="separator:a7abd0c9096c474e1463ee8458447c34d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ad4c37278cb980c0477ef2ab5b2740569"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">ecvl::SplitType</a> : unsigned { <a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214">ecvl::SplitType::training</a>, 
-<a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569aa617908b172c473cb8e8cda059e55bf0">ecvl::SplitType::validation</a>, 
-<a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569a098f6bcd4621d373cade4e832627b4f6">ecvl::SplitType::test</a>
- }</td></tr>
-<tr class="memdesc:ad4c37278cb980c0477ef2ab5b2740569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum class representing the DLDataset supported splits.  <a href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">More...</a><br /></td></tr>
-<tr class="separator:ad4c37278cb980c0477ef2ab5b2740569"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af7e9ec15cba92409e1f55ed63dafee47"><td class="memItemLeft" align="right" valign="top">constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">ecvl::operator+</a> (SplitType const val)</td></tr>
-<tr class="separator:af7e9ec15cba92409e1f55ed63dafee47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2c0e52b39d861129ca12efff0aba0b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aa2c0e52b39d861129ca12efff0aba0b6">ecvl::TensorToImage</a> (tensor &amp;t, Image &amp;img)</td></tr>
 <tr class="memdesc:aa2c0e52b39d861129ca12efff0aba0b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an EDDL Tensor into an ECVL <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="namespaceecvl.html#aa2c0e52b39d861129ca12efff0aba0b6">More...</a><br /></td></tr>
 <tr class="separator:aa2c0e52b39d861129ca12efff0aba0b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,38 +136,6 @@ Functions</h2></td></tr>
 <tr class="memdesc:adb951745793a024dd263bc779cb00c3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert an ECVL <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> into an EDDL Tensor.  <a href="namespaceecvl.html#adb951745793a024dd263bc779cb00c3e">More...</a><br /></td></tr>
 <tr class="separator:adb951745793a024dd263bc779cb00c3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a7abd0c9096c474e1463ee8458447c34d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7abd0c9096c474e1463ee8458447c34d">&#9670;&nbsp;</a></span>UNSIGNED_ENUM_CLASS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define UNSIGNED_ENUM_CLASS</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">name, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">enum class</span> name : unsigned { __VA_ARGS__ };\</div><div class="line">inline constexpr <span class="keywordtype">unsigned</span> <a class="code" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">operator+ </a>(name <span class="keyword">const</span> val) { <span class="keywordflow">return</span> static_cast&lt;unsigned&gt;(val); }</div><div class="ttc" id="namespaceecvl_html_af7e9ec15cba92409e1f55ed63dafee47"><div class="ttname"><a href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">ecvl::operator+</a></div><div class="ttdeci">constexpr unsigned operator+(SplitType const val)</div><div class="ttdef"><b>Definition:</b> <a href="support__eddl_8h_source.html#l00032">support_eddl.h:32</a></div></div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00024">24</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

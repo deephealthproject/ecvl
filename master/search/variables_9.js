@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['n_5fchannels_5f',['n_channels_',['../classecvl_1_1_d_l_dataset.html#a3c92dc2c30c92851a96306582f015ebf',1,'ecvl::DLDataset']]],
-  ['n_5fchannels_5fgt_5f',['n_channels_gt_',['../classecvl_1_1_d_l_dataset.html#a7e601a1276fc41d9822d22c4dedfdcdc',1,'ecvl::DLDataset']]],
-  ['name_5f',['name_',['../classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab',1,'ecvl::Dataset']]]
+  ['max_5f',['max_',['../classecvl_1_1_augmentation_param.html#a7ce2d71d8d0de3d04cb8c4a64e8f59d1',1,'ecvl::AugmentationParam']]],
+  ['mem_5f',['mem_',['../classecvl_1_1_image.html#a47c93cfe9efa12b380cc00cad3fb3d12',1,'ecvl::Image']]],
+  ['meta_5f',['meta_',['../classecvl_1_1_image.html#a32383ca82c257c20e22b4587965d4566',1,'ecvl::Image']]],
+  ['min_5f',['min_',['../classecvl_1_1_augmentation_param.html#a99591f2dfb088b638ca041b700e6b889',1,'ecvl::AugmentationParam']]]
 ];
