@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -21,19 +21,19 @@ int main()
 {
     // Open an Image
     Image img1, tmp;
-    if (!ImRead("../examples/data/test.jpg", img1)) {
+    if (!ImRead("../examples/data/lena.png", img1)) {
         return EXIT_FAILURE;
     }
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
-    int new_width = 225;
+    int new_width = 300;
     int new_height = 300;
     cout << "Executing ResizeDim" << endl;
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
     ImWrite("img_resized.jpg", tmp);
 
     // Resize an Image by scaling the dimensions to a given scale factor res_scale (optional: InterpolationType)
-    vector<double> res_scale = { 2,2 };
+    vector<double> res_scale = { 2,1 };
     cout << "Executing ResizeScale" << endl;
     ResizeScale(img1, tmp, res_scale, InterpolationType::cubic);
     ImWrite("img_resized_scale.jpg", tmp);

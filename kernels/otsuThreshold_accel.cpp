@@ -74,7 +74,7 @@ void otsuThreshold_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, int rows_in, int col
 #pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
 #pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
 #pragma HLS INTERFACE s_axilite port=thresh              bundle=control
-
+#pragma HLS INTERFACE s_axilite port=return                bundle=control
 
 	const int pROWS_INP = HEIGHT;
 	const int pCOLS_INP = WIDTH;

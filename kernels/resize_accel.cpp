@@ -55,8 +55,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* Input image Dimensions */
 
-#define WIDTH 			3840	// Maximum Input image width
-#define HEIGHT 			2160   	// Maximum Input image height
+#define WIDTH 			2048	// Maximum Input image width
+#define HEIGHT 			2048   	// Maximum Input image height
 
 /* Output image Dimensions */
 

@@ -152,6 +152,31 @@ void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
     }
 }
 
+
+
+string type2str(int type) {
+  string r;
+
+  uchar depth = type & CV_MAT_DEPTH_MASK;
+  uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+  switch ( depth ) {
+    case CV_8U:  r = "8U"; break;
+    case CV_8S:  r = "8S"; break;
+    case CV_16U: r = "16U"; break;
+    case CV_16S: r = "16S"; break;
+    case CV_32S: r = "32S"; break;
+    case CV_32F: r = "32F"; break;
+    case CV_64F: r = "64F"; break;
+    default:     r = "User"; break;
+  }
+
+  r += "C";
+  r += (chans+'0');
+
+  return r;
+}
+
 void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)
 {
     if (src.IsEmpty()) {
@@ -172,15 +197,25 @@ void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std:
     if (src.channels_ == "xyc") {
         cv::Mat rot_matrix;
         rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
-
-#ifdef ECVL_WITH_FPGA
+        cout << "rot_matrix = " << endl << " "  << rot_matrix << endl << endl;
+        string ty =  type2str( rot_matrix.type() );
+        printf("Matrix: %s %dx%d \n", ty.c_str(), rot_matrix.cols, rot_matrix.rows );
+#ifdef ECVL_WITH_FPGA_
+        cv::Mat row = cv::Mat::zeros(1, 3, CV_64FC1);
+        rot_matrix.push_back(row);
+        rot_matrix.convertTo(rot_matrix, CV_32F);
+        cout << "rot_matrix = " << endl << " "  << rot_matrix << endl << endl;
+        //string ty2 =  type2str( rot_matrix.type() );
+        //printf("Matrix: %s %dx%d \n", ty2.c_str(), rot_matrix.cols, rot_matrix.rows );
         cv::Mat src_mat = ImageToMat(src);
         cv::Mat m = cv::Mat::zeros({ src.dims_[0], src.dims_[1] }, CV_8UC(src_mat.channels()));
         warpTransform_FPGA(src_mat, m,rot_matrix,{ src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
+        //cout << "m = " << m << " "  << m << endl << endl;
         dst = ecvl::MatToImage(m);
 #else
         cv::Mat m;
         cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
+        //cout << "m = " << m << " "  << m << endl << endl;
         dst = ecvl::MatToImage(m);
 #endif
 
@@ -223,6 +258,9 @@ void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, d
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
+
+
+
 
 inline void RGB2GRAYGeneric(const uint8_t* r, const uint8_t* g, const uint8_t* b, uint8_t* dst, DataType dt)
 {
