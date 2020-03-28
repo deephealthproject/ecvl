@@ -87,7 +87,7 @@ int main()
     // Create and populate a kernel Image. Kernel must be float64, "xyc" and with one color channel
     Image kernel({ 3, 3, 1 }, DataType::float64, "xyc", ColorType::GRAY);
     auto i = kernel.Begin<double>(), e = kernel.End<double>();
-    float c = 0.11;
+    float c = 0.11f;
     for (; i != e; ++i) {
         *i = c;
     }
@@ -123,7 +123,7 @@ int main()
 
     // Set rectangular areas within an Image to zero
     float prob = 0.5;
-    float drop_size = 0.1;
+    float drop_size = 0.1f;
     bool per_channel = true;
     cout << "Executing CoarseDropout" << endl;
     CoarseDropout(img1, tmp, prob, drop_size, per_channel);
