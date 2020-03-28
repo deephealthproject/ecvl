@@ -2,12 +2,12 @@ pipeline {
     agent none
     stages {
         stage('Parallel Stages') {
-            parallel {                                
+            parallel {
                 stage('linux') {
                     agent {
                         docker { 
                             label 'docker'
-                            image 'stal12/opencv:3.4.6_gcc8'
+                            image 'pritt/ecvl:latest'
                         }
                     }
                     stages {
@@ -15,7 +15,9 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                        [args: '-j4', withCmake: true]
+                                    ]
                                 }
                             }
                         }
@@ -43,7 +45,10 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [[withCmake: true]]
+                                    bat 'powershell ../../ecvl_dependencies/ecvl_dependencies.ps1'
+                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=C:/Library/openslide-win32-20171122/lib/libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                        [args: '-j4', withCmake: true]
+                                    ]
                                 }
                             }    
                         }
@@ -63,8 +68,8 @@ pipeline {
                     }
                 }
                 stage('documentation') {
-                    when { 
-                        branch 'master' 
+                    when {
+                        branch 'master'
                         beforeAgent true
                     }
                     agent {
@@ -75,8 +80,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     bat 'cd doc\\doxygen && doxygen'
-                                    bat 'powershell -Command "(gc %ECVL_DOXYGEN_INPUT_COMMANDS%) -replace \'@local_dir\', \'doc\\html\' | Out-File commands_out.txt"'
-                                    bat 'winscp /ini:nul /script:commands_out.txt'
+                                    bat '"../../doxygen_git/update_doc_script.bat"'
                                 }
                             }
                         }

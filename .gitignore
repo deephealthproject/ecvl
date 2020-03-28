@@ -2,7 +2,7 @@
 /[Bb]uild*
 /[Bb]in*
 
-**/data*
+**/data/*
 
 /modules/dataset_parser/test/dataset_path.h
 

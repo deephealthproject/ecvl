@@ -20,28 +20,31 @@
 #include "ecvl/core/image.h"
 #include "ecvl/dataset_parser.h"
 
-// This allows to define strongly typed enums and convert them to int with just a + in front
-#define UNSIGNED_ENUM_CLASS(name, ...) enum class name : unsigned { __VA_ARGS__ };\
-inline constexpr unsigned operator+ (name const val) { return static_cast<unsigned>(val); }
-
-namespace ecvl {
-/** @brief Enum class representing the DLDataset supported splits.
-
-@anchor SplitType
-*/
-UNSIGNED_ENUM_CLASS(SplitType, training, validation, test)
-
+namespace ecvl
+{
 /** @brief Dataset Augmentations.
 
 This class represent the augmentations which will be applied to each split.
 
+During construction the object becomes owner of the Augmentations whose pointers
+were passed to the constructor.
+
 @anchor DatasetAugmentations
 */
 class DatasetAugmentations {
-public:
     std::array<unique_ptr<Augmentation>, 3> augs_;
+public:
+	DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
+		: augs_{ std::move(augs) } {}
 
-    DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr }) : augs_{ std::move(augs) } {}
+    DatasetAugmentations(std::array<Augmentation*, 3> augs) 
+	{
+		augs_[0] = unique_ptr<Augmentation>(augs[0]);
+		augs_[1] = unique_ptr<Augmentation>(augs[1]);
+		augs_[2] = unique_ptr<Augmentation>(augs[2]);
+	}
+
+	// Getters: YAGNI
 
     void Apply(SplitType st, Image& img, const Image& gt = Image())
     {
@@ -94,16 +97,18 @@ public:
         Image tmp = this->samples_[0].LoadImage(ctype);
         // Initialize resize_dims_ after that augmentations on images are performed
         augs_.Apply(current_split_, tmp);
-        int y = tmp.channels_.find('y');
-        int x = tmp.channels_.find('x');
+        auto y = tmp.channels_.find('y');
+		auto x = tmp.channels_.find('x');
         assert(y != std::string::npos && x != std::string::npos);
         resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
 
         // Initialize n_channels_
         n_channels_ = tmp.Channels();
         // Initialize n_channels_gt_ if exists
-        if (this->samples_[0].label_path_.has_value()) {
-            n_channels_gt_ = this->samples_[0].LoadImage(ctype_gt_, true).Channels();
+        if (this->split_.training_.size() > 0) {
+            if (this->samples_[this->split_.training_[0]].label_path_.has_value()) {
+                n_channels_gt_ = this->samples_[this->split_.training_[0]].LoadImage(ctype_gt_, true).Channels();
+            }
         }
     }
 
@@ -134,6 +139,11 @@ public:
     @param[out] labels `tensor` which stores the batch of labels.
     */
     void LoadBatch(tensor& images, tensor& labels);
+
+    /** @brief Load a batch into _images_ `tensor`. Useful for tests set when you don't have labels.
+    @param[out] images `tensor` which stores the batch of images.
+    */
+    void LoadBatch(tensor& images);
 };
 
 /** @brief Convert an EDDL Tensor into an ECVL Image.

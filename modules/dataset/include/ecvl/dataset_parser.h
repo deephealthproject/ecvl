@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -24,7 +24,17 @@
 
 #include "yaml-cpp/yaml.h"
 
-namespace ecvl {
+// This allows to define strongly typed enums and convert them to int with just a + in front
+#define UNSIGNED_ENUM_CLASS(name, ...) enum class name : unsigned { __VA_ARGS__ };\
+inline constexpr unsigned operator+ (name const val) { return static_cast<unsigned>(val); }
+
+namespace ecvl
+{
+/** @brief Enum class representing the DLDataset supported splits.
+
+@anchor SplitType
+*/
+UNSIGNED_ENUM_CLASS(SplitType, training, validation, test)
 /** @brief Sample image in a dataset.
 
 This class provides the information to describe a dataset sample.
@@ -85,6 +95,15 @@ public:
     */
     Dataset(const std::filesystem::path& filename, bool verify = false);
 
+    /** @brief Dump the Dataset into a YAML file following the DeepHealth Dataset Format.
+
+    The YAML file is saved into the dataset root directory.
+    Samples paths are relative to the dataset root directory.
+    
+    @param[in] file_path Where to save the YAML file.
+    */
+    void Dump(const std::filesystem::path& file_path);
+
 private:
     std::map<std::string, int> features_map_;
     void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path, bool verify);
@@ -93,7 +112,8 @@ private:
 } // namespace ecvl
 
 /** @cond HIDDEN_SECTIONS */
-namespace YAML {
+namespace YAML
+{
 /**
     Enable YAML decoding of Split.
     Hidden from docs.

@@ -295,9 +295,9 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         const uint8_t* b = src.data_ + ((src.colortype_ == ColorType::RGB) ? 2 : 0) * src.strides_[c_pos];
 
         for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
-            int x = tmp_pos;
+            int x = static_cast<int>(tmp_pos);
             int src_pos = 0;
-            for (int i = tmp.dims_.size() - 1; i >= 0; i--) {
+            for (int i = vsize(tmp.dims_) - 1; i >= 0; i--) {
                 if (i != c_pos) {
                     src_pos += (x / tmp.strides_[i]) * src.strides_[i];
                     x %= tmp.strides_[i];
@@ -415,7 +415,8 @@ int OtsuThreshold(const Image& src)
     double mu_k = 0;
     double sigma_max = 0;
     int threshold = 0;
-    for (size_t k = 0; k < hist.size() - 1; k++) {
+	int hsize = vsize(hist);
+    for (int k = 0; k < hsize - 1; k++) {
         w_k += hist[k];
         mu_k += hist[k] * k;
 
@@ -531,8 +532,8 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
     Image tmp1(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
     Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_);
 
-    int hlf_width = kerX.size() / 2;
-    int hlf_height = kerY.size() / 2;
+    int hlf_width = vsize(kerX) / 2;
+    int hlf_height = vsize(kerY) / 2;
 
     // X direction
     auto tmp1_it = tmp1.ContiguousBegin<TypeInfo_t<DataType::float64>>();
@@ -654,7 +655,8 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
 
 void GaussianBlur(const Image& src, Image& dst, double sigma)
 {
-    int size = ((sigma - 0.8) / 0.3 + 1) / 0.5 + 1;
+	// Formula from: https://docs.opencv.org/3.1.0/d4/d86/group__imgproc__filter.html#gac05a120c1ae92a6060dd0db190a61afa
+    int size = static_cast<int>(((sigma - 0.8) / 0.3 + 1) / 0.5 + 1);
 
     // Check if computed size is even
     size = size % 2 == 0 ? size + 1 : size;
@@ -1297,9 +1299,9 @@ void FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
     vector<vector<cv::Point>> cv_contours;
     vector<cv::Vec4i> hierarchy;
 #if OpenCV_VERSION_MAJOR > 3
-    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 #else
-    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
 #endif // OpenCV_VERSION_MAJOR > 3
 
     contours.resize(cv_contours.size());

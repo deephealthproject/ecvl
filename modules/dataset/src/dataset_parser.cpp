@@ -12,6 +12,7 @@
 */
 
 #include "ecvl/dataset_parser.h"
+#include <fstream>
 #include <regex>
 
 using namespace std;
@@ -183,6 +184,62 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
             }
         }
     }
+}
+
+void Dataset::Dump(const path& file_path)
+{
+    ofstream os(file_path);
+    const string tab = "  ";
+    os << "name: " << name_ << std::endl;
+    os << "description: " << description_ << std::endl;
+
+    if (classes_.size() > 0) {
+        os << "classes:" << std::endl;
+        for (auto& c : classes_) {
+            os << tab + "- " << c << std::endl;
+        }
+    }
+
+    os << "images:" << std::endl;
+
+    for (auto& s : samples_) {
+        for (auto& loc : s.location_) {
+            os << tab + "- location: " << loc.generic_string() << endl;
+        }
+        if (s.label_.has_value()) {
+            for (auto& lab : s.label_.value()) {
+                os << tab + tab + "label: " << classes_[lab] << endl;
+            }
+        }
+        else if (s.label_path_.has_value()) {
+            os << tab + tab + "label: " << s.label_path_.value().generic_string() << endl;
+        }
+    }
+
+    if (split_.training_.size() > 0 || split_.validation_.size() > 0 || split_.test_.size() > 0) {
+        os << "split:" << endl;
+    }
+
+    if (split_.training_.size() > 0) {
+        os << tab + "training:" << endl;
+        for (auto& i : split_.training_) {
+            os << tab + tab + "- " << i << endl;
+        }
+    }
+    if (split_.validation_.size() > 0) {
+        os << tab + "validation:" << endl;
+        for (auto& i : split_.validation_) {
+            os << tab + tab + "- " << i << endl;
+        }
+    }
+    if (split_.test_.size() > 0) {
+        os << tab + "test:" << endl;
+        for (auto& i : split_.test_) {
+            os << tab + tab + "- " << i << endl;
+        }
+    }
+
+    os.close();
 }
 
 Dataset::Dataset(const path& filename, bool verify)

@@ -29,6 +29,12 @@
 #include "standard_errors.h"
 
 namespace ecvl {
+
+template<typename T>
+int vsize(const std::vector<T>& v) {
+	return static_cast<int>(v.size());
+}
+
 class MetaData {
 public:
     virtual bool Query(const std::string& name, std::string& value) const = 0;
@@ -236,7 +242,7 @@ public:
     {
         // Compute strides
         strides_ = { elemsize_ };
-        int dsize = dims_.size();
+		int dsize = vsize(dims_);
         for (int i = 0; i < dsize - 1; ++i) {
             strides_.push_back(strides_[i] * dims_[i]);
         }
@@ -279,7 +285,7 @@ public:
                 contiguous_ = true;
                 // Compute strides
                 strides_ = { elemsize_ };
-                int dsize = dims_.size();
+                int dsize = vsize(dims_);
                 for (int i = 0; i < dsize - 1; ++i) {
                     strides_.push_back(strides_[i] * dims_[i]);
                 }
@@ -377,13 +383,13 @@ public:
     /** @brief Returns the number of channels. */
     int Channels() const
     {
-        if (int c = channels_.find('c'); c != std::string::npos) {
+        if (size_t c = channels_.find('c'); c != std::string::npos) {
             return dims_[c];
         }
-        if (int c = channels_.find('z'); c != std::string::npos) {
+        if (size_t c = channels_.find('z'); c != std::string::npos) {
             return dims_[c];
         }
-        if (int c = channels_.find('o'); c != std::string::npos) {
+        if (size_t c = channels_.find('o'); c != std::string::npos) {
             return dims_[c];
         }
         return 0;
@@ -508,7 +514,7 @@ public:
     View(Image& img, const std::vector<int>& start, const std::vector<int>& size) : View(img)
     {
         dims_.clear();
-        int ssize = size.size();
+        int ssize = vsize(size);
         for (int i = 0; i < ssize; ++i) {
             if (start[i] < 0 || start[i] >= img.dims_[i])
                 throw std::runtime_error("Start of crop outside image limits");
@@ -566,7 +572,7 @@ public:
 
         // Compute strides
         strides_ = { elemsize_ };
-        int dsize = dims_.size();
+        int dsize = vsize(dims_);
         for (int i = 0; i < dsize - 1; ++i) {
             strides_.push_back(strides_[i] * dims_[i]);
         }
@@ -807,9 +813,9 @@ struct StructRearrangeImage {
         auto id = vdst.Begin();
 
         for (size_t tmp_pos = 0; tmp_pos < dst.datasize_; tmp_pos += dst.elemsize_, ++id) {
-            int x = tmp_pos;
+            int x = static_cast<int>(tmp_pos);
             int src_pos = 0;
-            for (int i = dst.dims_.size() - 1; i >= 0; i--) {
+            for (int i = vsize(dst.dims_) - 1; i >= 0; i--) {
                 src_pos += (x / dst.strides_[i]) * src.strides_[bindings[i]];
                 x %= dst.strides_[i];
             }

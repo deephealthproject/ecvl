@@ -90,7 +90,7 @@ endif(${ECVL_TESTS})
 # --------------------
 # yaml-cpp
 # --------------------
-if (${ECVL_DATASET_PARSER})
+if (${ECVL_DATASET})
     ecvl_update_3rdparty(yaml-cpp)
 
     SET(YAML_APPLE_UNIVERSAL_BIN OFF CACHE INTERNAL "" FORCE)

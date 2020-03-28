@@ -112,7 +112,7 @@ ConstContiguousIterator<T>::ConstContiguousIterator(const Image& img, std::vecto
 template <typename T>
 Iterator<T>& Iterator<T>::IncrementPos()
 {
-    int spos = pos_.size();
+    int spos = vsize(pos_);
     int dim;
     for (dim = 0; dim < spos; ++dim) {
         ++pos_[dim];
@@ -130,7 +130,7 @@ Iterator<T>& Iterator<T>::IncrementPos()
 template <typename T>
 ConstIterator<T>& ConstIterator<T>::IncrementPos()
 {
-    int spos = pos_.size();
+    int spos = vsize(pos_);
     int dim;
     for (dim = 0; dim < spos; ++dim) {
         ++pos_[dim];

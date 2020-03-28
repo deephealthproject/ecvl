@@ -1,7 +1,7 @@
 # ECVL - European Computer Vision Library
 # Version: 0.1
 # copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-# Authors: 
+# Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
 #    Michele Cancilla (michele.cancilla@unimore.it)
@@ -9,7 +9,8 @@
 #    Stefano Allegretti (stefano.allegretti@unimore.it)
 # All rights reserved.
 
-target_sources(ECVL_TESTS
-	PRIVATE
-        test_dataset_parser.cpp
+target_sources(DATASET
+    PRIVATE
+        dataset_parser.h
+        dataset_generator.h
 )
