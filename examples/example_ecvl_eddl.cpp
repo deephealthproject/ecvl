@@ -77,7 +77,7 @@ int main()
     auto test_augs = make_unique<SequentialAugmentationContainer>(
         AugResizeDim({ 30, 30 })
         );
-
+	
     DatasetAugmentations dataset_augmentations{ {move(training_augs), nullptr, move(test_augs) } };
 
     int batch_size = 64;

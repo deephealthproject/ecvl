@@ -26,13 +26,25 @@ namespace ecvl
 
 This class represent the augmentations which will be applied to each split.
 
+During construction the object becomes owner of the Augmentations whose pointers
+were passed to the constructor.
+
 @anchor DatasetAugmentations
 */
 class DatasetAugmentations {
-public:
     std::array<unique_ptr<Augmentation>, 3> augs_;
+public:
+	DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
+		: augs_{ std::move(augs) } {}
 
-    DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr }) : augs_{ std::move(augs) } {}
+    DatasetAugmentations(std::array<Augmentation*, 3> augs) 
+	{
+		augs_[0] = unique_ptr<Augmentation>(augs[0]);
+		augs_[1] = unique_ptr<Augmentation>(augs[1]);
+		augs_[2] = unique_ptr<Augmentation>(augs[2]);
+	}
+
+	// Getters: YAGNI
 
     void Apply(SplitType st, Image& img, const Image& gt = Image())
     {
@@ -85,8 +97,8 @@ public:
         Image tmp = this->samples_[0].LoadImage(ctype);
         // Initialize resize_dims_ after that augmentations on images are performed
         augs_.Apply(current_split_, tmp);
-        int y = tmp.channels_.find('y');
-        int x = tmp.channels_.find('x');
+        auto y = tmp.channels_.find('y');
+		auto x = tmp.channels_.find('x');
         assert(y != std::string::npos && x != std::string::npos);
         resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
 

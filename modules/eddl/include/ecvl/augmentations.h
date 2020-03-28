@@ -92,20 +92,6 @@ This class represent a container for multiple augmentations which will be sequen
 @anchor SequentialAugmentationContainer
 */
 class SequentialAugmentationContainer : public Augmentation {
-public:
-    std::vector<std::unique_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
-
-    SequentialAugmentationContainer() : augs_{} {}
-
-    template<typename ...Ts>
-    SequentialAugmentationContainer(Ts&&... t) : augs_(make_vector_of_unique<Augmentation>(std::forward<Ts>(t)...)) {}
-
-    template<typename T, typename... Args>
-    void Add(Args&&... args)
-    {
-        augs_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
-    }
-
     /** @brief Call the specialized augmentation functions.
 
     @param[in] img Image on which apply the augmentations.
@@ -117,6 +103,36 @@ public:
             x->Apply(img, gt);
         }
     }
+public:
+    std::vector<std::unique_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
+
+    SequentialAugmentationContainer() : augs_{} {}
+
+    template<typename ...Ts>
+    SequentialAugmentationContainer(Ts&&... t) : augs_(make_vector_of_unique<Augmentation>(std::forward<Ts>(t)...)) {}
+
+	SequentialAugmentationContainer(const std::vector<Augmentation*>& augs) 
+	{
+		for (auto& x : augs) {
+			Add(x);
+		}		
+	}
+
+    /*template<typename T, typename... Args>
+    void Add(Args&&... args)
+    {
+        augs_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+    }*/
+
+	/** @brief Adds an augmentation to the container using a pointer. 
+	    The container gets ownership of the augmentation
+
+	@param[in] aug Pointer to augmentation to be added to the container.
+	*/
+	void Add(Augmentation* aug)
+	{
+		augs_.emplace_back(std::unique_ptr<Augmentation>(aug));
+	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +147,14 @@ class AugRotate : public Augmentation {
     std::vector<double> center_;
     double scale_;
     InterpolationType interp_;
+
+	virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+	{
+		Rotate2D(img, img, params_["angle"].value_, center_, scale_, interp_);
+		if (!gt.IsEmpty()) {
+			Rotate2D(gt, const_cast<Image&>(gt), params_["angle"].value_, center_, scale_, interp_);
+		}
+	}
 public:
     /** @brief AugRotate constructor
 
@@ -147,13 +171,6 @@ public:
     {
         params_["angle"] = AugmentationParam(angle[0], angle[1]);
     }
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
-    {
-        Rotate2D(img, img, params_["angle"].value_, center_, scale_, interp_);
-        if (!gt.IsEmpty()) {
-            Rotate2D(gt, const_cast<Image&>(gt), params_["angle"].value_, center_, scale_, interp_);
-        }
-    }
 };
 
 /** @brief Augmentation wrapper for ecvl::ResizeDim.
@@ -163,13 +180,6 @@ public:
 class AugResizeDim : public Augmentation {
     std::vector<int> dims_;
     InterpolationType interp_;
-public:
-    /** @brief AugResizeDim constructor
-
-    @param[in] dims std::vector<int> that specifies the new size of each dimension.
-    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
-    */
-    AugResizeDim(const std::vector<int>& dims, const InterpolationType& interp = InterpolationType::linear) : dims_{ dims }, interp_(interp) {}
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
@@ -178,6 +188,13 @@ public:
             ResizeDim(gt, const_cast<Image&>(gt), dims_, interp_);
         }
     }
+public:
+    /** @brief AugResizeDim constructor
+
+    @param[in] dims std::vector<int> that specifies the new size of each dimension.
+    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    */
+    AugResizeDim(const std::vector<int>& dims, const InterpolationType& interp = InterpolationType::linear) : dims_{ dims }, interp_(interp) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::ResizeScale.
@@ -187,13 +204,6 @@ public:
 class AugResizeScale : public Augmentation {
     std::vector<double> scale_;
     InterpolationType interp_;
-public:
-    /** @brief AugResizeScale constructor
-
-    @param[in] scale std::vector<double> that specifies the scale to apply to each dimension.
-    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
-    */
-    AugResizeScale(const std::vector<double>& scale, const InterpolationType& interp = InterpolationType::linear) : scale_{ scale }, interp_(interp) {}
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
@@ -202,6 +212,13 @@ public:
             ResizeScale(gt, const_cast<Image&>(gt), scale_, interp_);
         }
     }
+public:
+    /** @brief AugResizeScale constructor
+
+    @param[in] scale std::vector<double> that specifies the scale to apply to each dimension.
+    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    */
+    AugResizeScale(const std::vector<double>& scale, const InterpolationType& interp = InterpolationType::linear) : scale_{ scale }, interp_(interp) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::Flip2D.
@@ -210,15 +227,7 @@ public:
 */
 class AugFlip : public Augmentation {
     double p_;
-public:
-    /** @brief AugFlip constructor
 
-    @param[in] p Probability of each image to get flipped.
-    */
-    AugFlip(const double& p) : p_{ p }
-    {
-        params_["p"] = AugmentationParam(0, 1);
-    }
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         if (params_["p"].value_ <= p_) {
@@ -228,6 +237,15 @@ public:
             }
         }
     }
+public:
+    /** @brief AugFlip constructor
+
+    @param[in] p Probability of each image to get flipped.
+    */
+    AugFlip(const double& p) : p_{ p }
+    {
+        params_["p"] = AugmentationParam(0, 1);
+    }
 };
 
 /** @brief Augmentation wrapper for ecvl::Mirror2D.
@@ -236,15 +254,7 @@ public:
 */
 class AugMirror : public Augmentation {
     double p_;
-public:
-    /** @brief AugFlip constructor
 
-    @param[in] p Probability of each image to get mirrored.
-    */
-    AugMirror(const double& p) : p_{ p }
-    {
-        params_["p"] = AugmentationParam(0, 1);
-    }
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         if (params_["p"].value_ <= p_) {
@@ -254,6 +264,15 @@ public:
             }
         }
     }
+public:
+    /** @brief AugFlip constructor
+
+    @param[in] p Probability of each image to get mirrored.
+    */
+    AugMirror(const double& p) : p_{ p }
+    {
+        params_["p"] = AugmentationParam(0, 1);
+    }
 };
 
 /** @brief Augmentation wrapper for ecvl::GaussianBlur.
@@ -261,6 +280,10 @@ public:
 @anchor AugGaussianBlur
 */
 class AugGaussianBlur : public Augmentation {
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        GaussianBlur(img, img, params_["sigma"].value_);
+    }
 public:
     /** @brief AugGaussianBlur constructor
 
@@ -270,11 +293,6 @@ public:
     {
         params_["sigma"] = AugmentationParam(sigma[0], sigma[1]);
     }
-
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
-    {
-        GaussianBlur(img, img, params_["sigma"].value_);
-    }
 };
 
 /** @brief Augmentation wrapper for ecvl::AdditiveLaplaceNoise.
@@ -282,6 +300,10 @@ public:
 @anchor AugAdditiveLaplaceNoise
 */
 class AugAdditiveLaplaceNoise : public Augmentation {
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
+    }
 public:
     /** @brief AugAdditiveLaplaceNoise constructor
 
@@ -292,11 +314,6 @@ public:
     {
         params_["std_dev"] = AugmentationParam(std_dev[0], std_dev[1]);
     }
-
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
-    {
-        AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
-    }
 };
 
 /** @brief Augmentation wrapper for ecvl::AdditivePoissonNoise.
@@ -304,6 +321,10 @@ public:
 @anchor AugAdditivePoissonNoise
 */
 class AugAdditivePoissonNoise : public Augmentation {
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        AdditivePoissonNoise(img, img, params_["lambda"].value_);
+    }
 public:
     /** @brief AugAdditivePoissonNoise constructor
 
@@ -314,11 +335,6 @@ public:
     {
         params_["lambda"] = AugmentationParam(lambda[0], lambda[1]);
     }
-
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
-    {
-        AdditivePoissonNoise(img, img, params_["lambda"].value_);
-    }
 };
 
 /** @brief Augmentation wrapper for ecvl::GammaContrast.
@@ -326,6 +342,10 @@ public:
 @anchor AugGammaContrast
 */
 class AugGammaContrast : public Augmentation {
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        GammaContrast(img, img, params_["gamma"].value_);
+    }
 public:
     /** @brief AugGammaContrast constructor
 
@@ -336,11 +356,6 @@ public:
     {
         params_["gamma"] = AugmentationParam(gamma[0], gamma[1]);
     }
-
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
-    {
-        GammaContrast(img, img, params_["gamma"].value_);
-    }
 };
 
 /** @brief Augmentation wrapper for ecvl::CoarseDropout.
@@ -349,6 +364,12 @@ public:
 */
 class AugCoarseDropout : public Augmentation {
     double per_channel_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        CoarseDropout(img, img, params_["p"].value_, params_["drop_size"].value_, per_channel);
+    }
 public:
     /** @brief AugCoarseDropout constructor
 
@@ -362,12 +383,6 @@ public:
         params_["p"] = AugmentationParam(p[0], p[1]);
         params_["drop_size"] = AugmentationParam(drop_size[0], drop_size[1]);
         params_["per_channel"] = AugmentationParam(0, 1);
-    }
-
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
-    {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        CoarseDropout(img, img, params_["p"].value_, params_["drop_size"].value_, per_channel);
     }
 };
 } // namespace ecvl
