@@ -78,21 +78,21 @@ Image MatToImage(const cv::Mat& m)
 
         // Strides
         img.strides_.push_back(img.elemsize_);
-        int dsize = img.dims_.size();
+        int dsize = vsize(img.dims_);
         for (int i = 0; i < dsize - 1; ++i) {
             img.strides_.push_back(img.strides_[i] * img.dims_[i]);
         }
 
         // Data
-        img.datasize_ = img.elemsize_;
-        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.datasize_, std::multiplies<int>());
+        int datasize = img.elemsize_;
+        img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
         img.mem_ = DefaultMemoryManager::GetInstance();
         img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
         cv::split(m, ch);
         std::vector<int> coords(img.dims_.size(), 0);
-        int chsize = ch.size();
+        int chsize = vsize(ch);
         for (int i = 0; i < chsize; ++i) {
             const cv::Mat& c = ch[i];
             coords.back() = i;
@@ -161,7 +161,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
         // Dims
         img.dims_ = std::vector<int>(v[0].dims + 1);
         std::reverse_copy(v[0].size.p, v[0].size.p + v[0].dims, begin(img.dims_)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
-        img.dims_.back() = v.size();
+        img.dims_.back() = vsize(v);
 
         // Type
         switch (v[0].depth()) {
@@ -212,15 +212,15 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
 
         // Strides
         img.strides_.push_back(img.elemsize_);
-        int dsize = img.dims_.size();
+        int dsize = vsize(img.dims_);
         for (int i = 0; i < dsize - 1; ++i) {
             img.strides_.push_back(img.strides_[i] * img.dims_[i]);
         }
 
         // Data
-        img.datasize_ = img.elemsize_;
-        img.datasize_ = std::accumulate(begin(img.dims_), end(img.dims_), img.datasize_, std::multiplies<int>());
-        img.mem_ = DefaultMemoryManager::GetInstance();
+		int datasize = img.elemsize_;
+		img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
+		img.mem_ = DefaultMemoryManager::GetInstance();
         img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
 

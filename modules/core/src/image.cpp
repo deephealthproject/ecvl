@@ -49,7 +49,7 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
 
             // Compute strides
             strides_ = { elemsize_ };
-            int dsize = dims_.size();
+            int dsize = vsize(dims_);
             for (int i = 0; i < dsize - 1; ++i) {
                 strides_.push_back(strides_[i] * dims_[i]);
             }
@@ -100,7 +100,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
             ECVL_ERROR_WRONG_PARAMS("channels contains wrong characters")
         }
         else {
-            bindings[new_pos] = old_pos;
+            bindings[new_pos] = static_cast<int>(old_pos);
             new_dims[new_pos] = src.dims_[old_pos];
             if (new_spacings.size() == new_dims.size()) {   // spacings is not a mandatory field
                 new_spacings[new_pos] = src.spacings_[old_pos];
@@ -188,7 +188,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
             ECVL_ERROR_WRONG_PARAMS("channels contains wrong characters")
         }
         else {
-            bindings[new_pos] = old_pos;
+            bindings[new_pos] = static_cast<int>(old_pos);
             new_dims[new_pos] = src.dims_[old_pos];
             if (new_spacings.size() == new_dims.size()) {   // spacings is not a mandatory field
                 new_spacings[new_pos] = src.spacings_[old_pos];
@@ -199,9 +199,9 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
     Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings);
 
     for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
-        int x = tmp_pos;
+        int x = static_cast<int>(tmp_pos);
         int src_pos = 0;
-        for (int i = tmp.dims_.size() - 1; i >= 0; i--) {
+        for (int i = vsize(tmp.dims_) - 1; i >= 0; i--) {
             src_pos += (x / tmp.strides_[i]) * src.strides_[bindings[i]];
             x %= tmp.strides_[i];
         }

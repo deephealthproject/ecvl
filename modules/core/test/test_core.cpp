@@ -28,7 +28,7 @@ TEST(Core, CreateImageWithFiveDims) {
 
     Image img({ 1, 2, 3, 4, 5 }, DataType::uint8, "xyzoo", ColorType::none);
     EXPECT_EQ(img.dims_.size(), 5);
-    int sdims = img.dims_.size();
+    int sdims = vsize(img.dims_);
     for (int i = 0; i < sdims; i++) {
         EXPECT_EQ(img.dims_[i], i + 1);
     }

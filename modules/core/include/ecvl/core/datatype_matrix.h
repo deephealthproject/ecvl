@@ -93,8 +93,8 @@ struct Table2D {
     template <int i>
     constexpr void FillData(integer<i>) {
         constexpr auto arr = DataTypeArray();
-        constexpr int src = i / DataTypeSize();
-        constexpr int dst = i % DataTypeSize();
+        constexpr size_t src = i / DataTypeSize();
+        constexpr size_t dst = i % DataTypeSize();
         data[i] = _StructFun<arr[src], arr[dst], Args...>::_;
         FillData(integer<i + 1>());
     }
