@@ -4,6 +4,8 @@
 
 **/data/*
 
+/modules/dataset/test/dataset_path.h
+
 #############################
 # Begin: Documentation      #
 #############################
