@@ -9,7 +9,7 @@ var searchData=
   ['dataset_5fparser_2ecpp',['dataset_parser.cpp',['../dataset__parser_8cpp.html',1,'']]],
   ['dataset_5fparser_2eh',['dataset_parser.h',['../dataset__parser_8h.html',1,'']]],
   ['dataset_5froot_5fdirectory_5f',['dataset_root_directory_',['../classecvl_1_1_generate_dataset.html#a4195973aa92b02320314209f5d67ff31',1,'ecvl::GenerateDataset']]],
-  ['datasetaugmentations',['DatasetAugmentations',['../classecvl_1_1_dataset_augmentations.html',1,'ecvl::DatasetAugmentations'],['../classecvl_1_1_dataset_augmentations.html#ac48437d3503c2e1c00f4667418fb38ef',1,'ecvl::DatasetAugmentations::DatasetAugmentations()']]],
+  ['datasetaugmentations',['DatasetAugmentations',['../classecvl_1_1_dataset_augmentations.html',1,'ecvl::DatasetAugmentations'],['../classecvl_1_1_dataset_augmentations.html#ac48437d3503c2e1c00f4667418fb38ef',1,'ecvl::DatasetAugmentations::DatasetAugmentations(std::array&lt; unique_ptr&lt; Augmentation &gt;, 3 &gt; augs={ nullptr, nullptr, nullptr })'],['../classecvl_1_1_dataset_augmentations.html#a90ef118c1151b3fa5bae54103ccff801',1,'ecvl::DatasetAugmentations::DatasetAugmentations(std::array&lt; Augmentation *, 3 &gt; augs)']]],
   ['datasize_5f',['datasize_',['../classecvl_1_1_image.html#a1855a32639c8385ba96f9e151ca882d2',1,'ecvl::Image']]],
   ['datatype',['DataType',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857',1,'ecvl']]],
   ['datatype_2ecpp',['datatype.cpp',['../datatype_8cpp.html',1,'']]],

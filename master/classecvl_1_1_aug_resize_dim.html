@@ -118,8 +118,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae1c95ee83cc04f0796111015053cc05b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_resize_dim.html#ae1c95ee83cc04f0796111015053cc05b">AugResizeDim</a> (const std::vector&lt; int &gt; &amp;dims, const <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> &amp;interp=<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>)</td></tr>
 <tr class="memdesc:ae1c95ee83cc04f0796111015053cc05b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_resize_dim.html" title="Augmentation wrapper for ecvl::ResizeDim.">AugResizeDim</a> constructor.  <a href="#ae1c95ee83cc04f0796111015053cc05b">More...</a><br /></td></tr>
 <tr class="separator:ae1c95ee83cc04f0796111015053cc05b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a916702380f6491348729fede484b1891"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_resize_dim.html#a916702380f6491348729fede484b1891">RealApply</a> (<a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;img, const <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;gt=<a class="el" href="classecvl_1_1_image.html">Image</a>()) override</td></tr>
-<tr class="separator:a916702380f6491348729fede484b1891"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classecvl_1_1_augmentation"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classecvl_1_1_augmentation')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classecvl_1_1_augmentation.html">ecvl::Augmentation</a></td></tr>
 <tr class="memitem:a3b6e1ed0d34f12c7a4869a5f3e27b79a inherit pub_methods_classecvl_1_1_augmentation"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation.html#a3b6e1ed0d34f12c7a4869a5f3e27b79a">Apply</a> (<a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;img, const <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;gt=<a class="el" href="classecvl_1_1_image.html">Image</a>())</td></tr>
 <tr class="memdesc:a3b6e1ed0d34f12c7a4869a5f3e27b79a inherit pub_methods_classecvl_1_1_augmentation"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate the random value for each parameter and call the specialized augmentation functions.  <a href="classecvl_1_1_augmentation.html#a3b6e1ed0d34f12c7a4869a5f3e27b79a">More...</a><br /></td></tr>
@@ -139,7 +137,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a9">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00163">163</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00180">180</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae1c95ee83cc04f0796111015053cc05b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae1c95ee83cc04f0796111015053cc05b">&#9670;&nbsp;</a></span>AugResizeDim()</h2>
@@ -184,48 +182,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00172">172</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a916702380f6491348729fede484b1891"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a916702380f6491348729fede484b1891">&#9670;&nbsp;</a></span>RealApply()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void ecvl::AugResizeDim::RealApply </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>img</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>gt</em> = <code><a class="el" href="classecvl_1_1_image.html">Image</a>()</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classecvl_1_1_augmentation.html">ecvl::Augmentation</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00174">174</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00197">197</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

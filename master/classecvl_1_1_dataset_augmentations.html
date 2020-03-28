@@ -93,7 +93,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classecvl_1_1_dataset_augmentations-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ecvl::DatasetAugmentations Class Reference</div>  </div>
@@ -109,25 +108,23 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac48437d3503c2e1c00f4667418fb38ef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset_augmentations.html#ac48437d3503c2e1c00f4667418fb38ef">DatasetAugmentations</a> (std::array&lt; unique_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;, 3 &gt; augs={ nullptr, nullptr, nullptr })</td></tr>
 <tr class="separator:ac48437d3503c2e1c00f4667418fb38ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90ef118c1151b3fa5bae54103ccff801"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset_augmentations.html#a90ef118c1151b3fa5bae54103ccff801">DatasetAugmentations</a> (std::array&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> *, 3 &gt; augs)</td></tr>
+<tr class="separator:a90ef118c1151b3fa5bae54103ccff801"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a280b675921824d0930083de8dddb9f1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset_augmentations.html#a280b675921824d0930083de8dddb9f1b">Apply</a> (<a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">SplitType</a> st, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;img, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;gt=<a class="el" href="classecvl_1_1_image.html">Image</a>())</td></tr>
 <tr class="separator:a280b675921824d0930083de8dddb9f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a6e5214a471b3719355a9b393833d784d"><td class="memItemLeft" align="right" valign="top">std::array&lt; unique_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset_augmentations.html#a6e5214a471b3719355a9b393833d784d">augs_</a></td></tr>
-<tr class="separator:a6e5214a471b3719355a9b393833d784d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Augmentations. </p>
 <p>This class represent the augmentations which will be applied to each split.</p>
+<p>During construction the object becomes owner of the Augmentations whose pointers were passed to the constructor.</p>
 <p><a class="anchor" id="DatasetAugmentations"></a></p>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a15">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00031">31</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00034">34</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac48437d3503c2e1c00f4667418fb38ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac48437d3503c2e1c00f4667418fb38ef">&#9670;&nbsp;</a></span>DatasetAugmentations()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac48437d3503c2e1c00f4667418fb38ef">&#9670;&nbsp;</a></span>DatasetAugmentations() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +147,35 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00035">35</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00037">37</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+
+</div>
+</div>
+<a id="a90ef118c1151b3fa5bae54103ccff801"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90ef118c1151b3fa5bae54103ccff801">&#9670;&nbsp;</a></span>DatasetAugmentations() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ecvl::DatasetAugmentations::DatasetAugmentations </td>
+          <td>(</td>
+          <td class="paramtype">std::array&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> *, 3 &gt;&#160;</td>
+          <td class="paramname"><em>augs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00040">40</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -195,24 +220,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00037">37</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a6e5214a471b3719355a9b393833d784d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e5214a471b3719355a9b393833d784d">&#9670;&nbsp;</a></span>augs_</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;unique_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt;, 3&gt; ecvl::DatasetAugmentations::augs_</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00033">33</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00049">49</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
