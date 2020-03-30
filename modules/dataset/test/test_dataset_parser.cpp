@@ -16,12 +16,15 @@
 #include "ecvl/dataset_parser.h"
 #include <fstream>
 
+#ifdef ECVL_WITH_EXAMPLES
 #include "dataset_path.h"
+#endif
 
 using namespace ecvl;
 
 #ifdef ECVL_WITH_EXAMPLES
-TEST(DatasetParser, LoadExistingDataset) {
+TEST(DatasetParser, LoadExistingDataset)
+{
     Dataset d(CMAKE_CURRENT_SOURCE_DIR "/examples/data/mnist/mnist.yml");
     EXPECT_EQ(d.name_, "MNIST");
     std::vector<std::string> classes{ "0","1","2","3","4","5","6","7","8","9" };
@@ -33,11 +36,13 @@ TEST(DatasetParser, LoadExistingDataset) {
 }
 #endif
 
-TEST(DatasetParser, LoadNonExistingDataset) {
+TEST(DatasetParser, LoadNonExistingDataset)
+{
     EXPECT_THROW(Dataset d("idontexist"), std::runtime_error);
 }
 
-TEST(DatasetParser, LoadNonExistingOrBadImage) {
+TEST(DatasetParser, LoadNonExistingOrBadImage)
+{
     {
         std::ofstream os("hello.yml");
         os << "dataset: test\n"
