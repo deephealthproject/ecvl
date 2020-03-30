@@ -12,6 +12,9 @@
 */
 
 #include <iostream>
+#include <sstream>
+#include <unordered_map>
+
 #include "ecvl/core.h"
 #include "ecvl/support_eddl.h"
 #include "ecvl/augmentations.h"
@@ -63,6 +66,21 @@ int main()
     View<DataType::float32> view;
     cout << "Executing TensorToView" << endl;
     TensorToView(t, view);
+
+	//SequentialAugmentationContainer
+	//	AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
+	//	AugAdditiveLaplaceNoise std_dev=[0,51]
+	//	AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0,
+	//	AugAdditivePoissonNoise lambda=[0,40]
+	//	AugResizeDim dims=(30,30) interp="linear"
+	//end
+
+	stringstream ss(
+		"SequentialAugmentationContainer\n"
+		"    AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp=\"linear\"\n"
+		"end\n"
+	);
+	auto newdeal_augs = Augmentation::make(ss);
 
     // Create the augmentations to be applied to the dataset images during training and test.
     // nullptr is given as augmentation for validation because this split doesn't exist in the mnist dataset.

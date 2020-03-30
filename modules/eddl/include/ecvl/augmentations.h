@@ -19,8 +19,137 @@
 #include <map>
 #include <memory>
 #include <random>
+#include <iostream>
 
 namespace ecvl {
+
+#define ECVL_ERROR_AUGMENTATION_NAME throw std::runtime_error(ECVL_ERROR_MSG "Cannot load augmentation name");
+#define ECVL_ERROR_AUGMENTATION_FORMAT throw std::runtime_error(ECVL_ERROR_MSG "Format error while loading augmentation parameters");
+
+// Unbelivably smart: http://www.nirfriedman.com/2018/04/29/unforgettable-factory/
+template<class Base, class... Args> 
+struct Factory {
+	template<class... T>
+	static std::unique_ptr<Base> make(const std::string &s, T&&... args) {
+		return data().at(s)(std::forward<T>(args)...);
+	}
+	template<class T, char const * const name>
+	struct Registrar : Base {
+		friend T;
+		static bool registerT() {
+			//const auto name = T::name;
+			Factory::data()[name] = [](Args... args) -> std::unique_ptr<Base> {
+				return std::make_unique<T>(std::forward<Args>(args)...);
+			};
+			return true;
+		}
+		static bool registered;
+	private:
+		Registrar() : Base(Key{}) { (void)registered; }
+	};
+	friend Base;
+private:
+	class Key {
+		Key() {};
+		template<class T, char const * const name> friend struct Registrar;
+	};
+	using FuncType = std::unique_ptr<Base>(*)(Args...);
+	Factory() = default;
+	static auto &data() {
+		static std::unordered_map<std::string, FuncType> s;
+		return s;
+	}
+};
+template<class Base, class... Args>
+template<class T, char const * const name>
+bool Factory<Base, Args...>::Registrar<T, name>::registered =
+	 Factory<Base, Args...>::Registrar<T, name>::registerT();
+
+#define DEFINE_AUGMENTATION(x) \
+static const char x##_name[] = #x; \
+class x : public Augmentation::Registrar<x, x##_name>
+
+class param {
+	static std::istream& read_until(std::istream& is, std::string& s, const std::string& list) {
+		s.clear();
+		while (is.peek() && is && list.find(is.peek()) == list.npos) {
+			s += is.get();
+		}
+		return is;
+	}
+
+	void read_vals(std::istream& is, char closing_char) {
+		double val;
+		char next_char;
+		do {
+			is >> val;
+			if (!is) {
+				break;
+			}
+			vals_.push_back(val);
+			is >> next_char;
+		} while (next_char == ',');
+		if (!is || next_char != closing_char) {
+			std::cerr << "Error while reading values of parameter " << name_ << "\n"; // TODO: standardize
+			throw std::runtime_error("Cannot read parameter value"); // TODO: standardize
+		}
+	}
+public:
+	enum class type { range, vector, number, string };
+
+	std::string name_;
+	type type_;
+	std::vector<double> vals_;
+	std::string str_;
+
+	param() {}
+	param(std::istream& is) {
+		is >> std::ws;
+		read_until(is, name_, " =");
+		char next_char;
+		is >> std::ws >> next_char;
+		if (next_char != '=') {
+			throw std::runtime_error("Cannot read parameter name"); // TODO: standardize
+		}
+		is >> std::ws;
+		next_char = is.peek();
+		if (next_char == '[') { // range
+			is.ignore();
+			type_ = type::range;
+			read_vals(is, ']');
+		}
+		else if (next_char == '(') { // vector
+			is.ignore();
+			type_ = type::vector;
+			read_vals(is, ')');
+		}
+		else if (next_char == '"') { // string
+			is.ignore();
+			type_ = type::string;
+			std::getline(is, str_, '"');
+		}
+		else {
+			type_ = type::number;
+			vals_.resize(1);
+			is >> vals_[0];
+		}
+		if (!is) {
+			std::cerr << "Error while reading value of parameter " << name_ << "\n"; // TODO: standardize
+			throw std::runtime_error("Cannot read parameter value"); // TODO: standardize
+		}
+	}
+
+	static auto read(std::istream& is) {
+		std::unordered_map<std::string, param> m;
+		is >> std::ws;
+		while (is.peek() != '\n') {
+			param p(is);
+			m[p.name_] = p;
+		}
+		return m;
+	}
+};
+
 /** @brief Augmentations parameters.
 
 This class represent the augmentations parameters which must be randomly generated in a specific range.
@@ -55,9 +184,11 @@ public:
 
 @anchor Augmentation
 */
-class Augmentation {
+class Augmentation : public Factory<Augmentation, std::istream&> { // CRTP
 public:
-    std::map<std::string, AugmentationParam> params_;
+	std::map<std::string, AugmentationParam> params_;
+
+	Augmentation(Key) {} // Pass Key idiom
 
     /** @brief Generate the random value for each parameter and call the specialized augmentation functions.
     @param[in,out] img Image on which apply the augmentations.
@@ -71,8 +202,19 @@ public:
         RealApply(img, gt);
     }
     virtual ~Augmentation() = default;
+
+	using Factory::make;
+	static std::unique_ptr<Augmentation> make(std::istream& is) {
+		std::string name;
+		is >> name;
+		if (!is) {
+			ECVL_ERROR_AUGMENTATION_NAME
+		}
+		return make(name, is);
+	}
+
 private:
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
+	virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
 };
 
 // vector<move_only> cannot be constructed from initializer list :-/
@@ -91,7 +233,7 @@ This class represent a container for multiple augmentations which will be sequen
 
 @anchor SequentialAugmentationContainer
 */
-class SequentialAugmentationContainer : public Augmentation {
+DEFINE_AUGMENTATION(SequentialAugmentationContainer) {
     /** @brief Call the specialized augmentation functions.
 
     @param[in] img Image on which apply the augmentations.
@@ -106,7 +248,7 @@ class SequentialAugmentationContainer : public Augmentation {
 public:
     std::vector<std::unique_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
 
-    SequentialAugmentationContainer() : augs_{} {}
+    SequentialAugmentationContainer() {}
 
     template<typename ...Ts>
     SequentialAugmentationContainer(Ts&&... t) : augs_(make_vector_of_unique<Augmentation>(std::forward<Ts>(t)...)) {}
@@ -116,6 +258,20 @@ public:
 		for (auto& x : augs) {
 			Add(x);
 		}		
+	}
+
+	SequentialAugmentationContainer(std::istream& is) {
+		while (true) {
+			std::string name;
+			is >> name;
+			if (!is) {
+				ECVL_ERROR_AUGMENTATION_NAME
+			}
+			if (name == "end") {
+				break;
+			}
+			augs_.emplace_back(make(name, is));
+		}
 	}
 
     /*template<typename T, typename... Args>
@@ -143,7 +299,7 @@ public:
 
 @anchor AugRotate
 */
-class AugRotate : public Augmentation {
+DEFINE_AUGMENTATION(AugRotate) {
     std::vector<double> center_;
     double scale_;
     InterpolationType interp_;
@@ -171,13 +327,53 @@ public:
     {
         params_["angle"] = AugmentationParam(angle[0], angle[1]);
     }
+
+	AugRotate(std::istream& is) {
+		auto m = param::read(is);
+		params_["angle"] = AugmentationParam(m["angle"].vals_[0], m["angle"].vals_[1]);
+		if (m.find("center") != end(m)) {
+			if (m["center"].type_ != param::type::vector) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			center_ = m["center"].vals_;
+		}
+		if (m.find("scale") != end(m)) {
+			if (m["scale"].type_ != param::type::number) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			scale_ = m["scale"].vals_[0];
+		}
+		if (m.find("interp") != end(m)) {
+			if (m["interp"].type_ != param::type::string) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			if (m["interp"].str_ == "linear") {
+				interp_ = InterpolationType::linear;
+			}
+			else if (m["interp"].str_ == "area") {
+				interp_ = InterpolationType::area;
+			}
+			else if (m["interp"].str_ == "cubic") {
+				interp_ = InterpolationType::cubic;
+			}
+			else if (m["interp"].str_ == "lanczos4") {
+				interp_ = InterpolationType::lanczos4;
+			}
+			else if (m["interp"].str_ == "nearest") {
+				interp_ = InterpolationType::nearest;
+			}
+			else {
+				throw std::runtime_error("Error in interpolation type"); // TODO: standardize
+			}
+		}
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::ResizeDim.
 
 @anchor AugResizeDim
 */
-class AugResizeDim : public Augmentation {
+DEFINE_AUGMENTATION(AugResizeDim) {
     std::vector<int> dims_;
     InterpolationType interp_;
 
@@ -195,13 +391,15 @@ public:
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
     */
     AugResizeDim(const std::vector<int>& dims, const InterpolationType& interp = InterpolationType::linear) : dims_{ dims }, interp_(interp) {}
+
+	AugResizeDim(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::ResizeScale.
 
 @anchor AugResizeScale
 */
-class AugResizeScale : public Augmentation {
+DEFINE_AUGMENTATION(AugResizeScale) {
     std::vector<double> scale_;
     InterpolationType interp_;
 
@@ -219,13 +417,15 @@ public:
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
     */
     AugResizeScale(const std::vector<double>& scale, const InterpolationType& interp = InterpolationType::linear) : scale_{ scale }, interp_(interp) {}
+
+	AugResizeScale(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::Flip2D.
 
 @anchor AugFlip
 */
-class AugFlip : public Augmentation {
+DEFINE_AUGMENTATION(AugFlip) {
     double p_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
@@ -246,13 +446,15 @@ public:
     {
         params_["p"] = AugmentationParam(0, 1);
     }
+
+	AugFlip(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::Mirror2D.
 
 @anchor AugMirror
 */
-class AugMirror : public Augmentation {
+DEFINE_AUGMENTATION(AugMirror) {
     double p_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
@@ -273,13 +475,15 @@ public:
     {
         params_["p"] = AugmentationParam(0, 1);
     }
+
+	AugMirror(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::GaussianBlur.
 
 @anchor AugGaussianBlur
 */
-class AugGaussianBlur : public Augmentation {
+DEFINE_AUGMENTATION(AugGaussianBlur) {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         GaussianBlur(img, img, params_["sigma"].value_);
@@ -293,13 +497,15 @@ public:
     {
         params_["sigma"] = AugmentationParam(sigma[0], sigma[1]);
     }
+
+	AugGaussianBlur(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::AdditiveLaplaceNoise.
 
 @anchor AugAdditiveLaplaceNoise
 */
-class AugAdditiveLaplaceNoise : public Augmentation {
+DEFINE_AUGMENTATION(AugAdditiveLaplaceNoise) {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
@@ -314,13 +520,15 @@ public:
     {
         params_["std_dev"] = AugmentationParam(std_dev[0], std_dev[1]);
     }
+
+	AugAdditiveLaplaceNoise(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::AdditivePoissonNoise.
 
 @anchor AugAdditivePoissonNoise
 */
-class AugAdditivePoissonNoise : public Augmentation {
+DEFINE_AUGMENTATION(AugAdditivePoissonNoise) {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         AdditivePoissonNoise(img, img, params_["lambda"].value_);
@@ -335,13 +543,15 @@ public:
     {
         params_["lambda"] = AugmentationParam(lambda[0], lambda[1]);
     }
+
+	AugAdditivePoissonNoise(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::GammaContrast.
 
 @anchor AugGammaContrast
 */
-class AugGammaContrast : public Augmentation {
+DEFINE_AUGMENTATION(AugGammaContrast) {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         GammaContrast(img, img, params_["gamma"].value_);
@@ -356,13 +566,15 @@ public:
     {
         params_["gamma"] = AugmentationParam(gamma[0], gamma[1]);
     }
+
+	AugGammaContrast(std::istream& is) {}
 };
 
 /** @brief Augmentation wrapper for ecvl::CoarseDropout.
 
 @anchor AugCoarseDropout
 */
-class AugCoarseDropout : public Augmentation {
+DEFINE_AUGMENTATION(AugCoarseDropout) {
     double per_channel_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
@@ -384,6 +596,7 @@ public:
         params_["drop_size"] = AugmentationParam(drop_size[0], drop_size[1]);
         params_["per_channel"] = AugmentationParam(0, 1);
     }
+	AugCoarseDropout(std::istream& is) {}
 };
 } // namespace ecvl
 
