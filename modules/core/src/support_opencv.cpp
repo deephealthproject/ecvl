@@ -15,7 +15,8 @@
 
 #include "ecvl/core/standard_errors.h"
 
-namespace ecvl {
+namespace ecvl
+{
 Image MatToImage(const cv::Mat& m)
 {
     Image img;
@@ -62,7 +63,7 @@ Image MatToImage(const cv::Mat& m)
             img.dims_.push_back(1); // Add another dim for color planes (but it is one dimensional)
             img.colortype_ = ColorType::GRAY;
         }
-        else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3 ) { // Guess this is a BGR image
+        else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3) { // Guess this is a BGR image
             img.channels_ += "c";
             img.dims_.push_back(3); // Add another dim for color planes
             img.colortype_ = ColorType::BGR;
@@ -218,9 +219,9 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
         }
 
         // Data
-		int datasize = img.elemsize_;
-		img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
-		img.mem_ = DefaultMemoryManager::GetInstance();
+        int datasize = img.elemsize_;
+        img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
+        img.mem_ = DefaultMemoryManager::GetInstance();
         img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
 

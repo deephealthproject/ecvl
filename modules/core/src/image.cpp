@@ -31,7 +31,7 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
         else {
             // Compute datasize
             size_t new_datasize = DataTypeSize(elemtype);
-            new_datasize = std::accumulate(begin(dims), end(dims), new_datasize, std::multiplies<size_t>());
+            new_datasize = std::accumulate(std::begin(dims), std::end(dims), new_datasize, std::multiplies<size_t>());
 
             if (datasize_ != new_datasize) {
                 datasize_ = new_datasize;

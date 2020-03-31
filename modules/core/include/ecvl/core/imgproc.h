@@ -139,11 +139,9 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type);
 
 The Threshold function applies a fixed thresholding to an input Image. The function is useful to get a binary
 image out of a grayscale (ColorType::GRAY) Image or to remove noise filtering out pixels with too small or too
-large values. Anyway, the function can be applied to any input Image.  The pixels up to "thresh" value will be
+large values. Anyway, the function can be applied to any input Image. The pixels up to "thresh" value will be
 set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type" is ThresholdingType::BINARY
 (default). The opposite will happen if "thresh_type" is ThresholdingType::BINARY_INV.
-
-@bug Input and output Images may have different color spaces.
 
 @param[in] src Input Image on which to apply the threshold.
 @param[out] dst The output thresholded Image.

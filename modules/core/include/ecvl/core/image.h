@@ -28,14 +28,16 @@
 #include "type_promotion.h"
 #include "standard_errors.h"
 
-namespace ecvl {
-
+namespace ecvl
+{
 template<typename T>
-int vsize(const std::vector<T>& v) {
-	return static_cast<int>(v.size());
+int vsize(const std::vector<T>& v)
+{
+    return static_cast<int>(v.size());
 }
 
-class MetaData {
+class MetaData
+{
 public:
     virtual bool Query(const std::string& name, std::string& value) const = 0;
     virtual ~MetaData() {}
@@ -45,7 +47,8 @@ public:
 
 @anchor ColorType
 */
-enum class ColorType {
+enum class ColorType
+{
     none,  /**< Special ColorType for Images that contain only data and do not have any ColorType */
     GRAY,  /**< Gray-scale ColorType */
     RGB,   /**< RGB ColorType */
@@ -68,7 +71,8 @@ class ConstView;
 /** @brief Image class
 
 */
-class Image {
+class Image
+{
 public:
     DataType            elemtype_;  /**< @brief Type of Image pixels, must be one of the
                                          values available in DataType.        */
@@ -242,13 +246,13 @@ public:
     {
         // Compute strides
         strides_ = { elemsize_ };
-		int dsize = vsize(dims_);
+        int dsize = vsize(dims_);
         for (int i = 0; i < dsize - 1; ++i) {
             strides_.push_back(strides_[i] * dims_[i]);
         }
         // Compute datasize
         datasize_ = elemsize_;
-        datasize_ = std::accumulate(begin(dims_), end(dims_), datasize_, std::multiplies<size_t>());
+        datasize_ = std::accumulate(std::begin(dims_), std::end(dims_), datasize_, std::multiplies<size_t>());
         data_ = mem_->Allocate(datasize_);
     }
 
@@ -291,7 +295,7 @@ public:
                 }
                 // Compute datasize
                 datasize_ = elemsize_;
-                datasize_ = std::accumulate(begin(dims_), end(dims_), datasize_, std::multiplies<size_t>());
+                datasize_ = std::accumulate(dims_.begin(), std::end(dims_), datasize_, std::multiplies<size_t>());
                 data_ = mem_->Allocate(datasize_);
                 // Copy with iterators
                 // TODO: optimize so that we can memcpy one block at a time on the first dimension
@@ -399,13 +403,13 @@ public:
     uint8_t* Ptr(const std::vector<int>& coords)
     {
         assert(coords.size() == strides_.size());
-        return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
+        return std::inner_product(std::begin(coords), std::end(coords), std::begin(strides_), data_);
     }
     /** @brief Returns a const pointer to data at given coordinates. */
     const uint8_t* Ptr(const std::vector<int>& coords) const
     {
         assert(coords.size() == strides_.size());
-        return std::inner_product(begin(coords), end(coords), begin(strides_), data_);
+        return std::inner_product(std::begin(coords), std::end(coords), std::begin(strides_), data_);
     }
 
     /** @brief In-place addition of a scalar value. */
@@ -487,7 +491,8 @@ public:
 
 #include "iterators_impl.inc.h"
 template <DataType DT>
-class View : public Image {
+class View : public Image
+{
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
@@ -587,7 +592,8 @@ public:
 };
 
 template <DataType DT>
-class ConstView : public Image {
+class ConstView : public Image
+{
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
@@ -619,7 +625,8 @@ public:
 };
 
 template <DataType DT>
-class ContiguousView : public Image {
+class ContiguousView : public Image
+{
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
@@ -651,7 +658,8 @@ public:
 };
 
 template <DataType DT>
-class ConstContiguousView : public Image {
+class ConstContiguousView : public Image
+{
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
@@ -683,7 +691,8 @@ public:
 };
 
 template <DataType DT>
-class ContiguousViewXYC : public Image {
+class ContiguousViewXYC : public Image
+{
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
@@ -721,7 +730,8 @@ public:
 };
 
 template <DataType DT>
-class ConstContiguousViewXYC : public Image {
+class ConstContiguousViewXYC : public Image
+{
 public:
     using basetype = typename TypeInfo<DT>::basetype;
 
@@ -787,7 +797,8 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
 /** @brief Copy Images of different DataTypes. */
 template<DataType SDT, DataType DDT>
-struct StructCopyImage {
+struct StructCopyImage
+{
     static void _(const Image& src, Image& dst)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;
@@ -804,7 +815,8 @@ struct StructCopyImage {
 
 /** @brief Rearrange channels between Images of different DataTypes. */
 template<DataType SDT, DataType DDT>
-struct StructRearrangeImage {
+struct StructRearrangeImage
+{
     static void _(const Image& src, Image& dst, const std::vector<int>& bindings)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;

@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -17,17 +17,18 @@
 #include <vector>
 #include <cstdint>
 
-namespace ecvl {
-
+namespace ecvl
+{
 class Image;
 
 template <typename T>
-struct Iterator {
+struct Iterator
+{
     std::vector<int> pos_;
     uint8_t* ptr_;
     Image* img_;
 
-    typedef Iterator& (Iterator::*IncrementMemFn)();
+    typedef Iterator& (Iterator::* IncrementMemFn)();
     IncrementMemFn incrementor = &Iterator<T>::IncrementPos;
 
     Iterator(Image& img, std::vector<int> pos = {});
@@ -37,17 +38,18 @@ struct Iterator {
     bool operator==(const Iterator& rhs) const { return ptr_ == rhs.ptr_; }
     bool operator!=(const Iterator& rhs) const { return ptr_ != rhs.ptr_; }
 private:
-    Iterator & IncrementPos();
+    Iterator& IncrementPos();
     Iterator& ContiguousIncrementPos();
 };
 
 template <typename T>
-struct ConstIterator {
+struct ConstIterator
+{
     std::vector<int> pos_;
     const uint8_t* ptr_;
     const Image* img_;
 
-    typedef ConstIterator& (ConstIterator::*IncrementMemFn)();
+    typedef ConstIterator& (ConstIterator::* IncrementMemFn)();
     IncrementMemFn incrementor = &ConstIterator<T>::IncrementPos;
 
     ConstIterator(const Image& img, std::vector<int> pos = {});
@@ -57,13 +59,13 @@ struct ConstIterator {
     bool operator==(const ConstIterator& rhs) const { return ptr_ == rhs.ptr_; }
     bool operator!=(const ConstIterator& rhs) const { return ptr_ != rhs.ptr_; }
 private:
-    ConstIterator & IncrementPos();
+    ConstIterator& IncrementPos();
     ConstIterator& ContiguousIncrementPos();
 };
 
-
 template <typename T>
-struct ContiguousIterator {
+struct ContiguousIterator
+{
     uint8_t* ptr_;
     Image* img_;
 
@@ -78,7 +80,8 @@ private:
 };
 
 template <typename T>
-struct ConstContiguousIterator {
+struct ConstContiguousIterator
+{
     uint8_t* ptr_;
     const Image* img_;
 
@@ -89,13 +92,12 @@ struct ConstContiguousIterator {
     bool operator==(const ConstContiguousIterator& rhs) const { return ptr_ == rhs.ptr_; }
     bool operator!=(const ConstContiguousIterator& rhs) const { return ptr_ != rhs.ptr_; }
 private:
-    ConstContiguousIterator & ContiguousIncrementPos();
+    ConstContiguousIterator& ContiguousIncrementPos();
 };
 
 /** @example example_core_iterators.cpp
  Iterators example.
 */
-
 } // namespace ecvl
 
 #endif // !ECVL_ITERATORS_H_

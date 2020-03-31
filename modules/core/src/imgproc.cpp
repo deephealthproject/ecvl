@@ -24,7 +24,8 @@
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/standard_errors.h"
 
-namespace ecvl {
+namespace ecvl
+{
 using namespace std;
 
 /** @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
@@ -359,18 +360,49 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
 {
-    cv::Mat m;
-
-    int t_type;
-    switch (thresh_type) {
-    case ecvl::ThresholdingType::BINARY:        t_type = cv::THRESH_BINARY;      break;
-    case ecvl::ThresholdingType::BINARY_INV:    t_type = cv::THRESH_BINARY_INV;  break;
-    default:
-        ECVL_ERROR_NOT_REACHABLE_CODE
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
-    cv::threshold(ImageToMat(src), m, thresh, maxval, t_type);
-    dst = MatToImage(m);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_);
+
+#define ECVL_TUPLE(type, ...) \
+    case DataType::type: \
+    { \
+        auto thresh_t = saturate_cast<TypeInfo_t<DataType::type>>(thresh); \
+        auto maxval_t = saturate_cast<TypeInfo_t<DataType::type>>(maxval); \
+        auto minval_t = static_cast<TypeInfo_t<DataType::type>>(0); \
+        TypeInfo_t<DataType::type>* src_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(src.data_); \
+        TypeInfo_t<DataType::type>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp.data_); \
+        auto elemsize = src.elemsize_; \
+        \
+        switch (thresh_type) { \
+        case ecvl::ThresholdingType::BINARY: \
+            for (int i = 0; i < tmp.datasize_; i += elemsize) { \
+                *tmp_data = *src_data > thresh_t ? maxval_t : minval_t; \
+                ++src_data; \
+                ++tmp_data; \
+            } \
+            break; \
+        case ecvl::ThresholdingType::BINARY_INV: \
+            for (int i = 0; i < tmp.datasize_; i += elemsize) { \
+                *tmp_data = *src_data <= thresh_t ? maxval_t : minval_t; \
+                ++src_data; \
+                ++tmp_data; \
+            } \
+            break; \
+        } \
+        break; \
+    }
+
+    switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+    }
+
+#undef ECVL_TUPLE
+
+    dst = std::move(tmp);
+    return;
 }
 
 std::vector<double> Histogram(const Image& src)
@@ -415,7 +447,7 @@ int OtsuThreshold(const Image& src)
     double mu_k = 0;
     double sigma_max = 0;
     int threshold = 0;
-	int hsize = vsize(hist);
+    int hsize = vsize(hist);
     for (int k = 0; k < hsize - 1; k++) {
         w_k += hist[k];
         mu_k += hist[k] * k;
@@ -655,7 +687,7 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
 
 void GaussianBlur(const Image& src, Image& dst, double sigma)
 {
-	// Formula from: https://docs.opencv.org/3.1.0/d4/d86/group__imgproc__filter.html#gac05a120c1ae92a6060dd0db190a61afa
+    // Formula from: https://docs.opencv.org/3.1.0/d4/d86/group__imgproc__filter.html#gac05a120c1ae92a6060dd0db190a61afa
     int size = static_cast<int>(((sigma - 0.8) / 0.3 + 1) / 0.5 + 1);
 
     // Check if computed size is even
@@ -801,7 +833,6 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rd
             }
         }
     }
-
     else {
         vector<uint8_t*> channel_ptrs;
         for (int ch = 0; ch < tmp.dims_[2]; ch++) {
@@ -925,7 +956,8 @@ vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n)
 // Union-Find (UF) with path compression (PC) as in:
 // Two Strategies to Speed up Connected Component Labeling Algorithms
 // Kesheng Wu, Ekow Otoo, Kenji Suzuki
-struct UFPC {
+struct UFPC
+{
     // Maximum number of labels (included background) = 2^(sizeof(unsigned) x 8)
     unsigned* P_;
     unsigned length_;
@@ -987,7 +1019,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
     unsigned& P_length = ufpc.length_;
 
     P = new unsigned[((size_t)((h + 1) / 2) * (size_t)((w + 1) / 2) + 1)];
-    P[0] = 0;	 // First label is for background pixels
+    P[0] = 0; // First label is for background pixels
     P_length = 1;
 
     int e_rows = h & 0xfffffffe;
