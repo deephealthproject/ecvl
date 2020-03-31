@@ -70,7 +70,7 @@ int main()
 	//SequentialAugmentationContainer
 	//	AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
 	//	AugAdditiveLaplaceNoise std_dev=[0,51]
-	//	AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0,
+	//	AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0
 	//	AugAdditivePoissonNoise lambda=[0,40]
 	//	AugResizeDim dims=(30,30) interp="linear"
 	//end
@@ -78,6 +78,10 @@ int main()
 	stringstream ss(
 		"SequentialAugmentationContainer\n"
 		"    AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp=\"linear\"\n"
+		"    AugAdditiveLaplaceNoise std_dev=[0,0.51]\n"
+		"    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
+		"    AugAdditivePoissonNoise lambda=[0,40]\n"
+		"    AugResizeDim dims=(30,30) interp=\"linear\"\n"
 		"end\n"
 	);
 	auto newdeal_augs = Augmentation::make(ss);
@@ -100,7 +104,7 @@ int main()
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
-    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, move(dataset_augmentations), ColorType::GRAY);
+    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, dataset_augmentations, ColorType::GRAY);
 
     // Allocate memory for x and y tensors
     cout << "Create x and y" << endl;

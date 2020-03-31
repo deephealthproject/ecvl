@@ -44,6 +44,13 @@ public:
 		augs_[2] = unique_ptr<Augmentation>(augs[2]);
 	}
 
+	DatasetAugmentations(const DatasetAugmentations& other) 
+	{
+		augs_[0] = other.augs_[0] ? other.augs_[0]->clone() : nullptr;
+		augs_[1] = other.augs_[0] ? other.augs_[0]->clone() : nullptr;
+		augs_[2] = other.augs_[0] ? other.augs_[0]->clone() : nullptr;
+	}
+
 	// Getters: YAGNI
 
     void Apply(SplitType st, Image& img, const Image& gt = Image())
