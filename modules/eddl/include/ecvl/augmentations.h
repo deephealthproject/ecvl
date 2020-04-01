@@ -22,59 +22,12 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
+#include <unordered_map>
 
 namespace ecvl {
 
 #define ECVL_ERROR_AUGMENTATION_NAME throw std::runtime_error(ECVL_ERROR_MSG "Cannot load augmentation name");
 #define ECVL_ERROR_AUGMENTATION_FORMAT throw std::runtime_error(ECVL_ERROR_MSG "Format error while loading augmentation parameters");
-
-// Unbelivably smart: http://www.nirfriedman.com/2018/04/29/unforgettable-factory/
-template<class Base, class... Args> 
-struct Factory {
-	template<class... T>
-	static std::unique_ptr<Base> make(const std::string &s, T&&... args) {
-		return data().at(s)(std::forward<T>(args)...);
-	}
-	template<class T, char const * const name>
-	struct Registrar : Base {
-		friend T;
-
-		std::unique_ptr<Base> clone() const override {
-			return std::make_unique<T>(static_cast<const T&>(*this));
-		}
-
-		static bool registerT() {
-			//const auto name = T::name;
-			Factory::data()[name] = [](Args... args) -> std::unique_ptr<Base> {
-				return std::make_unique<T>(std::forward<Args>(args)...);
-			};
-			return true;
-		}
-		static bool registered;
-	private:
-		Registrar() : Base(Key{}) { (void)registered; }
-	};
-	friend Base;
-private:
-	class Key {
-		Key() {};
-		template<class T, char const * const name> friend struct Registrar;
-	};
-	using FuncType = std::unique_ptr<Base>(*)(Args...);
-	Factory() = default;
-	static auto &data() {
-		static std::unordered_map<std::string, FuncType> s;
-		return s;
-	}
-};
-template<class Base, class... Args>
-template<class T, char const * const name>
-bool Factory<Base, Args...>::Registrar<T, name>::registered =
-	 Factory<Base, Args...>::Registrar<T, name>::registerT();
-
-#define DEFINE_AUGMENTATION(x) \
-static const char x##_name[] = #x; \
-class x : public Augmentation::Registrar<x, x##_name>
 
 class param {
 	static std::istream& read_until(std::istream& is, std::string& s, const std::string& list) {
@@ -191,11 +144,9 @@ public:
 
 @anchor Augmentation
 */
-class Augmentation : public Factory<Augmentation, std::istream&> { // CRTP
+class Augmentation {
 public:
-	std::map<std::string, AugmentationParam> params_;
-
-	Augmentation(Key) {} // Pass Key idiom
+	std::unordered_map<std::string, AugmentationParam> params_;
 
     /** @brief Generate the random value for each parameter and call the specialized augmentation functions.
     @param[in,out] img Image on which apply the augmentations.
@@ -210,32 +161,22 @@ public:
     }
     virtual ~Augmentation() = default;
 
-	/* Virtual constructor */
-	virtual std::unique_ptr<Augmentation> clone() const = 0;
-
-	using Factory::make;
-	static std::unique_ptr<Augmentation> make(std::istream& is) {
-		std::string name;
-		is >> name;
-		if (!is) {
-			ECVL_ERROR_AUGMENTATION_NAME
-		}
-		return make(name, is);
-	}
-
 private:
 	virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
 };
 
-// vector<move_only> cannot be constructed from initializer list :-/
-// Use this work around for vector<unique_ptr<Augmentation>>
-template <typename Base, typename ... Ts>
-std::vector<std::unique_ptr<Base>> make_vector_of_unique(Ts&&... t)
-{
-    std::unique_ptr<Base> init[] = { std::make_unique<Ts>(std::forward<Ts>(t))... };
-    return std::vector<std::unique_ptr<Base>> {
-        std::make_move_iterator(std::begin(init)), std::make_move_iterator(std::end(init))};
-}
+struct AugmentationFactory {
+    static std::shared_ptr<Augmentation> create(std::istream& is) {
+        std::string name;
+        is >> name;
+        if (!is) {
+            ECVL_ERROR_AUGMENTATION_NAME
+        }
+        return create(name, is);
+    }
+
+    static std::shared_ptr<Augmentation> create(const std::string& name, std::istream& is);
+};
 
 /** @brief SequentialAugmentationContainer.
 
@@ -243,7 +184,7 @@ This class represent a container for multiple augmentations which will be sequen
 
 @anchor SequentialAugmentationContainer
 */
-DEFINE_AUGMENTATION(SequentialAugmentationContainer) {
+class SequentialAugmentationContainer : public Augmentation {
     /** @brief Call the specialized augmentation functions.
 
     @param[in] img Image on which apply the augmentations.
@@ -255,28 +196,10 @@ DEFINE_AUGMENTATION(SequentialAugmentationContainer) {
             x->Apply(img, gt);
         }
     }
-	std::vector<std::unique_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
-
+	std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
 public:
-    SequentialAugmentationContainer() {}
-
-	/* Copy constructor */
-	SequentialAugmentationContainer(const SequentialAugmentationContainer& other)
-	{
-		for (const auto& x : other.augs_) {
-			augs_.emplace_back(x->clone());
-		}
-	}
-
     template<typename ...Ts>
-    SequentialAugmentationContainer(Ts&&... t) : augs_(make_vector_of_unique<Augmentation>(std::forward<Ts>(t)...)) {}
-
-	SequentialAugmentationContainer(const std::vector<Augmentation*>& augs) 
-	{
-		for (auto& x : augs) {
-			Add(x);
-		}		
-	}
+    SequentialAugmentationContainer(Ts&&... t) : augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... }) {}
 
 	SequentialAugmentationContainer(std::istream& is) {
 		while (true) {
@@ -288,28 +211,10 @@ public:
 			if (name == "end") {
 				break;
 			}
-			augs_.emplace_back(make(name, is));
+			augs_.emplace_back(AugmentationFactory::create(name, is));
 		}
 	}
-
-    /*template<typename T, typename... Args>
-    void Add(Args&&... args)
-    {
-        augs_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
-    }*/
-
-	/** @brief Adds an augmentation to the container using a pointer. 
-	    The container gets ownership of the augmentation
-
-	@param[in] aug Pointer to augmentation to be added to the container.
-	*/
-	void Add(Augmentation* aug)
-	{
-		augs_.emplace_back(std::unique_ptr<Augmentation>(aug));
-	}
 };
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Augmentations
@@ -319,7 +224,7 @@ public:
 
 @anchor AugRotate
 */
-DEFINE_AUGMENTATION(AugRotate) {
+class AugRotate : public Augmentation {
     std::vector<double> center_;
     double scale_;
     InterpolationType interp_;
@@ -396,7 +301,7 @@ public:
 
 @anchor AugResizeDim
 */
-DEFINE_AUGMENTATION(AugResizeDim) {
+class AugResizeDim : public Augmentation {
     std::vector<int> dims_;
     InterpolationType interp_;
 
@@ -454,7 +359,7 @@ public:
 
 @anchor AugResizeScale
 */
-DEFINE_AUGMENTATION(AugResizeScale) {
+class AugResizeScale : public Augmentation {
     std::vector<double> scale_;
     InterpolationType interp_;
 
@@ -510,7 +415,7 @@ public:
 
 @anchor AugFlip
 */
-DEFINE_AUGMENTATION(AugFlip) {
+class AugFlip : public Augmentation {
     double p_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
@@ -545,7 +450,7 @@ public:
 
 @anchor AugMirror
 */
-DEFINE_AUGMENTATION(AugMirror) {
+class AugMirror : public Augmentation {
     double p_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
@@ -580,7 +485,7 @@ public:
 
 @anchor AugGaussianBlur
 */
-DEFINE_AUGMENTATION(AugGaussianBlur) {
+class AugGaussianBlur : public Augmentation {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         GaussianBlur(img, img, params_["sigma"].value_);
@@ -608,7 +513,7 @@ public:
 
 @anchor AugAdditiveLaplaceNoise
 */
-DEFINE_AUGMENTATION(AugAdditiveLaplaceNoise) {
+class AugAdditiveLaplaceNoise : public Augmentation {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
@@ -637,7 +542,7 @@ public:
 
 @anchor AugAdditivePoissonNoise
 */
-DEFINE_AUGMENTATION(AugAdditivePoissonNoise) {
+class AugAdditivePoissonNoise : public Augmentation {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         AdditivePoissonNoise(img, img, params_["lambda"].value_);
@@ -666,7 +571,7 @@ public:
 
 @anchor AugGammaContrast
 */
-DEFINE_AUGMENTATION(AugGammaContrast) {
+class AugGammaContrast : public Augmentation {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         GammaContrast(img, img, params_["gamma"].value_);
@@ -695,7 +600,7 @@ public:
 
 @anchor AugCoarseDropout
 */
-DEFINE_AUGMENTATION(AugCoarseDropout) {
+class AugCoarseDropout : public Augmentation {
     double per_channel_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
@@ -734,6 +639,7 @@ public:
 		per_channel_ = m["per_channel"].vals_[0];
 	}
 };
+
 } // namespace ecvl
 
 #endif // AUGMENTATIONS_H_

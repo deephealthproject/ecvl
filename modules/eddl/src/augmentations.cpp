@@ -16,4 +16,25 @@
 namespace ecvl
 {
 std::default_random_engine AugmentationParam::re_(std::random_device{}());
+
+// This factory must be manually populated! Don't forget to do it, otherwise no creation from streams
+
+#define AUG(x) if (name == #x) return std::make_shared<x>(is)
+std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& name, std::istream& is) 
+{
+    AUG(SequentialAugmentationContainer);
+    AUG(AugRotate);
+    AUG(AugResizeDim);
+    AUG(AugResizeScale);
+    AUG(AugFlip);
+    AUG(AugMirror);
+    AUG(AugGaussianBlur);
+    AUG(AugAdditiveLaplaceNoise);
+    AUG(AugAdditivePoissonNoise);
+    AUG(AugGammaContrast);
+    AUG(AugCoarseDropout);
+
+    return nullptr; // Maybe throw?
+}
+
 } // namespace ecvl
