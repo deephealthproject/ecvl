@@ -1,6 +1,8 @@
 var searchData=
 [
   ['ecvl',['ecvl',['../namespaceecvl.html',1,'']]],
+  ['ecvl_5ferror_5faugmentation_5fformat',['ECVL_ERROR_AUGMENTATION_FORMAT',['../augmentations_8h.html#ab0172e449786e277499a4339aeb5e15a',1,'augmentations.h']]],
+  ['ecvl_5ferror_5faugmentation_5fname',['ECVL_ERROR_AUGMENTATION_NAME',['../augmentations_8h.html#aa310b15661ffb081181bebb41ad938b6',1,'augmentations.h']]],
   ['ecvl_5ferror_5fcannot_5fload_5ffrom_5furl',['ECVL_ERROR_CANNOT_LOAD_FROM_URL',['../standard__errors_8h.html#a70f1c9bce5dfcb185969fd85d34ca8eb',1,'standard_errors.h']]],
   ['ecvl_5ferror_5fcannot_5fload_5fimage',['ECVL_ERROR_CANNOT_LOAD_IMAGE',['../standard__errors_8h.html#a575293dfdd1377f176ef7b8e785f3e22',1,'standard_errors.h']]],
   ['ecvl_5ferror_5fdivision_5fby_5fzero',['ECVL_ERROR_DIVISION_BY_ZERO',['../standard__errors_8h.html#aa415d0e113911df8a4beb5bb46ebf5ba',1,'standard_errors.h']]],

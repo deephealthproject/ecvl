@@ -94,7 +94,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">augmentations.h File Reference</div>  </div>
 </div><!--header-->
@@ -104,16 +104,24 @@ $(function() {
 <code>#include &lt;map&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;random&gt;</code><br />
+<code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;iterator&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 </div>
 <p><a href="augmentations_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param.html">ecvl::param</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation_param.html">ecvl::AugmentationParam</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Augmentations parameters.  <a href="classecvl_1_1_augmentation_param.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation.html">ecvl::Augmentation</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract class which represent a generic <a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> function.  <a href="classecvl_1_1_augmentation.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_augmentation_factory.html">ecvl::AugmentationFactory</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_sequential_augmentation_container.html">ecvl::SequentialAugmentationContainer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_sequential_augmentation_container.html" title="SequentialAugmentationContainer.">SequentialAugmentationContainer</a>.  <a href="classecvl_1_1_sequential_augmentation_container.html#details">More...</a><br /></td></tr>
@@ -154,12 +162,46 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceecvl"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html">ecvl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a7a895244d83e592595c51f9a4531c879"><td class="memTemplParams" colspan="2">template&lt;typename Base , typename ... Ts&gt; </td></tr>
-<tr class="memitem:a7a895244d83e592595c51f9a4531c879"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; Base &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a7a895244d83e592595c51f9a4531c879">ecvl::make_vector_of_unique</a> (Ts &amp;&amp;... t)</td></tr>
-<tr class="separator:a7a895244d83e592595c51f9a4531c879"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:aa310b15661ffb081181bebb41ad938b6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="augmentations_8h.html#aa310b15661ffb081181bebb41ad938b6">ECVL_ERROR_AUGMENTATION_NAME</a>&#160;&#160;&#160;throw std::runtime_error(<a class="el" href="standard__errors_8h.html#af19b8e27c86b1b43b2c65d3075eea946">ECVL_ERROR_MSG</a> &quot;Cannot load augmentation name&quot;);</td></tr>
+<tr class="separator:aa310b15661ffb081181bebb41ad938b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0172e449786e277499a4339aeb5e15a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="augmentations_8h.html#ab0172e449786e277499a4339aeb5e15a">ECVL_ERROR_AUGMENTATION_FORMAT</a>&#160;&#160;&#160;throw std::runtime_error(<a class="el" href="standard__errors_8h.html#af19b8e27c86b1b43b2c65d3075eea946">ECVL_ERROR_MSG</a> &quot;Format error while loading augmentation parameters&quot;);</td></tr>
+<tr class="separator:ab0172e449786e277499a4339aeb5e15a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ab0172e449786e277499a4339aeb5e15a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0172e449786e277499a4339aeb5e15a">&#9670;&nbsp;</a></span>ECVL_ERROR_AUGMENTATION_FORMAT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ECVL_ERROR_AUGMENTATION_FORMAT&#160;&#160;&#160;throw std::runtime_error(<a class="el" href="standard__errors_8h.html#af19b8e27c86b1b43b2c65d3075eea946">ECVL_ERROR_MSG</a> &quot;Format error while loading augmentation parameters&quot;);</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00030">30</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<a id="aa310b15661ffb081181bebb41ad938b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa310b15661ffb081181bebb41ad938b6">&#9670;&nbsp;</a></span>ECVL_ERROR_AUGMENTATION_NAME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ECVL_ERROR_AUGMENTATION_NAME&#160;&#160;&#160;throw std::runtime_error(<a class="el" href="standard__errors_8h.html#af19b8e27c86b1b43b2c65d3075eea946">ECVL_ERROR_MSG</a> &quot;Cannot load augmentation name&quot;);</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00029">29</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

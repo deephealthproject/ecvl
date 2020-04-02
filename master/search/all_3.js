@@ -40,7 +40,7 @@ var searchData=
   ['copyimage',['CopyImage',['../namespaceecvl.html#af9f141dad11461dfa9975dd176e8a913',1,'ecvl::CopyImage(const Image &amp;src, Image &amp;dst, DataType new_type=DataType::none)'],['../namespaceecvl.html#a94b055a6b66b58b02a3b0f1b794c56e7',1,'ecvl::CopyImage(const Image &amp;src, Image &amp;dst, DataType new_type, const std::string &amp;channels)']]],
   ['core_2ecpp',['core.cpp',['../core_8cpp.html',1,'']]],
   ['core_2eh',['core.h',['../core_8h.html',1,'']]],
-  ['create',['Create',['../classecvl_1_1_image.html#a28ddd94bedfacedc0a238daf00ccddf1',1,'ecvl::Image::Create()'],['../classecvl_1_1_view.html#a828f70940ae10189441246c4a107c6db',1,'ecvl::View::Create()']]],
+  ['create',['create',['../structecvl_1_1_augmentation_factory.html#a94a4bceb85c9e08c97eef7474d9c0aae',1,'ecvl::AugmentationFactory::create(std::istream &amp;is)'],['../structecvl_1_1_augmentation_factory.html#a454c7600ba4b329d078a4af160628bf0',1,'ecvl::AugmentationFactory::create(const std::string &amp;name, std::istream &amp;is)'],['../classecvl_1_1_image.html#a28ddd94bedfacedc0a238daf00ccddf1',1,'ecvl::Image::Create()'],['../classecvl_1_1_view.html#a828f70940ae10189441246c4a107c6db',1,'ecvl::View::Create()']]],
   ['ctype_5f',['ctype_',['../classecvl_1_1_d_l_dataset.html#a75feea2d9d8cf039cb2585a12137c549',1,'ecvl::DLDataset']]],
   ['ctype_5fgt_5f',['ctype_gt_',['../classecvl_1_1_d_l_dataset.html#ae5df606d050434b5f959b6a649bebf09',1,'ecvl::DLDataset']]],
   ['cubic',['cubic',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca7ab93feeb36d98e584d10de2e2f68843',1,'ecvl']]],

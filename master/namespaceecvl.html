@@ -130,6 +130,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract class which represent a generic <a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> function.  <a href="classecvl_1_1_augmentation.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_augmentation_factory.html">AugmentationFactory</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation_param.html">AugmentationParam</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Augmentations parameters.  <a href="classecvl_1_1_augmentation_param.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -219,6 +221,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_mul_impl_3_01_s_t1_00_01_image_01_4.html">MulImpl&lt; ST1, Image &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_normalize_to_uint8_struct.html">NormalizeToUint8Struct</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param.html">param</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1promote__superior__type.html">promote_superior_type</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -654,9 +658,6 @@ Functions</h2></td></tr>
 <tr class="separator:a422575c1fad4df42ab3c56297d9add69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7e9ec15cba92409e1f55ed63dafee47"><td class="memItemLeft" align="right" valign="top">constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">operator+</a> (<a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">SplitType</a> const val)</td></tr>
 <tr class="separator:af7e9ec15cba92409e1f55ed63dafee47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a895244d83e592595c51f9a4531c879"><td class="memTemplParams" colspan="2">template&lt;typename Base , typename ... Ts&gt; </td></tr>
-<tr class="memitem:a7a895244d83e592595c51f9a4531c879"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::unique_ptr&lt; Base &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a7a895244d83e592595c51f9a4531c879">make_vector_of_unique</a> (Ts &amp;&amp;... t)</td></tr>
-<tr class="separator:a7a895244d83e592595c51f9a4531c879"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2c0e52b39d861129ca12efff0aba0b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aa2c0e52b39d861129ca12efff0aba0b6">TensorToImage</a> (tensor &amp;t, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;img)</td></tr>
 <tr class="memdesc:aa2c0e52b39d861129ca12efff0aba0b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an EDDL Tensor into an ECVL <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#aa2c0e52b39d861129ca12efff0aba0b6">More...</a><br /></td></tr>
 <tr class="separator:aa2c0e52b39d861129ca12efff0aba0b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -3335,28 +3336,6 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00867">867</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a7a895244d83e592595c51f9a4531c879"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a895244d83e592595c51f9a4531c879">&#9670;&nbsp;</a></span>make_vector_of_unique()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Base , typename ... Ts&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;std::unique_ptr&lt;Base&gt; &gt; ecvl::make_vector_of_unique </td>
-          <td>(</td>
-          <td class="paramtype">Ts &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>t</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00081">81</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

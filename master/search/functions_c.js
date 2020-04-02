@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['make_5fvector_5fof_5funique',['make_vector_of_unique',['../namespaceecvl.html#a7a895244d83e592595c51f9a4531c879',1,'ecvl']]],
   ['mattoimage',['MatToImage',['../namespaceecvl.html#a8316acc95f4f4127a702c643eff92b51',1,'ecvl']]],
   ['matvectoimage',['MatVecToImage',['../namespaceecvl.html#a9420e2555fead8a272fbcb800f22f873',1,'ecvl']]],
   ['meanstddev',['MeanStdDev',['../namespaceecvl.html#a73979fb8877322e81048522db568a82d',1,'ecvl']]],

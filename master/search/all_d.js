@@ -2,7 +2,7 @@ var searchData=
 [
   ['n_5fchannels_5f',['n_channels_',['../classecvl_1_1_d_l_dataset.html#a3c92dc2c30c92851a96306582f015ebf',1,'ecvl::DLDataset']]],
   ['n_5fchannels_5fgt_5f',['n_channels_gt_',['../classecvl_1_1_d_l_dataset.html#a7e601a1276fc41d9822d22c4dedfdcdc',1,'ecvl::DLDataset']]],
-  ['name_5f',['name_',['../classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab',1,'ecvl::Dataset']]],
+  ['name_5f',['name_',['../classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab',1,'ecvl::Dataset::name_()'],['../classecvl_1_1param.html#a8565faf2bc232400827f128597ba8600',1,'ecvl::param::name_()']]],
   ['nearest',['nearest',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54cad879c351426770bc0b13c3628db1e636',1,'ecvl']]],
   ['neg',['Neg',['../namespaceecvl.html#a624a6aa1d96ecd7b3dffde220d2f8e9a',1,'ecvl']]],
   ['newlabel',['NewLabel',['../structecvl_1_1_u_f_p_c.html#a91ebc9166abd1f986e255401945f166f',1,'ecvl::UFPC']]],
@@ -12,5 +12,6 @@ var searchData=
   ['nonmaximasuppression',['NonMaximaSuppression',['../namespaceecvl.html#ab74faee8c2b550b7bee1fe07e0791c80',1,'ecvl']]],
   ['normalizetouint8',['NormalizeToUint8',['../namespaceecvl.html#afab209f3b11607e2e8fa2030a485de36',1,'ecvl']]],
   ['normalizetouint8struct',['NormalizeToUint8Struct',['../structecvl_1_1_normalize_to_uint8_struct.html',1,'ecvl']]],
-  ['num_5fsamples_5f',['num_samples_',['../classecvl_1_1_generate_dataset.html#ae0b9aad46da54a92124c577a0fe7877d',1,'ecvl::GenerateDataset']]]
+  ['num_5fsamples_5f',['num_samples_',['../classecvl_1_1_generate_dataset.html#ae0b9aad46da54a92124c577a0fe7877d',1,'ecvl::GenerateDataset']]],
+  ['number',['number',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4ab1bc248a7ff2b2e95569f56de68615df',1,'ecvl::param']]]
 ];

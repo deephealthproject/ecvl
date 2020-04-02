@@ -12,6 +12,7 @@ var searchData=
   ['auggammacontrast',['AugGammaContrast',['../classecvl_1_1_aug_gamma_contrast.html',1,'ecvl']]],
   ['auggaussianblur',['AugGaussianBlur',['../classecvl_1_1_aug_gaussian_blur.html',1,'ecvl']]],
   ['augmentation',['Augmentation',['../classecvl_1_1_augmentation.html',1,'ecvl']]],
+  ['augmentationfactory',['AugmentationFactory',['../structecvl_1_1_augmentation_factory.html',1,'ecvl']]],
   ['augmentationparam',['AugmentationParam',['../classecvl_1_1_augmentation_param.html',1,'ecvl']]],
   ['augmirror',['AugMirror',['../classecvl_1_1_aug_mirror.html',1,'ecvl']]],
   ['augresizedim',['AugResizeDim',['../classecvl_1_1_aug_resize_dim.html',1,'ecvl']]],

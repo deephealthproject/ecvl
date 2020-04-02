@@ -1,7 +1,7 @@
 var searchData=
 [
   ['dataset',['Dataset',['../classecvl_1_1_dataset.html#a26ae39bc2426816e364559ded105225e',1,'ecvl::Dataset::Dataset()'],['../classecvl_1_1_dataset.html#a6c507f92b0c6ba0dff187add10b9a316',1,'ecvl::Dataset::Dataset(const std::filesystem::path &amp;filename, bool verify=false)']]],
-  ['datasetaugmentations',['DatasetAugmentations',['../classecvl_1_1_dataset_augmentations.html#ac48437d3503c2e1c00f4667418fb38ef',1,'ecvl::DatasetAugmentations::DatasetAugmentations(std::array&lt; unique_ptr&lt; Augmentation &gt;, 3 &gt; augs={ nullptr, nullptr, nullptr })'],['../classecvl_1_1_dataset_augmentations.html#a90ef118c1151b3fa5bae54103ccff801',1,'ecvl::DatasetAugmentations::DatasetAugmentations(std::array&lt; Augmentation *, 3 &gt; augs)']]],
+  ['datasetaugmentations',['DatasetAugmentations',['../classecvl_1_1_dataset_augmentations.html#a0c130a53bafbe9f7b3b8558e1bc8d7a5',1,'ecvl::DatasetAugmentations']]],
   ['datatypearray',['DataTypeArray',['../namespaceecvl.html#a0eb208228b7d6fcaeb2a990da0768af8',1,'ecvl']]],
   ['datatypesignedarray',['DataTypeSignedArray',['../namespaceecvl.html#a1e09710526f14ceac14f65fa7b83f47c',1,'ecvl']]],
   ['datatypesignedsize',['DataTypeSignedSize',['../namespaceecvl.html#a19549b0ed2fede4d0f28206a63707dbe',1,'ecvl']]],

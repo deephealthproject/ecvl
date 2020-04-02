@@ -15,5 +15,6 @@ var searchData=
   ['action_5f6',['ACTION_6',['../imgproc_8cpp.html#a1275d82d44dc2b7e23cb8ff205a27170',1,'imgproc.cpp']]],
   ['action_5f7',['ACTION_7',['../imgproc_8cpp.html#a70980e2ed338f26cf839284a77e37466',1,'imgproc.cpp']]],
   ['action_5f8',['ACTION_8',['../imgproc_8cpp.html#af42c17326f69036682ec77abb284f329',1,'imgproc.cpp']]],
-  ['action_5f9',['ACTION_9',['../imgproc_8cpp.html#ac72ae6cbf6cfd3e226b1fbc014d8ca45',1,'imgproc.cpp']]]
+  ['action_5f9',['ACTION_9',['../imgproc_8cpp.html#ac72ae6cbf6cfd3e226b1fbc014d8ca45',1,'imgproc.cpp']]],
+  ['aug',['AUG',['../augmentations_8cpp.html#a4d900641729b32f0bcfd5f3db1e68d38',1,'augmentations.cpp']]]
 ];
