@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -17,15 +17,16 @@
 
 using namespace ecvl;
 
-TEST(Core, CreateEmptyImage) {
+TEST(Core, CreateEmptyImage)
+{
     Image img;
     EXPECT_EQ(img.dims_.size(), 0);
     EXPECT_EQ(img.strides_.size(), 0);
     EXPECT_EQ(img.data_, nullptr);
 }
 
-TEST(Core, CreateImageWithFiveDims) {
-
+TEST(Core, CreateImageWithFiveDims)
+{
     Image img({ 1, 2, 3, 4, 5 }, DataType::uint8, "xyzoo", ColorType::none);
     EXPECT_EQ(img.dims_.size(), 5);
     int sdims = vsize(img.dims_);
@@ -33,10 +34,10 @@ TEST(Core, CreateImageWithFiveDims) {
         EXPECT_EQ(img.dims_[i], i + 1);
     }
     EXPECT_EQ(img.strides_.size(), 5);
-
 }
 
-TEST(ArithmeticNeg, WorksWithInt8) {
+TEST(ArithmeticNeg, WorksWithInt8)
+{
     Image x({ 5, 4, 3 }, DataType::int8, "xyc", ColorType::RGB);
     View<DataType::int8> y(x);
     y({ 0,0,0 }) = 15; y({ 1,0,0 }) = 16; y({ 2,0,0 }) = 17; y({ 3,0,0 }) = 18; y({ 4,0,0 }) = 19;
@@ -62,8 +63,8 @@ TEST(ArithmeticNeg, WorksWithInt8) {
     EXPECT_EQ(y({ 3,2,0 }), -128);
 }
 
-TEST(RearrangeChannels, WorksWithVolumeInt16RGB) {
-
+TEST(RearrangeChannels, WorksWithVolumeInt16RGB)
+{
     Image img({ 3, 4, 3, 2 }, DataType::int16, "cxyz", ColorType::RGB);
     View<DataType::int16> view(img);
     auto it = view.Begin();
