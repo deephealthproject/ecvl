@@ -196,10 +196,12 @@ class SequentialAugmentationContainer : public Augmentation {
             x->Apply(img, gt);
         }
     }
-	std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
+    std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
 public:
     template<typename ...Ts>
     SequentialAugmentationContainer(Ts&&... t) : augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... }) {}
+
+    SequentialAugmentationContainer(std::vector<std::shared_ptr<Augmentation>> augs) : augs_(augs) {}
 
 	SequentialAugmentationContainer(std::istream& is) {
 		while (true) {
