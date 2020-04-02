@@ -26,23 +26,15 @@ namespace ecvl
 
 This class represent the augmentations which will be applied to each split.
 
-During construction the object becomes owner of the Augmentations whose pointers
-were passed to the constructor.
+This is just a shallow container for the Augmentations
 
 @anchor DatasetAugmentations
 */
 class DatasetAugmentations {
-    std::array<unique_ptr<Augmentation>, 3> augs_;
+    std::array<shared_ptr<Augmentation>, 3> augs_;
 public:
-	DatasetAugmentations(std::array<unique_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
-		: augs_{ std::move(augs) } {}
-
-    DatasetAugmentations(std::array<Augmentation*, 3> augs) 
-	{
-		augs_[0] = unique_ptr<Augmentation>(augs[0]);
-		augs_[1] = unique_ptr<Augmentation>(augs[1]);
-		augs_[2] = unique_ptr<Augmentation>(augs[2]);
-	}
+	DatasetAugmentations(std::array<shared_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
+		: augs_(augs) {}
 
 	// Getters: YAGNI
 

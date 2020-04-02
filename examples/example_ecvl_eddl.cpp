@@ -12,6 +12,9 @@
 */
 
 #include <iostream>
+#include <sstream>
+#include <unordered_map>
+
 #include "ecvl/core.h"
 #include "ecvl/support_eddl.h"
 #include "ecvl/augmentations.h"
@@ -29,7 +32,7 @@ int main()
     }
 
     // Create an augmentation sequence to be applied to the image
-    auto augs = make_unique<SequentialAugmentationContainer>(
+    auto augs = make_shared<SequentialAugmentationContainer>(
         AugRotate({ -5, 5 }),
         AugMirror(.5),
         AugFlip(.5),
@@ -64,9 +67,27 @@ int main()
     cout << "Executing TensorToView" << endl;
     TensorToView(t, view);
 
+	//SequentialAugmentationContainer
+	//	AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
+	//	AugAdditiveLaplaceNoise std_dev=[0,51]
+	//	AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0
+	//	AugAdditivePoissonNoise lambda=[0,40]
+	//	AugResizeDim dims=(30,30) interp="linear"
+	//end
+	stringstream ss(
+		"SequentialAugmentationContainer\n"
+		"    AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp=\"linear\"\n"
+		"    AugAdditiveLaplaceNoise std_dev=[0,0.51]\n"
+		"    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
+		"    AugAdditivePoissonNoise lambda=[0,40]\n"
+		"    AugResizeDim dims=(30,30) interp=\"linear\"\n"
+		"end\n"
+	);
+	auto newdeal_augs = AugmentationFactory::create(ss);
+
     // Create the augmentations to be applied to the dataset images during training and test.
     // nullptr is given as augmentation for validation because this split doesn't exist in the mnist dataset.
-    auto training_augs = make_unique<SequentialAugmentationContainer>(
+    auto training_augs = make_shared<SequentialAugmentationContainer>(
         AugRotate({ -5, 5 }),
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
         AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0),
@@ -74,15 +95,15 @@ int main()
         AugResizeDim({ 30, 30 })
         );
 
-    auto test_augs = make_unique<SequentialAugmentationContainer>(
+    auto test_augs = make_shared<SequentialAugmentationContainer>(
         AugResizeDim({ 30, 30 })
         );
-	
-    DatasetAugmentations dataset_augmentations{ {move(training_augs), nullptr, move(test_augs) } };
+
+    DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
-    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, move(dataset_augmentations), ColorType::GRAY);
+    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, dataset_augmentations, ColorType::GRAY);
 
     // Allocate memory for x and y tensors
     cout << "Create x and y" << endl;

@@ -19,8 +19,97 @@
 #include <map>
 #include <memory>
 #include <random>
+#include <iostream>
+#include <algorithm>
+#include <iterator>
+#include <unordered_map>
 
 namespace ecvl {
+
+#define ECVL_ERROR_AUGMENTATION_NAME throw std::runtime_error(ECVL_ERROR_MSG "Cannot load augmentation name");
+#define ECVL_ERROR_AUGMENTATION_FORMAT throw std::runtime_error(ECVL_ERROR_MSG "Format error while loading augmentation parameters");
+
+class param {
+	static std::istream& read_until(std::istream& is, std::string& s, const std::string& list) {
+		s.clear();
+		while (is.peek() && is && list.find(is.peek()) == list.npos) {
+			s += is.get();
+		}
+		return is;
+	}
+
+	void read_vals(std::istream& is, char closing_char) {
+		double val;
+		char next_char;
+		do {
+			is >> val;
+			if (!is) {
+				break;
+			}
+			vals_.push_back(val);
+			is >> next_char;
+		} while (next_char == ',');
+		if (!is || next_char != closing_char) {
+			std::cerr << "Error while reading values of parameter " << name_ << "\n"; // TODO: standardize
+			throw std::runtime_error("Cannot read parameter value"); // TODO: standardize
+		}
+	}
+public:
+	enum class type { range, vector, number, string };
+
+	std::string name_;
+	type type_;
+	std::vector<double> vals_;
+	std::string str_;
+
+	param() {}
+	param(std::istream& is) {
+		is >> std::ws;
+		read_until(is, name_, " =");
+		char next_char;
+		is >> std::ws >> next_char;
+		if (next_char != '=') {
+			throw std::runtime_error("Cannot read parameter name"); // TODO: standardize
+		}
+		is >> std::ws;
+		next_char = is.peek();
+		if (next_char == '[') { // range
+			is.ignore();
+			type_ = type::range;
+			read_vals(is, ']');
+		}
+		else if (next_char == '(') { // vector
+			is.ignore();
+			type_ = type::vector;
+			read_vals(is, ')');
+		}
+		else if (next_char == '"') { // string
+			is.ignore();
+			type_ = type::string;
+			std::getline(is, str_, '"');
+		}
+		else {
+			type_ = type::number;
+			vals_.resize(1);
+			is >> vals_[0];
+		}
+		if (!is) {
+			std::cerr << "Error while reading value of parameter " << name_ << "\n"; // TODO: standardize
+			throw std::runtime_error("Cannot read parameter value"); // TODO: standardize
+		}
+	}
+
+	static auto read(std::istream& is) {
+		std::unordered_map<std::string, param> m;
+		is >> std::ws;
+		while (is.peek() != '\n') {
+			param p(is);
+			m[p.name_] = p;
+		}
+		return m;
+	}
+};
+
 /** @brief Augmentations parameters.
 
 This class represent the augmentations parameters which must be randomly generated in a specific range.
@@ -57,7 +146,7 @@ public:
 */
 class Augmentation {
 public:
-    std::map<std::string, AugmentationParam> params_;
+	std::unordered_map<std::string, AugmentationParam> params_;
 
     /** @brief Generate the random value for each parameter and call the specialized augmentation functions.
     @param[in,out] img Image on which apply the augmentations.
@@ -71,19 +160,23 @@ public:
         RealApply(img, gt);
     }
     virtual ~Augmentation() = default;
+
 private:
-    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
+	virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
 };
 
-// vector<move_only> cannot be constructed from initializer list :-/
-// Use this work around for vector<unique_ptr<Augmentation>>
-template <typename Base, typename ... Ts>
-std::vector<std::unique_ptr<Base>> make_vector_of_unique(Ts&&... t)
-{
-    std::unique_ptr<Base> init[] = { std::make_unique<Ts>(std::forward<Ts>(t))... };
-    return std::vector<std::unique_ptr<Base>> {
-        std::make_move_iterator(std::begin(init)), std::make_move_iterator(std::end(init))};
-}
+struct AugmentationFactory {
+    static std::shared_ptr<Augmentation> create(std::istream& is) {
+        std::string name;
+        is >> name;
+        if (!is) {
+            ECVL_ERROR_AUGMENTATION_NAME
+        }
+        return create(name, is);
+    }
+
+    static std::shared_ptr<Augmentation> create(const std::string& name, std::istream& is);
+};
 
 /** @brief SequentialAugmentationContainer.
 
@@ -103,35 +196,25 @@ class SequentialAugmentationContainer : public Augmentation {
             x->Apply(img, gt);
         }
     }
+    std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
 public:
-    std::vector<std::unique_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
-
-    SequentialAugmentationContainer() : augs_{} {}
-
     template<typename ...Ts>
-    SequentialAugmentationContainer(Ts&&... t) : augs_(make_vector_of_unique<Augmentation>(std::forward<Ts>(t)...)) {}
+    SequentialAugmentationContainer(Ts&&... t) : augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... }) {}
 
-	SequentialAugmentationContainer(const std::vector<Augmentation*>& augs) 
-	{
-		for (auto& x : augs) {
-			Add(x);
-		}		
-	}
+    SequentialAugmentationContainer(std::vector<std::shared_ptr<Augmentation>> augs) : augs_(augs) {}
 
-    /*template<typename T, typename... Args>
-    void Add(Args&&... args)
-    {
-        augs_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
-    }*/
-
-	/** @brief Adds an augmentation to the container using a pointer. 
-	    The container gets ownership of the augmentation
-
-	@param[in] aug Pointer to augmentation to be added to the container.
-	*/
-	void Add(Augmentation* aug)
-	{
-		augs_.emplace_back(std::unique_ptr<Augmentation>(aug));
+	SequentialAugmentationContainer(std::istream& is) {
+		while (true) {
+			std::string name;
+			is >> name;
+			if (!is) {
+				ECVL_ERROR_AUGMENTATION_NAME
+			}
+			if (name == "end") {
+				break;
+			}
+			augs_.emplace_back(AugmentationFactory::create(name, is));
+		}
 	}
 };
 
@@ -171,6 +254,49 @@ public:
     {
         params_["angle"] = AugmentationParam(angle[0], angle[1]);
     }
+
+	AugRotate(std::istream& is) {
+		auto m = param::read(is);
+		if (m["angle"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["angle"] = AugmentationParam(m["angle"].vals_[0], m["angle"].vals_[1]);
+		if (m.find("center") != end(m)) {
+			if (m["center"].type_ != param::type::vector) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			center_ = m["center"].vals_;
+		}
+		if (m.find("scale") != end(m)) {
+			if (m["scale"].type_ != param::type::number) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			scale_ = m["scale"].vals_[0];
+		}
+		if (m.find("interp") != end(m)) {
+			if (m["interp"].type_ != param::type::string) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			if (m["interp"].str_ == "linear") {
+				interp_ = InterpolationType::linear;
+			}
+			else if (m["interp"].str_ == "area") {
+				interp_ = InterpolationType::area;
+			}
+			else if (m["interp"].str_ == "cubic") {
+				interp_ = InterpolationType::cubic;
+			}
+			else if (m["interp"].str_ == "lanczos4") {
+				interp_ = InterpolationType::lanczos4;
+			}
+			else if (m["interp"].str_ == "nearest") {
+				interp_ = InterpolationType::nearest;
+			}
+			else {
+				throw std::runtime_error("Error in interpolation type"); // TODO: standardize
+			}
+		}
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::ResizeDim.
@@ -195,6 +321,40 @@ public:
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
     */
     AugResizeDim(const std::vector<int>& dims, const InterpolationType& interp = InterpolationType::linear) : dims_{ dims }, interp_(interp) {}
+
+	AugResizeDim(std::istream& is) {
+		auto m = param::read(is);
+		if (m["dims"].type_ != param::type::vector) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		for (const auto& x : m["dims"].vals_) {
+			dims_.emplace_back(static_cast<int>(x));
+		}
+
+		if (m.find("interp") != end(m)) {
+			if (m["interp"].type_ != param::type::string) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			if (m["interp"].str_ == "linear") {
+				interp_ = InterpolationType::linear;
+			}
+			else if (m["interp"].str_ == "area") {
+				interp_ = InterpolationType::area;
+			}
+			else if (m["interp"].str_ == "cubic") {
+				interp_ = InterpolationType::cubic;
+			}
+			else if (m["interp"].str_ == "lanczos4") {
+				interp_ = InterpolationType::lanczos4;
+			}
+			else if (m["interp"].str_ == "nearest") {
+				interp_ = InterpolationType::nearest;
+			}
+			else {
+				throw std::runtime_error("Error in interpolation type"); // TODO: standardize
+			}
+		}
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::ResizeScale.
@@ -219,6 +379,38 @@ public:
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
     */
     AugResizeScale(const std::vector<double>& scale, const InterpolationType& interp = InterpolationType::linear) : scale_{ scale }, interp_(interp) {}
+
+	AugResizeScale(std::istream& is) {
+		auto m = param::read(is);
+		if (m["scale"].type_ != param::type::vector) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		scale_ = m["scale"].vals_;
+
+		if (m.find("interp") != end(m)) {
+			if (m["interp"].type_ != param::type::string) {
+				throw std::runtime_error("Error in parameter type"); // TODO: standardize
+			}
+			if (m["interp"].str_ == "linear") {
+				interp_ = InterpolationType::linear;
+			}
+			else if (m["interp"].str_ == "area") {
+				interp_ = InterpolationType::area;
+			}
+			else if (m["interp"].str_ == "cubic") {
+				interp_ = InterpolationType::cubic;
+			}
+			else if (m["interp"].str_ == "lanczos4") {
+				interp_ = InterpolationType::lanczos4;
+			}
+			else if (m["interp"].str_ == "nearest") {
+				interp_ = InterpolationType::nearest;
+			}
+			else {
+				throw std::runtime_error("Error in interpolation type"); // TODO: standardize
+			}
+		}
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::Flip2D.
@@ -242,10 +434,18 @@ public:
 
     @param[in] p Probability of each image to get flipped.
     */
-    AugFlip(const double& p) : p_{ p }
+    AugFlip(double p = 0.5) : p_{ p }
     {
         params_["p"] = AugmentationParam(0, 1);
     }
+
+	AugFlip(std::istream& is) : AugFlip() {
+		auto m = param::read(is);
+		if (m["p"].type_ != param::type::number) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		p_ = m["p"].vals_[0];
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::Mirror2D.
@@ -269,10 +469,18 @@ public:
 
     @param[in] p Probability of each image to get mirrored.
     */
-    AugMirror(const double& p) : p_{ p }
+    AugMirror(double p = 0.5) : p_{ p }
     {
         params_["p"] = AugmentationParam(0, 1);
     }
+
+	AugMirror(std::istream& is) : AugMirror() {
+		auto m = param::read(is);
+		if (m["p"].type_ != param::type::number) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		p_ = m["p"].vals_[0];
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::GaussianBlur.
@@ -293,6 +501,14 @@ public:
     {
         params_["sigma"] = AugmentationParam(sigma[0], sigma[1]);
     }
+
+	AugGaussianBlur(std::istream& is) {
+		auto m = param::read(is);
+		if (m["sigma"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["sigma"] = AugmentationParam(m["sigma"].vals_[0], m["sigma"].vals_[1]);
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::AdditiveLaplaceNoise.
@@ -314,6 +530,14 @@ public:
     {
         params_["std_dev"] = AugmentationParam(std_dev[0], std_dev[1]);
     }
+
+	AugAdditiveLaplaceNoise(std::istream& is) {
+		auto m = param::read(is);
+		if (m["std_dev"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["std_dev"] = AugmentationParam(m["std_dev"].vals_[0], m["std_dev"].vals_[1]);
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::AdditivePoissonNoise.
@@ -335,6 +559,14 @@ public:
     {
         params_["lambda"] = AugmentationParam(lambda[0], lambda[1]);
     }
+
+	AugAdditivePoissonNoise(std::istream& is) {
+		auto m = param::read(is);
+		if (m["lambda"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["lambda"] = AugmentationParam(m["lambda"].vals_[0], m["lambda"].vals_[1]);
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::GammaContrast.
@@ -356,6 +588,14 @@ public:
     {
         params_["gamma"] = AugmentationParam(gamma[0], gamma[1]);
     }
+
+	AugGammaContrast(std::istream& is) {
+		auto m = param::read(is);
+		if (m["gamma"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["gamma"] = AugmentationParam(m["gamma"].vals_[0], m["gamma"].vals_[1]);
+	}
 };
 
 /** @brief Augmentation wrapper for ecvl::CoarseDropout.
@@ -384,7 +624,24 @@ public:
         params_["drop_size"] = AugmentationParam(drop_size[0], drop_size[1]);
         params_["per_channel"] = AugmentationParam(0, 1);
     }
+	AugCoarseDropout(std::istream& is) {
+		auto m = param::read(is);
+		if (m["p"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["p"] = AugmentationParam(m["p"].vals_[0], m["p"].vals_[1]);
+		if (m["drop_size"].type_ != param::type::range) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["drop_size"] = AugmentationParam(m["drop_size"].vals_[0], m["drop_size"].vals_[1]);
+		if (m["per_channel"].type_ != param::type::number) {
+			throw std::runtime_error("Error in parameter type"); // TODO: standardize
+		}
+		params_["per_channel"] = AugmentationParam(0, 1);
+		per_channel_ = m["per_channel"].vals_[0];
+	}
 };
+
 } // namespace ecvl
 
 #endif // AUGMENTATIONS_H_
