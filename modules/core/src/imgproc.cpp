@@ -96,14 +96,58 @@ void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
         ECVL_ERROR_EMPTY_IMAGE
     }
 
-    if (src.channels_ == "xyc") {
-        cv::Mat m;
-        cv::flip(ImageToMat(src), m, 0);
-        dst = ecvl::MatToImage(m);
+    size_t c_pos = src.channels_.find('c');
+    size_t x_pos = src.channels_.find('x');
+    size_t y_pos = src.channels_.find('y');
+
+    if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+        ECVL_ERROR_WRONG_PARAMS("Malformed src image")
     }
-    else {
-        ECVL_ERROR_NOT_IMPLEMENTED
+
+    int src_width = src.Width();
+    int src_height = src.Height();
+    int src_channels = src.Channels();
+
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_);
+
+    int src_stride_c = src.strides_[c_pos];
+    int src_stride_x = src.strides_[x_pos];
+    int src_stride_y = src.strides_[y_pos];
+    vector<uint8_t*> src_vch(src_channels), tmp_vch(src_channels);
+
+    // Get the pointers to channels starting pixels
+    for (int i = 0; i < src_channels; ++i) {
+        src_vch[i] = src.data_ + i * src_stride_c;
+        tmp_vch[i] = tmp.data_ + i * src_stride_c;
     }
+
+    int pivot = (src_height + 1) / 2;
+    for (int r = 0, r_end = src_height - 1; r < pivot; ++r, --r_end) {
+        // Get the address of next row
+        int r1 = r * src_stride_y;
+        int r2 = r_end * src_stride_y;
+        for (int c = 0; c < src_width; ++c) {
+            // Get the address of pixels in current row
+            int p1 = r1 + src_stride_x * c;
+            int p2 = r2 + src_stride_x * c;
+
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: \
+            for (int ch = 0; ch < src_channels; ++ch) { \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
+            } \
+            break;
+
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+
+    dst = std::move(tmp);
 }
 
 void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
