@@ -399,6 +399,24 @@ public:
         return 0;
     }
 
+    /** @brief Returns the width of Image. */
+    int Width() const
+    {
+        if (size_t x = channels_.find('x'); x != std::string::npos) {
+            return dims_[x];
+        }
+        return 0;
+    }
+
+    /** @brief Returns the height of Image. */
+    int Height() const
+    {
+        if (size_t y = channels_.find('y'); y != std::string::npos) {
+            return dims_[y];
+        }
+        return 0;
+    }
+
     /** @brief Returns a non-const pointer to data at given coordinates. */
     uint8_t* Ptr(const std::vector<int>& coords)
     {
