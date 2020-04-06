@@ -1469,28 +1469,48 @@ void HConcat(const vector<Image>& src, Image& dst)
 {
     const int n_images = static_cast<int>(src.size());
     const auto& src_0 = src[0];
+    const int src_height = src_0.Height();
+    const int src_channels = src_0.Channels();
 
-    // If src is a vector of xyc Image
+    size_t c_pos = src_0.channels_.find('c');
+    size_t x_pos = src_0.channels_.find('x');
+    size_t y_pos = src_0.channels_.find('y');
+
+    if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+        ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+    }
+
+    // Check if src images have the same y or c dimensions
+    for (int i = 0; i < n_images; ++i) {
+        if (src[i].IsEmpty()) {
+            ECVL_ERROR_EMPTY_IMAGE
+        }
+        if (src_0.dims_[c_pos] != src[i].dims_[c_pos] || src_0.dims_[y_pos] != src[i].dims_[y_pos]) {
+            cerr << ECVL_ERROR_MSG "Cannot concatenate images with different dimensions." << endl;
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
+        if (src_0.channels_ != src[i].channels_) {
+            cerr << ECVL_ERROR_MSG "Cannot concatenate images with different channels." << endl;
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
+    }
+
+    // calculate the width of resulting image
+    vector<int> cumul_strides;
+    int new_width = 0, src_stride_y_tot = 0;
+    for (int i = 0; i < n_images; ++i) {
+        cumul_strides.push_back(src_stride_y_tot);
+        new_width += src[i].dims_[x_pos];
+        src_stride_y_tot += src[i].strides_[y_pos];
+    }
+
+    vector<int> new_dims(src_0.dims_);
+    new_dims[x_pos] = new_width;
+    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_);
+
+    // If src is a vector of xyc Image(s)
     if (src_0.channels_ == "xyc") {
-        // Check if src images have the same y or c dimensions
-        for (int i = 0; i < n_images; ++i) {
-            if (src[i].IsEmpty()) {
-                ECVL_ERROR_EMPTY_IMAGE
-            }
-            if (src_0.dims_[1] != src[i].dims_[1] || src_0.dims_[2] != src[i].dims_[2]) {
-                cerr << ECVL_ERROR_MSG "Cannot concatenate images with different dimensions.\n";
-                ECVL_ERROR_NOT_IMPLEMENTED
-            }
-        }
-
-        vector<int> cumul_strides;
-        int sum = 0;
-        for (int i = 0; i < n_images; ++i) {
-            cumul_strides.push_back(sum);
-            sum += src[i].strides_[1];
-        }
-        Image tmp({ sum, src_0.dims_[1], src_0.dims_[2] }, src_0.elemtype_, src_0.channels_, src_0.colortype_);
-
+        // 4x time faster than generic version below
         // Fill each tmp color plane by row
         for (int i = 0; i < src_0.Channels(); ++i) {
             for (int r = 0; r < src_0.dims_[1]; ++r) {
@@ -1499,49 +1519,142 @@ void HConcat(const vector<Image>& src, Image& dst)
                 }
             }
         }
-        dst = std::move(tmp);
     }
     else {
-        ECVL_ERROR_NOT_IMPLEMENTED
+        int src_stride_x = src_0.strides_[x_pos];
+        int src_stride_y = src_0.strides_[y_pos];
+        vector<vector<uint8_t*>> src_vch(src_channels);
+        vector<uint8_t*>tmp_vch(src_channels);
+
+        // Get the pointers to channels starting pixels
+        for (int c = 0; c < src_channels; ++c) {
+            for (int i = 0; i < n_images; ++i) {
+                src_vch[c].push_back(src[i].data_ + c * src[i].strides_[c_pos]);
+            }
+            tmp_vch[c] = tmp.data_ + c * tmp.strides_[c_pos];
+        }
+
+        for (int r = 0; r < src_height; ++r) {
+            // Get the address of next row
+            int tmp_pos = r * tmp.strides_[y_pos];
+            int counter = 0;
+            for (int i = 0; i < n_images; ++i) {
+                int src_pos = r * src[i].strides_[y_pos];
+                for (int c_i = 0; c_i < src[i].Width(); ++c_i) {
+                    int p_tmp = tmp_pos + src_stride_x * counter++;
+                    int p_src = src_pos + src_stride_x * c_i;
+#define ECVL_TUPLE(type, ...) \
+                case DataType::type: \
+                    for (int ch = 0; ch < src_channels; ++ch) { \
+                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
+                    } \
+                    break;
+
+                    switch (src_0.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                    }
+
+#undef ECVL_TUPLE
+                }
+            }
+        }
     }
+
+    dst = std::move(tmp);
 }
 
 void VConcat(const vector<Image>& src, Image& dst)
 {
     const int n_images = static_cast<int>(src.size());
     const auto& src_0 = src[0];
+    const int src_width = src_0.Width();
+    const int src_channels = src_0.Channels();
 
-    // If src is a vector of xyc Image
+    size_t c_pos = src_0.channels_.find('c');
+    size_t x_pos = src_0.channels_.find('x');
+    size_t y_pos = src_0.channels_.find('y');
+
+    if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+        ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+    }
+
+    // Check if src images have the same x or c dimensions
+    for (int i = 0; i < n_images; ++i) {
+        if (src[i].IsEmpty()) {
+            ECVL_ERROR_EMPTY_IMAGE
+        }
+        if (src_0.dims_[c_pos] != src[i].dims_[c_pos] || src_0.dims_[x_pos] != src[i].dims_[x_pos]) {
+            cerr << ECVL_ERROR_MSG "Cannot concatenate images with different dimensions." << endl;
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
+        if (src_0.channels_ != src[i].channels_) {
+            cerr << ECVL_ERROR_MSG "Cannot concatenate images with different channels." << endl;
+            ECVL_ERROR_NOT_IMPLEMENTED
+        }
+    }
+
+    // calculate the width of resulting image
+    vector<int> cumul_strides;
+    int new_height = 0, src_stride_c_tot = 0;
+    for (int i = 0; i < n_images; ++i) {
+        cumul_strides.push_back(src_stride_c_tot);
+        new_height += src[i].dims_[y_pos];
+        src_stride_c_tot += src[i].strides_[c_pos];
+    }
+
+    vector<int> new_dims(src_0.dims_);
+    new_dims[y_pos] = new_height;
+    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_);
+
+    // If src is a vector of xyc Image(s)
     if (src_0.channels_ == "xyc") {
-        // Check if src images have the same x or c dimensions
-        for (int i = 0; i < n_images; ++i) {
-            if (src[i].IsEmpty()) {
-                ECVL_ERROR_EMPTY_IMAGE
-            }
-            if (src_0.dims_[0] != src[i].dims_[0] || src_0.dims_[2] != src[i].dims_[2]) {
-                cerr << ECVL_ERROR_MSG "Cannot concatenate images with different dimensions.\n";
-                ECVL_ERROR_NOT_IMPLEMENTED
-            }
-        }
-        vector<int> cumul_strides;
-        int sum = 0;
-        for (int i = 0; i < n_images; ++i) {
-            cumul_strides.push_back(sum);
-            sum += src[i].strides_[2];
-        }
-        Image tmp({ src_0.dims_[0], sum / src_0.strides_[1], src_0.dims_[2] }, src_0.elemtype_, src_0.channels_, src_0.colortype_);
-
+        // 4x time faster than generic version below
         // Fill each tmp color plane concatenating every src color plane
         for (int i = 0; i < src_0.Channels(); ++i) {
             for (int c = 0; c < n_images; ++c) {
                 memcpy(tmp.data_ + cumul_strides[c] + i * tmp.strides_[2], src[c].data_ + i * src[c].strides_[2], src[c].strides_[2]);
             }
         }
-        dst = std::move(tmp);
     }
     else {
-        ECVL_ERROR_NOT_IMPLEMENTED
+        int src_stride_x = src_0.strides_[x_pos];
+        vector<vector<uint8_t*>> src_vch(src_channels);
+        vector<uint8_t*>tmp_vch(src_channels);
+
+        // Get the pointers to channels starting pixels
+        for (int c = 0; c < src_channels; ++c) {
+            for (int i = 0; i < n_images; ++i) {
+                src_vch[c].push_back(src[i].data_ + c * src[i].strides_[c_pos]);
+            }
+            tmp_vch[c] = tmp.data_ + c * tmp.strides_[c_pos];
+        }
+
+        for (int i = 0, offset = 0; i < n_images; offset += src[i].Height(), ++i) {
+            for (int r = 0; r < src[i].Height(); ++r) {
+                // Get the address of next row
+                int tmp_pos = (offset + r) * src[i].strides_[y_pos];
+                int src_pos = r * src[i].strides_[y_pos];
+                for (int c = 0; c < src_width; ++c) {
+                    int p_tmp = tmp_pos + src_stride_x * c;
+                    int p_src = src_pos + src_stride_x * c;
+#define ECVL_TUPLE(type, ...) \
+                case DataType::type: \
+                    for (int ch = 0; ch < src_channels; ++ch) { \
+                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
+                    } \
+                    break;
+
+                    switch (src_0.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                    }
+
+#undef ECVL_TUPLE
+                }
+            }
+        }
     }
+
+    dst = std::move(tmp);
 }
 
 void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue)

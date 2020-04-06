@@ -279,14 +279,14 @@ void Stack(const std::vector<Image>& src, Image& dst);
 
 /** @brief Horizontal concatenation of images (with the same number of rows)
 
-@param[in] src vector of input Images. It must be with channels "xyc".
+@param[in] src vector of input Images.
 @param[out] dst Output Image.
 */
 void HConcat(const std::vector<Image>& src, Image& dst);
 
 /** @brief Vertical concatenation of images (with the same number of columns)
 
-@param[in] src vector of input Images. It must be with channels "xyc".
+@param[in] src vector of input Images.
 @param[out] dst Output Image.
 */
 void VConcat(const std::vector<Image>& src, Image& dst);
