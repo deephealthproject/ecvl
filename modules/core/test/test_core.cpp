@@ -63,6 +63,20 @@ TEST(ArithmeticNeg, WorksWithInt8)
     EXPECT_EQ(y({ 3,2,0 }), -128);
 }
 
+TEST(ArithmeticNeg, WorksWithFloat32)
+{
+    Image x({ 2, 2, 1 }, DataType::float32, "xyc", ColorType::GRAY);
+
+    View<DataType::float32> x_v(x);
+    x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
+    x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
+
+    Neg(x);
+
+    EXPECT_FLOAT_EQ(x_v({ 0,0,0 }), 0); EXPECT_FLOAT_EQ(x_v({ 1,0,0 }), -1);
+    EXPECT_FLOAT_EQ(x_v({ 0,1,0 }), -1); EXPECT_FLOAT_EQ(x_v({ 1,1,0 }), 0);
+}
+
 TEST(RearrangeChannels, WorksWithVolumeInt16RGB)
 {
     Image img({ 3, 4, 3, 2 }, DataType::int16, "cxyz", ColorType::RGB);
