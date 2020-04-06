@@ -183,6 +183,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7b6db514661e150f16a534abe577c859"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a7b6db514661e150f16a534abe577c859">Channels</a> () const</td></tr>
 <tr class="memdesc:a7b6db514661e150f16a534abe577c859"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of channels.  <a href="#a7b6db514661e150f16a534abe577c859">More...</a><br /></td></tr>
 <tr class="separator:a7b6db514661e150f16a534abe577c859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bb099eb9fbebfede02d2457d93a3f43"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a9bb099eb9fbebfede02d2457d93a3f43">Width</a> () const</td></tr>
+<tr class="memdesc:a9bb099eb9fbebfede02d2457d93a3f43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the width of <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a9bb099eb9fbebfede02d2457d93a3f43">More...</a><br /></td></tr>
+<tr class="separator:a9bb099eb9fbebfede02d2457d93a3f43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57e71471d03572edf43110db00a7d21d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a57e71471d03572edf43110db00a7d21d">Height</a> () const</td></tr>
+<tr class="memdesc:a57e71471d03572edf43110db00a7d21d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the height of <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a57e71471d03572edf43110db00a7d21d">More...</a><br /></td></tr>
+<tr class="separator:a57e71471d03572edf43110db00a7d21d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac666790c7b5bcdb955c7d32938b1f0f9"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ac666790c7b5bcdb955c7d32938b1f0f9">Ptr</a> (const std::vector&lt; int &gt; &amp;coords)</td></tr>
 <tr class="memdesc:ac666790c7b5bcdb955c7d32938b1f0f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a non-const pointer to data at given coordinates.  <a href="#ac666790c7b5bcdb955c7d32938b1f0f9">More...</a><br /></td></tr>
 <tr class="separator:ac666790c7b5bcdb955c7d32938b1f0f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -504,7 +510,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place addition of a scalar value. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00417">417</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00435">435</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -544,7 +550,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place addition of an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00424">424</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00442">442</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -876,7 +882,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place division for a scalar value. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00462">462</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00480">480</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -916,7 +922,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place division for an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00469">469</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00487">487</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -981,6 +987,35 @@ template&lt;typename T &gt; </div>
 <p>This function gives you a const generic End <a class="el" href="structecvl_1_1_iterator.html">Iterator</a> that can be used both for contiguous and non-contiguous const Images. It is useful to iterate over a const <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00174">174</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+
+</div>
+</div>
+<a id="a57e71471d03572edf43110db00a7d21d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57e71471d03572edf43110db00a7d21d">&#9670;&nbsp;</a></span>Height()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ecvl::Image::Height </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the height of <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00412">412</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1080,7 +1115,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place multiplication for a scalar value. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00447">447</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00465">465</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1120,7 +1155,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place multiplication for an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00454">454</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00472">472</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1260,7 +1295,7 @@ template&lt;typename T &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgcodecs_8cpp-example.html#a1">example_imgcodecs.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00403">403</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00421">421</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1290,7 +1325,7 @@ template&lt;typename T &gt; </div>
 
 <p>Returns a const pointer to data at given coordinates. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00409">409</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00427">427</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1332,7 +1367,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place subtraction of a scalar value. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00432">432</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00450">450</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1372,7 +1407,36 @@ template&lt;typename T &gt; </div>
 
 <p>In-place subtraction of an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00439">439</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00457">457</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+
+</div>
+</div>
+<a id="a9bb099eb9fbebfede02d2457d93a3f43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bb099eb9fbebfede02d2457d93a3f43">&#9670;&nbsp;</a></span>Width()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ecvl::Image::Width </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the width of <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00403">403</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
