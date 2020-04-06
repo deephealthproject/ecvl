@@ -86,6 +86,22 @@ pipeline {
                         }
                     }
                 }
+                stage('release-doc') {
+                    when { tag "v*" }
+                    agent {
+                        label 'windows && ecvl_doxygen'
+                    }
+                    stages {
+                        stage('Set Release Documentation') {
+                            steps {
+                                timeout(15) {
+                                    bat 'cd doc\\doxygen && doxygen'
+                                    bat '"../../doxygen_git/update_doc_script.bat" y'
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
