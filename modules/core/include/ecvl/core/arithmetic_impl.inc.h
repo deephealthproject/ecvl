@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -25,14 +25,15 @@ min value is returned.
 @return Input value after cast and saturation.
 */
 template<DataType ODT, typename IDT>
-typename TypeInfo<ODT>::basetype saturate_cast(IDT v) {
+typename TypeInfo<ODT>::basetype saturate_cast(IDT v)
+{
     using basetype = typename TypeInfo<ODT>::basetype;
 
     if (v > std::numeric_limits<basetype>::max()) {
         return std::numeric_limits<basetype>::max();
     }
-    if (v < std::numeric_limits<basetype>::min()) {
-        return std::numeric_limits<basetype>::min();
+    if (v < std::numeric_limits<basetype>::lowest()) {
+        return std::numeric_limits<basetype>::lowest();
     }
 
     return static_cast<basetype>(v);
@@ -52,13 +53,13 @@ min value is returned.
 @return Input value after cast and saturation.
 */
 template<typename ODT, typename IDT>
-ODT saturate_cast(const IDT& v) {
-
+ODT saturate_cast(const IDT& v)
+{
     if (v > std::numeric_limits<ODT>::max()) {
         return std::numeric_limits<ODT>::max();
     }
-    if (v < std::numeric_limits<ODT>::min()) {
-        return std::numeric_limits<ODT>::min();
+    if (v < std::numeric_limits<ODT>::lowest()) {
+        return std::numeric_limits<ODT>::lowest();
     }
 
     return static_cast<ODT>(v);
@@ -66,8 +67,10 @@ ODT saturate_cast(const IDT& v) {
 
 // Template implementation for the in-place Addition between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructAdd {
-    static void _(Image& src1, const Image& src2, bool saturate) {
+struct StructAdd
+{
+    static void _(Image& src1, const Image& src2, bool saturate)
+    {
         using dsttype = typename TypeInfo<DT1>::basetype;
         View<DT1> vsrc1(src1);
         ConstView<DT2> vsrc2(src2);
@@ -84,9 +87,10 @@ struct StructAdd {
     }
 };
 
-// Template specialization for the in-place Addition between Image and scalar. 
+// Template specialization for the in-place Addition between Image and scalar.
 template<DataType DT, typename T>
-struct ImageScalarAddImpl {
+struct ImageScalarAddImpl
+{
     static void _(Image& img, T value, bool saturate)
     {
         View<DT> v(img);
@@ -103,11 +107,12 @@ struct ImageScalarAddImpl {
     }
 };
 
-
 // Template implementation for the in-place subtraction between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructSub {
-    static void _(Image& src1, const Image& src2, bool saturate) {
+struct StructSub
+{
+    static void _(Image& src1, const Image& src2, bool saturate)
+    {
         using dsttype = typename TypeInfo<DT1>::basetype;
 
         View<DT1> vsrc1(src1);
@@ -125,9 +130,10 @@ struct StructSub {
     }
 };
 
-// Template specialization for the in-place subtraction between Image and scalar. 
+// Template specialization for the in-place subtraction between Image and scalar.
 template<DataType DT, typename T>
-struct ImageScalarSubImpl {
+struct ImageScalarSubImpl
+{
     static void _(Image& img, T value, bool saturate)
     {
         View<DT> v(img);
@@ -144,11 +150,12 @@ struct ImageScalarSubImpl {
     }
 };
 
-
 // Template implementation for the in-place Multiplication between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructMul {
-    static void _(Image& src1, const Image& src2, bool saturate) {
+struct StructMul
+{
+    static void _(Image& src1, const Image& src2, bool saturate)
+    {
         using dsttype = typename TypeInfo<DT1>::basetype;
 
         View<DT1> vsrc1(src1);
@@ -166,9 +173,10 @@ struct StructMul {
     }
 };
 
-// Template specialization for the in-place Multiplication between Image and scalar. 
+// Template specialization for the in-place Multiplication between Image and scalar.
 template<DataType DT, typename T>
-struct ImageScalarMulImpl {
+struct ImageScalarMulImpl
+{
     static void _(Image& img, T value, bool saturate)
     {
         View<DT> v(img);
@@ -187,8 +195,10 @@ struct ImageScalarMulImpl {
 
 // Template implementation for the in-place division between Image(s)
 template <DataType DT1, DataType DT2, typename ET>
-struct StructDiv {
-    static void _(Image& src1, const Image& src2, bool saturate, ET epsilon) {
+struct StructDiv
+{
+    static void _(Image& src1, const Image& src2, bool saturate, ET epsilon)
+    {
         using dsttype = typename TypeInfo<DT1>::basetype;
 
         View<DT1> vsrc1(src1);
@@ -206,9 +216,10 @@ struct StructDiv {
     }
 };
 
-// Template specialization for the in-place division between Image and scalar. 
+// Template specialization for the in-place division between Image and scalar.
 template<DataType DT, typename T>
-struct ImageScalarDivImpl {
+struct ImageScalarDivImpl
+{
     static void _(Image& img, T value, bool saturate)
     {
         View<DT> v(img);
