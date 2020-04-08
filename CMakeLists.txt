@@ -10,8 +10,9 @@
 # All rights reserved.
 
 cmake_minimum_required (VERSION 3.13)
-
 project (ecvl CXX)
+
+include(CheckCXXCompilerFlag)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
@@ -46,28 +47,23 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
-# This should be done as follows but it doesn't work!?
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+    check_cxx_compiler_flag("-std=c++17" COMPILER_SUPPORTS_CXX17)
+elseif(MSVC)
+    check_cxx_compiler_flag("/std:c++17" COMPILER_SUPPORTS_CXX17)
+else()
+    # Unrecognized compiler
+    set(COMPILER_SUPPORTS_CXX17 ON)
+endif()
+
+if(NOT COMPILER_SUPPORTS_CXX17)
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-    include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
 
-    if(COMPILER_SUPPORTS_CXX17 AND NOT CMAKE_CXX_FLAGS MATCHES "-std=c\\+\\+17")
-        set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}" CACHE STRING "Enable c++17" FORCE)
-    elseif(NOT COMPILER_SUPPORTS_CXX17)
-        message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
-    endif()
-else()
-    if(MSVC)
-        if(MSVC_VERSION LESS 1914)
-            message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
-        endif()
-    else()
-        message(STATUS "We are not able to check if ${CMAKE_CXX_COMPILER} compiler has C++17 support. ECVL may not work properly.")
-    endif()
-endif()
 message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "C flags: ${CMAKE_C_FLAGS}")
@@ -75,18 +71,21 @@ message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
 
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: static/dynamic runtime
+#--------------------------------------------------------------------------------------------------------
+set(ECVL_SHARED OFF CACHE BOOL "Whether to build static or dynamic libraries")
+set(ecvl-type STATIC)
+
+if (ECVL_SHARED)
+    # TODO Shared building
+    set(ecvl-type STATIC) #SHARED)
 endif()
 
-#--------------------------------------------------------------------------------------------------------
-# BEGIN: static/dinamic runtime
-#--------------------------------------------------------------------------------------------------------
-set(ECVL_SHARED OFF CACHE BOOL "Whether to build static or dinamic libraries")
-
 if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     if(ECVL_SHARED)
-        message(STATUS "Setting dinamic runtime for MSVC")
+        message(STATUS "Setting dynamic runtime for MSVC")
         foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
             string(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
@@ -98,7 +97,7 @@ if(MSVC)
     endif()
 endif()
 #--------------------------------------------------------------------------------------------------------
-# END: static/dinamic runtime
+# END: static/dynamic runtime
 #--------------------------------------------------------------------------------------------------------
 
 #--------------------------------------------------------------------------------------------------------
@@ -106,11 +105,11 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_BUILD_CORE ON CACHE BOOL "Whether to build ECVL_CORE or not" FORCE)
 set(ECVL_TESTS ON CACHE BOOL "Whether to build ECVL tests or not")
-if(${ECVL_TESTS})
+if(ECVL_TESTS)
     add_executable(ECVL_TESTS "") # it must be defined before ECVL_CORE
 endif()
 
-add_library(ECVL_CORE STATIC)
+add_library(ECVL_CORE ${ecvl-type})
 add_subdirectory("modules/core")
 target_include_directories(ECVL_CORE PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/modules/core/include>
@@ -122,6 +121,7 @@ set(ECVL_MODULES_DIRS core)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
 endif()
+
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ endif()
 # BEGIN: OpenCV
 #--------------------------------------------------------------------------------------------------------
 set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc;photo" CACHE STRING "OpenCV required packages")
-FIND_PACKAGE(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
+find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 message(STATUS "OpenCV version: ${OpenCV_VERSION}")
@@ -147,8 +147,6 @@ set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (req
 set(ECVL_DATASET OFF CACHE BOOL "Whether to build yaml support or not")
 set(ECVL_WITH_OPENSLIDE OFF CACHE BOOL "Whether to build OpenSlide support or not")
 find_package(Git QUIET)
-
-include("3rdparty/dicom.cmake")
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
 #--------------------------------------------------------------------------------------------------------
@@ -165,17 +163,17 @@ if(ECVL_BUILD_GUI)
         find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
         if(wxWidgets_FOUND)
             include(${wxWidgets_USE_FILE})
-            add_library(ECVL_GUI STATIC "")
+            add_library(ECVL_GUI ${ecvl-type} "")
             add_subdirectory("modules/gui")
             include_directories("modules/gui/include")
-            
             message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
-            
+
+            # Remove these global defines, add to GUI only
+            remove_definitions(-DUNICODE -D_UNICODE)
+            target_compile_definitions(ECVL_GUI PUBLIC -DUNICODE -D_UNICODE)
+
             target_link_libraries(ECVL_GUI PUBLIC ECVL_CORE ${wxWidgets_LIBRARIES})
             target_include_directories(ECVL_GUI PUBLIC ${wxWidgets_INCLUDE_DIRS})
-            if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-                target_link_libraries(ECVL_GUI PUBLIC stdc++fs)
-            endif()
             set_target_properties(ECVL_GUI PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_GUI")
             list(APPEND ECVL_MODULES_DIRS "gui")
@@ -189,13 +187,10 @@ if(ECVL_BUILD_GUI)
 endif()
 
 macro(F_BUILD_DATASET)
-    add_library(DATASET STATIC "modules/dataset/dataset.yaml")
+    add_library(DATASET ${ecvl-type} "modules/dataset/dataset.yaml")
     add_subdirectory("modules/dataset")
     include_directories("modules/dataset/include")
     target_link_libraries(DATASET ECVL_CORE)
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-        target_link_libraries(DATASET stdc++fs)
-    endif()
     set_target_properties(DATASET PROPERTIES FOLDER "Modules")
     list(APPEND ECVL_MODULES "DATASET")
     list(APPEND ECVL_MODULES_DIRS "dataset")
@@ -207,13 +202,10 @@ if(ECVL_BUILD_EDDL)
         if(eddl_FOUND)
             set(ECVL_DATASET ON CACHE BOOL "Whether to build ECVL_DATASET or not" FORCE)
             F_BUILD_DATASET()
-            add_library(ECVL_EDDL STATIC "")
+            add_library(ECVL_EDDL ${ecvl-type} "")
             add_subdirectory("modules/eddl")
             include_directories("modules/eddl/include")
             target_link_libraries(ECVL_EDDL DATASET eddl)
-            if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-                target_link_libraries(ECVL_EDDL stdc++fs)
-            endif()
             set_target_properties(ECVL_EDDL PROPERTIES FOLDER "Modules")
             list(APPEND ECVL_MODULES "ECVL_EDDL")
             list(APPEND ECVL_MODULES_DIRS "eddl")
@@ -235,8 +227,9 @@ endif()
 foreach(MODULE ${ECVL_MODULES})
     string(TOLOWER ${MODULE} LOWER_MODULE)
     set_target_properties(${MODULE} PROPERTIES
-        OUTPUT_NAME_DEBUG "${LOWER_MODULE}d"
-        OUTPUT_NAME_RELEASE "${LOWER_MODULE}")
+        OUTPUT_NAME "${LOWER_MODULE}"
+        DEBUG_POSTFIX d
+        )
 endforeach()
 
 message(STATUS "Modules to be built: ${ECVL_MODULES}")
@@ -251,15 +244,15 @@ set(CMAKE_FOLDER 3rdparty)
 add_subdirectory(3rdparty)
 set(CMAKE_FOLDER "")
 
-if(${ECVL_WITH_DICOM})
+if(ECVL_WITH_DICOM)
     target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_DICOM)
-endif(${ECVL_WITH_DICOM})
+endif()
 
-if(${ECVL_WITH_OPENGL})
+if(ECVL_WITH_OPENGL)
     target_compile_definitions(ECVL_GUI PUBLIC ECVL_WITH_OPENGL)
-endif(${ECVL_WITH_OPENGL})
+endif()
 
-if(${ECVL_WITH_OPENSLIDE})
+if(ECVL_WITH_OPENSLIDE)
     find_path(OPENSLIDE_INCLUDE_DIRECTORIES openslide.h PATH_SUFFIXES openslide DOC "Path to directory containing openslide.h")
     find_library(OPENSLIDE_LIBRARIES openslide DOC "Path to libopenslide.lib")
     if(OPENSLIDE_LIBRARIES AND OPENSLIDE_INCLUDE_DIRECTORIES)
@@ -278,7 +271,7 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Examples
 #--------------------------------------------------------------------------------------------------------
-if (${ECVL_BUILD_EXAMPLES})
+if (ECVL_BUILD_EXAMPLES)
     include(examples/CMakeLists.txt)
 endif()
 #--------------------------------------------------------------------------------------------------------
@@ -288,12 +281,9 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL tests
 #--------------------------------------------------------------------------------------------------------
-if (${ECVL_TESTS})
+if (ECVL_TESTS)
     target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main gmock)
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-        target_link_libraries(ECVL_TESTS stdc++fs) 
-    endif()
-    if (${ECVL_BUILD_EXAMPLES})
+    if (ECVL_BUILD_EXAMPLES)
         target_compile_definitions(ECVL_TESTS PUBLIC ECVL_WITH_EXAMPLES)
     endif()
     enable_testing()
