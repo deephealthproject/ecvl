@@ -1,6 +1,7 @@
 
 ![ECVL](doc/logo/DEEPHEALTH_doxygen_logo_reduced.png)
 # ECVL - European Computer Vision Library 
+[![codecov](https://codecov.io/gh/deephealthproject/ecvl/branch/master/graph/badge.svg)](https://codecov.io/gh/deephealthproject/ecvl)
 
 | System  |  Compiler  | OpenCV | Status | 
 |:-------:|:----------:|:------:|:------:|
