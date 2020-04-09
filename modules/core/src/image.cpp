@@ -17,44 +17,31 @@
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl {
-void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings)
+void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, 
+    const std::vector<float>& spacings, Device dev)
 {
-    if (IsEmpty() || !IsOwner()) {
-        *this = Image(dims, elemtype, std::move(channels), colortype, spacings);
-        return;
+    if (IsEmpty() || !IsOwner() || dev_ != dev || !contiguous_) {
+        *this = Image(dims, elemtype, std::move(channels), colortype, spacings, dev);
     }
     else {
-        if (!contiguous_) {
-            *this = Image(dims, elemtype, std::move(channels), colortype, spacings);
-            return;
-        }
-        else {
-            // Compute datasize
-            size_t new_datasize = DataTypeSize(elemtype);
-            new_datasize = std::accumulate(std::begin(dims), std::end(dims), new_datasize, std::multiplies<size_t>());
+        // Compute new datasize
+        size_t new_datasize = GetDefaultDatasize();
 
-            if (datasize_ != new_datasize) {
-                datasize_ = new_datasize;
-                mem_->Deallocate(data_);
-                data_ = mem_->Allocate(new_datasize);
-            }
-
-            elemtype_ = elemtype;
-            elemsize_ = DataTypeSize(elemtype_);
-            dims_ = dims;   // A check could be added to save this copy
-            spacings_ = spacings;
-            channels_ = std::move(channels);
-            colortype_ = colortype;
+        if (datasize_ != new_datasize) {
             datasize_ = new_datasize;
-
-            // Compute strides
-            strides_ = { elemsize_ };
-            int dsize = vsize(dims_);
-            for (int i = 0; i < dsize - 1; ++i) {
-                strides_.push_back(strides_[i] * dims_[i]);
-            }
-            return;
+            hal_->MemDeallocate(data_);
+            data_ = hal_->MemAllocate(new_datasize);
         }
+
+        elemtype_ = elemtype;
+        elemsize_ = DataTypeSize(elemtype_);
+        dims_ = dims;   // A check could be added to save this copy
+        spacings_ = spacings;
+        channels_ = std::move(channels);
+        colortype_ = colortype;
+        datasize_ = new_datasize;
+
+        SetDefaultStrides();
     }
 }
 
@@ -116,7 +103,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
         }
         if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemtype_ != dst.elemtype_) {
             // Destination needs to be resized
-            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemsize_ != dst.elemsize_) {
@@ -125,7 +112,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
         }
         if (src.colortype_ != dst.colortype_) {
             // Destination needs to change its color space
-            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                 throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
             }
             dst.colortype_ = src.colortype_;
@@ -138,7 +125,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
         else {
             if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemtype_ != new_type) {
                 // Destination needs to be resized
-                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                     throw std::runtime_error("Trying to resize an Image which doesn't own data.");
                 }
                 if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemsize_ != DataTypeSize(new_type)) {
@@ -150,7 +137,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
             }
             if (src.colortype_ != dst.colortype_) {
                 // Destination needs to change its color space
-                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                     throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
                 }
                 dst.colortype_ = src.colortype_;
@@ -280,7 +267,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         }
         if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemtype_ != dst.elemtype_) {
             // Destination needs to be resized
-            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemsize_ != dst.elemsize_) {
@@ -289,7 +276,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         }
         if (src.colortype_ != dst.colortype_) {
             // Destination needs to change its color space
-            if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                 throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
             }
             dst.colortype_ = src.colortype_;
@@ -302,7 +289,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         else {
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemtype_ != new_type) {
                 // Destination needs to be resized
-                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                     throw std::runtime_error("Trying to resize an Image which doesn't own data.");
                 }
                 if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemsize_ != DataTypeSize(new_type)) {
@@ -314,7 +301,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
             }
             if (src.colortype_ != dst.colortype_) {
                 // Destination needs to change its color space
-                if (dst.mem_ == ShallowMemoryManager::GetInstance()) {
+                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
                     throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
                 }
                 dst.colortype_ = src.colortype_;

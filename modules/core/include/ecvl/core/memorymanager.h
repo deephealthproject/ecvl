@@ -11,47 +11,67 @@
 * All rights reserved.
 */
 
-#ifndef ECVL_MEMORYMANAGER_H_
-#define ECVL_MEMORYMANAGER_H_
+#ifndef ECVL_HARDWAREABSTRACTIONLAYER_H_
+#define ECVL_HARDWAREABSTRACTIONLAYER_H_
 
 #include <cstdint>
 #include <cstring>
 #include <stdexcept>
 
-class MemoryManager {
+namespace ecvl {
+
+enum class Device { NONE, CPU, GPU, FPGA };
+
+class Image;
+
+class HardwareAbstractionLayer {
 public:
-    virtual uint8_t* Allocate(size_t nbytes) = 0;
-    virtual void Deallocate(uint8_t* data) = 0;
-    virtual uint8_t* AllocateAndCopy(size_t nbytes, uint8_t* src) = 0;
-    virtual ~MemoryManager() {}
+    static HardwareAbstractionLayer* Factory(Device dev);
+
+    virtual uint8_t* MemAllocate(size_t nbytes) = 0;
+    virtual void MemDeallocate(uint8_t* data) = 0;
+    virtual uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) = 0;
+    virtual uint8_t* MemAllocateAndCopy(size_t nbytes, const uint8_t* src) {
+        return MemCopy(MemAllocate(nbytes), src, nbytes);
+    }
+    virtual ~HardwareAbstractionLayer() {}
+
+    /** @brief Specific function which allocates data for a partially initialized image object
+
+        This function delegates the operation of creating image data to the specific HAL. The default
+        version assumes a contiguous image, so the strides are exactly those expected from the dims_ vector.
+        Specific HALs could change the memory layout by operating on the specific fields.
+    */
+    virtual void Create(Image& img);
+    virtual void Copy(const Image& src, Image& dst);
 };
 
-class DefaultMemoryManager : public MemoryManager {
+class CpuHal : public HardwareAbstractionLayer {
 public:
-    virtual uint8_t* Allocate(size_t nbytes) override {
+    uint8_t* MemAllocate(size_t nbytes) override {
         return new uint8_t[nbytes];
     }
-    virtual void Deallocate(uint8_t* data) override {
+    void MemDeallocate(uint8_t* data) override {
         delete[] data;
     }
-    virtual uint8_t* AllocateAndCopy(size_t nbytes, uint8_t* src) override {
-        return reinterpret_cast<uint8_t*>(std::memcpy(new uint8_t[nbytes], src, nbytes));
+    uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override {
+        return reinterpret_cast<uint8_t*>(std::memcpy(dst, src, nbytes));
     }
 
-    static DefaultMemoryManager* GetInstance();
+    static CpuHal* GetInstance();
 };
 
-class ShallowMemoryManager : public MemoryManager {
+class ShallowCpuHal : public CpuHal {
 public:
-    virtual uint8_t* Allocate(size_t nbytes) override {
-        throw std::runtime_error("ShallowMemoryManager cannot allocate memory");
+    uint8_t* MemAllocate(size_t nbytes) override {
+        throw std::runtime_error("ShallowCpuHal cannot allocate memory");
     }
-    virtual void Deallocate(uint8_t* data) override {}
-    virtual uint8_t* AllocateAndCopy(size_t nbytes, uint8_t* src) override {
-        return src;
-    }
+    void MemDeallocate(uint8_t* data) override {}
 
-    static ShallowMemoryManager* GetInstance();
+    void Copy(const Image& src, Image& dst) override;
+
+    static ShallowCpuHal* GetInstance();
 };
 
-#endif // ECVL_MEMORYMANAGER_H_
+};
+#endif // ECVL_HARDWAREABSTRACTIONLAYER_H_

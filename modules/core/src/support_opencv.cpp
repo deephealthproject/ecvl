@@ -87,8 +87,8 @@ Image MatToImage(const cv::Mat& m)
         // Data
         int datasize = img.elemsize_;
         img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
-        img.mem_ = DefaultMemoryManager::GetInstance();
-        img.data_ = img.mem_->Allocate(img.datasize_);
+        img.hal_ = CpuHal::GetInstance();
+        img.data_ = img.hal_->MemAllocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
         cv::split(m, ch);
@@ -221,8 +221,8 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
         // Data
         int datasize = img.elemsize_;
         img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
-        img.mem_ = DefaultMemoryManager::GetInstance();
-        img.data_ = img.mem_->Allocate(img.datasize_);
+        img.hal_ = CpuHal::GetInstance();
+        img.data_ = img.hal_->MemAllocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
 
         std::vector<cv::Mat> channels;
