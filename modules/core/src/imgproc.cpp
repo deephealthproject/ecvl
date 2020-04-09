@@ -283,6 +283,13 @@ case DataType::type: DEREF(dst, type) = saturate_cast<DataType::type>(0.299 * CO
 
 void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 {
+#ifdef ECVL_WITH_FPGA
+    cv::Mat src_mat = ImageToMat(src);
+	//cv::Mat m = src_mat;
+	cv::Mat m = cv::Mat::zeros({ src.dims_[0], src.dims_[1] }, CV_8UC(1));
+    rgb2gray_FPGA(src_mat, m);
+    dst = ecvl::MatToImage(m);
+#else
     if (src.colortype_ == ColorType::none || new_type == ColorType::none) {
         throw std::runtime_error("Cannot change color to or from ColorType::none");
     }
@@ -433,6 +440,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     }
 
     ECVL_ERROR_NOT_REACHABLE_CODE
+#endif
 }
 
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
@@ -703,6 +711,8 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
         ECVL_ERROR_WRONG_PARAMS("sizeY must either be positive and odd or zero")
     }
 
+	printf("sigmaX antes %f\n", sigmaX);
+	printf("sigmaY antes %f\n", sigmaY);
     bool sigmaX_zero = false;
     if (sigmaX <= 0) {
         sigmaX_zero = true;
@@ -713,6 +723,9 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
             sigmaX = 0.3 * ((sizeX - 1) * 0.5 - 1) + 0.8;
         }
     }
+	
+	printf("sigmaX medio %f\n", sigmaX);
+	printf("sigmaY medio %f\n", sigmaY);
     if (sigmaY <= 0) {
         if (!sigmaX_zero) {
             sigmaY = sigmaX;
@@ -728,7 +741,18 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
     if (src.channels_ != "xyc") {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
+	
+	printf("sigmaX desp %f\n", sigmaX);
+	printf("sigmaY desp %f\n", sigmaY);
+	
+#ifdef ECVL_WITH_FPGA
 
+    cv::Mat src_mat = ImageToMat(src);
+	cv::Mat m = src_mat;
+    GaussianBlur_FPGA(src_mat, m, sigmaX);
+    dst = ecvl::MatToImage(m);
+
+#else
     // Find x kernel values
     vector<double> kernelX(sizeX);
     double sum = 0;
@@ -754,6 +778,8 @@ void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sig
     }
 
     SeparableFilter2D(src, dst, kernelX, kernelY);
+#endif
+	
 }
 
 void AdditiveLaplaceNoise(const Image& src, Image& dst, double scale)

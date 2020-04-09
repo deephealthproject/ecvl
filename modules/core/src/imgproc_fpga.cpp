@@ -124,6 +124,119 @@ void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp
 }
 
 
+
+void GaussianBlur_FPGA(const cv::Mat& src, cv::Mat& dst, float sigma)
+{
+    /* The interp parameter is ignored at the moment.
+     * The xfOpenCV generates an accelerator for the Area interpolator
+     * To change the accelerator interpolation strategy, its header needs to be changed,
+     * and the hardware resynthesized
+    */
+
+    std::vector<cl::Device> devices = xcl::get_xil_devices();
+    cl::Device device = devices[0];
+    cl::Context context(device);
+
+    cl::CommandQueue q(context, device,CL_QUEUE_PROFILING_ENABLE);
+
+    std::string device_name = device.getInfo<CL_DEVICE_NAME>();
+    std::string binaryFile = xcl::find_binary_file(device_name,"ecvl_kernels");
+    cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
+    devices.resize(1);
+    cl::Program program(context, devices, bins);
+    cl::Kernel krnl(program,"gaussian_accel");
+
+    cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels()); // TODO check src datatype
+    cl::Buffer imageFromDevice(context,CL_MEM_WRITE_ONLY, dst.rows * dst.cols * dst.channels());
+
+    /* Copy input vectors to memory */
+    q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols * src.channels(), src.data);
+
+    krnl.setArg(0, imageToDevice);
+    krnl.setArg(1, imageFromDevice);
+	krnl.setArg(2, src.rows);
+    krnl.setArg(3, src.cols);
+    krnl.setArg(4, sigma);
+	
+
+    // Profiling Objects
+    cl_ulong start= 0;
+    cl_ulong end = 0;
+    double diff_prof = 0.0f;
+    cl::Event event_sp;
+
+    printf("Launching kernel: Gaussian \n");
+    q.enqueueTask(krnl,NULL,&event_sp);
+    clWaitForEvents(1, (const cl_event*) &event_sp);
+    printf("Launched kernel: Gaussian \n");
+
+    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_START,&start);
+    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_END,&end);
+    diff_prof = end-start;
+    std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
+
+    q.enqueueReadBuffer(imageFromDevice, CL_TRUE, 0, dst.rows * dst.cols * dst.channels(), dst.data);
+
+    q.finish();
+}
+
+void rgb2gray_FPGA(const cv::Mat& src, cv::Mat& dst)
+{
+    /* The interp parameter is ignored at the moment.
+     * The xfOpenCV generates an accelerator for the Area interpolator
+     * To change the accelerator interpolation strategy, its header needs to be changed,
+     * and the hardware resynthesized
+    */
+
+    std::vector<cl::Device> devices = xcl::get_xil_devices();
+    cl::Device device = devices[0];
+    cl::Context context(device);
+
+    cl::CommandQueue q(context, device,CL_QUEUE_PROFILING_ENABLE);
+
+    std::string device_name = device.getInfo<CL_DEVICE_NAME>();
+    std::string binaryFile = xcl::find_binary_file(device_name,"ecvl_kernels");
+    cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
+    devices.resize(1);
+    cl::Program program(context, devices, bins);
+    cl::Kernel krnl(program,"rgb2gray_accel");
+
+    cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels()); // TODO check src datatype
+    cl::Buffer imageFromDevice(context,CL_MEM_WRITE_ONLY, dst.rows * dst.cols * dst.channels());
+	
+	 printf("cols: %d\n", src.cols);
+	  printf("rows: %d\n", src.rows);
+
+    /* Copy input vectors to memory */
+    q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols * src.channels(), src.data);
+
+    krnl.setArg(0, imageToDevice);
+    krnl.setArg(1, imageFromDevice);
+	krnl.setArg(2, src.rows);
+    krnl.setArg(3, src.cols);
+	
+
+    // Profiling Objects
+    cl_ulong start= 0;
+    cl_ulong end = 0;
+    double diff_prof = 0.0f;
+    cl::Event event_sp;
+
+    printf("Launching kernel: rgb2gray \n");
+    q.enqueueTask(krnl,NULL,&event_sp);
+    clWaitForEvents(1, (const cl_event*) &event_sp);
+    printf("Launched kernel: rgb2gray \n");
+
+    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_START,&start);
+    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_END,&end);
+    diff_prof = end-start;
+    std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
+
+    q.enqueueReadBuffer(imageFromDevice, CL_TRUE, 0, dst.rows * dst.cols * dst.channels(), dst.data);
+
+    q.finish();
+}
+
 void Threshold_FPGA(const cv::Mat& src, cv::Mat& dst, double thresh, double maxval){
 
   printf("Host program Threshold \n");
