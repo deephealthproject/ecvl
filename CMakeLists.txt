@@ -170,7 +170,7 @@ if(ECVL_BUILD_GUI)
 
             # Remove these global defines, add to GUI only
             remove_definitions(-DUNICODE -D_UNICODE)
-            target_compile_definitions(ECVL_GUI PUBLIC -DUNICODE -D_UNICODE)
+            target_compile_definitions(ECVL_GUI PRIVATE -DUNICODE -D_UNICODE)
 
             target_link_libraries(ECVL_GUI PUBLIC ECVL_CORE ${wxWidgets_LIBRARIES})
             target_include_directories(ECVL_GUI PUBLIC ${wxWidgets_INCLUDE_DIRS})
