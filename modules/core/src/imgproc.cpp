@@ -465,14 +465,14 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
         \
         switch (thresh_type) { \
         case ecvl::ThresholdingType::BINARY: \
-            for (int i = 0; i < tmp.datasize_; i += elemsize) { \
+            for (size_t i = 0; i < tmp.datasize_; i += elemsize) { \
                 *tmp_data = *src_data > thresh_t ? maxval_t : minval_t; \
                 ++src_data; \
                 ++tmp_data; \
             } \
             break; \
         case ecvl::ThresholdingType::BINARY_INV: \
-            for (int i = 0; i < tmp.datasize_; i += elemsize) { \
+            for (size_t i = 0; i < tmp.datasize_; i += elemsize) { \
                 *tmp_data = *src_data <= thresh_t ? maxval_t : minval_t; \
                 ++src_data; \
                 ++tmp_data; \
@@ -1424,9 +1424,9 @@ void FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
 #endif // OpenCV_VERSION_MAJOR > 3
 
     contours.resize(cv_contours.size());
-    for (int i = 0; i < cv_contours.size(); ++i) {
+    for (int i = 0; i < vsize(cv_contours); ++i) {
         vector<ecvl::Point2i> t(cv_contours[i].size());
-        for (int j = 0; j < cv_contours[i].size(); ++j) {
+        for (int j = 0; j < vsize(cv_contours[i]); ++j) {
             t[j] = Point2i{ cv_contours[i][j].x, cv_contours[i][j].y };
         }
         contours[i] = t;
@@ -1696,6 +1696,6 @@ void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>
     for (int i = 0; i < src.Channels(); ++i) {
         mean.push_back(mean_[i]);
         stddev.push_back(stddev_[i]);
-    }
+    } 
 }
 } // namespace ecvl
