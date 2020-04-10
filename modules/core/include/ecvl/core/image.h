@@ -22,7 +22,7 @@
 #include <opencv2/core.hpp>
 
 #include "datatype.h"
-#include "memorymanager.h"
+#include "hal.h"
 #include "iterators.h"
 #include "datatype_matrix.h"
 #include "type_promotion.h"
@@ -382,7 +382,11 @@ public:
     /** @brief To check whether the Image contains data or not, regardless of the owning status. */
     bool IsEmpty() const { return data_ == nullptr; }
 
-    /** @brief To check whether the Image is owner of the data. */
+    /** @brief To check whether the Image is owner of the data.
+        
+        \todo Move the implementation to the specific hals if other shallow hals will be introduced.
+
+    */
     bool IsOwner() const { return hal_ != ShallowCpuHal::GetInstance(); }
 
     /** @brief Returns the number of channels. */

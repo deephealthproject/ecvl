@@ -73,5 +73,24 @@ public:
     static ShallowCpuHal* GetInstance();
 };
 
+class FpgaHal : public HardwareAbstractionLayer
+{
+public:
+    uint8_t* MemAllocate(size_t nbytes) override
+    {
+        // Implement FPGA memory allocation
+    }
+    void MemDeallocate(uint8_t* data) override
+    {
+        // Implement FPGA memory deallocation
+    }
+    uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
+    {
+        // Implement FPGA memory copy
+    }
+
+    static FpgaHal* GetInstance();
+};
+
 };
 #endif // ECVL_HARDWAREABSTRACTIONLAYER_H_

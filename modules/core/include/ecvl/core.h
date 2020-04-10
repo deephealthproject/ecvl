@@ -21,7 +21,7 @@
 #include "core/imgproc.h"
 #include "core/iterators.h"
 #include "core/macros.h"
-#include "core/memorymanager.h"
+#include "core/hal.h"
 #include "core/support_opencv.h"
 #include "core/support_nifti.h"
 

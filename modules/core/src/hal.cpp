@@ -11,7 +11,7 @@
 * All rights reserved.
 */
 
-#include "ecvl/core/memorymanager.h"
+#include "ecvl/core/hal.h"
 #include "ecvl/core/image.h"
 
 namespace ecvl {
