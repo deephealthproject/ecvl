@@ -581,7 +581,7 @@ public:
         }
 
         data_ = ptr;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(Device::CPU, true) // TODO add dev function parameter, why it is shallow?
         return;
     }
 
