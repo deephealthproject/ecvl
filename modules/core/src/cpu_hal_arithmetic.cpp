@@ -41,7 +41,7 @@ struct StructNeg
     }
 };
 
-// TODO add appropriate checks
+// CPU general implementation of the negation function.
 void CpuHal::Neg(const Image& src, Image& dst, DataType dst_type, bool saturate)
 {
     const Image *ptr = &src;
@@ -50,7 +50,19 @@ void CpuHal::Neg(const Image& src, Image& dst, DataType dst_type, bool saturate)
         tmp = src;
         ptr = &tmp;
     }
-    dst.Create(src.dims_, dst_type, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+    // New datatype
+    DataType datatype = dst_type;
+    if (dst_type == DataType::none) {
+        if (dst.IsEmpty()) {
+            datatype = src.elemtype_;
+        }
+        else {
+            datatype = dst.elemtype_;
+        }
+    }
+
+    dst.Create(src.dims_, datatype, src.channels_, src.colortype_, src.spacings_, src.dev_);
     static constexpr SignedTable2D<StructNeg> table;
     table(src.elemtype_, dst.elemtype_)(*ptr, dst, saturate);
 }
@@ -77,6 +89,7 @@ struct StructAdd
     }
 };
 
+// CPU general implementation of the addition function.
 void CpuHal::Add(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
     CopyImage(src1, dst, dst_type);
@@ -107,6 +120,7 @@ struct StructSub
     }
 };
 
+// CPU general implementation of the subtraction function.
 void CpuHal::Sub(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
     const Image *ptr = &src2;
@@ -144,6 +158,7 @@ struct StructMul
     }
 };
 
+// CPU general implementation of the multiplication function.
 void CpuHal::Mul(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
     CopyImage(src1, dst, dst_type);
@@ -174,6 +189,7 @@ struct StructDiv
     }
 };
 
+// CPU general implementation of the division function.
 void CpuHal::Div(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
     const Image *ptr = &src2;
@@ -187,7 +203,5 @@ void CpuHal::Div(const Image & src1, const Image & src2, Image & dst, DataType d
     static constexpr Table2D<StructDiv> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
 }
-
-
 
 } // namespace ecvl
