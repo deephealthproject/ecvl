@@ -445,51 +445,52 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
     ECVL_ERROR_NOT_REACHABLE_CODE
 }
 
+template <typename T>
+void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
+{
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_);
+
+    auto thresh_t = saturate_cast<T>(thresh);
+    auto maxval_t = saturate_cast<T>(maxval);
+    auto minval_t = static_cast<T>(0);
+    T* src_data = reinterpret_cast<T*>(src.data_);
+    T* tmp_data = reinterpret_cast<T*>(tmp.data_);
+    auto elemsize = src.elemsize_;
+
+    switch (thresh_type) {
+
+    case ecvl::ThresholdingType::BINARY:
+        for (size_t i = 0; i < tmp.datasize_; i += elemsize) {
+            *tmp_data = *src_data > thresh_t ? maxval_t : minval_t;
+            ++src_data;
+            ++tmp_data;
+        }
+        break;
+    case ecvl::ThresholdingType::BINARY_INV:
+        for (size_t i = 0; i < tmp.datasize_; i += elemsize) {
+            *tmp_data = *src_data <= thresh_t ? maxval_t : minval_t;
+            ++src_data;
+            ++tmp_data;
+        }
+        break;
+    }
+    dst = std::move(tmp);
+}
+
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
 {
     if (src.IsEmpty()) {
         ECVL_ERROR_EMPTY_IMAGE
     }
 
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_);
-
 #define ECVL_TUPLE(type, ...) \
-    case DataType::type: \
-    { \
-        auto thresh_t = saturate_cast<TypeInfo_t<DataType::type>>(thresh); \
-        auto maxval_t = saturate_cast<TypeInfo_t<DataType::type>>(maxval); \
-        auto minval_t = static_cast<TypeInfo_t<DataType::type>>(0); \
-        TypeInfo_t<DataType::type>* src_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(src.data_); \
-        TypeInfo_t<DataType::type>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp.data_); \
-        auto elemsize = src.elemsize_; \
-        \
-        switch (thresh_type) { \
-        case ecvl::ThresholdingType::BINARY: \
-            for (size_t i = 0; i < tmp.datasize_; i += elemsize) { \
-                *tmp_data = *src_data > thresh_t ? maxval_t : minval_t; \
-                ++src_data; \
-                ++tmp_data; \
-            } \
-            break; \
-        case ecvl::ThresholdingType::BINARY_INV: \
-            for (size_t i = 0; i < tmp.datasize_; i += elemsize) { \
-                *tmp_data = *src_data <= thresh_t ? maxval_t : minval_t; \
-                ++src_data; \
-                ++tmp_data; \
-            } \
-            break; \
-        } \
-        break; \
-    }
+case DataType::type: ThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresh, maxval, thresh_type); break;
 
     switch (src.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
-
-    dst = std::move(tmp);
-    return;
 }
 
 std::vector<double> Histogram(const Image& src)
@@ -1696,6 +1697,6 @@ void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>
     for (int i = 0; i < src.Channels(); ++i) {
         mean.push_back(mean_[i]);
         stddev.push_back(stddev_[i]);
-    } 
+    }
 }
 } // namespace ecvl
