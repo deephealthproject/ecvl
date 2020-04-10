@@ -14,10 +14,13 @@
 #ifndef ECVL_STANDARD_ERRORS_H_
 #define ECVL_STANDARD_ERRORS_H_
 
+#include <stdexcept>
+
 #define ECVL_ERROR_MSG "[Error]: "
 #define ECVL_WARNING_MSG "[Warning]: "
 
 #define ECVL_ERROR_NOT_IMPLEMENTED throw std::runtime_error(ECVL_ERROR_MSG "Not implemented");
+#define ECVL_ERROR_NOT_IMPLEMENTED_WHAT(what) throw std::runtime_error(ECVL_ERROR_MSG #what " not implemented");
 #define ECVL_ERROR_NOT_REACHABLE_CODE throw std::runtime_error(ECVL_ERROR_MSG "How did you get here?");
 #define ECVL_ERROR_WRONG_PARAMS(...) throw std::runtime_error(ECVL_ERROR_MSG "Wrong parameters - " __VA_ARGS__);
 #define ECVL_ERROR_NOT_ALLOWED_ON_NON_OWING_IMAGE(...) throw std::runtime_error(ECVL_ERROR_MSG "Operation not allowed on non-owning Image" __VA_ARGS__);
@@ -32,4 +35,5 @@
 #define ECVL_ERROR_CANNOT_LOAD_IMAGE throw std::runtime_error(ECVL_ERROR_MSG "Cannot load image");
 #define ECVL_ERROR_INCOMPATIBLE_DIMENSIONS throw std::runtime_error(ECVL_ERROR_MSG "Incompatible dimensions");
 
-#endif // !ECVL_STANDARD_ERRORS_H_
+
+#endif // ECVL_STANDARD_ERRORS_H_

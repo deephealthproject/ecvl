@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -12,24 +12,37 @@
 */
 
 #include "ecvl/core/hal.h"
+
+#include <cassert>
+
+#include "ecvl/core/cpu_hal.h"
+#include "ecvl/core/fpga_hal.h"
+
+#include "ecvl/core/gpu_hal.h"
+
 #include "ecvl/core/image.h"
 
-namespace ecvl {
-
-HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev)
+namespace ecvl
 {
-    switch (dev)
-    {
+
+HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool shallow)
+{
+    switch (dev) {
     case ecvl::Device::NONE:
         throw std::runtime_error("This is a big problem. You should never try to obtain a HAL from NONE device.");
     case ecvl::Device::CPU:
-        return CpuHal::GetInstance();
+        if (shallow) {
+            return ShallowCpuHal::GetInstance();
+        }
+        else {
+            return CpuHal::GetInstance();
+        }
     case ecvl::Device::GPU:
         throw std::runtime_error("GpuHal not implemented");
     case ecvl::Device::FPGA:
-        throw std::runtime_error("FpgaHal not implemented");
+        return FpgaHal::GetInstance();
     default:
-        throw std::runtime_error("This is not the error you're looking for.");
+        ECVL_ERROR_NOT_REACHABLE_CODE
     }
 };
 
@@ -61,25 +74,4 @@ void HardwareAbstractionLayer::Copy(const Image& src, Image& dst)
     }
 }
 
-CpuHal* CpuHal::GetInstance()
-{
-    static CpuHal instance;	// Guaranteed to be destroyed.
-                            // Instantiated on first use.
-    return &instance;
-}
-
-void ShallowCpuHal::Copy(const Image& src, Image& dst)
-{
-    // Copying from shallow -> destination becomes owner of the new data
-    dst.hal_ = CpuHal::GetInstance();
-    dst.hal_->Copy(src, dst);
-}
-
-ShallowCpuHal* ShallowCpuHal::GetInstance()
-{
-    static ShallowCpuHal instance;	// Guaranteed to be destroyed.
-                                            // Instantiated on first use.
-    return &instance;
-}
-
-};
+} // namespace ecvl

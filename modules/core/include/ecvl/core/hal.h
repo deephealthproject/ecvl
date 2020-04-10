@@ -11,22 +11,45 @@
 * All rights reserved.
 */
 
-#ifndef ECVL_HARDWAREABSTRACTIONLAYER_H_
-#define ECVL_HARDWAREABSTRACTIONLAYER_H_
+#ifndef ECVL_HAL_H_
+#define ECVL_HAL_H_
 
 #include <cstdint>
-#include <cstring>
-#include <stdexcept>
+
+#include "ecvl/core/standard_errors.h"
+#define ECVL_ERROR_DEVICE_UNAVAILABLE(device) throw std::runtime_error(ECVL_ERROR_MSG #device " device unavailable");
+
 
 namespace ecvl {
 
-enum class Device { NONE, CPU, GPU, FPGA };
+/** @brief Enum class representing the ECVL available devices
 
+@anchor Device
+*/
+enum class Device { 
+    NONE,  /**< Special Device for empty images without any associated device */
+    CPU,   /**< CPU Device */
+    GPU,   /**< GPU Device */
+    FPGA,  /**< FPGA Device */
+};         
+           
 class Image;
 
+/** @brief Hardware Abstraction Layer (HAL) is an abstraction layer to interact with a hardware device at a 
+    general level
+
+    HAL is an interface that allows ECVL to interact with hardwares devices at a general or abstract level
+    rather than at a detailed hardware level. It represents a proxy to the actual function implementations 
+    that must be device specific. 
+
+    Actual HALs must inherit from this base class. Most of the memory handling methods must be overwritten.
+    This base class also provides some general methods that can be shared by different devices.
+
+*/
 class HardwareAbstractionLayer {
 public:
-    static HardwareAbstractionLayer* Factory(Device dev);
+
+    static HardwareAbstractionLayer* Factory(Device dev, bool shallow = false);
 
     virtual uint8_t* MemAllocate(size_t nbytes) = 0;
     virtual void MemDeallocate(uint8_t* data) = 0;
@@ -34,7 +57,9 @@ public:
     virtual uint8_t* MemAllocateAndCopy(size_t nbytes, const uint8_t* src) {
         return MemCopy(MemAllocate(nbytes), src, nbytes);
     }
-    virtual ~HardwareAbstractionLayer() {}
+
+    // We don't need a virtual destructor because HALs are created as static objects using a singleton pattern
+    // virtual ~HardwareAbstractionLayer() {}
 
     /** @brief Specific function which allocates data for a partially initialized image object
 
@@ -44,53 +69,9 @@ public:
     */
     virtual void Create(Image& img);
     virtual void Copy(const Image& src, Image& dst);
+
+    virtual bool IsOwner() const { return true; };
 };
 
-class CpuHal : public HardwareAbstractionLayer {
-public:
-    uint8_t* MemAllocate(size_t nbytes) override {
-        return new uint8_t[nbytes];
-    }
-    void MemDeallocate(uint8_t* data) override {
-        delete[] data;
-    }
-    uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override {
-        return reinterpret_cast<uint8_t*>(std::memcpy(dst, src, nbytes));
-    }
-
-    static CpuHal* GetInstance();
-};
-
-class ShallowCpuHal : public CpuHal {
-public:
-    uint8_t* MemAllocate(size_t nbytes) override {
-        throw std::runtime_error("ShallowCpuHal cannot allocate memory");
-    }
-    void MemDeallocate(uint8_t* data) override {}
-
-    void Copy(const Image& src, Image& dst) override;
-
-    static ShallowCpuHal* GetInstance();
-};
-
-class FpgaHal : public HardwareAbstractionLayer
-{
-public:
-    uint8_t* MemAllocate(size_t nbytes) override
-    {
-        // Implement FPGA memory allocation
-    }
-    void MemDeallocate(uint8_t* data) override
-    {
-        // Implement FPGA memory deallocation
-    }
-    uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
-    {
-        // Implement FPGA memory copy
-    }
-
-    static FpgaHal* GetInstance();
-};
-
-};
-#endif // ECVL_HARDWAREABSTRACTIONLAYER_H_
+} // namespace ecvl
+#endif // ECVL_HAL_H_

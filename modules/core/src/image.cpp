@@ -103,7 +103,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
         }
         if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemtype_ != dst.elemtype_) {
             // Destination needs to be resized
-            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+            if (!dst.IsOwner()) {
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemsize_ != dst.elemsize_) {
@@ -112,7 +112,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
         }
         if (src.colortype_ != dst.colortype_) {
             // Destination needs to change its color space
-            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+            if (!dst.IsOwner()) {
                 throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
             }
             dst.colortype_ = src.colortype_;
@@ -125,7 +125,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
         else {
             if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemtype_ != new_type) {
                 // Destination needs to be resized
-                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+                if (!dst.IsOwner()) {
                     throw std::runtime_error("Trying to resize an Image which doesn't own data.");
                 }
                 if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemsize_ != DataTypeSize(new_type)) {
@@ -137,7 +137,7 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
             }
             if (src.colortype_ != dst.colortype_) {
                 // Destination needs to change its color space
-                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+                if (!dst.IsOwner()) {
                     throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
                 }
                 dst.colortype_ = src.colortype_;
@@ -267,7 +267,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         }
         if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemtype_ != dst.elemtype_) {
             // Destination needs to be resized
-            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+            if (!dst.IsOwner()) {
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemsize_ != dst.elemsize_) {
@@ -276,7 +276,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         }
         if (src.colortype_ != dst.colortype_) {
             // Destination needs to change its color space
-            if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+            if (!dst.IsOwner()) {
                 throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
             }
             dst.colortype_ = src.colortype_;
@@ -289,7 +289,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         else {
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemtype_ != new_type) {
                 // Destination needs to be resized
-                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+                if (!dst.IsOwner()) {
                     throw std::runtime_error("Trying to resize an Image which doesn't own data.");
                 }
                 if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemsize_ != DataTypeSize(new_type)) {
@@ -301,7 +301,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
             }
             if (src.colortype_ != dst.colortype_) {
                 // Destination needs to change its color space
-                if (dst.hal_ == ShallowCpuHal::GetInstance()) {
+                if (!dst.IsOwner()) {
                     throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
                 }
                 dst.colortype_ = src.colortype_;

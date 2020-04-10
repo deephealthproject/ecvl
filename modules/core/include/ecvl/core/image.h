@@ -387,7 +387,7 @@ public:
         \todo Move the implementation to the specific hals if other shallow hals will be introduced.
 
     */
-    bool IsOwner() const { return hal_ != ShallowCpuHal::GetInstance(); }
+    bool IsOwner() const { return hal_->IsOwner(); }
 
     /** @brief Returns the number of channels. */
     int Channels() const
@@ -536,7 +536,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     View(Image& img, const std::vector<int>& start, const std::vector<int>& size) : View(img)
@@ -635,7 +636,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     const basetype& operator()(const std::vector<int>& coords)
@@ -668,7 +670,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     basetype& operator()(const std::vector<int>& coords)
@@ -701,7 +704,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     const basetype& operator()(const std::vector<int>& coords)
@@ -736,7 +740,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     int width() const { return dims_[0]; }
@@ -775,7 +780,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     int width() const { return dims_[0]; }
