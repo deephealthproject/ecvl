@@ -71,6 +71,7 @@ class ConstView;
 */
 class Image
 {
+protected:
     /** @brief Sets default strides for contiguous memory layouts
 
     This function sets the strides so that by incrementing the data pointer by strides_[0] it
@@ -555,33 +556,22 @@ public:
         return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    void Create(const std::vector<int>& dims, std::string channels, ColorType colortype, uint8_t* ptr, const std::vector<float>& spacings = std::vector<float>())
+    void Create(std::vector<int> dims, std::string channels, ColorType colortype, uint8_t* ptr, 
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU)
     {
-        // Compute datasize
-        size_t new_datasize = DataTypeSize(DT);
-        new_datasize = std::accumulate(begin(dims), end(dims), new_datasize, std::multiplies<size_t>());
-
-        if (datasize_ != new_datasize) {
-            datasize_ = new_datasize;
-        }
-
         elemtype_ = DT;
         elemsize_ = DataTypeSize(elemtype_);
-        dims_ = dims;   // A check could be added to save this copy
+        dims_ = std::move(dims);
         spacings_ = spacings;
         channels_ = std::move(channels);
         colortype_ = colortype;
-        datasize_ = new_datasize;
 
-        // Compute strides
-        strides_ = { elemsize_ };
-        int dsize = vsize(dims_);
-        for (int i = 0; i < dsize - 1; ++i) {
-            strides_.push_back(strides_[i] * dims_[i]);
-        }
+        SetDefaultDatasize();
+        SetDefaultStrides();
 
         data_ = ptr;
-        hal_ = ShallowCpuHal::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(dev, true);
+        dev_ = dev;
         return;
     }
 
