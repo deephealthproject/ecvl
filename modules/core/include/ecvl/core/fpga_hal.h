@@ -24,15 +24,15 @@ class FpgaHal : public HardwareAbstractionLayer
 public:
     uint8_t* MemAllocate(size_t nbytes) override
     {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT(FpgaHal::MemAllocate)
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::MemAllocate")
     }
     void MemDeallocate(uint8_t* data) override
     {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT(FpgaHal::MemDeallocate)
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::MemDeallocate")
     }
     uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
     {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT(FpgaHal::MemCopy)
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::MemCopy")
     }
 
     static FpgaHal* GetInstance();

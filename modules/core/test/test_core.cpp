@@ -55,7 +55,7 @@ TEST(ArithmeticNeg, WorksWithInt8)
     y({ 0,2,2 }) = 35; y({ 1,2,2 }) = 37; y({ 2,2,2 }) = 37; y({ 3,2,2 }) = 38; y({ 4,2,2 }) = 37;
     y({ 0,3,2 }) = 45; y({ 1,3,2 }) = 47; y({ 2,3,2 }) = 47; y({ 3,3,2 }) = 48; y({ 4,3,2 }) = 47;
 
-    Neg(x);
+    x.Neg();
 
     EXPECT_EQ(y({ 1,2,0 }), -36);
     EXPECT_EQ(y({ 3,3,2 }), -48);
@@ -71,7 +71,7 @@ TEST(ArithmeticNeg, WorksWithFloat32)
     x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
     x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
 
-    Neg(x);
+    x.Neg();
 
     EXPECT_FLOAT_EQ(x_v({ 0,0,0 }), 0); EXPECT_FLOAT_EQ(x_v({ 1,0,0 }), -1);
     EXPECT_FLOAT_EQ(x_v({ 0,1,0 }), -1); EXPECT_FLOAT_EQ(x_v({ 1,1,0 }), 0);

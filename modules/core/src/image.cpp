@@ -16,8 +16,9 @@
 
 #include "ecvl/core/standard_errors.h"
 
-namespace ecvl {
-void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, 
+namespace ecvl
+{
+void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
     const std::vector<float>& spacings, Device dev)
 {
     if (IsEmpty() || !IsOwner() || dev_ != dev || !contiguous_) {
@@ -340,6 +341,13 @@ Image& Image::operator/=(const Image& rhs)
 {
     Div(rhs);
     return *this;
+}
+
+Image Image::operator-() const
+{
+    Image ret(*this);
+    ret.Neg();
+    return ret;
 }
 
 Image operator+(Image lhs, const Image& rhs)

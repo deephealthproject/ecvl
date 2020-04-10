@@ -16,9 +16,11 @@
 
 #include <cstdint>
 
-#include "ecvl/core/standard_errors.h"
-#define ECVL_ERROR_DEVICE_UNAVAILABLE(device) throw std::runtime_error(ECVL_ERROR_MSG #device " device unavailable");
+#include "datatype.h"
 
+#include "standard_errors.h"
+
+#define ECVL_ERROR_DEVICE_UNAVAILABLE(device) throw std::runtime_error(ECVL_ERROR_MSG #device " device unavailable");
 
 namespace ecvl {
 
@@ -71,6 +73,29 @@ public:
     virtual void Copy(const Image& src, Image& dst);
 
     virtual bool IsOwner() const { return true; };
+
+    virtual void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Mul(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
+
+#define ECVL_TUPLE(name, size, type, ...) \
+    virtual void Add(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+    virtual void Add(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+                                                                                                                               \
+    virtual void Sub(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+    virtual void Sub(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+                                                                                                                               \
+    virtual void Mul(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+    virtual void Mul(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+                                                                                                                               \
+    virtual void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+    virtual void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+
+#include "datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
+
 };
 
 } // namespace ecvl

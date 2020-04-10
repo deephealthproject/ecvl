@@ -127,7 +127,7 @@ TEST(Imgproc, HConcatenating)
         View<DataType::float32> x_v(x);
         x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
         x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-        HConcat({ x, Neg(x) }, y);
+        HConcat({ x, -x }, y);
         View<DataType::float32> y_v(y);
 
         // row 0
@@ -143,7 +143,7 @@ TEST(Imgproc, HConcatenating)
         View<DataType::int32> x_v(x);
 
         x_v({ 0,0,0 }) = 1;
-        HConcat({ x, Neg(x) }, y);
+        HConcat({ x, -x }, y);
         View<DataType::int32> y_v(y);
         EXPECT_EQ(y_v({ 0,0,0 }), 1); EXPECT_EQ(y_v({ 1,0,0 }), -1);
 
@@ -152,7 +152,7 @@ TEST(Imgproc, HConcatenating)
         x_v = x;
         x_v({ 0,0,0 }) = 1; x_v({ 1,0,0 }) = 1;
         x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 1;
-        HConcat({ x, Neg(x) }, y);
+        HConcat({ x, -x }, y);
         y_v = y;
         EXPECT_EQ(y_v({ 0,0,0 }), 1); EXPECT_EQ(y_v({ 1,0,0 }), 1); EXPECT_EQ(y_v({ 2,0,0 }), -1); EXPECT_EQ(y_v({ 3,0,0 }), -1);
         EXPECT_EQ(y_v({ 0,1,0 }), 1); EXPECT_EQ(y_v({ 1,1,0 }), 1); EXPECT_EQ(y_v({ 2,1,0 }), -1); EXPECT_EQ(y_v({ 3,1,0 }), -1);
@@ -168,7 +168,7 @@ TEST(Imgproc, VConcatenating)
         View<DataType::float32> x_v(x);
         x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
         x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-        VConcat({ x, Neg(x) }, y);
+        VConcat({ x, -x }, y);
         View<DataType::float32> y_v(y);
 
         EXPECT_FLOAT_EQ(y_v({ 0,0,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 1,0,0 }), 1);
@@ -183,7 +183,7 @@ TEST(Imgproc, VConcatenating)
         View<DataType::int32> x_v(x);
 
         x_v({ 0,0,0 }) = 1;
-        VConcat({ x, Neg(x) }, y);
+        VConcat({ x, -x }, y);
         View<DataType::int32> y_v(y);
         EXPECT_EQ(y_v({ 0,0,0 }), 1);
         EXPECT_EQ(y_v({ 0,1,0 }), -1);
@@ -193,7 +193,7 @@ TEST(Imgproc, VConcatenating)
         x_v = x;
         x_v({ 0,0,0 }) = 1; x_v({ 1,0,0 }) = 1;
         x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 1;
-        VConcat({ x, Neg(x) }, y);
+        VConcat({ x, -x }, y);
         y_v = y;
         EXPECT_EQ(y_v({ 0,0,0 }), 1); EXPECT_EQ(y_v({ 1,0,0 }), 1);
         EXPECT_EQ(y_v({ 0,1,0 }), 1); EXPECT_EQ(y_v({ 1,1,0 }), 1);

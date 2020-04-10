@@ -15,7 +15,9 @@
 #define ECVL_IMGPROC_H_
 
 #include "image.h"
+#include "saturate_cast.h"
 #include "support_opencv.h"
+
 
 namespace ecvl {
 /** @brief Enum class representing the ECVL thresholding types.

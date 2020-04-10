@@ -23,6 +23,7 @@
 
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/standard_errors.h"
+#include "ecvl/core/standard_errors.h"
 
 namespace ecvl
 {

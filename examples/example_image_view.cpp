@@ -124,7 +124,7 @@ int main(void)
     // Test mul functions
     Mul(img4, 256 * 256 * 128, dst3);
     Mul(dst3, 3, dst4);
-    Mul(dst3, 3, dst5, false);
+    Mul(dst3, 3, dst5, DataType::none, false);
     Mul(img4, img2, dst3);
     Mul(img4, 256, dst3);
     Mul(512, img4, dst3);

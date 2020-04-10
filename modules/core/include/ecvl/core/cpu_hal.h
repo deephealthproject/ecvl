@@ -16,7 +16,7 @@
 
 #include <cstring>
 
-#include "ecvl/core/hal.h"
+#include "hal.h"
 
 namespace ecvl
 {
@@ -41,6 +41,29 @@ public:
     }
 
     static CpuHal* GetInstance();
+
+    void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
+    void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
+    void Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
+    void Mul(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
+    void Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
+
+//#define ECVL_TUPLE(name, size, type, ...) \
+//    void Add(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
+//    void Add(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
+//                                                                                                                                 \
+//    void Sub(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
+//    void Sub(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
+//                                                                                                                                 \
+//    void Mul(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
+//    void Mul(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
+//                                                                                                                                 \
+//    void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
+//    void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
+//
+//#include "datatype_existing_tuples.inc.h"
+//#undef ECVL_TUPLE
+
 };
 
 class ShallowCpuHal : public CpuHal
@@ -55,7 +78,6 @@ public:
     void Copy(const Image& src, Image& dst) override;
 
     bool IsOwner() const override { return false; };
-
 
     static ShallowCpuHal* GetInstance();
 };

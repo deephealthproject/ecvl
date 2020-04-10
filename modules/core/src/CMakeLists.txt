@@ -11,12 +11,16 @@
 
 target_sources(ECVL_CORE
 	PRIVATE
-        image.cpp
+        arithmetic.cpp
+		cpu_hal.cpp
+		cpu_hal_arithmetic.cpp
         datatype.cpp
-        imgcodecs.cpp
+        fpga_hal.cpp
+		gpu_hal.cpp
+		hal.cpp
+		image.cpp
+		imgcodecs.cpp
         imgproc.cpp
-        memorymanager.cpp
         support_opencv.cpp
         support_nifti.cpp
-        arithmetic.cpp
 )
