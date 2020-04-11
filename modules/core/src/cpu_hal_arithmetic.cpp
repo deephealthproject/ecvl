@@ -21,7 +21,7 @@ namespace ecvl
 
 // Struct template specialization of the negation of an Image. 
 template <DataType DT1, DataType DT2>
-struct StructNeg
+struct StructNegII
 {
     static void _(const Image& src, Image& dst, bool saturate)
     {
@@ -63,13 +63,13 @@ void CpuHal::Neg(const Image& src, Image& dst, DataType dst_type, bool saturate)
     }
 
     dst.Create(src.dims_, datatype, src.channels_, src.colortype_, src.spacings_, src.dev_);
-    static constexpr SignedTable2D<StructNeg> table;
+    static constexpr SignedTable2D<StructNegII> table;
     table(src.elemtype_, dst.elemtype_)(*ptr, dst, saturate);
 }
 
 // Template implementation for the in-place Addition between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructAdd
+struct StructAddII
 {
     static void _(Image& src1, const Image& src2, bool saturate)
     {
@@ -93,13 +93,13 @@ struct StructAdd
 void CpuHal::Add(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
     CopyImage(src1, dst, dst_type);
-    static constexpr Table2D<StructAdd> table;
+    static constexpr Table2D<StructAddII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
 }
 
 // Template implementation for the in-place subtraction between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructSub
+struct StructSubII
 {
     static void _(Image& src1, const Image& src2, bool saturate)
     {
@@ -131,13 +131,13 @@ void CpuHal::Sub(const Image & src1, const Image & src2, Image & dst, DataType d
     }
     
     CopyImage(src1, dst, dst_type);
-    static constexpr Table2D<StructAdd> table;
+    static constexpr Table2D<StructSubII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
 }
 
 // Template implementation for the in-place Multiplication between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructMul
+struct StructMulII
 {
     static void _(Image& src1, const Image& src2, bool saturate)
     {
@@ -162,13 +162,13 @@ struct StructMul
 void CpuHal::Mul(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
     CopyImage(src1, dst, dst_type);
-    static constexpr Table2D<StructMul> table;
+    static constexpr Table2D<StructMulII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
 }
 
 // Template implementation for the in-place division between Image(s)
 template <DataType DT1, DataType DT2>
-struct StructDiv
+struct StructDivII
 {
     static void _(Image& src1, const Image& src2, bool saturate)
     {
@@ -200,8 +200,194 @@ void CpuHal::Div(const Image & src1, const Image & src2, Image & dst, DataType d
     }
 
     CopyImage(src1, dst, dst_type);
-    static constexpr Table2D<StructDiv> table;
+    static constexpr Table2D<StructDivII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
 }
+
+
+
+// In-place addition between Image and scalar.
+template<DataType DT, typename T>
+struct StructAddIS
+{
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(PromoteAdd(p, value));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p + value);
+            }
+        }
+    }
+};
+template<typename T>
+static void AddImpl(const Image& src1, T src2, Image& dst, DataType dst_type, bool saturate)
+{
+    CopyImage(src1, dst);
+    static constexpr Table1D<StructAddIS, T> table;
+    table(dst.elemtype_)(dst, src2, saturate);
+}
+template<typename T>
+static void AddImpl(T src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
+{
+    AddImpl(src2, src1, dst, dst_type, saturate);
+}
+
+// In-place subtraction between Image and scalar.
+template<DataType DT, typename T>
+struct StructSubIS
+{
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(PromoteSub(p, value));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p - value);
+            }
+        }
+    }
+};
+template<DataType DT, typename T>
+struct StructSubSI
+{
+    static void _(T value, Image& img, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(PromoteSub(value, p));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(value - p);
+            }
+        }
+    }
+};
+template<typename T>
+static void SubImpl(const Image& src1, T src2, Image& dst, DataType dst_type, bool saturate)
+{
+    CopyImage(src1, dst);
+    static constexpr Table1D<StructSubIS, T> table;
+    table(dst.elemtype_)(dst, src2, saturate);
+}
+template<typename T>
+static void SubImpl(T src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
+{
+    CopyImage(src2, dst);
+    static constexpr Table1D<StructSubSI, T> table;
+    table(dst.elemtype_)(src1, dst, saturate);
+}
+
+// In-place multiplication between Image and scalar.
+template<DataType DT, typename T>
+struct StructMulIS
+{
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(PromoteMul(p, value));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p * value);
+            }
+        }
+    }
+};
+template<typename T>
+static void MulImpl(const Image& src1, T src2, Image& dst, DataType dst_type, bool saturate)
+{
+    CopyImage(src1, dst);
+    static constexpr Table1D<StructMulIS, T> table;
+    table(dst.elemtype_)(dst, src2, saturate);
+}
+template<typename T>
+static void MulImpl(T src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
+{
+    MulImpl(src2, src1, dst, dst_type, saturate);
+}
+
+// In-place division between Image and scalar.
+template<DataType DT, typename T>
+struct StructDivIS
+{
+    static void _(Image& img, T value, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(PromoteDiv(p, value));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(p / value);
+            }
+        }
+    }
+};
+template<DataType DT, typename T>
+struct StructDivSI
+{
+    static void _(T value, Image& img, bool saturate)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            auto& p = *i;
+            if (saturate) {
+                p = saturate_cast<DT>(PromoteDiv(value, p));
+            }
+            else {
+                p = static_cast<typename TypeInfo<DT>::basetype>(value / p);
+            }
+        }
+    }
+};
+template<typename T>
+static void DivImpl(const Image& src1, T src2, Image& dst, DataType dst_type, bool saturate)
+{
+    CopyImage(src1, dst);
+    static constexpr Table1D<StructDivIS, T> table;
+    table(dst.elemtype_)(dst, src2, saturate);
+}
+template<typename T>
+static void DivImpl(T src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
+{
+    CopyImage(src2, dst);
+    static constexpr Table1D<StructDivSI, T> table;
+    table(dst.elemtype_)(src1, dst, saturate);
+}
+
+#define ECVL_TUPLE(name, size, type, ...) \
+void CpuHal::Add(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { AddImpl(src1, src2, dst, dst_type, saturate); } \
+void CpuHal::Add(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { AddImpl(src1, src2, dst, dst_type, saturate); } \
+                                                                                                                                               \
+void CpuHal::Sub(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { SubImpl(src1, src2, dst, dst_type, saturate); } \
+void CpuHal::Sub(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { SubImpl(src1, src2, dst, dst_type, saturate); } \
+                                                                                                                                               \
+void CpuHal::Mul(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { MulImpl(src1, src2, dst, dst_type, saturate); } \
+void CpuHal::Mul(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { MulImpl(src1, src2, dst, dst_type, saturate); } \
+                                                                                                                                               \
+void CpuHal::Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { DivImpl(src1, src2, dst, dst_type, saturate); } \
+void CpuHal::Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { DivImpl(src1, src2, dst, dst_type, saturate); } \
+
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
 
 } // namespace ecvl

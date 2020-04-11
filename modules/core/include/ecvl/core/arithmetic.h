@@ -28,21 +28,21 @@ namespace ecvl
 #define BINARY_ARITHMETIC_OPERATION_IMAGE_IMAGE(Function)                                                                           \
 inline void Function(const Image& src1, const Image& src2, Image& dst, DataType dst_type = DataType::none, bool saturate = true)    \
 {                                                                                                                                   \
-    src1.hal_->Add(src1, src2, dst, dst_type, saturate);                                                                            \
+    src1.hal_->Function(src1, src2, dst, dst_type, saturate);                                                                       \
 }                                                                                                                                   \
 
 #define BINARY_ARITHMETIC_OPERATION_IMAGE_SCALAR(Function)                                                                          \
 template<typename ST2>                                                                                                              \
 void Function(const Image& src1, const ST2& src2, Image& dst, DataType dst_type = DataType::none, bool saturate = true)             \
 {                                                                                                                                   \
-    src1.hal_->Add(src1, src2, dst, dst_type, saturate);                                                                            \
+    src1.hal_->Function(src1, src2, dst, dst_type, saturate);                                                                       \
 }                                                                                                                                   \
 
 #define BINARY_ARITHMETIC_OPERATION_SCALAR_IMAGE(Function)                                                                          \
 template<typename ST1>                                                                                                              \
 void Function(const ST1& src1, const Image& src2, Image& dst, DataType dst_type = DataType::none, bool saturate = true)             \
 {                                                                                                                                   \
-    src2.hal_->Add(src1, src2, dst, dst_type, saturate);                                                                            \
+    src2.hal_->Function(src1, src2, dst, dst_type, saturate);                                                                       \
 }                                                                                                                                   \
 
 /** @brief Adds two source Images storing the result into a destination Image. 

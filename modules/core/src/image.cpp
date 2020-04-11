@@ -46,6 +46,48 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
     }
 }
 
+/** @brief Copy Images of different DataTypes. */
+template<DataType SDT, DataType DDT>
+struct StructCopyImage
+{
+    static void _(const Image& src, Image& dst)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+
+        ConstView<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto is = vsrc.Begin(), es = vsrc.End();
+        auto id = vdst.Begin();
+        for (; is != es; ++is, ++id) {
+            *id = static_cast<dsttype>(*is);
+        }
+    }
+};
+
+/** @brief Rearrange channels between Images of different DataTypes. */
+template<DataType SDT, DataType DDT>
+struct StructRearrangeImage
+{
+    static void _(const Image& src, Image& dst, const std::vector<int>& bindings)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+        ConstView<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto id = vdst.Begin();
+
+        for (size_t tmp_pos = 0; tmp_pos < dst.datasize_; tmp_pos += dst.elemsize_, ++id) {
+            int x = static_cast<int>(tmp_pos);
+            int src_pos = 0;
+            for (int i = vsize(dst.dims_) - 1; i >= 0; i--) {
+                src_pos += (x / dst.strides_[i]) * src.strides_[bindings[i]];
+                x %= dst.strides_[i];
+            }
+
+            *id = static_cast<dsttype>(*(vsrc.data_ + src_pos));
+        }
+    }
+};
+
 void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels, DataType new_type)
 {
     if (src.elemtype_ == DataType::none)
