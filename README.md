@@ -17,7 +17,7 @@
 
 ## Documentation
 
-The ECVL documentation is available online [here](https://deephealthproject.github.io/ecvl/).
+The ECVL documentation is available [here](https://deephealthproject.github.io/ecvl/).
 
 ## Requirements
 - CMake 3.13 or later
