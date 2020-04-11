@@ -89,6 +89,18 @@ Any contribution is really welcome!
 Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/CostantinoGrana"><img src="https://avatars2.githubusercontent.com/u/18437151?v=1" width="100px;" alt=""/><br /><sub><b>Costantino Grana</b></sub></a></td>
+    <td align="center"><a href="https://github.com/prittt"><img src="https://avatars.githubusercontent.com/u/6863130?v=1" width="100px;" alt=""/><br /><sub><b>Federico Bolelli</b></sub></a></td>
+    <td align="center"><a href="https://github.com/MicheleCancilla"><img src="https://avatars2.githubusercontent.com/u/22983812?v=1" width="100px;" alt=""/><br /><sub><b>Michele Cancilla</b></sub></a></td>
+    <td align="center"><a href="https://github.com/lauracanalini"><img src="https://avatars.githubusercontent.com/u/44258837?v=1" width="100px;" alt=""/><br /><sub><b>Laura Canalini</b></sub></a></td>
+    <td align="center"><a href="https://github.com/stal12"><img src="https://avatars2.githubusercontent.com/u/34423515?v=1" width="100px;" alt=""/><br /><sub><b>Stefano Allegretti</b></sub></a></td>
+  </tr>
+</table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
