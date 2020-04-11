@@ -84,7 +84,11 @@ ECVL development status is available [here](DEVSTAT.md).
 
 Any contribution is really welcome!
 
-## Contributors ✨
+## Contributors
 
-The [Emoji Contribution Key](https://allcontributors.org/docs/en/emoji-key) can be found on [allcontributors.org](https://allcontributors.org)
+Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
