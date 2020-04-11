@@ -60,6 +60,16 @@ pipeline {
                                 }
                             }
                         }
+                        stage('Coverage') {
+                            steps {
+                                timeout(15) {
+                                    echo 'Calculating coverage..'
+                                    bat '"C:/Program Files/OpenCppCoverage/OpenCppCoverage.exe" --source %cd% --export_type=cobertura -- "build/Debug/ECVL_TESTS.exe"'
+				    cobertura coberturaReportFile: 'ECVL_TESTSCoverage.xml'
+	   			    bat '"C:/ProgramData/chocolatey/bin/codecov.exe" -f ECVL_TESTSCoverage.xml -t 7635bd2e-51cf-461e-bb1b-fc7ba9fb26d1'
+                                }
+                            }
+                        }
                         stage('windows_end') {
                             steps {
                                 echo 'Success!'

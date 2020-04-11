@@ -1,6 +1,11 @@
 
 ![ECVL](doc/logo/DEEPHEALTH_doxygen_logo_reduced.png)
 # ECVL - European Computer Vision Library 
+![release](https://img.shields.io/github/v/release/deephealthproject/ecvl)
+[![docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=flat)](https://deephealthproject.github.io/ecvl/)
+![cobertura](https://img.shields.io/jenkins/coverage/cobertura?jobUrl=https%3A%2F%2Fjenkins-master-deephealth-unix01.ing.unimore.it%2Fjob%2FDeepHealth%2Fjob%2Fecvl%2Fjob%2Fmaster%2F&label=cobertura)
+[![codecov](https://codecov.io/gh/deephealthproject/ecvl/branch/master/graph/badge.svg)](https://codecov.io/gh/deephealthproject/ecvl)
+[![License](https://img.shields.io/apm/l/vim-mode)](https://github.com/deephealthproject/ecvl/blob/master/LICENSE)
 
 | System  |  Compiler  | OpenCV | Status | 
 |:-------:|:----------:|:------:|:------:|
@@ -12,7 +17,7 @@
 
 ## Documentation
 
-The ECVL documentation is available online [here](https://deephealthproject.github.io/ecvl/). It is automatically updated at each commit/push to the master branch.
+The ECVL documentation is available [here](https://deephealthproject.github.io/ecvl/).
 
 ## Requirements
 - CMake 3.13 or later
@@ -71,70 +76,19 @@ make install
 
 An extension of ImageWatch is available to visually inspect ecvl::Image when debugging. In order to use it be sure to install the ImageWatch plugin for Visual Studio and copy and past the file ```tools/ECVL.natvis``` from the GitHub repo into ```C:\Users\<!!username!!>\Documents\Visual Studio 2017\Visualizers```
 
-## ECVL Development Status (Work in progress list)
+## ECVL Development Status
 
-:heavy_check_mark: Implemented &nbsp; &nbsp; :large_blue_circle: Scheduled/Work in progress &nbsp; &nbsp; :x: Not implemented &nbsp; &nbsp; :no_entry_sign: Not needed
+ECVL development status is available [here](DEVSTAT.md).
 
-### Image Read
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
+## Contributing
 
-### Image Write
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
+Any contribution is really welcome!
 
-### Image Arithmetics
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Add | :heavy_check_mark: | :x: | :x: |
-| Sub | :heavy_check_mark: | :x: | :x: |
-| Mul | :heavy_check_mark: | :x: | :x: |
-| Div | :heavy_check_mark: | :x: | :x: |
-| Neg | :heavy_check_mark: | :x: | :x: |
+## Contributors
 
-### Image Manipulation
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| ChangeColorSpace | :heavy_check_mark: | :x: | :x: |
-| Flip | :heavy_check_mark: | :x: | :x: |
-| HConcat | :heavy_check_mark: | :x: | :x: |
-| Mirror | :heavy_check_mark: | :x: | :x: |
-| ResizeDim | :heavy_check_mark: | :x: | :x: |
-| ResizeScale | :heavy_check_mark: | :x: | :x: |
-| Rotate | :heavy_check_mark: | :x: | :x: |
-| RotateFullImage | :heavy_check_mark: | :x: | :x: |
-| Stack | :heavy_check_mark: | :x: | :x: |
-| VConcat | :heavy_check_mark: | :x: | :x: |
+Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
 
-### Pre- Post-processing and Augmentation
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Additive Gaussian Noise | :x: | :x: | :x: |
-| Additive Laplace Noise | :heavy_check_mark: | :x: | :x: |
-| Additive Poisson Noise | :heavy_check_mark: | :x: | :x: |
-| Average Blur | :x: | :x: | :x: |
-| Channel Shuffle | :x: | :x: | :x: |
-| Coarse Dropout | :heavy_check_mark: | :x: | :x: |
-| Connected Components Labeling | :heavy_check_mark: | :x: | :x: |
-| Dropout | :x: | :x: | :x: |
-| Filter2D | :heavy_check_mark: | :x: | :x: |
-| FindContours | :heavy_check_mark: | :x: | :x: |
-| Gamma Contrast | :heavy_check_mark: | :x: | :x: |
-| Gaussian Blur | :heavy_check_mark: | :x: | :x: |
-| Histogram Equalization | :x: | :x: | :x: |
-| Impulse Noise | :x: | :x: | :x: |
-| Integral Image | :heavy_check_mark: | :x: | :x: |
-| Median Blur | :x: | :x: | :x: |
-| Non Maxima Suppression | :heavy_check_mark: | :x: | :x: |
-| Pepper | :x: | :x: | :x: |
-| Salt | :x: | :x: | :x: |
-| Salt And Pepper | :x: | :x: | :x: |
-| SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
-| Threshold | :heavy_check_mark: | :x: | :x: |
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
