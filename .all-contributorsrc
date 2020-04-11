@@ -11,13 +11,34 @@
 	"contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
 	"skipCi": "false",
 	"contributors": [{
+			"login": "CostantinoGrana",
+			"name": "Costantino Grana",
+			"avatar_url": "https://avatars2.githubusercontent.com/u/18437151?v=1",
+			"profile": "https://github.com/CostantinoGrana",
+			"contributions": [
+				"code",
+				"ideas",
+				"tool"
+			]
+		},
+		{
 			"login": "prittt",
 			"name": "Federico Bolelli",
 			"avatar_url": "https://avatars.githubusercontent.com/u/6863130?v=1",
 			"profile": "https://github.com/prittt",
 			"contributions": [
-				"dev",
+				"code",
 				"doc",
+				"tool"
+			]
+		},
+		{
+			"login": "MicheleCancilla",
+			"name": "Michele Cancilla",
+			"avatar_url": "https://avatars2.githubusercontent.com/u/22983812?v=1",
+			"profile": "https://github.com/MicheleCancilla",
+			"contributions": [
+				"code",
 				"review",
 				"tool"
 			]
@@ -28,22 +49,9 @@
 			"avatar_url": "https://avatars.githubusercontent.com/u/44258837?v=1",
 			"profile": "https://github.com/lauracanalini",
 			"contributions": [
-				"dev",
-				"doc",
+				"code",
 				"review",
-				"tool"
-			]
-		},
-		{
-			"login": "MicheleCancilla",
-			"name": "Michele Cancilla",
-			"avatar_url": "https://avatars2.githubusercontent.com/u/22983812?v=1",
-			"profile": "https://github.com/MicheleCancilla",
-			"contributions": [
-				"dev",
-				"doc",
-				"review",
-				"tool"
+				"example"
 			]
 		},
 		{
@@ -52,21 +60,8 @@
 			"avatar_url": "https://avatars2.githubusercontent.com/u/34423515?v=1",
 			"profile": "https://github.com/stal12",
 			"contributions": [
-				"dev",
-				"doc",
-				"review",
-				"tool"
-			]
-		},
-		{
-			"login": "CostantinoGrana",
-			"name": "Costantino Grana",
-			"avatar_url": "https://avatars2.githubusercontent.com/u/18437151?v=1",
-			"profile": "https://github.com/CostantinoGrana",
-			"contributions": [
-				"dev",
-				"doc",
-				"review",
+				"code",
+				"infra",
 				"tool"
 			]
 		}
