@@ -1,7 +1,7 @@
 
 ![ECVL](doc/logo/DEEPHEALTH_doxygen_logo_reduced.png)
 # ECVL - European Computer Vision Library 
-![release](https://img.shields.io/github/v/release/deephealthproject/ecvl)
+[![release](https://img.shields.io/github/v/release/deephealthproject/ecvl)](https://github.com/deephealthproject/ecvl/releases/tag/v0.1.1)
 [![docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=flat)](https://deephealthproject.github.io/ecvl/)
 ![cobertura](https://img.shields.io/jenkins/coverage/cobertura?jobUrl=https%3A%2F%2Fjenkins-master-deephealth-unix01.ing.unimore.it%2Fjob%2FDeepHealth%2Fjob%2Fecvl%2Fjob%2Fmaster%2F&label=cobertura)
 [![codecov](https://codecov.io/gh/deephealthproject/ecvl/branch/master/graph/badge.svg)](https://codecov.io/gh/deephealthproject/ecvl)
