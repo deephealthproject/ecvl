@@ -15,6 +15,7 @@
 #define ECVL_HAL_H_
 
 #include <cstdint>
+#include <vector>
 
 #include "datatype.h"
 
@@ -80,6 +81,18 @@ public:
         the datatype. Nevertheless, dst data has already been correctly initialized.
     */
     virtual void CopyImage(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+
+    /** @brief Changes the order of the Image dimensions.
+
+    The RearrangeChannels procedure changes the order of the input Image dimensions saving
+    the result into the output Image. The new order of dimensions is specified as a vector of 
+    ints, telling where each dimension should be in the destination. 
+
+    @param[in] src Input Image on which to rearrange dimensions.
+    @param[out] dst The output rearranged Image. Can be the src Image.
+    @param[in] bindings Desired order of Image channels.
+    */
+    virtual void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

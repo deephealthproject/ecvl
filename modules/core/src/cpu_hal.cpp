@@ -48,6 +48,36 @@ void CpuHal::CopyImage(const Image& src, Image& dst) {
     table(src.elemtype_, dst.elemtype_)(src, dst);
 }
 
+/** @brief Rearrange channels between Images of different DataTypes. */
+template<DataType SDT, DataType DDT>
+struct StructRearrangeImage
+{
+    static void _(const Image& src, Image& dst, const std::vector<int>& bindings)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+        ConstView<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto id = vdst.Begin();
+
+        for (size_t tmp_pos = 0; tmp_pos < dst.datasize_; tmp_pos += dst.elemsize_, ++id) {
+            int x = static_cast<int>(tmp_pos);
+            int src_pos = 0;
+            for (int i = vsize(dst.dims_) - 1; i >= 0; i--) {
+                src_pos += (x / dst.strides_[i]) * src.strides_[bindings[i]];
+                x %= dst.strides_[i];
+            }
+
+            *id = static_cast<dsttype>(*(vsrc.data_ + src_pos));
+        }
+    }
+};
+void CpuHal::RearrangeChannels(const Image & src, Image & dst, const std::vector<int>& bindings)
+{
+    // TODO: checks?
+    static constexpr Table2D<StructRearrangeImage> table;
+    table(src.elemtype_, dst.elemtype_)(src, dst, bindings);
+}
+
 void ShallowCpuHal::Copy(const Image& src, Image& dst)
 {
     // Copying from shallow -> destination becomes owner of the new data

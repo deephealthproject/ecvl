@@ -43,7 +43,8 @@ public:
     static CpuHal* GetInstance();
 
     void CopyImage(const Image& src, Image& dst) override;
-
+    void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) override;
+    
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
     void Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
