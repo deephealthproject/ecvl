@@ -178,10 +178,8 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 {
     // Check if rearranging is required
     if (src.channels_ == channels) {
-        // if not, check if dst==src
-        if (&src != &dst) { // if no, copy
-            dst = src;
-        }
+        // No rearranging required, it's just a copy
+        dst = src;
         return;
     }
 
