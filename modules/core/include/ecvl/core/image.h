@@ -322,9 +322,22 @@ public:
 
         Move constructor
     */
-    Image(Image&& img) : hal_{ nullptr }
+    Image(Image&& img)
     {
-        swap(*this, img);
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        spacings_ = img.spacings_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        hal_ = img.hal_;
+        dev_ = img.dev_;
+        img.hal_ = nullptr; // This disables destruction of rhs.data_
     }
 
     friend void swap(Image& lhs, Image& rhs)
@@ -345,9 +358,32 @@ public:
         swap(lhs.dev_, rhs.dev_);
     }
 
-    Image& operator=(Image rhs)
+    Image& operator=(const Image& rhs)
     {
-        swap(*this, rhs);
+        if (this != &rhs) {
+            Image tmp = rhs;  // Copy and swap because I'm lazy, but still want super cheap self assignment
+            swap(*this, tmp);
+        }
+        return *this;
+    }
+
+    Image& operator=(Image&& rhs)
+    {
+        assert(this != &rhs);
+        elemtype_ = rhs.elemtype_;
+        elemsize_ = rhs.elemsize_;
+        dims_ = rhs.dims_;
+        spacings_ = rhs.spacings_;
+        strides_ = rhs.strides_;
+        channels_ = rhs.channels_;
+        colortype_ = rhs.colortype_;
+        data_ = rhs.data_;
+        datasize_ = rhs.datasize_;
+        contiguous_ = rhs.contiguous_;
+        meta_ = rhs.meta_;
+        hal_ = rhs.hal_;
+        dev_ = rhs.dev_;
+        rhs.hal_ = nullptr; // This disables destruction of rhs.data_
         return *this;
     }
 
