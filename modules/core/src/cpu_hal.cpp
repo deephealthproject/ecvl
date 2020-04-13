@@ -26,6 +26,28 @@ CpuHal* CpuHal::GetInstance()
     return &instance;
 }
 
+// Copy Images of different DataTypes.
+template<DataType SDT, DataType DDT>
+struct StructCopyImage
+{
+    static void _(const Image& src, Image& dst)
+    {
+        using dsttype = typename TypeInfo<DDT>::basetype;
+
+        ConstView<SDT> vsrc(src);
+        View<DDT> vdst(dst);
+        auto is = vsrc.Begin(), es = vsrc.End();
+        auto id = vdst.Begin();
+        for (; is != es; ++is, ++id) {
+            *id = static_cast<dsttype>(*is);
+        }
+    }
+};
+void CpuHal::CopyImage(const Image& src, Image& dst) {
+    static constexpr Table2D<StructCopyImage> table;
+    table(src.elemtype_, dst.elemtype_)(src, dst);
+}
+
 void ShallowCpuHal::Copy(const Image& src, Image& dst)
 {
     // Copying from shallow -> destination becomes owner of the new data

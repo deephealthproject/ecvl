@@ -39,8 +39,10 @@ public:
     {
         return reinterpret_cast<uint8_t*>(std::memcpy(dst, src, nbytes));
     }
-
+    
     static CpuHal* GetInstance();
+
+    void CopyImage(const Image& src, Image& dst) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

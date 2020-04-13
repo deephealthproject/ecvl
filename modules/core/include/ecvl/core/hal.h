@@ -70,7 +70,16 @@ public:
         Specific HALs could change the memory layout by operating on the specific fields.
     */
     virtual void Create(Image& img);
+
+
     virtual void Copy(const Image& src, Image& dst);
+
+    /** @brief Function for copying data from image of one type to one of another type
+
+        Probably this could be merged with Copy. The idea is to have a function which allows for changing
+        the datatype. Nevertheless, dst data has already been correctly initialized.
+    */
+    virtual void CopyImage(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

@@ -46,24 +46,6 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
     }
 }
 
-/** @brief Copy Images of different DataTypes. */
-template<DataType SDT, DataType DDT>
-struct StructCopyImage
-{
-    static void _(const Image& src, Image& dst)
-    {
-        using dsttype = typename TypeInfo<DDT>::basetype;
-
-        ConstView<SDT> vsrc(src);
-        View<DDT> vdst(dst);
-        auto is = vsrc.Begin(), es = vsrc.End();
-        auto id = vdst.Begin();
-        for (; is != es; ++is, ++id) {
-            *id = static_cast<dsttype>(*is);
-        }
-    }
-};
-
 /** @brief Rearrange channels between Images of different DataTypes. */
 template<DataType SDT, DataType DDT>
 struct StructRearrangeImage
@@ -314,7 +296,8 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemsize_ != dst.elemsize_) {
-                dst = Image(src.dims_, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_, src.channels_, src.colortype_);
+                dst = Image(src.dims_, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_, 
+                    src.channels_, src.colortype_, src.spacings_, src.dev_);
             }
         }
         if (src.colortype_ != dst.colortype_) {
@@ -327,7 +310,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
     }
     else {
         if (dst.IsEmpty()) {
-            dst = Image(src.dims_, new_type, src.channels_, src.colortype_);
+            dst = Image(src.dims_, new_type, src.channels_, src.colortype_, src.spacings_, src.dev_);
         }
         else {
             if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemtype_ != new_type) {
@@ -352,8 +335,7 @@ void CopyImage(const Image& src, Image& dst, DataType new_type)
         }
     }
 
-    static constexpr Table2D<StructCopyImage> table;
-    table(src.elemtype_, dst.elemtype_)(src, dst);
+    dst.hal_->CopyImage(src, dst);
 }
 
 void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels)

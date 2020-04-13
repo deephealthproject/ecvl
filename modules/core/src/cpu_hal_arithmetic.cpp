@@ -92,7 +92,7 @@ struct StructAddII
 // CPU general implementation of the addition function.
 void CpuHal::Add(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
-    CopyImage(src1, dst, dst_type);
+    ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructAddII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
 }
@@ -130,7 +130,7 @@ void CpuHal::Sub(const Image & src1, const Image & src2, Image & dst, DataType d
         ptr = &tmp;
     }
     
-    CopyImage(src1, dst, dst_type);
+    ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructSubII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
 }
@@ -161,7 +161,7 @@ struct StructMulII
 // CPU general implementation of the multiplication function.
 void CpuHal::Mul(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
 {
-    CopyImage(src1, dst, dst_type);
+    ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructMulII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, src2, saturate);
 }
@@ -199,7 +199,7 @@ void CpuHal::Div(const Image & src1, const Image & src2, Image & dst, DataType d
         ptr = &tmp;
     }
 
-    CopyImage(src1, dst, dst_type);
+    ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructDivII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
 }
