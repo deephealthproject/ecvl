@@ -17,6 +17,36 @@
 
 using namespace ecvl;
 
+namespace
+{
+class TCore : public ::testing::Test
+{
+protected:
+    Image out;
+
+#define ECVL_TUPLE(type, ...) \
+    Image g2_##type = Image({ 2, 2, 1 }, DataType::type, "xyc", ColorType::GRAY); \
+    View<DataType::type> g2_##type##_v;
+    //Image g3_##type = Image({ 3, 3, 1 }, DataType::type, "xyc", ColorType::GRAY); \
+    //View<DataType::type> g3_##type##_v; \
+
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
+
+    void SetUp() override
+    {
+#define ECVL_TUPLE(type, ...) \
+        g2_##type##_v = g2_##type; \
+        g2_##type##_v({ 0,0,0 }) = 50; g2_##type##_v({ 1,0,0 }) = 33; \
+        g2_##type##_v({ 0,1,0 }) = 15; g2_##type##_v({ 1,1,0 }) = 92;
+
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
+    }
+};
+
+using CoreImage = TCore;
+
 TEST(Core, CreateEmptyImage)
 {
     Image img;
@@ -36,62 +66,60 @@ TEST(Core, CreateImageWithFiveDims)
     EXPECT_EQ(img.strides_.size(), 5);
 }
 
-TEST(ArithmeticNeg, WorksWithInt8)
-{
-    Image x({ 5, 4, 3 }, DataType::int8, "xyc", ColorType::RGB);
-    View<DataType::int8> y(x);
-    y({ 0,0,0 }) = 15; y({ 1,0,0 }) = 16; y({ 2,0,0 }) = 17; y({ 3,0,0 }) = 18; y({ 4,0,0 }) = 19;
-    y({ 0,1,0 }) = 25; y({ 1,1,0 }) = 26; y({ 2,1,0 }) = 27; y({ 3,1,0 }) = 28; y({ 4,1,0 }) = 29;
-    y({ 0,2,0 }) = 35; y({ 1,2,0 }) = 36; y({ 2,2,0 }) = 37; y({ 3,2,0 }) = -128; y({ 4,2,0 }) = 39;
-    y({ 0,3,0 }) = 45; y({ 1,3,0 }) = 46; y({ 2,3,0 }) = 47; y({ 3,3,0 }) = 48; y({ 4,3,0 }) = 49;
-
-    y({ 0,0,1 }) = 17; y({ 1,0,1 }) = 16; y({ 2,0,1 }) = 10; y({ 3,0,1 }) = 17; y({ 4,0,1 }) = 19;
-    y({ 0,1,1 }) = 27; y({ 1,1,1 }) = 26; y({ 2,1,1 }) = 20; y({ 3,1,1 }) = 27; y({ 4,1,1 }) = 29;
-    y({ 0,2,1 }) = 37; y({ 1,2,1 }) = 36; y({ 2,2,1 }) = 30; y({ 3,2,1 }) = 37; y({ 4,2,1 }) = -127;
-    y({ 0,3,1 }) = 47; y({ 1,3,1 }) = 46; y({ 2,3,1 }) = 40; y({ 3,3,1 }) = 47; y({ 4,3,1 }) = 49;
-
-    y({ 0,0,2 }) = 15; y({ 1,0,2 }) = 17; y({ 2,0,2 }) = 17; y({ 3,0,2 }) = 18; y({ 4,0,2 }) = 17;
-    y({ 0,1,2 }) = 25; y({ 1,1,2 }) = 27; y({ 2,1,2 }) = 27; y({ 3,1,2 }) = 28; y({ 4,1,2 }) = 27;
-    y({ 0,2,2 }) = 35; y({ 1,2,2 }) = 37; y({ 2,2,2 }) = 37; y({ 3,2,2 }) = 38; y({ 4,2,2 }) = 37;
-    y({ 0,3,2 }) = 45; y({ 1,3,2 }) = 47; y({ 2,3,2 }) = 47; y({ 3,3,2 }) = 48; y({ 4,3,2 }) = 47;
-
-    Neg(x);
-
-    EXPECT_EQ(y({ 1,2,0 }), -36);
-    EXPECT_EQ(y({ 3,3,2 }), -48);
-    EXPECT_EQ(y({ 4,2,1 }), 127);
-    EXPECT_EQ(y({ 3,2,0 }), -128);
+#define ECVL_TUPLE(type, ...) \
+TEST_F(CoreImage, Move##type) \
+{ \
+    Image img(std::move(g2_##type)); \
+    View<DataType::type> img_v(img); \
+    EXPECT_NEAR(img_v({ 0,0,0 }), 50, 0.1); EXPECT_NEAR(img_v({ 1,0,0 }), 33, 0.1); \
+    EXPECT_NEAR(img_v({ 0,1,0 }), 15, 0.1); EXPECT_NEAR(img_v({ 1,1,0 }), 92, 0.1); \
 }
 
-TEST(ArithmeticNeg, WorksWithFloat32)
-{
-    Image x({ 2, 2, 1 }, DataType::float32, "xyc", ColorType::GRAY);
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
 
-    View<DataType::float32> x_v(x);
-    x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
-    x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-
-    Neg(x);
-
-    EXPECT_FLOAT_EQ(x_v({ 0,0,0 }), 0); EXPECT_FLOAT_EQ(x_v({ 1,0,0 }), -1);
-    EXPECT_FLOAT_EQ(x_v({ 0,1,0 }), -1); EXPECT_FLOAT_EQ(x_v({ 1,1,0 }), 0);
+#define ECVL_TUPLE(type, ...) \
+TEST_F(CoreImage, Copy##type) \
+{ \
+    Image img(g2_##type); \
+    View<DataType::type> img_v(img); \
+    EXPECT_NEAR(img_v({ 0,0,0 }), 50, 0.1); EXPECT_NEAR(img_v({ 1,0,0 }), 33, 0.1); \
+    EXPECT_NEAR(img_v({ 0,1,0 }), 15, 0.1); EXPECT_NEAR(img_v({ 1,1,0 }), 92, 0.1); \
 }
 
-TEST(RearrangeChannels, WorksWithVolumeInt16RGB)
-{
-    Image img({ 3, 4, 3, 2 }, DataType::int16, "cxyz", ColorType::RGB);
-    View<DataType::int16> view(img);
-    auto it = view.Begin();
-    for (int i = 0; i < 24 * 3; i++) {
-        *it = i;
-        ++it;
-    }
-    Image img2;
-    RearrangeChannels(img, img2, "xyzc");
-    View<DataType::int16> view2(img2);
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
 
-    EXPECT_EQ(view2({ 2, 0, 1, 0 }), 42);
-    EXPECT_EQ(view2({ 3, 1, 1, 2 }), 59);
-    EXPECT_EQ(view2({ 0, 2, 0, 1 }), 25);
-    EXPECT_EQ(view2({ 1, 2, 0, 1 }), 28);
+#define ECVL_TUPLE(type, ...) \
+TEST_F(CoreImage, Neg##type) \
+{ \
+    Neg(g2_##type); \
+    EXPECT_NEAR(g2_##type##_v({ 0,0,0 }), -50, 0.1); EXPECT_NEAR(g2_##type##_v({ 1,0,0 }), -33, 0.1); \
+    EXPECT_NEAR(g2_##type##_v({ 0,1,0 }), -15, 0.1); EXPECT_NEAR(g2_##type##_v({ 1,1,0 }), -92, 0.1); \
+}
+#include "ecvl/core/datatype_existing_tuples_signed.inc.h"
+#undef ECVL_TUPLE
+
+#define ECVL_TUPLE(type, ...) \
+TEST_F(CoreImage, Rearrange##type) \
+{ \
+    Image img({ 3, 4, 3, 2 }, DataType::type, "cxyz", ColorType::RGB); \
+    View<DataType::type> view(img); \
+    auto it = view.Begin(); \
+    for (uint8_t i = 0; i < 24 * 3; ++i) { \
+        *it = i; \
+        ++it; \
+    } \
+    Image img2; \
+    RearrangeChannels(img, img2, "xyzc"); \
+    View<DataType::type> view2(img2); \
+    \
+    EXPECT_EQ(view2({ 2, 0, 1, 0 }), 42); \
+    EXPECT_EQ(view2({ 3, 1, 1, 2 }), 59); \
+    EXPECT_EQ(view2({ 0, 2, 0, 1 }), 25); \
+    EXPECT_EQ(view2({ 1, 2, 0, 1 }), 28); \
+}
+
+#include "ecvl/core/datatype_existing_tuples_signed.inc.h"
+#undef ECVL_TUPLE
 }
