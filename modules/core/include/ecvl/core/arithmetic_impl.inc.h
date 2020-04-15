@@ -141,7 +141,7 @@ struct ImageScalarSubImpl
         for (; i != e; ++i) {
             auto& p = *i;
             if (saturate) {
-                p = saturate_cast<DT>(PromoteSub(value, p));
+                p = saturate_cast<DT>(PromoteSub(p, value));
             }
             else {
                 p = static_cast<typename TypeInfo<DT>::basetype>(p - value);

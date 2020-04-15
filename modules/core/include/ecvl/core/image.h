@@ -480,7 +480,7 @@ public:
     void Div(const T& rhs, bool saturate = true)
     {
         static constexpr Table1D<ImageScalarDivImpl, int> table;
-        table(elemtype_)(*this, rhs, saturate, 0);
+        table(elemtype_)(*this, rhs, saturate);
     }
 
     /** @brief In-place division for an Image. */
