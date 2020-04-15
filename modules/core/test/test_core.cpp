@@ -208,7 +208,30 @@ TEST_F(CoreArithmetics, DivImage##type) \
     EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
 }
 
-
 #include "ecvl/core/datatype_existing_tuples_signed.inc.h"
 #undef ECVL_TUPLE
+
+TEST_F(CoreArithmetics, Anduint8)
+{
+    Image tmp(g2_uint8);
+    View<DataType::uint8> tmp_v(tmp);
+    tmp_v({ 0,0,0 }) = 49; tmp_v({ 1,0,0 }) = 31;
+    tmp_v({ 0,1,0 }) = 13; tmp_v({ 1,1,0 }) = 59;
+    And(g2_uint8, tmp, out);
+    View<DataType::uint8> out_v(out);
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 48); EXPECT_TRUE(out_v({ 1,0,0 }) == 0);
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 12); EXPECT_TRUE(out_v({ 1,1,0 }) == 56);
+}
+
+TEST_F(CoreArithmetics, Oruint8)
+{
+    Image tmp(g2_uint8);
+    View<DataType::uint8> tmp_v(tmp);
+    tmp_v({ 0,0,0 }) = 49; tmp_v({ 1,0,0 }) = 31;
+    tmp_v({ 0,1,0 }) = 13; tmp_v({ 1,1,0 }) = 59;
+    Or(g2_uint8, tmp, out);
+    View<DataType::uint8> out_v(out);
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 51); EXPECT_TRUE(out_v({ 1,0,0 }) == 63);
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 15); EXPECT_TRUE(out_v({ 1,1,0 }) == 63);
+}
 }

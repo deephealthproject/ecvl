@@ -456,9 +456,9 @@ void Div(const ST1 & src1, const ST2 & src2, Image & dst, bool saturate = true, 
     DivImpl<ST1, ST2, ET>::_(src1, src2, dst, saturate, epsilon);
 }
 
-/** @brief Boolean and between two binary ecvl::Image.
+/** @brief Boolean AND between two binary ecvl::Image(s).
 
-Performs boolean and between two ecvl::Image with DataType::uint8 and ColorType::GRAY.
+Performs bitwise AND between two ecvl::Image(s) with DataType::uint8 and ColorType::GRAY.
 The result is stored into dst.
 
 @param[in] src1 First ecvl::Image operand.
@@ -469,9 +469,9 @@ The result is stored into dst.
 */
 void And(const Image& src1, const Image& src2, Image& dst);
 
-/** @brief Boolean or between two binary ecvl::Image.
+/** @brief Boolean OR between two binary ecvl::Image(s).
 
-Performs boolean or between two ecvl::Image with DataType::uint8 and ColorType::GRAY.
+Performs bitwise OR between two ecvl::Image(s) with DataType::uint8 and ColorType::GRAY.
 The result is stored into dst.
 
 @param[in] src1 First ecvl::Image operand.
