@@ -37,8 +37,8 @@ protected:
     {
 #define ECVL_TUPLE(type, ...) \
         g2_##type##_v = g2_##type; \
-        g2_##type##_v({ 0,0,0 }) = 50; g2_##type##_v({ 1,0,0 }) = 33; \
-        g2_##type##_v({ 0,1,0 }) = 15; g2_##type##_v({ 1,1,0 }) = 92;
+        g2_##type##_v({ 0,0,0 }) = 50; g2_##type##_v({ 1,0,0 }) = 32; \
+        g2_##type##_v({ 0,1,0 }) = 14; g2_##type##_v({ 1,1,0 }) = 60;
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
@@ -46,6 +46,7 @@ protected:
 };
 
 using CoreImage = TCore;
+using CoreArithmetics = TCore;
 
 TEST(Core, CreateEmptyImage)
 {
@@ -71,54 +72,142 @@ TEST_F(CoreImage, Move##type) \
 { \
     Image img(std::move(g2_##type)); \
     View<DataType::type> img_v(img); \
-    EXPECT_NEAR(img_v({ 0,0,0 }), 50, 0.1); EXPECT_NEAR(img_v({ 1,0,0 }), 33, 0.1); \
-    EXPECT_NEAR(img_v({ 0,1,0 }), 15, 0.1); EXPECT_NEAR(img_v({ 1,1,0 }), 92, 0.1); \
-}
-
-#include "ecvl/core/datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE
-
-#define ECVL_TUPLE(type, ...) \
+    EXPECT_TRUE(img_v({ 0,0,0 }) == 50); EXPECT_TRUE(img_v({ 1,0,0 }) == 32); \
+    EXPECT_TRUE(img_v({ 0,1,0 }) == 14); EXPECT_TRUE(img_v({ 1,1,0 }) == 60); \
+} \
+\
 TEST_F(CoreImage, Copy##type) \
 { \
     Image img(g2_##type); \
     View<DataType::type> img_v(img); \
-    EXPECT_NEAR(img_v({ 0,0,0 }), 50, 0.1); EXPECT_NEAR(img_v({ 1,0,0 }), 33, 0.1); \
-    EXPECT_NEAR(img_v({ 0,1,0 }), 15, 0.1); EXPECT_NEAR(img_v({ 1,1,0 }), 92, 0.1); \
-}
-
-#include "ecvl/core/datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE
-
-#define ECVL_TUPLE(type, ...) \
-TEST_F(CoreImage, Neg##type) \
-{ \
-    Neg(g2_##type); \
-    EXPECT_NEAR(g2_##type##_v({ 0,0,0 }), -50, 0.1); EXPECT_NEAR(g2_##type##_v({ 1,0,0 }), -33, 0.1); \
-    EXPECT_NEAR(g2_##type##_v({ 0,1,0 }), -15, 0.1); EXPECT_NEAR(g2_##type##_v({ 1,1,0 }), -92, 0.1); \
-}
-#include "ecvl/core/datatype_existing_tuples_signed.inc.h"
-#undef ECVL_TUPLE
-
-#define ECVL_TUPLE(type, ...) \
+    EXPECT_TRUE(img_v({ 0,0,0 }) == 50); EXPECT_TRUE(img_v({ 1,0,0 }) == 32); \
+    EXPECT_TRUE(img_v({ 0,1,0 }) == 14); EXPECT_TRUE(img_v({ 1,1,0 }) == 60); \
+} \
+\
 TEST_F(CoreImage, Rearrange##type) \
 { \
     Image img({ 3, 4, 3, 2 }, DataType::type, "cxyz", ColorType::RGB); \
     View<DataType::type> view(img); \
     auto it = view.Begin(); \
     for (uint8_t i = 0; i < 24 * 3; ++i) { \
-        *it = i; \
+        *reinterpret_cast<TypeInfo_t<DataType::type>*>(it.ptr_) = i; \
         ++it; \
     } \
     Image img2; \
     RearrangeChannels(img, img2, "xyzc"); \
     View<DataType::type> view2(img2); \
     \
-    EXPECT_EQ(view2({ 2, 0, 1, 0 }), 42); \
-    EXPECT_EQ(view2({ 3, 1, 1, 2 }), 59); \
-    EXPECT_EQ(view2({ 0, 2, 0, 1 }), 25); \
-    EXPECT_EQ(view2({ 1, 2, 0, 1 }), 28); \
+    EXPECT_TRUE(view2({ 2, 0, 1, 0 }) == 42); \
+    EXPECT_TRUE(view2({ 3, 1, 1, 2 }) == 59); \
+    EXPECT_TRUE(view2({ 0, 2, 0, 1 }) == 25); \
+    EXPECT_TRUE(view2({ 1, 2, 0, 1 }) == 28); \
+} \
+\
+TEST_F(CoreArithmetics, Neg##type) \
+{ \
+    Neg(g2_##type); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == -50); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == -32); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == -14); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == -60); \
+} \
+TEST_F(CoreArithmetics, AddScalar##type) \
+{ \
+    g2_##type.Add(10); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 60); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 42); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 24); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 70); \
+    g2_##type.Add(10, false); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 70); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 52); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 34); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 80); \
+} \
+\
+TEST_F(CoreArithmetics, AddImage##type) \
+{ \
+    g2_##type.Add(g2_##type); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 100); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 64); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 28); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 120); \
+} \
+\
+TEST_F(CoreArithmetics, AddImageNonSaturate##type) \
+{ \
+    g2_##type.Add(g2_##type, false); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 100); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 64); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 28); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 120); \
+} \
+\
+TEST_F(CoreArithmetics, SubScalar##type) \
+{ \
+    g2_##type.Sub(10); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 40); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 22); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 4); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 50); \
+} \
+\
+TEST_F(CoreArithmetics, SubScalarNonSaturate##type) \
+{ \
+    g2_##type.Sub(10, false); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 40); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 22); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 4); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 50); \
+} \
+\
+TEST_F(CoreArithmetics, SubImage##type) \
+{ \
+    g2_##type.Sub(g2_##type); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 0); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 0); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 0); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 0); \
+} \
+\
+TEST_F(CoreArithmetics, MulScalar##type) \
+{ \
+    g2_##type.Mul(2); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 100); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 64); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 28); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 120); \
+} \
+\
+TEST_F(CoreArithmetics, MulScalarNonSaturate##type) \
+{ \
+    g2_##type.Mul(2, false); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 100); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 64); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 28); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 120); \
+} \
+\
+TEST_F(CoreArithmetics, MulImage##type) \
+{ \
+    Image tmp(g2_##type); \
+    View<DataType::type> tmp_v(tmp); \
+    auto i = tmp.Begin<uint8_t>(), e = tmp.End<uint8_t>(); \
+    for (; i != e; ++i) { \
+        *reinterpret_cast<TypeInfo_t<DataType::type>*>(i.ptr_) = 2; \
+    } \
+    g2_##type.Mul(tmp); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 100); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 64); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 28); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 120); \
+} \
+\
+TEST_F(CoreArithmetics, DivScalar##type) \
+{ \
+    g2_##type.Div(2); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
+} \
+\
+TEST_F(CoreArithmetics, DivScalarNonSaturate##type) \
+{ \
+    g2_##type.Div(2, false); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
+} \
+\
+TEST_F(CoreArithmetics, DivImage##type) \
+{ \
+    Image tmp(g2_##type); \
+    View<DataType::type> tmp_v(tmp); \
+    auto i = tmp.Begin<uint8_t>(), e = tmp.End<uint8_t>(); \
+    for (; i != e; ++i) { \
+        *reinterpret_cast<TypeInfo_t<DataType::type>*>(i.ptr_) = 2; \
+    } \
+    g2_##type.Div(tmp); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
 }
+
 
 #include "ecvl/core/datatype_existing_tuples_signed.inc.h"
 #undef ECVL_TUPLE
