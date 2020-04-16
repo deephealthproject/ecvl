@@ -86,13 +86,12 @@ if(ECVL_TESTS)
     set(CMAKE_FOLDER 3rdparty/googletest)
     add_subdirectory(googletest)
     set(CMAKE_FOLDER 3rdparty)
-    include(GoogleTest)
 endif()
 
 # --------------------
 # yaml-cpp
 # --------------------
-if (ECVL_DATASET)
+if(ECVL_DATASET)
     ecvl_update_3rdparty(yaml-cpp)
 
     SET(YAML_APPLE_UNIVERSAL_BIN OFF CACHE INTERNAL "" FORCE)

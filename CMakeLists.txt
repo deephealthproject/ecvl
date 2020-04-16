@@ -30,7 +30,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     endif()
 endif()
 
-if (CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
+if(CMAKE_INSTALL_PREFIX MATCHES "/usr/local")
     SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/cmake/ecvl)
 else()
     SET(ECVL_CONFIG_INSTALL_PATH ${CMAKE_INSTALL_PREFIX})
@@ -281,14 +281,14 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL tests
 #--------------------------------------------------------------------------------------------------------
-if (ECVL_TESTS)
+if(ECVL_TESTS)
+    include(GoogleTest)
+    enable_testing()
     target_link_libraries(ECVL_TESTS ${ECVL_MODULES} gtest gtest_main gmock)
     if (ECVL_BUILD_EXAMPLES)
         target_compile_definitions(ECVL_TESTS PUBLIC ECVL_WITH_EXAMPLES)
     endif()
-    enable_testing()
-    #gtest_discover_tests(ECVL_TESTS)
-    gtest_add_tests(TARGET ECVL_TESTS)
+    gtest_discover_tests(ECVL_TESTS)
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL tests
