@@ -43,7 +43,7 @@ var searchData=
   ['structadd',['StructAdd',['../struct_struct_add.html',1,'StructAdd&lt; DT1, DT2 &gt;'],['../structecvl_1_1_struct_add.html',1,'ecvl::StructAdd&lt; DT1, DT2 &gt;']]],
   ['structcopyimage',['StructCopyImage',['../structecvl_1_1_struct_copy_image.html',1,'ecvl']]],
   ['structdiv',['StructDiv',['../struct_struct_div.html',1,'StructDiv&lt; DT1, DT2, ET &gt;'],['../structecvl_1_1_struct_div.html',1,'ecvl::StructDiv&lt; DT1, DT2, ET &gt;']]],
-  ['structmul',['StructMul',['../structecvl_1_1_struct_mul.html',1,'ecvl::StructMul&lt; DT1, DT2 &gt;'],['../struct_struct_mul.html',1,'StructMul&lt; DT1, DT2 &gt;']]],
+  ['structmul',['StructMul',['../struct_struct_mul.html',1,'StructMul&lt; DT1, DT2 &gt;'],['../structecvl_1_1_struct_mul.html',1,'ecvl::StructMul&lt; DT1, DT2 &gt;']]],
   ['structrearrangeimage',['StructRearrangeImage',['../structecvl_1_1_struct_rearrange_image.html',1,'ecvl']]],
   ['structscalarneg',['StructScalarNeg',['../structecvl_1_1_struct_scalar_neg.html',1,'ecvl']]],
   ['structsub',['StructSub',['../structecvl_1_1_struct_sub.html',1,'ecvl::StructSub&lt; DT1, DT2 &gt;'],['../struct_struct_sub.html',1,'StructSub&lt; DT1, DT2 &gt;']]],
