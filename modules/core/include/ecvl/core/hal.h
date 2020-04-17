@@ -2,7 +2,7 @@
 * ECVL - European Computer Vision Library
 * Version: 0.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-* Authors: 
+* Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
 *    Michele Cancilla (michele.cancilla@unimore.it)
@@ -23,33 +23,35 @@
 
 #define ECVL_ERROR_DEVICE_UNAVAILABLE(device) throw std::runtime_error(ECVL_ERROR_MSG #device " device unavailable");
 
-namespace ecvl {
-
+namespace ecvl
+{
 /** @brief Enum class representing the ECVL available devices
 
 @anchor Device
 */
-enum class Device { 
+enum class Device
+{
     NONE,  /**< Special Device for empty images without any associated device */
     CPU,   /**< CPU Device */
     GPU,   /**< GPU Device */
     FPGA,  /**< FPGA Device */
-};         
-           
+};
+
 class Image;
 
-/** @brief Hardware Abstraction Layer (HAL) is an abstraction layer to interact with a hardware device at a 
+/** @brief Hardware Abstraction Layer (HAL) is an abstraction layer to interact with a hardware device at a
     general level
 
     HAL is an interface that allows ECVL to interact with hardwares devices at a general or abstract level
-    rather than at a detailed hardware level. It represents a proxy to the actual function implementations 
-    that must be device specific. 
+    rather than at a detailed hardware level. It represents a proxy to the actual function implementations
+    that must be device specific.
 
     Actual HALs must inherit from this base class. Most of the memory handling methods must be overwritten.
     This base class also provides some general methods that can be shared by different devices.
 
 */
-class HardwareAbstractionLayer {
+class HardwareAbstractionLayer
+{
 public:
 
     static HardwareAbstractionLayer* Factory(Device dev, bool shallow = false);
@@ -57,7 +59,8 @@ public:
     virtual uint8_t* MemAllocate(size_t nbytes) = 0;
     virtual void MemDeallocate(uint8_t* data) = 0;
     virtual uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) = 0;
-    virtual uint8_t* MemAllocateAndCopy(size_t nbytes, const uint8_t* src) {
+    virtual uint8_t* MemAllocateAndCopy(size_t nbytes, const uint8_t* src)
+    {
         return MemCopy(MemAllocate(nbytes), src, nbytes);
     }
 
@@ -72,7 +75,6 @@ public:
     */
     virtual void Create(Image& img);
 
-
     virtual void Copy(const Image& src, Image& dst);
 
     /** @brief Function for copying data from image of one type to one of another type
@@ -85,14 +87,21 @@ public:
     /** @brief Changes the order of the Image dimensions.
 
     The RearrangeChannels procedure changes the order of the input Image dimensions saving
-    the result into the output Image. The new order of dimensions is specified as a vector of 
-    ints, telling where each dimension should be in the destination. 
+    the result into the output Image. The new order of dimensions is specified as a vector of
+    ints, telling where each dimension should be in the destination.
 
     @param[in] src Input Image on which to rearrange dimensions.
     @param[out] dst The output rearranged Image. Can be the src Image.
     @param[in] bindings Desired order of Image channels.
     */
     virtual void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) { ECVL_ERROR_NOT_IMPLEMENTED }
+
+    virtual void Flip2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual std::vector<double> Histogram(const Image& src) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual int OtsuThreshold(const Image& src) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 
@@ -117,8 +126,6 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-
 };
-
 } // namespace ecvl
 #endif // ECVL_HAL_H_

@@ -10,16 +10,17 @@
 # All rights reserved.
 
 target_sources(ECVL_CORE
-	PRIVATE
+    PRIVATE
         arithmetic.cpp
-		cpu_hal.cpp
-		cpu_hal_arithmetic.cpp
+        cpu_hal.cpp
+        cpu_hal_arithmetic.cpp
+        cpu_hal_imgproc.cpp
         datatype.cpp
         fpga_hal.cpp
-		gpu_hal.cpp
-		hal.cpp
-		image.cpp
-		imgcodecs.cpp
+        gpu_hal.cpp
+        hal.cpp
+        image.cpp
+        imgcodecs.cpp
         imgproc.cpp
         support_opencv.cpp
         support_nifti.cpp

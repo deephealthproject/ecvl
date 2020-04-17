@@ -18,7 +18,6 @@
 
 namespace ecvl
 {
-
 CpuHal* CpuHal::GetInstance()
 {
     static CpuHal instance;	// Guaranteed to be destroyed.
@@ -43,7 +42,8 @@ struct StructCopyImage
         }
     }
 };
-void CpuHal::CopyImage(const Image& src, Image& dst) {
+void CpuHal::CopyImage(const Image& src, Image& dst)
+{
     static constexpr Table2D<StructCopyImage> table;
     table(src.elemtype_, dst.elemtype_)(src, dst);
 }
@@ -71,7 +71,7 @@ struct StructRearrangeImage
         }
     }
 };
-void CpuHal::RearrangeChannels(const Image & src, Image & dst, const std::vector<int>& bindings)
+void CpuHal::RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings)
 {
     // TODO: checks?
     static constexpr Table2D<StructRearrangeImage> table;
@@ -91,12 +91,4 @@ ShallowCpuHal* ShallowCpuHal::GetInstance()
                                             // Instantiated on first use.
     return &instance;
 }
-
-
-
 } // namespace ecvl
-
-
-
-
-

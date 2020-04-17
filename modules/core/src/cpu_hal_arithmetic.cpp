@@ -18,8 +18,7 @@
 
 namespace ecvl
 {
-
-// Struct template specialization of the negation of an Image. 
+// Struct template specialization of the negation of an Image.
 template <DataType DT1, DataType DT2>
 struct StructNegII
 {
@@ -44,7 +43,7 @@ struct StructNegII
 // CPU general implementation of the negation function.
 void CpuHal::Neg(const Image& src, Image& dst, DataType dst_type, bool saturate)
 {
-    const Image *ptr = &src;
+    const Image* ptr = &src;
     Image tmp;
     if (&src == &dst) {
         tmp = src;
@@ -90,7 +89,7 @@ struct StructAddII
 };
 
 // CPU general implementation of the addition function.
-void CpuHal::Add(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
+void CpuHal::Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
 {
     ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructAddII> table;
@@ -121,15 +120,15 @@ struct StructSubII
 };
 
 // CPU general implementation of the subtraction function.
-void CpuHal::Sub(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
+void CpuHal::Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
 {
-    const Image *ptr = &src2;
+    const Image* ptr = &src2;
     Image tmp;
     if (&src2 == &dst) {
         tmp = src2;
         ptr = &tmp;
     }
-    
+
     ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructSubII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
@@ -159,7 +158,7 @@ struct StructMulII
 };
 
 // CPU general implementation of the multiplication function.
-void CpuHal::Mul(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
+void CpuHal::Mul(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
 {
     ecvl::CopyImage(src1, dst, dst_type);
     static constexpr Table2D<StructMulII> table;
@@ -190,9 +189,9 @@ struct StructDivII
 };
 
 // CPU general implementation of the division function.
-void CpuHal::Div(const Image & src1, const Image & src2, Image & dst, DataType dst_type, bool saturate)
+void CpuHal::Div(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate)
 {
-    const Image *ptr = &src2;
+    const Image* ptr = &src2;
     Image tmp;
     if (&src2 == &dst) {
         tmp = src2;
@@ -203,8 +202,6 @@ void CpuHal::Div(const Image & src1, const Image & src2, Image & dst, DataType d
     static constexpr Table2D<StructDivII> table;
     table(dst.elemtype_, src2.elemtype_)(dst, *ptr, saturate);
 }
-
-
 
 // In-place addition between Image and scalar.
 template<DataType DT, typename T>
@@ -389,5 +386,4 @@ void CpuHal::Div(type src1, const Image& src2, Image& dst, DataType dst_type, bo
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-
 } // namespace ecvl

@@ -44,7 +44,14 @@ public:
 
     void CopyImage(const Image& src, Image& dst) override;
     void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) override;
-    
+
+    void Flip2D(const ecvl::Image& src, ecvl::Image& dst) override;
+    void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) override;
+    std::vector<double> Histogram(const Image& src) override;
+    int OtsuThreshold(const Image& src) override;
+    void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) override;
+    void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev) override;
+
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
     void Sub(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

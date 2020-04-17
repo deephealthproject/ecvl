@@ -34,6 +34,7 @@
 #define ECVL_ERROR_CANNOT_LOAD_FROM_URL throw std::runtime_error(ECVL_ERROR_MSG "Cannot load from URL");
 #define ECVL_ERROR_CANNOT_LOAD_IMAGE throw std::runtime_error(ECVL_ERROR_MSG "Cannot load image");
 #define ECVL_ERROR_INCOMPATIBLE_DIMENSIONS throw std::runtime_error(ECVL_ERROR_MSG "Incompatible dimensions");
+#define ECVL_ERROR_DIFFERENT_DEVICES throw std::runtime_error(ECVL_ERROR_MSG "src and dst are in different devices");
 
 
 #endif // ECVL_STANDARD_ERRORS_H_
