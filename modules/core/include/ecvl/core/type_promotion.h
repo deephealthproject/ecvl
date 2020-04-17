@@ -68,7 +68,7 @@ template<typename T, typename U>                                            \
 promote_superior_type_t<T, U> Promote ## op_name(T lhs, U rhs) {            \
     using dsttype = promote_superior_type_t<T, U>;                          \
     return static_cast<dsttype>(lhs) op_symbol static_cast<dsttype>(rhs);   \
-}                                             
+}
 
 PROMOTE_OPERATION(Add, +)
 PROMOTE_OPERATION(Sub, -)
