@@ -25,6 +25,13 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
         *this = Image(dims, elemtype, std::move(channels), colortype, spacings, dev);
     }
     else {
+        elemtype_ = elemtype;
+        elemsize_ = DataTypeSize(elemtype_);
+        dims_ = dims;   // A check could be added to save this copy
+        spacings_ = spacings;
+        channels_ = std::move(channels);
+        colortype_ = colortype;
+
         // Compute new datasize
         size_t new_datasize = GetDefaultDatasize();
 
@@ -34,12 +41,6 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
             data_ = hal_->MemAllocate(new_datasize);
         }
 
-        elemtype_ = elemtype;
-        elemsize_ = DataTypeSize(elemtype_);
-        dims_ = dims;   // A check could be added to save this copy
-        spacings_ = spacings;
-        channels_ = std::move(channels);
-        colortype_ = colortype;
         datasize_ = new_datasize;
 
         SetDefaultStrides();
