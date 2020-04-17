@@ -103,12 +103,6 @@ TEST_F(CoreImage, Rearrange##type) \
     EXPECT_TRUE(view2({ 1, 2, 0, 1 }) == 28); \
 } \
 \
-TEST_F(CoreArithmetics, Neg##type) \
-{ \
-    Neg(g2_##type); \
-    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == -50); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == -32); \
-    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == -14); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == -60); \
-} \
 TEST_F(CoreArithmetics, AddScalar##type) \
 { \
     g2_##type.Add(10); \
@@ -206,6 +200,17 @@ TEST_F(CoreArithmetics, DivImage##type) \
     g2_##type.Div(tmp); \
     EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
     EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
+}
+
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
+
+#define ECVL_TUPLE(type, ...) \
+TEST_F(CoreArithmetics, Neg##type) \
+{ \
+    Neg(g2_##type); \
+    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == -50); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == -32); \
+    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == -14); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == -60); \
 }
 
 #include "ecvl/core/datatype_existing_tuples_signed.inc.h"

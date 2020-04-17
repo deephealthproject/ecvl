@@ -11,193 +11,177 @@
 * All rights reserved.
 */
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "ecvl/core.h"
 
 using namespace ecvl;
 
-TEST(Imgproc, Thresholding)
+namespace
 {
-    Image x({ 2, 2, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
-    View<DataType::uint8> x_v(x);
-    Image o;
+class TCore : public ::testing::Test
+{
+protected:
+    Image out;
 
-    x_v({ 0,0,0 }) = 250; x_v({ 1,0,0 }) = 16;
-    x_v({ 0,1,0 }) = 15; x_v({ 1,1,0 }) = 200;
+#define ECVL_TUPLE(type, ...) \
+    Image g1_##type = Image({ 1, 1, 1 }, DataType::type, "xyc", ColorType::GRAY); \
+    View<DataType::type> g1_##type##_v; \
+    Image g2_##type = Image({ 2, 2, 1 }, DataType::type, "xyc", ColorType::GRAY); \
+    View<DataType::type> g2_##type##_v; \
+    Image rgb2_##type = Image({ 2, 2, 3 }, DataType::type, "xyc", ColorType::RGB); \
+    View<DataType::type> rgb2_##type##_v; \
 
-    Threshold(x, o, 127, 255, ThresholdingType::BINARY);
-    View<DataType::uint8> o_v(o);
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
 
-    EXPECT_EQ(o_v({ 0,0,0 }), 255); EXPECT_EQ(o_v({ 1,0,0 }), 0);
-    EXPECT_EQ(o_v({ 0,1,0 }), 0); EXPECT_EQ(o_v({ 1,1,0 }), 255);
+    void SetUp() override
+    {
+#define ECVL_TUPLE(type, ...) \
+        g1_##type##_v = g1_##type; \
+        g1_##type##_v({ 0,0,0 }) = 50; \
+        \
+        g2_##type##_v = g2_##type; \
+        g2_##type##_v({ 0,0,0 }) = 50; g2_##type##_v({ 1,0,0 }) = 32; \
+        g2_##type##_v({ 0,1,0 }) = 14; g2_##type##_v({ 1,1,0 }) = 60; \
+        \
+        rgb2_##type##_v = rgb2_##type; \
+        rgb2_##type##_v({ 0,0,0 }) = 50; rgb2_##type##_v({ 1,0,0 }) = 32; \
+        rgb2_##type##_v({ 0,1,0 }) = 14; rgb2_##type##_v({ 1,1,0 }) = 60; \
+        rgb2_##type##_v({ 0,0,1 }) = 50; rgb2_##type##_v({ 1,0,1 }) = 32; \
+        rgb2_##type##_v({ 0,1,1 }) = 14; rgb2_##type##_v({ 1,1,1 }) = 60; \
+        rgb2_##type##_v({ 0,0,2 }) = 50; rgb2_##type##_v({ 1,0,2 }) = 32; \
+        rgb2_##type##_v({ 0,1,2 }) = 14; rgb2_##type##_v({ 1,1,2 }) = 60; \
 
-    Threshold(x, o, 127, 255, ThresholdingType::BINARY_INV);
-    o_v = o;
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
+    }
+};
 
-    EXPECT_EQ(o_v({ 0,0,0 }), 0); EXPECT_EQ(o_v({ 1,0,0 }), 255);
-    EXPECT_EQ(o_v({ 0,1,0 }), 255); EXPECT_EQ(o_v({ 1,1,0 }), 0);
+using Imgproc = TCore;
+//using CoreArithmetics = TCore;
+
+#define ECVL_TUPLE(type, ...) \
+TEST_F(Imgproc, Threshold##type) \
+{ \
+    Threshold(g2_##type, out, 35, 127, ThresholdingType::BINARY); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 127); EXPECT_TRUE(out_v({ 1,0,0 }) == 0); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 0); EXPECT_TRUE(out_v({ 1,1,0 }) == 127); \
+    Threshold(g2_##type, out, 35, 127, ThresholdingType::BINARY_INV); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 0); EXPECT_TRUE(out_v({ 1,0,0 }) == 127); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 127); EXPECT_TRUE(out_v({ 1,1,0 }) == 0); \
+} \
+\
+TEST_F(Imgproc, Mirror2D##type) \
+{ \
+    Mirror2D(g1_##type, out); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    \
+    Mirror2D(g2_##type, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 32); EXPECT_TRUE(out_v({ 1,0,0 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 60); EXPECT_TRUE(out_v({ 1,1,0 }) == 14); \
+    \
+    Mirror2D(rgb2_##type, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 32); EXPECT_TRUE(out_v({ 1,0,0 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 60); EXPECT_TRUE(out_v({ 1,1,0 }) == 14); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == 32); EXPECT_TRUE(out_v({ 1,0,1 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == 60); EXPECT_TRUE(out_v({ 1,1,1 }) == 14); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == 32); EXPECT_TRUE(out_v({ 1,0,2 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == 60); EXPECT_TRUE(out_v({ 1,1,2 }) == 14); \
+} \
+\
+TEST_F(Imgproc, Flip2D##type) \
+{ \
+    Flip2D(g1_##type, out); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    \
+    Flip2D(g2_##type, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 14); EXPECT_TRUE(out_v({ 1,0,0 }) == 60); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 50); EXPECT_TRUE(out_v({ 1,1,0 }) == 32); \
+    \
+    Flip2D(rgb2_##type, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 14); EXPECT_TRUE(out_v({ 1,0,0 }) == 60); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 50); EXPECT_TRUE(out_v({ 1,1,0 }) == 32); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == 14); EXPECT_TRUE(out_v({ 1,0,1 }) == 60); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == 50); EXPECT_TRUE(out_v({ 1,1,1 }) == 32); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == 14); EXPECT_TRUE(out_v({ 1,0,2 }) == 60); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == 50); EXPECT_TRUE(out_v({ 1,1,2 }) == 32); \
+} \
+\
+TEST_F(Imgproc, HConcat##type) \
+{ \
+    HConcat({ g1_##type, g1_##type }, out); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) == 50); \
+    \
+    HConcat({ g2_##type, g2_##type }, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) = 32); EXPECT_TRUE(out_v({ 2,0,0 }) == 50); EXPECT_TRUE(out_v({ 3,0,0 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) = 60); EXPECT_TRUE(out_v({ 2,1,0 }) == 14); EXPECT_TRUE(out_v({ 3,1,0 }) = 60); \
+    \
+    HConcat({ rgb2_##type, rgb2_##type }, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) = 32); EXPECT_TRUE(out_v({ 2,0,0 }) == 50); EXPECT_TRUE(out_v({ 3,0,0 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) = 60); EXPECT_TRUE(out_v({ 2,1,0 }) == 14); EXPECT_TRUE(out_v({ 3,1,0 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == 50); EXPECT_TRUE(out_v({ 1,0,1 }) = 32); EXPECT_TRUE(out_v({ 2,0,1 }) == 50); EXPECT_TRUE(out_v({ 3,0,1 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == 14); EXPECT_TRUE(out_v({ 1,1,1 }) = 60); EXPECT_TRUE(out_v({ 2,1,1 }) == 14); EXPECT_TRUE(out_v({ 3,1,1 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == 50); EXPECT_TRUE(out_v({ 1,0,2 }) = 32); EXPECT_TRUE(out_v({ 2,0,2 }) == 50); EXPECT_TRUE(out_v({ 3,0,2 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == 14); EXPECT_TRUE(out_v({ 1,1,2 }) = 60); EXPECT_TRUE(out_v({ 2,1,2 }) == 14); EXPECT_TRUE(out_v({ 3,1,2 }) = 60); \
+} \
+\
+TEST_F(Imgproc, VConcat##type) \
+{ \
+    VConcat({ g1_##type, g1_##type }, out); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 50); \
+    \
+    VConcat({ g2_##type, g2_##type }, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,2,0 }) == 50); EXPECT_TRUE(out_v({ 1,2,0 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,3,0 }) == 14); EXPECT_TRUE(out_v({ 1,3,0 }) = 60); \
+    \
+    VConcat({ rgb2_##type, rgb2_##type }, out); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,2,0 }) == 50); EXPECT_TRUE(out_v({ 1,2,0 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,3,0 }) == 14); EXPECT_TRUE(out_v({ 1,3,0 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == 50); EXPECT_TRUE(out_v({ 1,0,1 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == 14); EXPECT_TRUE(out_v({ 1,1,1 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,2,1 }) == 50); EXPECT_TRUE(out_v({ 1,2,1 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,3,1 }) == 14); EXPECT_TRUE(out_v({ 1,3,1 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == 50); EXPECT_TRUE(out_v({ 1,0,2 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == 14); EXPECT_TRUE(out_v({ 1,1,2 }) = 60); \
+    EXPECT_TRUE(out_v({ 0,2,2 }) == 50); EXPECT_TRUE(out_v({ 1,2,2 }) = 32); \
+    EXPECT_TRUE(out_v({ 0,3,2 }) == 14); EXPECT_TRUE(out_v({ 1,3,2 }) = 60); \
+} \
+\
+TEST_F(Imgproc, ResizeDim##type) \
+{ \
+    ResizeDim(g2_uint8, out, { 1, 1 }, InterpolationType::nearest); \
+    View<DataType::uint8> out_v(out); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 1)); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    \
+    ResizeDim(g2_uint8, out, { 2, 1 }, InterpolationType::nearest); \
+    out_v = out; \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(2, 1, 1)); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) == 32); \
 }
 
-TEST(Imgproc, Mirroring)
-{
-    Image x({ 2, 2, 1 }, DataType::float32, "xyc", ColorType::GRAY);
-    Image y;
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
 
-    {
-        View<DataType::float32> x_v(x);
-        x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-        Mirror2D(x, y);
-
-        View<DataType::float32> y_v(y);
-        EXPECT_FLOAT_EQ(y_v({ 0,0,0 }), 1); EXPECT_FLOAT_EQ(y_v({ 1,0,0 }), 0);
-        EXPECT_FLOAT_EQ(y_v({ 0,1,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 1,1,0 }), 1);
-    }
-    {
-        // Test 1x1 Image
-        x = Image({ 1, 1, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
-        View<DataType::uint8> x_v(x);
-
-        x_v({ 0,0,0 }) = 1;
-        Mirror2D(x, y);
-        View<DataType::uint8> y_v(y);
-        EXPECT_EQ(y_v({ 0,0,0 }), 1);
-
-        // Test 3x3 Image
-        x = Image({ 3, 3, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
-        x_v = x;
-
-        x_v({ 0,0,0 }) = 1; x_v({ 1,0,0 }) = 2; x_v({ 2,0,0 }) = 3;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 2; x_v({ 2,1,0 }) = 3;
-        x_v({ 0,2,0 }) = 1; x_v({ 1,2,0 }) = 2; x_v({ 2,2,0 }) = 3;
-        Mirror2D(x, y);
-        y_v = y;
-        EXPECT_EQ(y_v({ 0,0,0 }), 3); EXPECT_EQ(y_v({ 1,0,0 }), 2); EXPECT_EQ(y_v({ 2,0,0 }), 1);
-        EXPECT_EQ(y_v({ 0,1,0 }), 3); EXPECT_EQ(y_v({ 1,1,0 }), 2); EXPECT_EQ(y_v({ 2,1,0 }), 1);
-        EXPECT_EQ(y_v({ 0,2,0 }), 3); EXPECT_EQ(y_v({ 1,2,0 }), 2); EXPECT_EQ(y_v({ 2,2,0 }), 1);
-    }
-}
-
-TEST(Imgproc, Flipping)
-{
-    Image x({ 2, 2, 1 }, DataType::float32, "xyc", ColorType::GRAY);
-    Image y;
-
-    {
-        View<DataType::float32> x_v(x);
-        x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-        Flip2D(x, y);
-
-        View<DataType::float32> y_v(y);
-        EXPECT_FLOAT_EQ(y_v({ 0,0,0 }), 1); EXPECT_FLOAT_EQ(y_v({ 1,0,0 }), 0);
-        EXPECT_FLOAT_EQ(y_v({ 0,1,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 1,1,0 }), 1);
-    }
-    {
-        // Test 1x1 Image
-        x = Image({ 1, 1, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
-        View<DataType::uint8> x_v(x);
-
-        x_v({ 0,0,0 }) = 1;
-        Flip2D(x, y);
-        View<DataType::uint8> y_v(y);
-        EXPECT_EQ(y_v({ 0,0,0 }), 1);
-
-        // Test 3x3 Image
-        x = Image({ 3, 3, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
-        x_v = x;
-        x_v({ 0,0,0 }) = 1; x_v({ 1,0,0 }) = 1; x_v({ 2,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 2; x_v({ 1,1,0 }) = 2; x_v({ 2,1,0 }) = 2;
-        x_v({ 0,2,0 }) = 3; x_v({ 1,2,0 }) = 3; x_v({ 2,2,0 }) = 3;
-        Flip2D(x, y);
-        y_v = y;
-        EXPECT_EQ(y_v({ 0,0,0 }), 3); EXPECT_EQ(y_v({ 1,0,0 }), 3); EXPECT_EQ(y_v({ 2,0,0 }), 3);
-        EXPECT_EQ(y_v({ 0,1,0 }), 2); EXPECT_EQ(y_v({ 1,1,0 }), 2); EXPECT_EQ(y_v({ 2,1,0 }), 2);
-        EXPECT_EQ(y_v({ 0,2,0 }), 1); EXPECT_EQ(y_v({ 1,2,0 }), 1); EXPECT_EQ(y_v({ 2,2,0 }), 1);
-    }
-}
-
-TEST(Imgproc, HConcatenating)
-{
-    Image x({ 2, 2, 1 }, DataType::float32, "xyc", ColorType::GRAY);
-    Image y;
-
-    {
-        View<DataType::float32> x_v(x);
-        x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-        HConcat({ x, Neg(x) }, y);
-        View<DataType::float32> y_v(y);
-
-        // row 0
-        EXPECT_FLOAT_EQ(y_v({ 0,0,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 1,0,0 }), 1);
-        EXPECT_FLOAT_EQ(y_v({ 2,0,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 3,0,0 }), -1);
-        // row 1
-        EXPECT_FLOAT_EQ(y_v({ 0,1,0 }), 1); EXPECT_FLOAT_EQ(y_v({ 1,1,0 }), 0);
-        EXPECT_FLOAT_EQ(y_v({ 2,1,0 }), -1); EXPECT_FLOAT_EQ(y_v({ 3,1,0 }), 0);
-    }
-    {
-        // Test 1x1 Image
-        x = Image({ 1, 1, 1 }, DataType::int32, "xyc", ColorType::GRAY);
-        View<DataType::int32> x_v(x);
-
-        x_v({ 0,0,0 }) = 1;
-        HConcat({ x, Neg(x) }, y);
-        View<DataType::int32> y_v(y);
-        EXPECT_EQ(y_v({ 0,0,0 }), 1); EXPECT_EQ(y_v({ 1,0,0 }), -1);
-
-        // Test 2x2 Image
-        x = Image({ 2, 2, 1 }, DataType::int32, "xyc", ColorType::GRAY);
-        x_v = x;
-        x_v({ 0,0,0 }) = 1; x_v({ 1,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 1;
-        HConcat({ x, Neg(x) }, y);
-        y_v = y;
-        EXPECT_EQ(y_v({ 0,0,0 }), 1); EXPECT_EQ(y_v({ 1,0,0 }), 1); EXPECT_EQ(y_v({ 2,0,0 }), -1); EXPECT_EQ(y_v({ 3,0,0 }), -1);
-        EXPECT_EQ(y_v({ 0,1,0 }), 1); EXPECT_EQ(y_v({ 1,1,0 }), 1); EXPECT_EQ(y_v({ 2,1,0 }), -1); EXPECT_EQ(y_v({ 3,1,0 }), -1);
-    }
-}
-
-TEST(Imgproc, VConcatenating)
-{
-    Image x({ 2, 2, 1 }, DataType::float32, "xyc", ColorType::GRAY);
-    Image y;
-
-    {
-        View<DataType::float32> x_v(x);
-        x_v({ 0,0,0 }) = 0; x_v({ 1,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 0;
-        VConcat({ x, Neg(x) }, y);
-        View<DataType::float32> y_v(y);
-
-        EXPECT_FLOAT_EQ(y_v({ 0,0,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 1,0,0 }), 1);
-        EXPECT_FLOAT_EQ(y_v({ 0,1,0 }), 1); EXPECT_FLOAT_EQ(y_v({ 1,1,0 }), 0);
-
-        EXPECT_FLOAT_EQ(y_v({ 0,2,0 }), 0); EXPECT_FLOAT_EQ(y_v({ 1,2,0 }), -1);
-        EXPECT_FLOAT_EQ(y_v({ 0,3,0 }), -1); EXPECT_FLOAT_EQ(y_v({ 1,3,0 }), 0);
-    }
-    {
-        // Test 1x1 Image
-        x = Image({ 1, 1, 1 }, DataType::int32, "xyc", ColorType::GRAY);
-        View<DataType::int32> x_v(x);
-
-        x_v({ 0,0,0 }) = 1;
-        VConcat({ x, Neg(x) }, y);
-        View<DataType::int32> y_v(y);
-        EXPECT_EQ(y_v({ 0,0,0 }), 1);
-        EXPECT_EQ(y_v({ 0,1,0 }), -1);
-
-        // Test 2x2 Image
-        x = Image({ 2, 2, 1 }, DataType::int32, "xyc", ColorType::GRAY);
-        x_v = x;
-        x_v({ 0,0,0 }) = 1; x_v({ 1,0,0 }) = 1;
-        x_v({ 0,1,0 }) = 1; x_v({ 1,1,0 }) = 1;
-        VConcat({ x, Neg(x) }, y);
-        y_v = y;
-        EXPECT_EQ(y_v({ 0,0,0 }), 1); EXPECT_EQ(y_v({ 1,0,0 }), 1);
-        EXPECT_EQ(y_v({ 0,1,0 }), 1); EXPECT_EQ(y_v({ 1,1,0 }), 1);
-        EXPECT_EQ(y_v({ 0,2,0 }), -1); EXPECT_EQ(y_v({ 1,2,0 }), -1);
-        EXPECT_EQ(y_v({ 0,3,0 }), -1); EXPECT_EQ(y_v({ 1,3,0 }), -1);
-    }
 }
