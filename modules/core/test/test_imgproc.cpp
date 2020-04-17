@@ -38,6 +38,8 @@ protected:
 
     void SetUp() override
     {
+        out = Image();
+
 #define ECVL_TUPLE(type, ...) \
         g1_##type##_v = g1_##type; \
         g1_##type##_v({ 0,0,0 }) = 50; \
