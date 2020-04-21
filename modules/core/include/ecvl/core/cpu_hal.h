@@ -20,7 +20,6 @@
 
 namespace ecvl
 {
-
 /** @brief CPU specific Hardware Abstraction Layer
 
 */
@@ -39,18 +38,40 @@ public:
     {
         return reinterpret_cast<uint8_t*>(std::memcpy(dst, src, nbytes));
     }
-    
+
     static CpuHal* GetInstance();
 
     void CopyImage(const Image& src, Image& dst) override;
     void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) override;
 
+    void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) override;
+    void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) override;
     void Flip2D(const ecvl::Image& src, ecvl::Image& dst) override;
     void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) override;
+    void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp) override;
+    void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp) override;
+    void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type) override;
+    void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type) override;
     std::vector<double> Histogram(const Image& src) override;
     int OtsuThreshold(const Image& src) override;
     void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) override;
+    void SeparableFilter2D(const Image& src, Image& dst, const std::vector<double>& kerX, const std::vector<double>& kerY, DataType type) override;
+    void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY) override;
     void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev) override;
+    void AdditivePoissonNoise(const Image& src, Image& dst, double lambda) override;
+    void GammaContrast(const Image& src, Image& dst, double gamma) override;
+    void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel) override;
+    void IntegralImage(const Image& src, Image& dst, DataType dst_type) override;
+    void NonMaximaSuppression(const Image& src, Image& dst) override;
+    std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n) override;
+    void ConnectedComponentsLabeling(const Image& src, Image& dst) override;
+    void FindContours(const Image& src, std::vector<std::vector<ecvl::Point2i>>& contours) override;
+    void Stack(const std::vector<Image>& src, Image& dst) override;
+    void HConcat(const std::vector<Image>& src, Image& dst) override;
+    void VConcat(const std::vector<Image>& src, Image& dst) override;
+    void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue) override;
+    void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag) override;
+    void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
@@ -73,7 +94,6 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-
 };
 
 class ShallowCpuHal : public CpuHal
@@ -91,6 +111,5 @@ public:
 
     static ShallowCpuHal* GetInstance();
 };
-
 } // namespace ecvl
 #endif // ECVL_CPU_HAL_H_

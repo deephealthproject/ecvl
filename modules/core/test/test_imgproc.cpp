@@ -185,5 +185,4 @@ TEST_F(Imgproc, ResizeDim##type) \
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-
 }
