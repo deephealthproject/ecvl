@@ -35,6 +35,12 @@ enum class Device
     FPGA,  /**< FPGA Device */
 };
 
+enum class ThresholdingType;
+enum class InterpolationType;
+enum class ColorType;
+enum class MorphTypes;
+enum class InpaintTypes;
+
 class Image;
 
 /** @brief Hardware Abstraction Layer (HAL) is an abstraction layer to interact with a hardware device at a
@@ -97,12 +103,34 @@ public:
     */
     virtual void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) { ECVL_ERROR_NOT_IMPLEMENTED }
 
+    virtual void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Flip2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual std::vector<double> Histogram(const Image& src) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual int OtsuThreshold(const Image& src) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void SeparableFilter2D(const Image& src, Image& dst, const std::vector<double>& kerX, const std::vector<double>& kerY, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void AdditivePoissonNoise(const Image& src, Image& dst, double lambda) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void GammaContrast(const Image& src, Image& dst, double gamma) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void IntegralImage(const Image& src, Image& dst, DataType dst_type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void NonMaximaSuppression(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ConnectedComponentsLabeling(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void FindContours(const Image& src, std::vector<std::vector<ecvl::Point2i>>& contours) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Stack(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void HConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void VConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 
