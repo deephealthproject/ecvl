@@ -69,7 +69,6 @@ void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     AlwaysCheck(src, dst);
 
-    dst.Create(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->Flip2D(src, dst);
 }
 
@@ -77,7 +76,6 @@ void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     AlwaysCheck(src, dst);
 
-    dst.Create(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->Mirror2D(src, dst);
 }
 
@@ -122,7 +120,6 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
 {
     AlwaysCheck(src, dst);
 
-    dst.Create(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->Threshold(src, dst, thresh, maxval, thresh_type);
 }
 
@@ -172,7 +169,6 @@ void Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
         type = src.elemtype_;
     }
 
-    dst.Create(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->Filter2D(src, dst, ker, type);
 }
 
@@ -192,7 +188,6 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
         type = src.elemtype_;
     }
 
-    dst.Create(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->SeparableFilter2D(src, dst, kerX, kerY, type);
 }
 
@@ -261,7 +256,6 @@ void AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)
         ECVL_ERROR_WRONG_PARAMS("std_dev must be >= 0")
     }
 
-    dst.Create(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->AdditiveLaplaceNoise(src, dst, std_dev);
 }
 
@@ -277,7 +271,6 @@ void AdditivePoissonNoise(const Image& src, Image& dst, double lambda)
         ECVL_ERROR_WRONG_PARAMS("lambda must be >= 0")
     }
 
-    dst.Create(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->AdditivePoissonNoise(src, dst, lambda);
 }
 
@@ -289,7 +282,6 @@ void GammaContrast(const Image& src, Image& dst, double gamma)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    dst.Create(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
     src.hal_->GammaContrast(src, dst, gamma);
 }
 
@@ -301,7 +293,6 @@ void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, boo
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    dst = src;
     src.hal_->CoarseDropout(src, dst, p, drop_size, per_channel);
 }
 
@@ -313,7 +304,6 @@ void IntegralImage(const Image& src, Image& dst, DataType dst_type)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    dst.Create({ src.dims_[0] + 1, src.dims_[1] + 1, src.dims_[2] }, dst_type, src.channels_, ColorType::GRAY, src.spacings_, src.dev_);
     src.hal_->IntegralImage(src, dst, dst_type);
 }
 
@@ -325,7 +315,6 @@ void NonMaximaSuppression(const Image& src, Image& dst)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    dst = src;
     src.hal_->NonMaximaSuppression(src, dst);
 }
 
@@ -350,7 +339,6 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    dst.Create(src.dims_, DataType::int32, "xyc", ColorType::GRAY, src.spacings_, src.dev_);
     src.hal_->ConnectedComponentsLabeling(src, dst);
 }
 

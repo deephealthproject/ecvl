@@ -82,16 +82,18 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     int src_width = src.Width();
     int src_height = src.Height();
     int src_channels = src.Channels();
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
     int src_stride_c = src.strides_[c_pos];
     int src_stride_x = src.strides_[x_pos];
     int src_stride_y = src.strides_[y_pos];
-    vector<uint8_t*> src_vch(src_channels), dst_vch(src_channels);
+
+    vector<uint8_t*> src_vch(src_channels), tmp_vch(src_channels);
 
     // Get the pointers to channels starting pixels
     for (int i = 0; i < src_channels; ++i) {
         src_vch[i] = src.data_ + i * src_stride_c;
-        dst_vch[i] = dst.data_ + i * src_stride_c;
+        tmp_vch[i] = tmp.data_ + i * src_stride_c;
     }
 
     int pivot = (src_height + 1) / 2;
@@ -107,8 +109,8 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             for (int ch = 0; ch < src_channels; ++ch) { \
-                *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
-                *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
             } \
             break;
 
@@ -119,6 +121,7 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 #undef ECVL_TUPLE
         }
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
@@ -134,16 +137,17 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
     int src_width = src.Width();
     int src_height = src.Height();
     int src_channels = src.Channels();
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
     int src_stride_c = src.strides_[c_pos];
     int src_stride_x = src.strides_[x_pos];
     int src_stride_y = src.strides_[y_pos];
-    vector<uint8_t*> src_vch(src_channels), dst_vch(src_channels);
+    vector<uint8_t*> src_vch(src_channels), tmp_vch(src_channels);
 
     // Get the pointers to channels starting pixels
     for (int i = 0; i < src_channels; ++i) {
         src_vch[i] = src.data_ + i * src_stride_c;
-        dst_vch[i] = dst.data_ + i * src_stride_c;
+        tmp_vch[i] = tmp.data_ + i * src_stride_c;
     }
 
     int pivot = (src_width + 1) / 2;
@@ -158,8 +162,8 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             for (int ch = 0; ch < src_channels; ++ch) { \
-                *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
-                *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
             } \
             break;
 
@@ -170,6 +174,7 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 #undef ECVL_TUPLE
         }
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)
@@ -235,15 +240,17 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
+    Image tmp;
+
     if (src.colortype_ == ColorType::GRAY) {
         if (new_type == ColorType::RGB || new_type == ColorType::BGR) {
             if (src.channels_ == "xyc") {
                 auto dims = src.dims_;
                 dims[2] = 3;
-                dst.Create(dims, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
-                auto plane0 = dst.data_ + 0 * dst.strides_[2];
-                auto plane1 = dst.data_ + 1 * dst.strides_[2];
-                auto plane2 = dst.data_ + 2 * dst.strides_[2];
+                tmp.Create(dims, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
+                auto plane0 = tmp.data_ + 0 * tmp.strides_[2];
+                auto plane1 = tmp.data_ + 1 * tmp.strides_[2];
+                auto plane2 = tmp.data_ + 2 * tmp.strides_[2];
                 if (src.contiguous_) {
                     memcpy(plane0, src.data_, src.datasize_);
                     memcpy(plane1, src.data_, src.datasize_);
@@ -264,10 +271,10 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             else if (src.channels_ == "cxy") {
                 auto dims = src.dims_;
                 dims[0] = 3;
-                dst.Create(dims, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
-                auto plane0 = dst.data_ + 0 * dst.strides_[0];
-                auto plane1 = dst.data_ + 1 * dst.strides_[0];
-                auto plane2 = dst.data_ + 2 * dst.strides_[0];
+                tmp.Create(dims, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
+                auto plane0 = tmp.data_ + 0 * tmp.strides_[0];
+                auto plane1 = tmp.data_ + 1 * tmp.strides_[0];
+                auto plane2 = tmp.data_ + 2 * tmp.strides_[0];
                 auto i = src.Begin<uint8_t>(), e = src.End<uint8_t>();
                 for (; i != e; ++i) {
                     memcpy(plane0, i.ptr_, src.elemsize_);
@@ -282,6 +289,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
                 ECVL_ERROR_NOT_IMPLEMENTED
             }
         }
+        dst = std::move(tmp);
         return;
     }
 
@@ -291,27 +299,28 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             ECVL_ERROR_WRONG_PARAMS("Malformed src image")
         }
 
-        std::vector<int> dst_dims = src.dims_;
-        dst_dims[c_pos] = 1;
+        std::vector<int> tmp_dims = src.dims_;
+        tmp_dims[c_pos] = 1;
 
-        dst.Create(dst_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_);
+        tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_);
 
         const uint8_t* r = src.data_ + ((src.colortype_ == ColorType::RGB) ? 0 : 2) * src.strides_[c_pos];
         const uint8_t* g = src.data_ + 1 * src.strides_[c_pos];
         const uint8_t* b = src.data_ + ((src.colortype_ == ColorType::RGB) ? 2 : 0) * src.strides_[c_pos];
 
-        for (size_t dst_pos = 0; dst_pos < dst.datasize_; dst_pos += dst.elemsize_) {
-            int x = static_cast<int>(dst_pos);
+        for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
+            int x = static_cast<int>(tmp_pos);
             int src_pos = 0;
-            for (int i = vsize(dst.dims_) - 1; i >= 0; i--) {
+            for (int i = vsize(tmp.dims_) - 1; i >= 0; i--) {
                 if (i != c_pos) {
-                    src_pos += (x / dst.strides_[i]) * src.strides_[i];
-                    x %= dst.strides_[i];
+                    src_pos += (x / tmp.strides_[i]) * src.strides_[i];
+                    x %= tmp.strides_[i];
                 }
             }
 
-            RGB2GRAYGeneric(r + src_pos, g + src_pos, b + src_pos, dst.data_ + dst_pos, src.elemtype_);
+            RGB2GRAYGeneric(r + src_pos, g + src_pos, b + src_pos, tmp.data_ + tmp_pos, src.elemtype_);
         }
+        dst = std::move(tmp);
         return;
     }
 
@@ -320,10 +329,10 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
         if (src.channels_ == "xyc") {
-            dst.Create(src.dims_, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
-            auto plane0 = dst.data_ + 0 * dst.strides_[2];
-            auto plane1 = dst.data_ + 1 * dst.strides_[2];
-            auto plane2 = dst.data_ + 2 * dst.strides_[2];
+            tmp.Create(src.dims_, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
+            auto plane0 = tmp.data_ + 0 * tmp.strides_[2];
+            auto plane1 = tmp.data_ + 1 * tmp.strides_[2];
+            auto plane2 = tmp.data_ + 2 * tmp.strides_[2];
             if (src.contiguous_) {
                 memcpy(plane0, src.data_ + 2 * src.strides_[2], src.strides_[2]);
                 memcpy(plane1, src.data_ + 1 * src.strides_[2], src.strides_[2]);
@@ -334,10 +343,10 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             }
         }
         else if (src.channels_ == "cxy") {
-            dst.Create(src.dims_, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
-            auto plane0 = dst.data_ + 0 * dst.strides_[0];
-            auto plane1 = dst.data_ + 1 * dst.strides_[0];
-            auto plane2 = dst.data_ + 2 * dst.strides_[0];
+            tmp.Create(src.dims_, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
+            auto plane0 = tmp.data_ + 0 * tmp.strides_[0];
+            auto plane1 = tmp.data_ + 1 * tmp.strides_[0];
+            auto plane2 = tmp.data_ + 2 * tmp.strides_[0];
             auto i = src.Begin<uint8_t>(), e = src.End<uint8_t>();
             for (; i != e; ++i) {
                 memcpy(plane0, i.ptr_ + 2 * src.elemsize_, src.elemsize_);
@@ -352,6 +361,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         else {
             ECVL_ERROR_NOT_IMPLEMENTED
         }
+        dst = std::move(tmp);
         return;
     }
 
@@ -361,29 +371,32 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 template <typename T>
 void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
 {
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
     auto thresh_t = saturate_cast<T>(thresh);
     auto maxval_t = saturate_cast<T>(maxval);
     auto minval_t = static_cast<T>(0);
     T* src_data = reinterpret_cast<T*>(src.data_);
-    T* dst_data = reinterpret_cast<T*>(dst.data_);
+    T* tmp_data = reinterpret_cast<T*>(tmp.data_);
     auto elemsize = src.elemsize_;
 
     switch (thresh_type) {
     case ecvl::ThresholdingType::BINARY:
-        for (size_t i = 0; i < dst.datasize_; i += elemsize) {
-            *dst_data = *src_data > thresh_t ? maxval_t : minval_t;
+        for (size_t i = 0; i < tmp.datasize_; i += elemsize) {
+            *tmp_data = *src_data > thresh_t ? maxval_t : minval_t;
             ++src_data;
-            ++dst_data;
+            ++tmp_data;
         }
         break;
     case ecvl::ThresholdingType::BINARY_INV:
-        for (size_t i = 0; i < dst.datasize_; i += elemsize) {
-            *dst_data = *src_data <= thresh_t ? maxval_t : minval_t;
+        for (size_t i = 0; i < tmp.datasize_; i += elemsize) {
+            *tmp_data = *src_data <= thresh_t ? maxval_t : minval_t;
             ++src_data;
-            ++dst_data;
+            ++tmp_data;
         }
         break;
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
@@ -445,29 +458,31 @@ int CpuHal::OtsuThreshold(const Image& src)
 
 void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
 {
+    Image tmp(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
     int hlf_width = ker.dims_[0] / 2;
     int hlf_height = ker.dims_[1] / 2;
 
     TypeInfo_t<DataType::float64>* ker_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(ker.data_);
 
-    uint8_t* dst_ptr = dst.data_;
+    uint8_t* tmp_ptr = tmp.data_;
 
-    //auto dst_it = dst.ContiguousBegin<TypeInfo_t<DataType::uint8>>();
-    //auto dst_it_end = dst.ContiguousEnd<TypeInfo_t<DataType::uint8>>();
+    //auto tmp_it = tmp.ContiguousBegin<TypeInfo_t<DataType::uint8>>();
+    //auto tmp_it_end = tmp.ContiguousEnd<TypeInfo_t<DataType::uint8>>();
 
     TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
-    for (int chan = 0; chan < dst.dims_[2]; chan++) {
-        for (int r = 0; r < dst.dims_[1]; r++) {
-            for (int c = 0; c < dst.dims_[0]; c++) {
+    for (int chan = 0; chan < tmp.dims_[2]; chan++) {
+        for (int r = 0; r < tmp.dims_[1]; r++) {
+            for (int c = 0; c < tmp.dims_[0]; c++) {
                 double acc = 0;
                 int i = 0;
                 for (int rk = 0; rk < ker.dims_[1]; rk++) {
                     for (int ck = 0; ck < ker.dims_[0]; ck++) {
                         int x = c + ck - hlf_width;
-                        if (x < 0) x = 0; else if (x >= dst.dims_[0]) x = dst.dims_[0] - 1;
+                        if (x < 0) x = 0; else if (x >= tmp.dims_[0]) x = tmp.dims_[0] - 1;
 
                         int y = r + rk - hlf_height;
-                        if (y < 0) y = 0; else if (y >= dst.dims_[1]) y = dst.dims_[1] - 1;
+                        if (y < 0) y = 0; else if (y >= tmp.dims_[1]) y = tmp.dims_[1] - 1;
 
                         acc += ker_data[i] * src_data[x + y * src.strides_[1]];
 
@@ -476,7 +491,7 @@ void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType t
                 }
 
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
 
                 switch (type) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
@@ -484,59 +499,61 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = s
 
 #undef ECVL_TUPLE
 
-                dst_ptr += dst.elemsize_;
+                tmp_ptr += tmp.elemsize_;
             }
         }
 
         src_data += src.strides_[2] / sizeof(*src_data);
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type)
 {
-    Image tmp(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
+    Image tmp1(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
+    Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
     int hlf_width = vsize(kerX) / 2;
     int hlf_height = vsize(kerY) / 2;
 
     // X direction
-    auto tmp_it = tmp.ContiguousBegin<TypeInfo_t<DataType::float64>>();
+    auto tmp1_it = tmp1.ContiguousBegin<TypeInfo_t<DataType::float64>>();
     TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
-    for (int chan = 0; chan < tmp.dims_[2]; chan++) {
-        for (int r = 0; r < tmp.dims_[1]; r++) {
-            for (int c = 0; c < tmp.dims_[0]; c++) {
+    for (int chan = 0; chan < tmp1.dims_[2]; chan++) {
+        for (int r = 0; r < tmp1.dims_[1]; r++) {
+            for (int c = 0; c < tmp1.dims_[0]; c++) {
                 double acc = 0;
                 for (unsigned int ck = 0; ck < kerX.size(); ck++) {
                     int x = c + ck - hlf_width;
-                    if (x < 0) x = 0; else if (x >= tmp.dims_[0]) x = tmp.dims_[0] - 1;
+                    if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1;
 
                     acc += kerX[ck] * src_data[x];
                 }
 
-                *tmp_it = acc;
-                ++tmp_it;
+                *tmp1_it = acc;
+                ++tmp1_it;
             }
 
             src_data += src.strides_[1] / sizeof(*src_data);
         }
     }
 
-    uint8_t* dst_ptr = dst.data_;
+    uint8_t* tmp2_ptr = tmp2.data_;
 
     // Y direction
-    TypeInfo_t<DataType::float64>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(tmp.data_);
-    for (int chan = 0; chan < dst.dims_[2]; chan++) {
-        for (int r = 0; r < dst.dims_[1]; r++) {
-            for (int c = 0; c < dst.dims_[0]; c++) {
+    TypeInfo_t<DataType::float64>* tmp1_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(tmp1.data_);
+    for (int chan = 0; chan < tmp2.dims_[2]; chan++) {
+        for (int r = 0; r < tmp2.dims_[1]; r++) {
+            for (int c = 0; c < tmp2.dims_[0]; c++) {
                 double acc = 0;
                 for (unsigned int rk = 0; rk < kerY.size(); rk++) {
                     int y = r + rk - hlf_height;
-                    if (y < 0) y = 0; else if (y >= dst.dims_[1]) y = dst.dims_[1] - 1;
+                    if (y < 0) y = 0; else if (y >= tmp2.dims_[1]) y = tmp2.dims_[1] - 1;
 
-                    acc += kerY[rk] * tmp_data[c + y * tmp.strides_[1] / sizeof(*tmp_data)];
+                    acc += kerY[rk] * tmp1_data[c + y * tmp1.strides_[1] / sizeof(*tmp1_data)];
                 }
 
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
 
                 switch (type) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
@@ -544,12 +561,13 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = s
 
 #undef ECVL_TUPLE
 
-                dst_ptr += dst.elemsize_;
+                tmp2_ptr += tmp2.elemsize_;
             }
         }
 
-        tmp_data += tmp.strides_[2] / sizeof(*tmp_data);
+        tmp1_data += tmp1.strides_[2] / sizeof(*tmp1_data);
     }
+    dst = std::move(tmp2);
 }
 
 void CpuHal::GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
@@ -583,63 +601,74 @@ void CpuHal::GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, do
 
 void CpuHal::AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)
 {
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
     random_device rd;
     mt19937 gen(rd());
     exponential_distribution<> dist(1 / std_dev);
 
-    for (uint8_t* dst_ptr = dst.data_, *src_ptr = src.data_; dst_ptr < dst.data_ + dst.datasize_; dst_ptr += dst.elemsize_, src_ptr += src.elemsize_) {
+    for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
         double exp1 = dist(gen);
         double exp2 = dist(gen);
 
         double noise = exp1 - exp2;
 
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
 
-        switch (dst.elemtype_) {
+        switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
 #undef ECVL_TUPLE
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::AdditivePoissonNoise(const Image& src, Image& dst, double lambda)
 {
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
     random_device rd;
     mt19937 gen(rd());
     poisson_distribution<> dist(lambda);
 
-    for (uint8_t* dst_ptr = dst.data_, *src_ptr = src.data_; dst_ptr < dst.data_ + dst.datasize_; dst_ptr += dst.elemsize_, src_ptr += src.elemsize_) {
+    for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
         double noise = dist(gen);
 
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
 
-        switch (dst.elemtype_) {
+        switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
 #undef ECVL_TUPLE
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::GammaContrast(const Image& src, Image& dst, double gamma)
 {
-    for (uint8_t* dst_ptr = dst.data_, *src_ptr = src.data_; dst_ptr < dst.data_ + dst.datasize_; dst_ptr += dst.elemsize_, src_ptr += src.elemsize_) {
-#define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
-        switch (dst.elemtype_) {
+    for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
+
+        switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
 #undef ECVL_TUPLE
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel)
 {
+    Image tmp = src;
+
     int rectX = static_cast<int>(src.dims_[0] * drop_size);
     int rectY = static_cast<int>(src.dims_[1] * drop_size);
 
@@ -656,7 +685,7 @@ void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_s
 
     if (per_channel) {
         for (int ch = 0; ch < src.dims_[2]; ch++) {
-            uint8_t* dst_ptr = dst.Ptr({ 0, 0, ch });
+            uint8_t* tmp_ptr = tmp.Ptr({ 0, 0, ch });
 
             for (int r = 0; r < src.dims_[1]; r += rectY) {
                 for (int c = 0; c < src.dims_[0]; c += rectX) {
@@ -664,9 +693,9 @@ void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_s
                         for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
                             for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr + rdrop * dst.strides_[1] + cdrop * dst.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
-                                switch (dst.elemtype_) {
+                                switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
                                 }
 
@@ -680,8 +709,8 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr + rd
     }
     else {
         vector<uint8_t*> channel_ptrs;
-        for (int ch = 0; ch < dst.dims_[2]; ch++) {
-            channel_ptrs.push_back(dst.Ptr({ 0, 0, ch }));
+        for (int ch = 0; ch < tmp.dims_[2]; ch++) {
+            channel_ptrs.push_back(tmp.Ptr({ 0, 0, ch }));
         }
 
         for (int r = 0; r < src.dims_[1]; r += rectY) {
@@ -691,9 +720,9 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_ptr + rd
                         for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
                             for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * dst.strides_[1] + cdrop * dst.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
-                                switch (dst.elemtype_) {
+                                switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
                                 }
 
@@ -705,38 +734,43 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs
             }
         }
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::IntegralImage(const Image& src, Image& dst, DataType dst_type)
 {
-    ConstContiguousViewXYC<DataType::uint8> vsrc(src);
-    ContiguousViewXYC<DataType::float64> vdst(dst);
+    Image tmp({ src.dims_[0] + 1, src.dims_[1] + 1, src.dims_[2] }, dst_type, src.channels_, ColorType::GRAY, src.spacings_, src.dev_);
 
-    switch (dst.elemtype_) {
+    ConstContiguousViewXYC<DataType::uint8> vsrc(src);
+    ContiguousViewXYC<DataType::float64> vtmp(tmp);
+
+    switch (tmp.elemtype_) {
     case DataType::float64:
-        for (int y = 0; y < vdst.height(); ++y) {
-            for (int x = 0; x < vdst.width(); ++x) {
+        for (int y = 0; y < vtmp.height(); ++y) {
+            for (int x = 0; x < vtmp.width(); ++x) {
                 if (!x || !y) {
-                    vdst(x, y, 0) = 0.;
+                    vtmp(x, y, 0) = 0.;
                 }
                 else {
-                    vdst(x, y, 0) = vsrc(x - 1, y - 1, 0) + vdst(x - 1, y, 0) + vdst(x, y - 1, 0) - vdst(x - 1, y - 1, 0);
+                    vtmp(x, y, 0) = vsrc(x - 1, y - 1, 0) + vtmp(x - 1, y, 0) + vtmp(x, y - 1, 0) - vtmp(x - 1, y - 1, 0);
                 }
             }
         }
         break;
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::NonMaximaSuppression(const Image& src, Image& dst)
 {
-    memset(dst.data_, 0, dst.datasize_);
+    Image tmp = src;
+    memset(tmp.data_, 0, tmp.datasize_);
 
     ConstContiguousViewXYC<DataType::int32> vsrc(src);
-    ContiguousViewXYC<DataType::int32> vdst(dst);
+    ContiguousViewXYC<DataType::int32> vtmp(tmp);
 
-    for (int y = 1; y < vdst.height() - 1; ++y) {
-        for (int x = 1; x < vdst.width() - 1; ++x) {
+    for (int y = 1; y < vtmp.height() - 1; ++y) {
+        for (int x = 1; x < vtmp.width() - 1; ++x) {
             int cur = vsrc(x, y, 0);
             if (cur < vsrc(x - 1, y - 1, 0) ||
                 cur < vsrc(x - 1, y, 0) ||
@@ -748,9 +782,10 @@ void CpuHal::NonMaximaSuppression(const Image& src, Image& dst)
                 cur < vsrc(x + 1, y + 1, 0)) {
                 continue;
             }
-            vdst(x, y, 0) = cur;
+            vtmp(x, y, 0) = cur;
         }
     }
+    dst = std::move(tmp);
 }
 
 vector<ecvl::Point2i> CpuHal::GetMaxN(const Image& src, size_t n)
@@ -829,6 +864,8 @@ struct UFPC
 
 void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 {
+    Image tmp(src.dims_, DataType::int32, "xyc", ColorType::GRAY, src.spacings_, src.dev_);
+
     const int h = src.dims_[1];
     const int w = src.dims_[0];
 
@@ -930,7 +967,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         // Single line
         int r = 0;
         const unsigned char* const img_row = src.Ptr({ 0, 0, 0 });
-        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(dst.Ptr({ 0, 0, 0 }));
+        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, 0, 0 }));
         int c = -2;
 #include "labeling_bolelli_2019_forest_singleline.inc"
     }
@@ -941,7 +978,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         {
             int r = 0;
             const unsigned char* const img_row = src.Ptr({ 0, 0, 0 });
-            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(dst.Ptr({ 0, 0, 0 }));
+            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, 0, 0 }));
             const unsigned char* const img_row_fol = img_row + src.strides_[1];
 
             int c = -2;
@@ -956,8 +993,8 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
             const unsigned char* const img_row_prev = img_row - src.strides_[1];
             const unsigned char* const img_row_prev_prev = img_row_prev - src.strides_[1];
             const unsigned char* const img_row_fol = img_row + src.strides_[1];
-            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(dst.Ptr({ 0, r, 0 }));
-            unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * dst.strides_[1]));
+            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+            unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * tmp.strides_[1]));
 
             int c = -2;
             goto tree_0;
@@ -971,8 +1008,8 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
             const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
             const unsigned char* const img_row_prev = img_row - src.strides_[1];
             const unsigned char* const img_row_prev_prev = img_row_prev - src.strides_[1];
-            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(dst.Ptr({ 0, r, 0 }));
-            unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * dst.strides_[1]));
+            unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+            unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * tmp.strides_[1]));
 
             int c = -2;
 #include "labeling_bolelli_2019_forest_lastline.inc"
@@ -1040,8 +1077,8 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
         const unsigned char* const img_row_fol = img_row + src.strides_[1];
 
-        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(dst.Ptr({ 0, r, 0 }));
-        unsigned* const img_labels_row_fol = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) + dst.strides_[1]));
+        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
+        unsigned* const img_labels_row_fol = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) + tmp.strides_[1]));
 
         int c = 0;
         for (; c < e_cols; c += 2) {
@@ -1096,7 +1133,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
     if (o_rows) {
         // Get rows pointer
         const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
-        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(dst.Ptr({ 0, r, 0 }));
+        unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, r, 0 }));
 
         int c = 0;
         for (; c < e_cols; c += 2) {
@@ -1134,6 +1171,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
     }
 
     delete[] P;
+    dst = std::move(tmp);
 }
 
 void CpuHal::FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
@@ -1142,11 +1180,7 @@ void CpuHal::FindContours(const Image& src, vector<vector<ecvl::Point2i>>& conto
 
     vector<vector<cv::Point>> cv_contours;
     vector<cv::Vec4i> hierarchy;
-#if OpenCV_VERSION_MAJOR > 3
-    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
-#else
-    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
-#endif // OpenCV_VERSION_MAJOR > 3
+    cv::findContours(cv_src, cv_contours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
 
     contours.resize(cv_contours.size());
     for (int i = 0; i < vsize(cv_contours); ++i) {
@@ -1165,13 +1199,14 @@ void CpuHal::Stack(const vector<Image>& src, Image& dst)
 
     // If src is a vector of xyc Image
     if (src_0.channels_ == "xyc") {
-        dst.Create({ src_0.dims_[0], src_0.dims_[1], n_images * src_0.dims_[2] }, src_0.elemtype_, "xyo", src_0.colortype_, src_0.spacings_, src_0.dev_);
+        Image tmp({ src_0.dims_[0], src_0.dims_[1], n_images * src_0.dims_[2] }, src_0.elemtype_, "xyo", src_0.colortype_, src_0.spacings_, src_0.dev_);
 
         for (int i = 0; i < n_images; ++i) {
             for (int j = 0; j < src[i].Channels(); ++j) {
-                memcpy(dst.data_ + src[i].strides_[2] * (i + j * n_images), src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
+                memcpy(tmp.data_ + src[i].strides_[2] * (i + j * n_images), src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
             }
         }
+        dst = std::move(tmp);
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -1199,16 +1234,16 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
 
     vector<int> new_dims(src_0.dims_);
     new_dims[x_pos] = new_width;
-    dst.Create(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_);
+    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_);
 
     // If src is a vector of xyc Image(s)
     if (src_0.channels_ == "xyc") {
         // 4x time faster than generic version below
-        // Fill each dst color plane by row
+        // Fill each tmp color plane by row
         for (int i = 0; i < src_0.Channels(); ++i) {
             for (int r = 0; r < src_0.dims_[1]; ++r) {
                 for (int c = 0; c < n_images; ++c) {
-                    memcpy(dst.data_ + cumul_strides[c] + r * dst.strides_[1] + i * dst.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
+                    memcpy(tmp.data_ + cumul_strides[c] + r * tmp.strides_[1] + i * tmp.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
                 }
             }
         }
@@ -1217,29 +1252,29 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
         int src_stride_x = src_0.strides_[x_pos];
         int src_stride_y = src_0.strides_[y_pos];
         vector<vector<uint8_t*>> src_vch(src_channels);
-        vector<uint8_t*>dst_vch(src_channels);
+        vector<uint8_t*>tmp_vch(src_channels);
 
         // Get the pointers to channels starting pixels
         for (int c = 0; c < src_channels; ++c) {
             for (int i = 0; i < n_images; ++i) {
                 src_vch[c].push_back(src[i].data_ + c * src[i].strides_[c_pos]);
             }
-            dst_vch[c] = dst.data_ + c * dst.strides_[c_pos];
+            tmp_vch[c] = tmp.data_ + c * tmp.strides_[c_pos];
         }
 
         for (int r = 0; r < src_height; ++r) {
             // Get the address of next row
-            int dst_pos = r * dst.strides_[y_pos];
+            int tmp_pos = r * tmp.strides_[y_pos];
             int counter = 0;
             for (int i = 0; i < n_images; ++i) {
                 int src_pos = r * src[i].strides_[y_pos];
                 for (int c_i = 0; c_i < src[i].Width(); ++c_i) {
-                    int p_dst = dst_pos + src_stride_x * counter++;
+                    int p_tmp = tmp_pos + src_stride_x * counter++;
                     int p_src = src_pos + src_stride_x * c_i;
 #define ECVL_TUPLE(type, ...) \
                 case DataType::type: \
                     for (int ch = 0; ch < src_channels; ++ch) { \
-                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_vch[ch] + p_dst) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
+                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
                     } \
                     break;
 
@@ -1252,6 +1287,7 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
             }
         }
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::VConcat(const vector<Image>& src, Image& dst)
@@ -1275,43 +1311,43 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
 
     vector<int> new_dims(src_0.dims_);
     new_dims[y_pos] = new_height;
-    dst.Create(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_);
+    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_);
 
     // If src is a vector of xyc Image(s)
     if (src_0.channels_ == "xyc") {
         // 4x time faster than generic version below
-        // Fill each dst color plane concatenating every src color plane
+        // Fill each tmp color plane concatenating every src color plane
         for (int i = 0; i < src_0.Channels(); ++i) {
             for (int c = 0; c < n_images; ++c) {
-                memcpy(dst.data_ + cumul_strides[c] + i * dst.strides_[2], src[c].data_ + i * src[c].strides_[2], src[c].strides_[2]);
+                memcpy(tmp.data_ + cumul_strides[c] + i * tmp.strides_[2], src[c].data_ + i * src[c].strides_[2], src[c].strides_[2]);
             }
         }
     }
     else {
         int src_stride_x = src_0.strides_[x_pos];
         vector<vector<uint8_t*>> src_vch(src_channels);
-        vector<uint8_t*>dst_vch(src_channels);
+        vector<uint8_t*>tmp_vch(src_channels);
 
         // Get the pointers to channels starting pixels
         for (int c = 0; c < src_channels; ++c) {
             for (int i = 0; i < n_images; ++i) {
                 src_vch[c].push_back(src[i].data_ + c * src[i].strides_[c_pos]);
             }
-            dst_vch[c] = dst.data_ + c * dst.strides_[c_pos];
+            tmp_vch[c] = tmp.data_ + c * tmp.strides_[c_pos];
         }
 
         for (int i = 0, offset = 0; i < n_images; offset += src[i].Height(), ++i) {
             for (int r = 0; r < src[i].Height(); ++r) {
                 // Get the address of next row
-                int dst_pos = (offset + r) * src[i].strides_[y_pos];
+                int tmp_pos = (offset + r) * src[i].strides_[y_pos];
                 int src_pos = r * src[i].strides_[y_pos];
                 for (int c = 0; c < src_width; ++c) {
-                    int p_dst = dst_pos + src_stride_x * c;
+                    int p_tmp = tmp_pos + src_stride_x * c;
                     int p_src = src_pos + src_stride_x * c;
 #define ECVL_TUPLE(type, ...) \
                 case DataType::type: \
                     for (int ch = 0; ch < src_channels; ++ch) { \
-                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(dst_vch[ch] + p_dst) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
+                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
                     } \
                     break;
 
@@ -1324,6 +1360,7 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
             }
         }
     }
+    dst = std::move(tmp);
 }
 
 void CpuHal::Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue)
