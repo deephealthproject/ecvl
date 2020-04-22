@@ -240,7 +240,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             if (src.channels_ == "xyc") {
                 auto dims = src.dims_;
                 dims[2] = 3;
-                dst = Image(dims, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
+                dst.Create(dims, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
                 auto plane0 = dst.data_ + 0 * dst.strides_[2];
                 auto plane1 = dst.data_ + 1 * dst.strides_[2];
                 auto plane2 = dst.data_ + 2 * dst.strides_[2];
@@ -264,7 +264,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             else if (src.channels_ == "cxy") {
                 auto dims = src.dims_;
                 dims[0] = 3;
-                dst = Image(dims, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
+                dst.Create(dims, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
                 auto plane0 = dst.data_ + 0 * dst.strides_[0];
                 auto plane1 = dst.data_ + 1 * dst.strides_[0];
                 auto plane2 = dst.data_ + 2 * dst.strides_[0];
@@ -320,7 +320,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
         if (src.channels_ == "xyc") {
-            dst = Image(src.dims_, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
+            dst.Create(src.dims_, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
             auto plane0 = dst.data_ + 0 * dst.strides_[2];
             auto plane1 = dst.data_ + 1 * dst.strides_[2];
             auto plane2 = dst.data_ + 2 * dst.strides_[2];
@@ -334,7 +334,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             }
         }
         else if (src.channels_ == "cxy") {
-            dst = Image(src.dims_, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
+            dst.Create(src.dims_, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
             auto plane0 = dst.data_ + 0 * dst.strides_[0];
             auto plane1 = dst.data_ + 1 * dst.strides_[0];
             auto plane2 = dst.data_ + 2 * dst.strides_[0];
