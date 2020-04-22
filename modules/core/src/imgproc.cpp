@@ -328,7 +328,7 @@ vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    src.hal_->GetMaxN(src, n);
+    return src.hal_->GetMaxN(src, n);
 }
 
 void ConnectedComponentsLabeling(const Image& src, Image& dst)
