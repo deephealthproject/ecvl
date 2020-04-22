@@ -103,6 +103,20 @@ TEST_F(CoreImage, Rearrange##type) \
     EXPECT_TRUE(view2({ 1, 2, 0, 1 }) == 28); \
 } \
 \
+TEST_F(CoreImage, ToGpu##type) \
+{ \
+    Image tmp(g2_##type); \
+    EXPECT_THROW(tmp.To(Device::GPU), std::runtime_error); \
+} \
+\
+TEST_F(CoreImage, ToFpga##type) \
+{ \
+    Image tmp(g2_##type); \
+    EXPECT_THROW(tmp.To(Device::FPGA), std::runtime_error); \
+} \
+\
+\
+\
 TEST_F(CoreArithmetics, AddScalar##type) \
 { \
     g2_##type.Add(10); \
