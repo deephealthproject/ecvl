@@ -18,7 +18,6 @@
 
 namespace ecvl
 {
-
 class GpuHal : public HardwareAbstractionLayer
 {
 public:
@@ -36,7 +35,15 @@ public:
     }
 
     static GpuHal* GetInstance();
-};
 
+    void FromCpu(Image& src) override
+    {
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::FromCpu")
+    }
+    void ToCpu(Image& src) override
+    {
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::ToCpu")
+    }
+};
 } // namespace ecvl
 #endif // ECVL_GPU_HAL_H_

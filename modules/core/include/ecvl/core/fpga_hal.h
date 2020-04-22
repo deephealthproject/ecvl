@@ -15,10 +15,10 @@
 #define ECVL_FPGA_HAL_H_
 
 #include "ecvl/core/hal.h"
+#include "ecvl/core/image.h"
 
 namespace ecvl
 {
-
 class FpgaHal : public HardwareAbstractionLayer
 {
 public:
@@ -36,7 +36,15 @@ public:
     }
 
     static FpgaHal* GetInstance();
-};
 
+    void FromCpu(Image& src) override
+    {
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::FromCpu")
+    }
+    void ToCpu(Image& src) override
+    {
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::ToCpu")
+    }
+};
 } // namespace ecvl
 #endif // ECVL_FPGA_HAL_H_

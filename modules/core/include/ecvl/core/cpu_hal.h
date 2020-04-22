@@ -20,7 +20,6 @@
 
 namespace ecvl
 {
-
 /** @brief CPU specific Hardware Abstraction Layer
 
 */
@@ -39,7 +38,7 @@ public:
     {
         return reinterpret_cast<uint8_t*>(std::memcpy(dst, src, nbytes));
     }
-    
+
     static CpuHal* GetInstance();
 
     void CopyImage(const Image& src, Image& dst) override;
@@ -73,7 +72,6 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-
 };
 
 class ShallowCpuHal : public CpuHal
@@ -91,6 +89,5 @@ public:
 
     static ShallowCpuHal* GetInstance();
 };
-
 } // namespace ecvl
 #endif // ECVL_CPU_HAL_H_

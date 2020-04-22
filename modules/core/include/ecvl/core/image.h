@@ -76,13 +76,14 @@ protected:
 
     This function sets the strides so that by incrementing the data pointer by strides_[0] it
     moves to the next element (increments dimension 0), strides_[1] moves to the next dimension,
-    and so on. For example for "xyc" images, incrementing by strides_[0] increments the column, 
-    incrementing by strides_[1] increments the row, incrementing by strides_[2] moves to 
+    and so on. For example for "xyc" images, incrementing by strides_[0] increments the column,
+    incrementing by strides_[1] increments the row, incrementing by strides_[2] moves to
     the next color plane.
 
     Requires elemsize_ and dims_ to be correctly setup.
     */
-    void SetDefaultStrides() {
+    void SetDefaultStrides()
+    {
         // Compute strides
         strides_ = { elemsize_ };
         int dsize = vsize(dims_);
@@ -97,7 +98,8 @@ protected:
 
     Requires elemsize_ and dims_ to be correctly setup.
     */
-    size_t GetDefaultDatasize() {
+    size_t GetDefaultDatasize()
+    {
         return std::accumulate(std::begin(dims_), std::end(dims_), size_t(elemsize_), std::multiplies<size_t>());
     }
 
@@ -107,7 +109,8 @@ protected:
 
     Requires elemsize_ and dims_ to be correctly setup.
     */
-    void SetDefaultDatasize() {
+    void SetDefaultDatasize()
+    {
         datasize_ = GetDefaultDatasize();
     }
 
@@ -180,7 +183,7 @@ public:
                                                          or does not produce any effect.*/
     Device                      dev_;               /**< @brief Identifier for the device on which the image data is.
 
-                                                         This is just informative and should be always synchronized 
+                                                         This is just informative and should be always synchronized
                                                          with the HAL pointer.*/
 
     /** @brief Generic non-const Begin Iterator.
@@ -275,7 +278,7 @@ public:
 
         The initializing constructor creates a proper image and allocates the data.
     */
-    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, 
+    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
         const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
@@ -387,6 +390,52 @@ public:
         return *this;
     }
 
+    void To(Device dev)
+    {
+        if (this->dev_ != Device::NONE) {
+            ECVL_ERROR_MOVING_IMAGE(from, NONE)
+        }
+
+        switch (dev) {
+        case Device::NONE:
+            ECVL_ERROR_MOVING_IMAGE(to, NONE);
+            break;
+        case Device::CPU:
+            if (this->dev_ != Device::CPU) {
+                // From GPU/FPGA to CPU
+                hal_->ToCpu(*this);
+                this->hal_ = HardwareAbstractionLayer::Factory(Device::CPU);
+                this->dev_ = Device::CPU;
+            }
+            break;
+        case Device::GPU:
+            if (this->dev_ == Device::FPGA) {
+                ECVL_ERROR_MOVING_IMAGE(to, GPU)
+            }
+            if (this->dev_ != Device::GPU) {
+                // From CPU to GPU
+                this->hal_ = HardwareAbstractionLayer::Factory(Device::GPU);
+                this->dev_ = Device::GPU;
+                hal_->FromCpu(*this);
+            }
+            break;
+        case Device::FPGA:
+            if (this->dev_ == Device::GPU) {
+                ECVL_ERROR_MOVING_IMAGE(to, FPGA)
+            }
+            if (this->dev_ != Device::FPGA) {
+                // From CPU to FPGA
+                this->hal_ = HardwareAbstractionLayer::Factory(Device::FPGA);
+                this->dev_ = Device::FPGA;
+                hal_->FromCpu(*this);
+            }
+            break;
+        default:
+            ECVL_ERROR_NOT_REACHABLE_CODE;
+            break;
+        }
+    }
+
     /** @brief Allocates new contiguous data if needed.
 
     The Create method allocates Image data as specified by the input parameters.
@@ -401,7 +450,7 @@ public:
     @param[in] colortype New Image colortype.
     @param[in] spacings New Image spacings.
     */
-    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, 
+    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
         const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU);
 
     /** @brief Destructor
@@ -418,7 +467,7 @@ public:
     bool IsEmpty() const { return data_ == nullptr; }
 
     /** @brief To check whether the Image is owner of the data.
-        
+
         \todo Move the implementation to the specific hals if other shallow hals will be introduced.
 
     */
@@ -471,7 +520,7 @@ public:
     }
 
     /** @brief In-place negation. */
-    void Neg() 
+    void Neg()
     {
         hal_->Neg(*this, *this, elemtype_, false);
     }
@@ -592,7 +641,7 @@ public:
         return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    void Create(std::vector<int> dims, std::string channels, ColorType colortype, uint8_t* ptr, 
+    void Create(std::vector<int> dims, std::string channels, ColorType colortype, uint8_t* ptr,
         const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU)
     {
         elemtype_ = DT;

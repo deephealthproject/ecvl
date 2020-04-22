@@ -35,6 +35,8 @@
 #define ECVL_ERROR_CANNOT_LOAD_IMAGE throw std::runtime_error(ECVL_ERROR_MSG "Cannot load image");
 #define ECVL_ERROR_INCOMPATIBLE_DIMENSIONS throw std::runtime_error(ECVL_ERROR_MSG "Incompatible dimensions");
 #define ECVL_ERROR_DIFFERENT_DEVICES throw std::runtime_error(ECVL_ERROR_MSG "src and dst are in different devices");
+#define ECVL_ERROR_DEVICE_UNAVAILABLE(device) throw std::runtime_error(ECVL_ERROR_MSG #device " device unavailable");
+#define ECVL_ERROR_MOVING_IMAGE(str, device) throw std::runtime_error(ECVL_ERROR_MSG "Cannot move " #str " " #device);
 
 
 #endif // ECVL_STANDARD_ERRORS_H_

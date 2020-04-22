@@ -21,8 +21,6 @@
 
 #include "standard_errors.h"
 
-#define ECVL_ERROR_DEVICE_UNAVAILABLE(device) throw std::runtime_error(ECVL_ERROR_MSG #device " device unavailable");
-
 namespace ecvl
 {
 /** @brief Enum class representing the ECVL available devices
@@ -66,6 +64,9 @@ public:
 
     // We don't need a virtual destructor because HALs are created as static objects using a singleton pattern
     // virtual ~HardwareAbstractionLayer() {}
+
+    virtual void FromCpu(Image& src) { ECVL_ERROR_NOT_IMPLEMENTED };
+    virtual void ToCpu(Image& src) { ECVL_ERROR_NOT_IMPLEMENTED };
 
     /** @brief Specific function which allocates data for a partially initialized image object
 
