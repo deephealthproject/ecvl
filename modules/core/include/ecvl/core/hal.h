@@ -71,6 +71,28 @@ public:
     // We don't need a virtual destructor because HALs are created as static objects using a singleton pattern
     // virtual ~HardwareAbstractionLayer() {}
 
+    // These functions move the image from the CPU to the device and viceversa
+    // They MUST also take care of updating the hal_ and dev_ members and deallocate the
+    // original memory. Template:
+    /*
+        void FromCpu(Image& src) override { 
+            uint8_t* new_ptr; // This will be a device address
+            // Allocate new_ptr on device
+            // Make host->device copy from src.data_ into new_ptr
+            src.hal_->MemDeallocate(src.data_);
+            src.data_ = new_ptr;
+            src.hal_ = HardwareAbstractionLayer::Factory(THIS DEVICE);
+            src.dev_ = THIS DEVICE;
+        };
+        void ToCpu(Image& src) override {
+            src.hal_ = HardwareAbstractionLayer::Factory(Device::CPU);
+            src.dev_ = Device::CPU;
+            uint8_t* new_ptr = hal_->MemAllocate(src.datasize_); // This will be a CPU address
+            // Make device->host copy from src.data_ into new_ptr
+            MemDeallocate(src.data_);
+            src.data_ = new_ptr;
+        };
+    */
     virtual void FromCpu(Image& src) { ECVL_ERROR_NOT_IMPLEMENTED };
     virtual void ToCpu(Image& src) { ECVL_ERROR_NOT_IMPLEMENTED };
 
