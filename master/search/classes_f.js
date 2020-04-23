@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wximagepanel',['wxImagePanel',['../classecvl_1_1wx_image_panel.html',1,'ecvl']]]
+  ['ufpc',['UFPC',['../structecvl_1_1_u_f_p_c.html',1,'ecvl']]]
 ];

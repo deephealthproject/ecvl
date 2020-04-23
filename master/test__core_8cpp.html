@@ -141,9 +141,9 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code" href="classecvl_1_1_image.html">Image</a> g2_##type = <a class="code" href="classecvl_1_1_image.html">Image</a>({ 2, 2, 1 }, DataType::type, <span class="stringliteral">&quot;xyc&quot;</span>, ColorType::GRAY); \</div><div class="line">    View&lt;DataType::type&gt; g2_##type##_v;</div><div class="ttc" id="classecvl_1_1_image_html"><div class="ttname"><a href="classecvl_1_1_image.html">ecvl::Image</a></div><div class="ttdoc">Image class.</div><div class="ttdef"><b>Definition:</b> <a href="image_8h_source.html#l00074">image.h:74</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code" href="classecvl_1_1_image.html">Image</a> g2_##type = <a class="code" href="classecvl_1_1_image.html">Image</a>({ 2, 2, 1 }, DataType::type, <span class="stringliteral">&quot;xyc&quot;</span>, ColorType::GRAY); \</div><div class="line">    View&lt;DataType::type&gt; g2_##type##_v;</div><div class="ttc" id="classecvl_1_1_image_html"><div class="ttname"><a href="classecvl_1_1_image.html">ecvl::Image</a></div><div class="ttdoc">Image class.</div><div class="ttdef"><b>Definition:</b> <a href="image_8h_source.html#l00072">image.h:72</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00208">208</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00222">222</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
 
 </div>
 </div>
@@ -173,7 +173,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">g2_##type##_v = g2_##type; \</div><div class="line">        g2_##type##_v({ 0,0,0 }) = 50; g2_##type##_v({ 1,0,0 }) = 32; \</div><div class="line">        g2_##type##_v({ 0,1,0 }) = 14; g2_##type##_v({ 1,1,0 }) = 60;</div></div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00208">208</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00222">222</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
 
 </div>
 </div>
@@ -203,7 +203,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00208">208</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00222">222</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
 
 </div>
 </div>
@@ -232,9 +232,9 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">TEST_F(CoreArithmetics, <a class="code" href="namespaceecvl.html#a624a6aa1d96ecd7b3dffde220d2f8e9a">Neg</a>##type) \</div><div class="line">{ \</div><div class="line">    Neg(g2_##type); \</div><div class="line">    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == -50); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == -32); \</div><div class="line">    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == -14); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == -60); \</div><div class="line">}</div><div class="ttc" id="namespaceecvl_html_a624a6aa1d96ecd7b3dffde220d2f8e9a"><div class="ttname"><a href="namespaceecvl.html#a624a6aa1d96ecd7b3dffde220d2f8e9a">ecvl::Neg</a></div><div class="ttdeci">Image &amp; Neg(Image &amp;img)</div><div class="ttdoc">In-place negation of an Image.</div><div class="ttdef"><b>Definition:</b> <a href="arithmetic_8cpp_source.html#l00054">arithmetic.cpp:54</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">TEST_F(CoreArithmetics, <a class="code" href="namespaceecvl.html#a26fb2cc30e6cf9e551798456f71133b3">Neg</a>##type) \</div><div class="line">{ \</div><div class="line">    g2_##type.Neg(); \</div><div class="line">    EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == -50); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == -32); \</div><div class="line">    EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == -14); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == -60); \</div><div class="line">}</div><div class="ttc" id="namespaceecvl_html_a26fb2cc30e6cf9e551798456f71133b3"><div class="ttname"><a href="namespaceecvl.html#a26fb2cc30e6cf9e551798456f71133b3">ecvl::Neg</a></div><div class="ttdeci">void Neg(const Image &amp;src, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)</div><div class="ttdoc">Negation of an Image.</div><div class="ttdef"><b>Definition:</b> <a href="arithmetic_8h_source.html#l00146">arithmetic.h:146</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00208">208</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="test__core_8cpp_source.html#l00222">222</a> of file <a class="el" href="test__core_8cpp_source.html">test_core.cpp</a>.</p>
 
 </div>
 </div>

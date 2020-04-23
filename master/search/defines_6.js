@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['unsigned_5fenum_5fclass',['UNSIGNED_ENUM_CLASS',['../dataset__parser_8h.html#a7abd0c9096c474e1463ee8458447c34d',1,'dataset_parser.h']]]
+  ['standard_5finplace_5foperation',['STANDARD_INPLACE_OPERATION',['../arithmetic_8cpp.html#aeafb46d358106ab4ec645b65072043aa',1,'arithmetic.cpp']]],
+  ['standard_5fnon_5finplace_5foperation',['STANDARD_NON_INPLACE_OPERATION',['../arithmetic_8cpp.html#a95d083c17b76367410f2b70042d86218',1,'arithmetic.cpp']]]
 ];

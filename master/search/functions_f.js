@@ -1,9 +1,9 @@
 var searchData=
 [
   ['param',['param',['../classecvl_1_1param.html#a95a3a3b099aea432d9fa0ba69a1537ca',1,'ecvl::param::param()'],['../classecvl_1_1param.html#abc469c6ca44de202144706bd1d8b5497',1,'ecvl::param::param(std::istream &amp;is)']]],
-  ['promoteadd',['PromoteAdd',['../namespaceecvl.html#a51b755e1003f615ef74238ccdf5c335c',1,'ecvl']]],
-  ['promotediv',['PromoteDiv',['../namespaceecvl.html#a4e04d31959cab609a129bfbfdfb1574a',1,'ecvl']]],
-  ['promotemul',['PromoteMul',['../namespaceecvl.html#a77966d0f12448e9c48255973ef963282',1,'ecvl']]],
-  ['promotesub',['PromoteSub',['../namespaceecvl.html#a3a0ae3d1a088f5c42c99802bf2092f20',1,'ecvl']]],
+  ['promoteadd',['PromoteAdd',['../namespaceecvl.html#a9fe4f56be5197fb90c999611fcae2986',1,'ecvl']]],
+  ['promotediv',['PromoteDiv',['../namespaceecvl.html#a8670361651bac798214c0a39e0a2e93c',1,'ecvl']]],
+  ['promotemul',['PromoteMul',['../namespaceecvl.html#adddcd90b14645b1af617e95bece4137e',1,'ecvl']]],
+  ['promotesub',['PromoteSub',['../namespaceecvl.html#a491fbdb0ca0a6b0e130b48ba2a3013ef',1,'ecvl']]],
   ['ptr',['Ptr',['../classecvl_1_1_image.html#ac666790c7b5bcdb955c7d32938b1f0f9',1,'ecvl::Image::Ptr(const std::vector&lt; int &gt; &amp;coords)'],['../classecvl_1_1_image.html#a8ea863e2e0573571b5cdf863061d1ec3',1,'ecvl::Image::Ptr(const std::vector&lt; int &gt; &amp;coords) const']]]
 ];

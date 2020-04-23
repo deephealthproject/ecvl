@@ -6,5 +6,6 @@ var searchData=
   ['dataset_5froot_5fdirectory_5f',['dataset_root_directory_',['../classecvl_1_1_generate_dataset.html#a4195973aa92b02320314209f5d67ff31',1,'ecvl::GenerateDataset']]],
   ['datasize_5f',['datasize_',['../classecvl_1_1_image.html#a1855a32639c8385ba96f9e151ca882d2',1,'ecvl::Image']]],
   ['description_5f',['description_',['../classecvl_1_1_dataset.html#a5aeb7ce544cd7985766bc41280b45455',1,'ecvl::Dataset']]],
+  ['dev_5f',['dev_',['../classecvl_1_1_image.html#ac2832f7a816690be3358eac0680f50a3',1,'ecvl::Image']]],
   ['dims_5f',['dims_',['../classecvl_1_1_image.html#af26f5a4e644cef20597bd084bcddf1d0',1,'ecvl::Image']]]
 ];

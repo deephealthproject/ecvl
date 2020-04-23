@@ -126,8 +126,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a12e82e70bccbc210fbece6cd03b550a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f4f0a2d077ae37e2a70f7a251799903"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_view.html#aa734adb06998e1fd94660d4feabfc893">basetype</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_view.html#a0f4f0a2d077ae37e2a70f7a251799903">operator()</a> (const std::vector&lt; int &gt; &amp;coords)</td></tr>
 <tr class="separator:a0f4f0a2d077ae37e2a70f7a251799903"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a828f70940ae10189441246c4a107c6db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_view.html#a828f70940ae10189441246c4a107c6db">Create</a> (const std::vector&lt; int &gt; &amp;dims, std::string channels, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> colortype, uint8_t *ptr, const std::vector&lt; float &gt; &amp;spacings=std::vector&lt; float &gt;())</td></tr>
-<tr class="separator:a828f70940ae10189441246c4a107c6db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac169d286325dc3718e8e59f1c2abcce3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_view.html#ac169d286325dc3718e8e59f1c2abcce3">Create</a> (std::vector&lt; int &gt; dims, std::string channels, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> colortype, uint8_t *ptr, const std::vector&lt; float &gt; &amp;spacings=std::vector&lt; float &gt;(), <a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">Device</a> dev=<a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83a2b55387dd066c5bac646ac61543d152d">Device::CPU</a>)</td></tr>
+<tr class="separator:ac169d286325dc3718e8e59f1c2abcce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71424b3d3c41cfc182f4c5ad692ad741"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_iterator.html">Iterator</a>&lt; <a class="el" href="classecvl_1_1_view.html#aa734adb06998e1fd94660d4feabfc893">basetype</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_view.html#a71424b3d3c41cfc182f4c5ad692ad741">Begin</a> ()</td></tr>
 <tr class="separator:a71424b3d3c41cfc182f4c5ad692ad741"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a707cc1ec73111e11a2ae2774f4fb9c57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_iterator.html">Iterator</a>&lt; <a class="el" href="classecvl_1_1_view.html#aa734adb06998e1fd94660d4feabfc893">basetype</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_view.html#a707cc1ec73111e11a2ae2774f4fb9c57">End</a> ()</td></tr>
@@ -168,20 +168,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6102d86ab9b3eb71552dddd6536dfe8b inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a6102d86ab9b3eb71552dddd6536dfe8b">Image</a> ()</td></tr>
 <tr class="memdesc:a6102d86ab9b3eb71552dddd6536dfe8b inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="classecvl_1_1_image.html#a6102d86ab9b3eb71552dddd6536dfe8b">More...</a><br /></td></tr>
 <tr class="separator:a6102d86ab9b3eb71552dddd6536dfe8b inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35c4fb9943864bc953267b73d321e901 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a35c4fb9943864bc953267b73d321e901">Image</a> (const std::vector&lt; int &gt; &amp;dims, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> elemtype, std::string channels, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> colortype, const std::vector&lt; float &gt; &amp;spacings=std::vector&lt; float &gt;())</td></tr>
-<tr class="memdesc:a35c4fb9943864bc953267b73d321e901 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializing constructor.  <a href="classecvl_1_1_image.html#a35c4fb9943864bc953267b73d321e901">More...</a><br /></td></tr>
-<tr class="separator:a35c4fb9943864bc953267b73d321e901 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9317c58af3fd1bde46b222d0f797f1b inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ac9317c58af3fd1bde46b222d0f797f1b">Image</a> (const std::vector&lt; int &gt; &amp;dims, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> elemtype, std::string channels, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> colortype, const std::vector&lt; float &gt; &amp;spacings=std::vector&lt; float &gt;(), <a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">Device</a> dev=<a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83a2b55387dd066c5bac646ac61543d152d">Device::CPU</a>)</td></tr>
+<tr class="memdesc:ac9317c58af3fd1bde46b222d0f797f1b inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializing constructor.  <a href="classecvl_1_1_image.html#ac9317c58af3fd1bde46b222d0f797f1b">More...</a><br /></td></tr>
+<tr class="separator:ac9317c58af3fd1bde46b222d0f797f1b inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca14b15a1e6bdbdceedad190b222fda4 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#aca14b15a1e6bdbdceedad190b222fda4">Image</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;img)</td></tr>
 <tr class="memdesc:aca14b15a1e6bdbdceedad190b222fda4 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="classecvl_1_1_image.html#aca14b15a1e6bdbdceedad190b222fda4">More...</a><br /></td></tr>
 <tr class="separator:aca14b15a1e6bdbdceedad190b222fda4 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70fcbb845cf9e5571abf1f9ca396b0ea inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a70fcbb845cf9e5571abf1f9ca396b0ea">Image</a> (<a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&amp;img)</td></tr>
 <tr class="memdesc:a70fcbb845cf9e5571abf1f9ca396b0ea inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor.  <a href="classecvl_1_1_image.html#a70fcbb845cf9e5571abf1f9ca396b0ea">More...</a><br /></td></tr>
 <tr class="separator:a70fcbb845cf9e5571abf1f9ca396b0ea inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8bf9eacc2910ff606ef83f56f89aba1 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ab8bf9eacc2910ff606ef83f56f89aba1">operator=</a> (<a class="el" href="classecvl_1_1_image.html">Image</a> rhs)</td></tr>
-<tr class="separator:ab8bf9eacc2910ff606ef83f56f89aba1 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28ddd94bedfacedc0a238daf00ccddf1 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a28ddd94bedfacedc0a238daf00ccddf1">Create</a> (const std::vector&lt; int &gt; &amp;dims, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> elemtype, std::string channels, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> colortype, const std::vector&lt; float &gt; &amp;spacings=std::vector&lt; float &gt;())</td></tr>
-<tr class="memdesc:a28ddd94bedfacedc0a238daf00ccddf1 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates new contiguous data if needed.  <a href="classecvl_1_1_image.html#a28ddd94bedfacedc0a238daf00ccddf1">More...</a><br /></td></tr>
-<tr class="separator:a28ddd94bedfacedc0a238daf00ccddf1 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5aa10470251bbfd4ecc3abf51416ce2 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ae5aa10470251bbfd4ecc3abf51416ce2">operator=</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs)</td></tr>
+<tr class="separator:ae5aa10470251bbfd4ecc3abf51416ce2 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e0cfbdb2720142dea78102d36d1d5e1 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a0e0cfbdb2720142dea78102d36d1d5e1">operator=</a> (<a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&amp;rhs)</td></tr>
+<tr class="separator:a0e0cfbdb2720142dea78102d36d1d5e1 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e97f965d2525e2a8312a25da4a07eb2 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a5e97f965d2525e2a8312a25da4a07eb2">To</a> (<a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">Device</a> dev)</td></tr>
+<tr class="separator:a5e97f965d2525e2a8312a25da4a07eb2 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07c762fff510ff3f7b3e267f72131ac3 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a07c762fff510ff3f7b3e267f72131ac3">Create</a> (const std::vector&lt; int &gt; &amp;dims, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> elemtype, std::string channels, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> colortype, const std::vector&lt; float &gt; &amp;spacings=std::vector&lt; float &gt;(), <a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">Device</a> dev=<a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83a2b55387dd066c5bac646ac61543d152d">Device::CPU</a>)</td></tr>
+<tr class="memdesc:a07c762fff510ff3f7b3e267f72131ac3 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates new contiguous data if needed.  <a href="classecvl_1_1_image.html#a07c762fff510ff3f7b3e267f72131ac3">More...</a><br /></td></tr>
+<tr class="separator:a07c762fff510ff3f7b3e267f72131ac3 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2230eb993f310b23cf7624db0d42ee7c inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a2230eb993f310b23cf7624db0d42ee7c">~Image</a> ()</td></tr>
 <tr class="memdesc:a2230eb993f310b23cf7624db0d42ee7c inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="classecvl_1_1_image.html#a2230eb993f310b23cf7624db0d42ee7c">More...</a><br /></td></tr>
 <tr class="separator:a2230eb993f310b23cf7624db0d42ee7c inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,34 +210,27 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8ea863e2e0573571b5cdf863061d1ec3 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">const uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a8ea863e2e0573571b5cdf863061d1ec3">Ptr</a> (const std::vector&lt; int &gt; &amp;coords) const</td></tr>
 <tr class="memdesc:a8ea863e2e0573571b5cdf863061d1ec3 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a const pointer to data at given coordinates.  <a href="classecvl_1_1_image.html#a8ea863e2e0573571b5cdf863061d1ec3">More...</a><br /></td></tr>
 <tr class="separator:a8ea863e2e0573571b5cdf863061d1ec3 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab93a90b216f1d43673c5839f9f05d32d inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ab93a90b216f1d43673c5839f9f05d32d">Neg</a> ()</td></tr>
+<tr class="memdesc:ab93a90b216f1d43673c5839f9f05d32d inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place negation.  <a href="classecvl_1_1_image.html#ab93a90b216f1d43673c5839f9f05d32d">More...</a><br /></td></tr>
+<tr class="separator:ab93a90b216f1d43673c5839f9f05d32d inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68f7b022a7f99c20b428c5d1e8f3d195 inherit pub_methods_classecvl_1_1_image"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a68f7b022a7f99c20b428c5d1e8f3d195 inherit pub_methods_classecvl_1_1_image"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a68f7b022a7f99c20b428c5d1e8f3d195">Add</a> (const T &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:a68f7b022a7f99c20b428c5d1e8f3d195 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place addition of a scalar value.  <a href="classecvl_1_1_image.html#a68f7b022a7f99c20b428c5d1e8f3d195">More...</a><br /></td></tr>
+<tr class="memdesc:a68f7b022a7f99c20b428c5d1e8f3d195 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place addition.  <a href="classecvl_1_1_image.html#a68f7b022a7f99c20b428c5d1e8f3d195">More...</a><br /></td></tr>
 <tr class="separator:a68f7b022a7f99c20b428c5d1e8f3d195 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedab5c382d8a1133d3d2b06ef545aff0 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#aedab5c382d8a1133d3d2b06ef545aff0">Add</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:aedab5c382d8a1133d3d2b06ef545aff0 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place addition of an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="classecvl_1_1_image.html#aedab5c382d8a1133d3d2b06ef545aff0">More...</a><br /></td></tr>
-<tr class="separator:aedab5c382d8a1133d3d2b06ef545aff0 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a881d2781d789af08b911edc4fdb843c7 inherit pub_methods_classecvl_1_1_image"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a881d2781d789af08b911edc4fdb843c7 inherit pub_methods_classecvl_1_1_image"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a881d2781d789af08b911edc4fdb843c7">Sub</a> (const T &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:a881d2781d789af08b911edc4fdb843c7 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place subtraction of a scalar value.  <a href="classecvl_1_1_image.html#a881d2781d789af08b911edc4fdb843c7">More...</a><br /></td></tr>
+<tr class="memdesc:a881d2781d789af08b911edc4fdb843c7 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place subtraction.  <a href="classecvl_1_1_image.html#a881d2781d789af08b911edc4fdb843c7">More...</a><br /></td></tr>
 <tr class="separator:a881d2781d789af08b911edc4fdb843c7 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa28998a2db1e0de1e8e4680cfc33fcfd inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#aa28998a2db1e0de1e8e4680cfc33fcfd">Sub</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:aa28998a2db1e0de1e8e4680cfc33fcfd inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place subtraction of an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="classecvl_1_1_image.html#aa28998a2db1e0de1e8e4680cfc33fcfd">More...</a><br /></td></tr>
-<tr class="separator:aa28998a2db1e0de1e8e4680cfc33fcfd inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89de053110d52a4dfe2004a99e02665b inherit pub_methods_classecvl_1_1_image"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a89de053110d52a4dfe2004a99e02665b inherit pub_methods_classecvl_1_1_image"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a89de053110d52a4dfe2004a99e02665b">Mul</a> (const T &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:a89de053110d52a4dfe2004a99e02665b inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place multiplication for a scalar value.  <a href="classecvl_1_1_image.html#a89de053110d52a4dfe2004a99e02665b">More...</a><br /></td></tr>
+<tr class="memdesc:a89de053110d52a4dfe2004a99e02665b inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place multiplication.  <a href="classecvl_1_1_image.html#a89de053110d52a4dfe2004a99e02665b">More...</a><br /></td></tr>
 <tr class="separator:a89de053110d52a4dfe2004a99e02665b inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a233f6e713feddbe081504d21f94f2ac6 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a233f6e713feddbe081504d21f94f2ac6">Mul</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:a233f6e713feddbe081504d21f94f2ac6 inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place multiplication for an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="classecvl_1_1_image.html#a233f6e713feddbe081504d21f94f2ac6">More...</a><br /></td></tr>
-<tr class="separator:a233f6e713feddbe081504d21f94f2ac6 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5544bb3d5832a16484b5f7089f2dc1ea inherit pub_methods_classecvl_1_1_image"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a5544bb3d5832a16484b5f7089f2dc1ea inherit pub_methods_classecvl_1_1_image"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a5544bb3d5832a16484b5f7089f2dc1ea">Div</a> (const T &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:a5544bb3d5832a16484b5f7089f2dc1ea inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place division for a scalar value.  <a href="classecvl_1_1_image.html#a5544bb3d5832a16484b5f7089f2dc1ea">More...</a><br /></td></tr>
+<tr class="memdesc:a5544bb3d5832a16484b5f7089f2dc1ea inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place division.  <a href="classecvl_1_1_image.html#a5544bb3d5832a16484b5f7089f2dc1ea">More...</a><br /></td></tr>
 <tr class="separator:a5544bb3d5832a16484b5f7089f2dc1ea inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2523f3995e5c4562f969d3d263aab57c inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a2523f3995e5c4562f969d3d263aab57c">Div</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs, bool saturate=true)</td></tr>
-<tr class="memdesc:a2523f3995e5c4562f969d3d263aab57c inherit pub_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place division for an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="classecvl_1_1_image.html#a2523f3995e5c4562f969d3d263aab57c">More...</a><br /></td></tr>
-<tr class="separator:a2523f3995e5c4562f969d3d263aab57c inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01990d0c702e8180a6e31545b80ebd07 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a01990d0c702e8180a6e31545b80ebd07">operator-</a> () const</td></tr>
+<tr class="separator:a01990d0c702e8180a6e31545b80ebd07 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a351443b4b6b65e3cbce24fb3d3099d03 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a351443b4b6b65e3cbce24fb3d3099d03">operator+=</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs)</td></tr>
 <tr class="separator:a351443b4b6b65e3cbce24fb3d3099d03 inherit pub_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1df1b9ff63bae68c11c23770338c3a5 inherit pub_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ab1df1b9ff63bae68c11c23770338c3a5">operator-=</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;rhs)</td></tr>
@@ -278,9 +275,22 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a32383ca82c257c20e22b4587965d4566 inherit pub_attribs_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_meta_data.html">MetaData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a32383ca82c257c20e22b4587965d4566">meta_</a></td></tr>
 <tr class="memdesc:a32383ca82c257c20e22b4587965d4566 inherit pub_attribs_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> <a class="el" href="classecvl_1_1_meta_data.html">MetaData</a>.  <a href="classecvl_1_1_image.html#a32383ca82c257c20e22b4587965d4566">More...</a><br /></td></tr>
 <tr class="separator:a32383ca82c257c20e22b4587965d4566 inherit pub_attribs_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47c93cfe9efa12b380cc00cad3fb3d12 inherit pub_attribs_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_memory_manager.html">MemoryManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a47c93cfe9efa12b380cc00cad3fb3d12">mem_</a></td></tr>
-<tr class="memdesc:a47c93cfe9efa12b380cc00cad3fb3d12 inherit pub_attribs_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the <a class="el" href="class_memory_manager.html">MemoryManager</a> employed by the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="classecvl_1_1_image.html#a47c93cfe9efa12b380cc00cad3fb3d12">More...</a><br /></td></tr>
-<tr class="separator:a47c93cfe9efa12b380cc00cad3fb3d12 inherit pub_attribs_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18f016a1be9fe9b57e3c587a92849561 inherit pub_attribs_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_hardware_abstraction_layer.html">HardwareAbstractionLayer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a18f016a1be9fe9b57e3c587a92849561">hal_</a></td></tr>
+<tr class="memdesc:a18f016a1be9fe9b57e3c587a92849561 inherit pub_attribs_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html" title="Hardware Abstraction Layer (HAL) is an abstraction layer to interact with a hardware device at a gene...">HardwareAbstractionLayer</a> employed by the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="classecvl_1_1_image.html#a18f016a1be9fe9b57e3c587a92849561">More...</a><br /></td></tr>
+<tr class="separator:a18f016a1be9fe9b57e3c587a92849561 inherit pub_attribs_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2832f7a816690be3358eac0680f50a3 inherit pub_attribs_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">Device</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ac2832f7a816690be3358eac0680f50a3">dev_</a></td></tr>
+<tr class="memdesc:ac2832f7a816690be3358eac0680f50a3 inherit pub_attribs_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identifier for the device on which the image data is.  <a href="classecvl_1_1_image.html#ac2832f7a816690be3358eac0680f50a3">More...</a><br /></td></tr>
+<tr class="separator:ac2832f7a816690be3358eac0680f50a3 inherit pub_attribs_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classecvl_1_1_image"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classecvl_1_1_image')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a></td></tr>
+<tr class="memitem:ae24238ec97e196b637469c4026725e78 inherit pro_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#ae24238ec97e196b637469c4026725e78">SetDefaultStrides</a> ()</td></tr>
+<tr class="memdesc:ae24238ec97e196b637469c4026725e78 inherit pro_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets default strides for contiguous memory layouts.  <a href="classecvl_1_1_image.html#ae24238ec97e196b637469c4026725e78">More...</a><br /></td></tr>
+<tr class="separator:ae24238ec97e196b637469c4026725e78 inherit pro_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1309dfa3c18326d69b2820c71a798997 inherit pro_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a1309dfa3c18326d69b2820c71a798997">GetDefaultDatasize</a> ()</td></tr>
+<tr class="memdesc:a1309dfa3c18326d69b2820c71a798997 inherit pro_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the default datasize for contiguous images.  <a href="classecvl_1_1_image.html#a1309dfa3c18326d69b2820c71a798997">More...</a><br /></td></tr>
+<tr class="separator:a1309dfa3c18326d69b2820c71a798997 inherit pro_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67b13d6431c1ad247266f1efd7684cca inherit pro_methods_classecvl_1_1_image"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_image.html#a67b13d6431c1ad247266f1efd7684cca">SetDefaultDatasize</a> ()</td></tr>
+<tr class="memdesc:a67b13d6431c1ad247266f1efd7684cca inherit pro_methods_classecvl_1_1_image"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the default datasize for contiguous images.  <a href="classecvl_1_1_image.html#a67b13d6431c1ad247266f1efd7684cca">More...</a><br /></td></tr>
+<tr class="separator:a67b13d6431c1ad247266f1efd7684cca inherit pro_methods_classecvl_1_1_image"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;DataType DT&gt;<br />
@@ -305,7 +315,7 @@ template&lt;DataType DT&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00515">515</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00555">555</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -335,7 +345,7 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00517">517</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00557">557</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -365,7 +375,7 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00519">519</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00559">559</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -411,7 +421,7 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00537">537</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00578">578</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -441,12 +451,12 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00608">608</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00638">638</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
-<a id="a828f70940ae10189441246c4a107c6db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a828f70940ae10189441246c4a107c6db">&#9670;&nbsp;</a></span>Create()</h2>
+<a id="ac169d286325dc3718e8e59f1c2abcce3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac169d286325dc3718e8e59f1c2abcce3">&#9670;&nbsp;</a></span>Create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -459,7 +469,7 @@ template&lt;DataType DT&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classecvl_1_1_view.html">ecvl::View</a>&lt; DT &gt;::Create </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; int &gt;&#160;</td>
           <td class="paramname"><em>dims</em>, </td>
         </tr>
         <tr>
@@ -484,7 +494,13 @@ template&lt;DataType DT&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spacings</em> = <code>std::vector&lt;float&gt;()</code>&#160;</td>
+          <td class="paramname"><em>spacings</em> = <code>std::vector&lt;float&gt;()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">Device</a>&#160;</td>
+          <td class="paramname"><em>dev</em> = <code><a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83a2b55387dd066c5bac646ac61543d152d">Device::CPU</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -499,7 +515,7 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00578">578</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00619">619</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -528,7 +544,7 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00609">609</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00639">639</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -558,7 +574,7 @@ template&lt;DataType DT&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00573">573</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00614">614</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>

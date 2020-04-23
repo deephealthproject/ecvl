@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['memorymanager',['MemoryManager',['../class_memory_manager.html',1,'']]],
-  ['metadata',['MetaData',['../classecvl_1_1_meta_data.html',1,'ecvl']]],
-  ['mulimpl',['MulImpl',['../structecvl_1_1_mul_impl.html',1,'ecvl']]],
-  ['mulimpl_3c_20image_2c_20image_20_3e',['MulImpl&lt; Image, Image &gt;',['../structecvl_1_1_mul_impl_3_01_image_00_01_image_01_4.html',1,'ecvl']]],
-  ['mulimpl_3c_20image_2c_20st2_20_3e',['MulImpl&lt; Image, ST2 &gt;',['../structecvl_1_1_mul_impl_3_01_image_00_01_s_t2_01_4.html',1,'ecvl']]],
-  ['mulimpl_3c_20st1_2c_20image_20_3e',['MulImpl&lt; ST1, Image &gt;',['../structecvl_1_1_mul_impl_3_01_s_t1_00_01_image_01_4.html',1,'ecvl']]]
+  ['image',['Image',['../classecvl_1_1_image.html',1,'ecvl']]],
+  ['imagescalaraddimpl',['ImageScalarAddImpl',['../struct_image_scalar_add_impl.html',1,'']]],
+  ['imagescalardivimpl',['ImageScalarDivImpl',['../struct_image_scalar_div_impl.html',1,'']]],
+  ['imagescalarmulimpl',['ImageScalarMulImpl',['../struct_image_scalar_mul_impl.html',1,'']]],
+  ['imagescalarsubimpl',['ImageScalarSubImpl',['../struct_image_scalar_sub_impl.html',1,'']]],
+  ['integer',['integer',['../structecvl_1_1_signed_table1_d_1_1integer.html',1,'ecvl::SignedTable1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table1_d_1_1integer.html',1,'ecvl::Table1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table2_d_1_1integer.html',1,'ecvl::Table2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table2_d_1_1integer.html',1,'ecvl::SignedTable2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;']]],
+  ['iterator',['Iterator',['../structecvl_1_1_iterator.html',1,'ecvl']]]
 ];
