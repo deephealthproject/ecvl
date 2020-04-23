@@ -29,6 +29,7 @@ public:
     {
         ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::MemDeallocate")
     }
+
     uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
     {
         ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::MemCopy")
@@ -46,4 +47,6 @@ public:
     }
 };
 } // namespace ecvl
+
+
 #endif // ECVL_GPU_HAL_H_

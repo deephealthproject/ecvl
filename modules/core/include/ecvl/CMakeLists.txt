@@ -22,8 +22,7 @@ target_sources(ECVL_CORE
     core/datatype_existing_tuples_unsigned.inc.h
     core/datatype_matrix.h
     core/datatype_tuples.inc.h
-	core/fpga_hal.h
-    core/gpu_hal.h
+    core/fpga_hal.h
     core/hal.h
     core/image.h
     core/imgcodecs.h
@@ -37,3 +36,15 @@ target_sources(ECVL_CORE
     core/support_nifti.h
     core/type_promotion.h
 )
+
+
+if(ECVL_GPU_AVAILABLE)
+
+    target_sources(ECVL_CORE
+        PRIVATE
+            
+        core/cuda/gpu_hal.h
+        core/cuda/common.h
+    )
+
+endif()

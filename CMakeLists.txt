@@ -71,6 +71,39 @@ message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Check for CUDA support
+#--------------------------------------------------------------------------------------------------------
+set(ECVL_GPU_AVAILABLE OFF) # ON if GPU support is chosen AND actually available
+#set(ECVL_GPU ON CACHE BOOL "Build for GPU hardware (requires the NVIDIA CUDA toolkit)")
+option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON) 
+if(ECVL_GPU)
+    if(${CMAKE_VERSION} VERSION_LESS "3.17.0") 
+        message(WARNING "Build for GPU hardware is only supported with CMake 3.17 or later.")
+    else()
+        include(CheckLanguage)
+        check_language(CUDA)
+        if(CMAKE_CUDA_COMPILER)
+            enable_language(CUDA)
+            find_package(CUDAToolkit)
+            if(CUDAToolkit_FOUND)
+                set(ECVL_GPU_AVAILABLE ON)      
+                set(CMAKE_CUDA_STANDARD 14)                
+                add_compile_definitions(ECVL_GPU)                
+            else()
+                message(WARNING "The CUDA toolkit was not found, GPU support has been disabled.")
+            endif()            
+        else()
+            message(WARNING "No CUDA compiler was found, GPU support has been disabled.")
+        endif()
+    endif()
+endif()
+#--------------------------------------------------------------------------------------------------------
+# END: Check for CUDA support
+#--------------------------------------------------------------------------------------------------------
+
+
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: static/dynamic runtime
 #--------------------------------------------------------------------------------------------------------
@@ -122,6 +155,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
 endif()
 
+if(ECVL_GPU_AVAILABLE)
+    if(ECVL_SHARED)
+        target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart)
+    else()
+        target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart_static)
+    endif()
+endif()
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------

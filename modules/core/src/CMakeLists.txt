@@ -17,7 +17,6 @@ target_sources(ECVL_CORE
         cpu_hal_imgproc.cpp
         datatype.cpp
         fpga_hal.cpp
-        gpu_hal.cpp
         hal.cpp
         image.cpp
         imgcodecs.cpp
@@ -25,3 +24,15 @@ target_sources(ECVL_CORE
         support_opencv.cpp
         support_nifti.cpp
 )
+
+
+if(ECVL_GPU_AVAILABLE)
+
+    target_sources(ECVL_CORE
+        PRIVATE
+
+            cuda/gpu_hal.cpp
+
+)
+
+endif()
