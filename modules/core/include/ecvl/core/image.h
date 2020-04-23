@@ -392,47 +392,22 @@ public:
 
     void To(Device dev)
     {
-        if (this->dev_ != Device::NONE) {
-            ECVL_ERROR_MOVING_IMAGE(from, NONE)
+        if (dev_ == dev) {
+            return;
+        }
+        if (dev_ == Device::NONE || dev == Device::NONE) {
+            throw std::runtime_error(ECVL_ERROR_MSG "Source or dest device is NONE");
         }
 
-        switch (dev) {
-        case Device::NONE:
-            ECVL_ERROR_MOVING_IMAGE(to, NONE);
-            break;
-        case Device::CPU:
-            if (this->dev_ != Device::CPU) {
-                // From GPU/FPGA to CPU
-                hal_->ToCpu(*this);
-                this->hal_ = HardwareAbstractionLayer::Factory(Device::CPU);
-                this->dev_ = Device::CPU;
-            }
-            break;
-        case Device::GPU:
-            if (this->dev_ == Device::FPGA) {
-                ECVL_ERROR_MOVING_IMAGE(to, GPU)
-            }
-            if (this->dev_ != Device::GPU) {
-                // From CPU to GPU
-                this->hal_ = HardwareAbstractionLayer::Factory(Device::GPU);
-                this->dev_ = Device::GPU;
-                hal_->FromCpu(*this);
-            }
-            break;
-        case Device::FPGA:
-            if (this->dev_ == Device::GPU) {
-                ECVL_ERROR_MOVING_IMAGE(to, FPGA)
-            }
-            if (this->dev_ != Device::FPGA) {
-                // From CPU to FPGA
-                this->hal_ = HardwareAbstractionLayer::Factory(Device::FPGA);
-                this->dev_ = Device::FPGA;
-                hal_->FromCpu(*this);
-            }
-            break;
-        default:
-            ECVL_ERROR_NOT_REACHABLE_CODE;
-            break;
+        if (dev_ == Device::CPU) { // Move from CPU to other device
+            auto dst_hal_ = HardwareAbstractionLayer::Factory(dev);
+            dst_hal_->FromCpu(*this);
+        }
+        else if (dev == Device::CPU) { // Move from other device to CPU
+            hal_->ToCpu(*this);
+        }
+        else {
+            throw std::runtime_error(ECVL_ERROR_MSG "Source or dest device must be CPU");
         }
     }
 
