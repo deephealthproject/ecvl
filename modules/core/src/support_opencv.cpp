@@ -27,68 +27,60 @@ Image MatToImage(const cv::Mat& m)
     // https://stackoverflow.com/questions/7701921/free-cvmat-without-releasing-memory
     if (m.isContinuous()) {
         // Dims
-        img.dims_ = std::vector<int>(m.dims);
-        std::reverse_copy(m.size.p, m.size.p + m.dims, begin(img.dims_)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
+        std::vector<int> dims(m.dims);
+        std::reverse_copy(m.size.p, m.size.p + m.dims, begin(dims)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
 
         // Type
+        DataType elemtype;
         switch (m.depth()) {
-        case CV_8U:  img.elemtype_ = DataType::uint8; break;
-        case CV_8S:  img.elemtype_ = DataType::int8; break;
-        case CV_16U: img.elemtype_ = DataType::uint16; break;
-        case CV_16S: img.elemtype_ = DataType::int16; break;
-        case CV_32S: img.elemtype_ = DataType::int32; break;
-        case CV_32F: img.elemtype_ = DataType::float32; break;
-        case CV_64F: img.elemtype_ = DataType::float64; break;
+        case CV_8U:  elemtype = DataType::uint8; break;
+        case CV_8S:  elemtype = DataType::int8; break;
+        case CV_16U: elemtype = DataType::uint16; break;
+        case CV_16S: elemtype = DataType::int16; break;
+        case CV_32S: elemtype = DataType::int32; break;
+        case CV_32F: elemtype = DataType::float32; break;
+        case CV_64F: elemtype = DataType::float64; break;
         default:
             ECVL_ERROR_UNSUPPORTED_OPENCV_DEPTH
         }
-        img.elemsize_ = DataTypeSize(img.elemtype_);
 
         // Channels and colors
+        std::string channels;
         if (m.dims < 2) {
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
         else if (m.dims == 2) {
-            img.channels_ = "xy";
+            channels = "xy";
         }
         else if (m.dims == 3) {
-            img.channels_ = "xyz";
+            channels = "xyz";
         }
         else {
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
 
+        ColorType colortype;
         if (m.type() == CV_8UC1 || m.type() == CV_16UC1 || m.type() == CV_32FC1 || m.type() == CV_64FC1) { // Guess this is a gray level image
-            img.channels_ += "c";
-            img.dims_.push_back(1); // Add another dim for color planes (but it is one dimensional)
-            img.colortype_ = ColorType::GRAY;
+            channels += "c";
+            dims.push_back(1); // Add another dim for color planes (but it is one dimensional)
+            colortype = ColorType::GRAY;
         }
         else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3) { // Guess this is a BGR image
-            img.channels_ += "c";
-            img.dims_.push_back(3); // Add another dim for color planes
-            img.colortype_ = ColorType::BGR;
+            channels += "c";
+            dims.push_back(3); // Add another dim for color planes
+            colortype = ColorType::BGR;
         }
         else if (m.channels() == 1) {
-            img.colortype_ = ColorType::none;
+            colortype = ColorType::none;
         }
         else {
-            img.channels_ += "o";
-            img.dims_.push_back(m.channels()); // Add another dim for color planes
-            img.colortype_ = ColorType::none;
+            channels += "o";
+            dims.push_back(m.channels()); // Add another dim for color planes
+            colortype = ColorType::none;
         }
 
-        // Strides
-        img.strides_.push_back(img.elemsize_);
-        int dsize = vsize(img.dims_);
-        for (int i = 0; i < dsize - 1; ++i) {
-            img.strides_.push_back(img.strides_[i] * img.dims_[i]);
-        }
+        img.Create(dims, elemtype, channels, colortype);
 
-        // Data
-        int datasize = img.elemsize_;
-        img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
-        img.mem_ = DefaultMemoryManager::GetInstance();
-        img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
         std::vector<cv::Mat> ch;
         cv::split(m, ch);
@@ -160,79 +152,71 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
 
     if (v[0].isContinuous()) {
         // Dims
-        img.dims_ = std::vector<int>(v[0].dims + 1);
-        std::reverse_copy(v[0].size.p, v[0].size.p + v[0].dims, begin(img.dims_)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
-        img.dims_.back() = vsize(v);
+        std::vector<int> dims(v[0].dims + 1);
+        std::reverse_copy(v[0].size.p, v[0].size.p + v[0].dims, begin(dims)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
+        dims.back() = vsize(v);
 
         // Type
+        DataType elemtype;
         switch (v[0].depth()) {
-        case CV_8U:  img.elemtype_ = DataType::uint8; break;
-        case CV_8S:  img.elemtype_ = DataType::int8; break;
-        case CV_16U: img.elemtype_ = DataType::uint16; break;
-        case CV_16S: img.elemtype_ = DataType::int16; break;
-        case CV_32S: img.elemtype_ = DataType::int32; break;
-        case CV_32F: img.elemtype_ = DataType::float32; break;
-        case CV_64F: img.elemtype_ = DataType::float64; break;
+        case CV_8U:  elemtype = DataType::uint8; break;
+        case CV_8S:  elemtype = DataType::int8; break;
+        case CV_16U: elemtype = DataType::uint16; break;
+        case CV_16S: elemtype = DataType::int16; break;
+        case CV_32S: elemtype = DataType::int32; break;
+        case CV_32F: elemtype = DataType::float32; break;
+        case CV_64F: elemtype = DataType::float64; break;
         default:
             ECVL_ERROR_UNSUPPORTED_OPENCV_DEPTH
         }
-        img.elemsize_ = DataTypeSize(img.elemtype_);
 
         // Channels and colors
+        std::string channels;
         if (v[0].dims < 2) {
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
         else if (v[0].dims == 2) {
-            img.channels_ = "xyz";
+            channels = "xyz";
         }
         else if (v[0].dims == 3) {
-            img.channels_ = "xyzw";
+            channels = "xyzw";
         }
         else {
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
 
+        ColorType colortype;
         if (v[0].type() == CV_8UC1) { // Guess this is a gray level image
-            img.channels_ += "c";
-            img.dims_.push_back(1); // Add another dim for color planes (but it is one dimensional)
-            img.colortype_ = ColorType::GRAY;
+            channels += "c";
+            dims.push_back(1); // Add another dim for color planes (but it is one dimensional)
+            colortype = ColorType::GRAY;
         }
         else if (v[0].type() == CV_8UC3) { // Guess this is a BGR image
-            img.channels_ += "c";
-            img.dims_.push_back(3); // Add another dim for color planes
-            img.colortype_ = ColorType::BGR;
+            channels += "c";
+            dims.push_back(3); // Add another dim for color planes
+            colortype = ColorType::BGR;
         }
         else if (v[0].channels() == 1) {
-            img.colortype_ = ColorType::none;
+            colortype = ColorType::none;
         }
         else {
-            img.channels_ += "o";
-            img.dims_.push_back(v[0].channels()); // Add another dim for color planes
-            img.colortype_ = ColorType::none;
+            channels += "o";
+            dims.push_back(v[0].channels()); // Add another dim for color planes
+            colortype = ColorType::none;
         }
 
-        // Strides
-        img.strides_.push_back(img.elemsize_);
-        int dsize = vsize(img.dims_);
-        for (int i = 0; i < dsize - 1; ++i) {
-            img.strides_.push_back(img.strides_[i] * img.dims_[i]);
-        }
+        img.Create(dims, elemtype, channels, colortype);
 
-        // Data
-        int datasize = img.elemsize_;
-        img.datasize_ = static_cast<size_t>(std::accumulate(begin(img.dims_), end(img.dims_), datasize, std::multiplies<int>()));
-        img.mem_ = DefaultMemoryManager::GetInstance();
-        img.data_ = img.mem_->Allocate(img.datasize_);
         // The following code copies the data twice. Should be improved!
-
-        std::vector<cv::Mat> channels;
+        std::vector<cv::Mat> vchannels;
         // For every channel
         for (int i = 0; i < img.dims_.back(); i++) {
             // For every slice
             for (size_t j = 0; j < v.size(); j++) {
-                cv::split(v[j], channels);
+                cv::split(v[j], vchannels);
 
-                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2], channels[i].data, img.strides_[img.strides_.size() - 2]);
+                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2], 
+                    vchannels[i].data, img.strides_[img.strides_.size() - 2]);
             }
         }
     }

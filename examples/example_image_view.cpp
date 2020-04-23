@@ -124,12 +124,14 @@ int main(void)
     // Test mul functions
     Mul(img4, 256 * 256 * 128, dst3);
     Mul(dst3, 3, dst4);
-    Mul(dst3, 3, dst5, false);
+    Mul(dst3, 3, dst5, DataType::none, false);
     Mul(img4, img2, dst3);
     Mul(img4, 256, dst3);
     Mul(512, img4, dst3);
 
     // Test div functions
+    Add(img1, 1, img1); // Avoid division by zero
+    Add(img2, 1, img2); // Avoid division by zero
     Div(img1, img2, dst1);
     Div(img2, img1, dst2);
     Div(img1, 2, dst2);

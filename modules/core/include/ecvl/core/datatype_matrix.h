@@ -128,8 +128,8 @@ struct SignedTable2D {
     template <int i>
     constexpr void FillData(integer<i>) {
         constexpr auto arr = DataTypeSignedArray();
-        constexpr int src = i / DataTypeSignedSize();
-        constexpr int dst = i % DataTypeSignedSize();
+        constexpr size_t src = i / DataTypeSignedSize();
+        constexpr size_t dst = i % DataTypeSignedSize();
         data[i] = _StructFun<arr[src], arr[dst], Args...>::_;
         FillData(integer<i + 1>());
     }
