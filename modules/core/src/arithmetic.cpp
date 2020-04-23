@@ -35,32 +35,7 @@ void Function(Image& src1_dst, const Image& src2)                    \
 /*   Unary Arithmetic Operations over Images (source and destination are the same)  */
 /************************************************************************************/
 
-// Struct template specialization of the in-place negation of an Image. 
-template<DataType DT>
-struct StructScalarNeg {
-    static Image& _(Image& img)
-    {
-        View<DT> v(img);
-        auto i = v.Begin(), e = v.End();
-        for (; i != e; ++i) {
-            auto& p = *i;
-            p = static_cast<typename TypeInfo<DT>::basetype>(-p);
-        }
-        return img;
-    }
-};
 
-// TODO add appropriate checks
-Image& Neg(Image& img) {
-
-    // TODO add checks
-    if (static_cast<size_t>(img.elemtype_) >= DataTypeSignedSize()) {
-        ECVL_ERROR_NOT_ALLOWED_ON_UNSIGNED_IMG
-    }
-
-    static constexpr SignedTable1D<StructScalarNeg> table;
-    return table(img.elemtype_)(img);
-}
 
 /************************************************************************************/
 /*  Arithmetic Operations Between Two Images (source and destination are different) */
