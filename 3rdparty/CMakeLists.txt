@@ -86,13 +86,12 @@ if(ECVL_TESTS)
     set(CMAKE_FOLDER 3rdparty/googletest)
     add_subdirectory(googletest)
     set(CMAKE_FOLDER 3rdparty)
-    include(GoogleTest)
 endif()
 
 # --------------------
 # yaml-cpp
 # --------------------
-if (ECVL_DATASET)
+if(ECVL_DATASET)
     ecvl_update_3rdparty(yaml-cpp)
 
     SET(YAML_APPLE_UNIVERSAL_BIN OFF CACHE INTERNAL "" FORCE)
@@ -109,6 +108,9 @@ if (ECVL_DATASET)
     set(CMAKE_FOLDER 3rdparty/yaml-cpp)
     add_subdirectory(yaml-cpp)
     set(CMAKE_FOLDER 3rdparty)
+
+    # Suppress yaml-cpp iterator warnings
+    target_compile_definitions(yaml-cpp PUBLIC _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
     target_link_libraries(ECVL_CORE PUBLIC yaml-cpp)
 endif()
 

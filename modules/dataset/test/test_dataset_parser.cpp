@@ -11,14 +11,15 @@
 * All rights reserved.
 */
 
-#include <gtest/gtest.h>
 #include "ecvl/core.h"
 #include "ecvl/dataset_parser.h"
-#include <fstream>
-
 #ifdef ECVL_WITH_EXAMPLES
 #include "dataset_path.h"
 #endif
+
+#include <fstream>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 using namespace ecvl;
 
@@ -27,11 +28,8 @@ TEST(DatasetParser, LoadExistingDataset)
 {
     Dataset d(CMAKE_CURRENT_SOURCE_DIR "/examples/data/mnist/mnist.yml");
     EXPECT_EQ(d.name_, "MNIST");
-    std::vector<std::string> classes{ "0","1","2","3","4","5","6","7","8","9" };
     EXPECT_EQ(d.classes_.size(), 10);
-    for (size_t i = 0; i < d.classes_.size(); ++i) {
-        EXPECT_EQ(classes[i], d.classes_[i]);
-    }
+    EXPECT_THAT(d.classes_, testing::ElementsAre("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"));
     EXPECT_EQ(d.samples_.size(), 70000);
 }
 #endif

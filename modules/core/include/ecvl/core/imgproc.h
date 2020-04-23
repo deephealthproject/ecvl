@@ -15,14 +15,16 @@
 #define ECVL_IMGPROC_H_
 
 #include "image.h"
-#include "support_opencv.h"
+#include "saturate_cast.h"
 
-namespace ecvl {
+namespace ecvl
+{
 /** @brief Enum class representing the ECVL thresholding types.
 
     @anchor ThresholdingType
  */
-enum class ThresholdingType {
+enum class ThresholdingType
+{
     BINARY,     /**< \f[\texttt{dst} (x,y) =  \fork{\texttt{maxval}}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{0}{otherwise}\f] */
     BINARY_INV, /**< \f[\texttt{dst} (x,y) =  \fork{0}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{maxval}}{otherwise}\f] */
 };
@@ -31,7 +33,8 @@ enum class ThresholdingType {
 
     @anchor InterpolationType
  */
-enum class InterpolationType {
+enum class InterpolationType
+{
     nearest,    /**< Nearest neighbor interpolation */
     linear,     /**< Bilinear interpolation */
     area,       /**< Resampling using pixel area relation.
@@ -41,6 +44,14 @@ enum class InterpolationType {
     cubic,      /**< Bicubic interpolation */
     lanczos4    /**< Lanczos interpolation over 8x8 neighborhood */
 };
+
+/** @brief Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.
+
+@param[in] interp Interpolation type, see @ref InterpolationType.
+
+@return Associated OpenCV enum value.
+*/
+int GetOpenCVInterpolation(InterpolationType interp);
 
 /** @brief Resizes an Image to the specified dimensions
 
@@ -291,7 +302,8 @@ void HConcat(const std::vector<Image>& src, Image& dst);
 */
 void VConcat(const std::vector<Image>& src, Image& dst);
 
-enum class MorphTypes {
+enum class MorphTypes
+{
     MORPH_ERODE   , /**< see #erode */
     MORPH_DILATE  , /**< see #dilate */
     MORPH_OPEN    , /**< an opening operation  \f[\texttt{dst} = \mathrm{open} ( \texttt{src} , \texttt{element} )= \mathrm{dilate} ( \mathrm{erode} ( \texttt{src} , \texttt{element} ))\f] */
@@ -311,7 +323,7 @@ void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel,
     Point2i anchor = { -1, -1 },
     int iterations = 1,
     int borderType = 1 /*BORDER_CONSTANT*/,
-    const int& 	borderValue = 0/*morphologyDefaultBorderValue()*/
+    const int& borderValue = 0 /*morphologyDefaultBorderValue()*/
 );
 enum class InpaintTypes
 {

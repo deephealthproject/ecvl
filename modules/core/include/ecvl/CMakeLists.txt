@@ -14,22 +14,26 @@ target_sources(ECVL_CORE
     
     core.h
     core/arithmetic.h
+	core/arithmetic_impl.inc.h
+	core/cpu_hal.h
     core/datatype.h
     core/datatype_existing_tuples.inc.h
     core/datatype_existing_tuples_signed.inc.h
     core/datatype_existing_tuples_unsigned.inc.h
     core/datatype_matrix.h
     core/datatype_tuples.inc.h
+	core/fpga_hal.h
+    core/gpu_hal.h
+    core/hal.h
     core/image.h
     core/imgcodecs.h
     core/imgproc.h
     core/iterators.h
     core/iterators_impl.inc.h
+	core/saturate_cast.h
     core/macros.h
-    core/memorymanager.h
     core/standard_errors.h
     core/support_opencv.h
     core/support_nifti.h
     core/type_promotion.h
-
 )
