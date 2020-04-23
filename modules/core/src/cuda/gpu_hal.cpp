@@ -28,4 +28,12 @@ GpuHal* GpuHal::GetInstance()
     return &instance;
 }
 
+
+uint8_t* GpuHal::MemAllocate(size_t nbytes)
+{
+    uint8_t* devPtr;
+    checkCudaError(cudaMalloc(&devPtr, nbytes));
+    return devPtr;
+}
+
 } // namespace ecvl

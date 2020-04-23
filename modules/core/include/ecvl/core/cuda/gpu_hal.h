@@ -14,20 +14,22 @@
 #ifndef ECVL_GPU_HAL_H_
 #define ECVL_GPU_HAL_H_
 
+#include <cuda_runtime.h>
+
 #include "ecvl/core/hal.h"
+#include "ecvl/core/cuda/common.h"
+
 
 namespace ecvl
 {
 class GpuHal : public HardwareAbstractionLayer
 {
 public:
-    uint8_t* MemAllocate(size_t nbytes) override
-    {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::MemAllocate")
-    }
+    uint8_t* MemAllocate(size_t nbytes) override;
+
     void MemDeallocate(uint8_t* data) override
     {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::MemDeallocate")
+        checkCudaError(cudaFree(data));
     }
 
     uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
