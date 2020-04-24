@@ -32,21 +32,13 @@ public:
         checkCudaError(cudaFree(data));
     }
 
-    uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
-    {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::MemCopy")
-    }
+    uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override;
 
     static GpuHal* GetInstance();
 
-    void FromCpu(Image& src) override
-    {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::FromCpu")
-    }
-    void ToCpu(Image& src) override
-    {
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("GpuHal::ToCpu")
-    }
+    void FromCpu(Image& src) override;
+    
+    void ToCpu(Image& src) override;
 };
 } // namespace ecvl
 
