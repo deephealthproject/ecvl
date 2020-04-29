@@ -1,9 +1,11 @@
-Copy ECVL.natvis in:
+In order to get ImageWatch working with ecvl::Image and ecvl::View make a folder under
 
-C:\Users\<<!!UserName!!>>\Documents\Visual Studio 2017\Visualizers\ECVL.natvis
+md C:\Users\<<!!UserName!!>>\Documents\Visual Studio 2017\Visualizers
 
-in order to get ImageWatch working with ecvl::Image.
+then copy ECVL.natvis in the folder with
 
-An alternative is to create a hard link with:
+copy "<<!!Path to ECVL!!>>\tools\ECVL.natvis" "C:\Users\<<!!UserName!!>>\Documents\Visual Studio 2017\Visualizers\ECVL.natvis"
+
+or, as an alternative, create a hard link with:
 
 mklink /H "C:\Users\<<!!UserName!!>>\Documents\Visual Studio 2017\Visualizers\ECVL.natvis" "<<!!Path to ECVL!!>>\tools\ECVL.natvis"
