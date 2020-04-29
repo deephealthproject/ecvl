@@ -8,6 +8,7 @@ var searchData=
   ['color',['COLOR',['../namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a04bd834032febb3fda8c6936ee140949',1,'ecvl']]],
   ['colortype',['ColorType',['../namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3',1,'ecvl']]],
   ['colortype_5f',['colortype_',['../classecvl_1_1_image.html#a48a690afebe942f779dd1520c61d4d9e',1,'ecvl::Image']]],
+  ['common_2eh',['common.h',['../common_8h.html',1,'']]],
   ['condition_5fb',['CONDITION_B',['../cpu__hal__imgproc_8cpp.html#a5417d6273ee9c48e55beba8c2a897d35',1,'cpu_hal_imgproc.cpp']]],
   ['condition_5fc',['CONDITION_C',['../cpu__hal__imgproc_8cpp.html#acac2abdf9b0f8d1c4fab394e613ad271',1,'cpu_hal_imgproc.cpp']]],
   ['condition_5fd',['CONDITION_D',['../cpu__hal__imgproc_8cpp.html#a24f88026ff0c4ee9ede3fef8b5c14235',1,'cpu_hal_imgproc.cpp']]],
@@ -52,5 +53,7 @@ var searchData=
   ['ctype_5fgt_5f',['ctype_gt_',['../classecvl_1_1_d_l_dataset.html#ae5df606d050434b5f959b6a649bebf09',1,'ecvl::DLDataset']]],
   ['cubic',['cubic',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca7ab93feeb36d98e584d10de2e2f68843',1,'ecvl']]],
   ['current_5fbatch_5f',['current_batch_',['../classecvl_1_1_d_l_dataset.html#a0d71f7a048afec20e00f92a9442ff0dd',1,'ecvl::DLDataset']]],
-  ['current_5fsplit_5f',['current_split_',['../classecvl_1_1_d_l_dataset.html#af39c84d00f0132c5fb70c3eef3b823ca',1,'ecvl::DLDataset']]]
+  ['current_5fsplit_5f',['current_split_',['../classecvl_1_1_d_l_dataset.html#af39c84d00f0132c5fb70c3eef3b823ca',1,'ecvl::DLDataset']]],
+  ['gpu_5fhal_2ecpp',['gpu_hal.cpp',['../cuda_2gpu__hal_8cpp.html',1,'']]],
+  ['gpu_5fhal_2eh',['gpu_hal.h',['../cuda_2gpu__hal_8h.html',1,'']]]
 ];
