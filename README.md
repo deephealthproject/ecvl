@@ -1,6 +1,13 @@
 
 ![ECVL](doc/logo/DEEPHEALTH_doxygen_logo_reduced.png)
 # ECVL - European Computer Vision Library 
+[![release](https://img.shields.io/github/v/release/deephealthproject/ecvl)](https://github.com/deephealthproject/ecvl/releases/latest/)
+[![docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=flat)](https://deephealthproject.github.io/ecvl/)
+[![cobertura](https://img.shields.io/jenkins/coverage/cobertura?jobUrl=https%3A%2F%2Fjenkins-master-deephealth-unix01.ing.unimore.it%2Fjob%2FDeepHealth%2Fjob%2Fecvl%2Fjob%2Fmaster%2F&label=cobertura)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/cobertura/)
+[![codecov](https://codecov.io/gh/deephealthproject/ecvl/branch/master/graph/badge.svg)](https://codecov.io/gh/deephealthproject/ecvl)
+[![license](https://img.shields.io/github/license/deephealthproject/ecvl)](https://github.com/deephealthproject/ecvl/blob/master/LICENSE)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat)](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 | System  |  Compiler  | OpenCV | Status | 
 |:-------:|:----------:|:------:|:------:|
@@ -12,7 +19,7 @@
 
 ## Documentation
 
-The ECVL documentation is available online [here](https://deephealthproject.github.io/ecvl/). It is automatically updated at each commit/push to the master branch.
+The ECVL documentation is available [here](https://deephealthproject.github.io/ecvl/).
 
 ## Requirements
 - CMake 3.13 or later
@@ -71,70 +78,34 @@ make install
 
 An extension of ImageWatch is available to visually inspect ecvl::Image when debugging. In order to use it be sure to install the ImageWatch plugin for Visual Studio and copy and past the file ```tools/ECVL.natvis``` from the GitHub repo into ```C:\Users\<!!username!!>\Documents\Visual Studio 2017\Visualizers```
 
-## ECVL Development Status (Work in progress list)
+## ECVL Development Status
 
-:heavy_check_mark: Implemented &nbsp; &nbsp; :large_blue_circle: Scheduled/Work in progress &nbsp; &nbsp; :x: Not implemented &nbsp; &nbsp; :no_entry_sign: Not needed
+ECVL development status is available [here](DEVSTAT.md).
 
-### Image Read
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
+## Contributing
 
-### Image Write
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
+Any contribution is really welcome!
 
-### Image Arithmetics
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Add | :heavy_check_mark: | :x: | :x: |
-| Sub | :heavy_check_mark: | :x: | :x: |
-| Mul | :heavy_check_mark: | :x: | :x: |
-| Div | :heavy_check_mark: | :x: | :x: |
-| Neg | :heavy_check_mark: | :x: | :x: |
+## Contributors
 
-### Image Manipulation
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| ChangeColorSpace | :heavy_check_mark: | :x: | :x: |
-| Flip | :heavy_check_mark: | :x: | :x: |
-| HConcat | :heavy_check_mark: | :x: | :x: |
-| Mirror | :heavy_check_mark: | :x: | :x: |
-| ResizeDim | :heavy_check_mark: | :x: | :x: |
-| ResizeScale | :heavy_check_mark: | :x: | :x: |
-| Rotate | :heavy_check_mark: | :x: | :x: |
-| RotateFullImage | :heavy_check_mark: | :x: | :x: |
-| Stack | :heavy_check_mark: | :x: | :x: |
-| VConcat | :heavy_check_mark: | :x: | :x: |
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
-### Pre- Post-processing and Augmentation
-| Functionality | CPU | GPU | FPGA |
-|--|--|--|--|
-| Additive Gaussian Noise | :x: | :x: | :x: |
-| Additive Laplace Noise | :heavy_check_mark: | :x: | :x: |
-| Additive Poisson Noise | :heavy_check_mark: | :x: | :x: |
-| Average Blur | :x: | :x: | :x: |
-| Channel Shuffle | :x: | :x: | :x: |
-| Coarse Dropout | :heavy_check_mark: | :x: | :x: |
-| Connected Components Labeling | :heavy_check_mark: | :x: | :x: |
-| Dropout | :x: | :x: | :x: |
-| Filter2D | :heavy_check_mark: | :x: | :x: |
-| FindContours | :heavy_check_mark: | :x: | :x: |
-| Gamma Contrast | :heavy_check_mark: | :x: | :x: |
-| Gaussian Blur | :heavy_check_mark: | :x: | :x: |
-| Histogram Equalization | :x: | :x: | :x: |
-| Impulse Noise | :x: | :x: | :x: |
-| Integral Image | :heavy_check_mark: | :x: | :x: |
-| Median Blur | :x: | :x: | :x: |
-| Non Maxima Suppression | :heavy_check_mark: | :x: | :x: |
-| Pepper | :x: | :x: | :x: |
-| Salt | :x: | :x: | :x: |
-| Salt And Pepper | :x: | :x: | :x: |
-| SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
-| Threshold | :heavy_check_mark: | :x: | :x: |
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/CostantinoGrana"><img src="https://avatars2.githubusercontent.com/u/18437151?v=1" width="100px;" alt=""/><br /><sub><b>Costantino Grana</b></sub></a><br /><a href="https://github.com/deephealthproject/ecvl/commits?author=CostantinoGrana" title="Code">💻</a> <a href="#ideas-CostantinoGrana" title="Ideas, Planning, & Feedback">🤔</a> <a href="#tool-CostantinoGrana" title="Tools">🔧</a></td>
+    <td align="center"><a href="https://github.com/prittt"><img src="https://avatars.githubusercontent.com/u/6863130?v=1" width="100px;" alt=""/><br /><sub><b>Federico Bolelli</b></sub></a><br /><a href="https://github.com/deephealthproject/ecvl/commits?author=prittt" title="Code">💻</a> <a href="https://github.com/deephealthproject/ecvl/commits?author=prittt" title="Documentation">📖</a> <a href="#tool-prittt" title="Tools">🔧</a></td>
+    <td align="center"><a href="https://github.com/MicheleCancilla"><img src="https://avatars2.githubusercontent.com/u/22983812?v=1" width="100px;" alt=""/><br /><sub><b>Michele Cancilla</b></sub></a><br /><a href="https://github.com/deephealthproject/ecvl/commits?author=MicheleCancilla" title="Code">💻</a> <a href="https://github.com/deephealthproject/ecvl/pulls?q=is%3Apr+reviewed-by%3AMicheleCancilla" title="Reviewed Pull Requests">👀</a> <a href="#tool-MicheleCancilla" title="Tools">🔧</a> <a href="https://github.com/deephealthproject/ecvl/commits?author=MicheleCancilla" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/lauracanalini"><img src="https://avatars.githubusercontent.com/u/44258837?v=1" width="100px;" alt=""/><br /><sub><b>Laura Canalini</b></sub></a><br /><a href="https://github.com/deephealthproject/ecvl/commits?author=lauracanalini" title="Code">💻</a> <a href="https://github.com/deephealthproject/ecvl/pulls?q=is%3Apr+reviewed-by%3Alauracanalini" title="Reviewed Pull Requests">👀</a> <a href="#example-lauracanalini" title="Examples">💡</a></td>
+    <td align="center"><a href="https://github.com/stal12"><img src="https://avatars2.githubusercontent.com/u/34423515?v=1" width="100px;" alt=""/><br /><sub><b>Stefano Allegretti</b></sub></a><br /><a href="https://github.com/deephealthproject/ecvl/commits?author=stal12" title="Code">💻</a> <a href="#infra-stal12" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#tool-stal12" title="Tools">🔧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://allcontributors.org) specification.
+Contributions of any kind are welcome!

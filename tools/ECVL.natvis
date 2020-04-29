@@ -29,6 +29,19 @@
     </DisplayString>
 
     <Expand>
+      <Synthetic Name="[device]" Condition="dev_==Device::NONE">
+      <DisplayString>NONE</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[device]" Condition="dev_==Device::CPU">
+      <DisplayString>CPU</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[device]" Condition="dev_==Device::GPU">
+      <DisplayString>GPU</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[device]" Condition="dev_==Device::FPGA">
+      <DisplayString>FPGA</DisplayString>
+      </Synthetic>
+
       <Synthetic Name="[type]" Condition="elemtype_==DataType::uint8">
         <DisplayString>UINT8</DisplayString>
       </Synthetic>

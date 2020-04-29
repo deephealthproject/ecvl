@@ -22,7 +22,7 @@
 #include <opencv2/core.hpp>
 
 #include "datatype.h"
-#include "memorymanager.h"
+#include "hal.h"
 #include "iterators.h"
 #include "datatype_matrix.h"
 #include "type_promotion.h"
@@ -66,85 +66,132 @@ class View;
 template <DataType DT>
 class ConstView;
 
-#include "arithmetic_impl.inc.h"
-
 /** @brief Image class
 
 */
 class Image
 {
+protected:
+    /** @brief Sets default strides for contiguous memory layouts
+
+    This function sets the strides so that by incrementing the data pointer by strides_[0] it
+    moves to the next element (increments dimension 0), strides_[1] moves to the next dimension,
+    and so on. For example for "xyc" images, incrementing by strides_[0] increments the column,
+    incrementing by strides_[1] increments the row, incrementing by strides_[2] moves to
+    the next color plane.
+
+    Requires elemsize_ and dims_ to be correctly setup.
+    */
+    void SetDefaultStrides()
+    {
+        // Compute strides
+        strides_ = { elemsize_ };
+        int dsize = vsize(dims_);
+        for (int i = 0; i < dsize - 1; ++i) {
+            strides_.push_back(strides_[i] * dims_[i]);
+        }
+    }
+
+    /** @brief Gets the default datasize for contiguous images
+
+    This function returns the product of elemsize_ and all dims_.
+
+    Requires elemsize_ and dims_ to be correctly setup.
+    */
+    size_t GetDefaultDatasize()
+    {
+        return std::accumulate(std::begin(dims_), std::end(dims_), size_t(elemsize_), std::multiplies<size_t>());
+    }
+
+    /** @brief Sets the default datasize for contiguous images
+
+    This function sets the detasize field as the product of elemsize_ and all dims_.
+
+    Requires elemsize_ and dims_ to be correctly setup.
+    */
+    void SetDefaultDatasize()
+    {
+        datasize_ = GetDefaultDatasize();
+    }
+
+    friend class HardwareAbstractionLayer;
+
 public:
-    DataType            elemtype_;  /**< @brief Type of Image pixels, must be one of the
-                                         values available in DataType.        */
-    uint8_t             elemsize_;  /**< @brief Size (in bytes) of Image pixels.          */
-    std::vector<int>    dims_;      /**< @brief @anchor dims_ Vector of Image dimensions. Each dimension
-                                         is given in pixels/voxels. */
-    std::vector<int>    strides_;   /**< @brief Vector of Image strides. */
-                                    /**< Strides represent
-                                         the number of bytes the pointer on data
-                                         has to move to reach the next pixel/voxel
-                                         on the correspondent size. */
-    std::string         channels_;  /**< @brief String which describes how Image planes
-                                         are organized.
+    DataType                    elemtype_;          /**< @brief Type of Image pixels, must be one of the
+                                                         values available in DataType.        */
+    uint8_t                     elemsize_;          /**< @brief Size (in bytes) of Image pixels.          */
+    std::vector<int>            dims_;              /**< @brief @anchor dims_ Vector of Image dimensions. Each dimension
+                                                         is given in pixels/voxels. */
+    std::vector<int>            strides_;           /**< @brief Vector of Image strides. */
+                                                    /**< Strides represent
+                                                         the number of bytes the pointer on data
+                                                         has to move to reach the next pixel/voxel
+                                                         on the correspondent size. */
+    std::string                 channels_;          /**< @brief String which describes how Image planes
+                                                         are organized.
 
-                                         A single character provides
-                                         the information related to the corresponding
-                                         channel. The possible values are:
-                                            - 'x': horizontal spatial dimension
-                                            - 'y': vertical spatial dimension
-                                            - 'z': depth spatial dimension
-                                            - 'c': color dimension
-                                            - 't': temporal dimension
-                                            - 'o': any other dimension
-                                         For example, "xyc" describes a 2-dimensional
-                                         Image structured in color planes. This could
-                                         be for example a ColorType::GRAY Image with
-                                         dims_[2] = 1 or a ColorType::RGB Image with
-                                         dims_[2] = 3 an so on. The ColorType constrains
-                                         the value of the dimension corresponding to
-                                         the color channel.
-                                         Another example is "cxy" with dims_[0] = 3 and
-                                         ColorType::BGR. In this case the color dimension
-                                         is the one which changes faster as it is done
-                                         in other libraries such as OpenCV. */
-    ColorType           colortype_; /**< @brief Image ColorType.
+                                                         A single character provides
+                                                         the information related to the corresponding
+                                                         channel. The possible values are:
+                                                            - 'x': horizontal spatial dimension
+                                                            - 'y': vertical spatial dimension
+                                                            - 'z': depth spatial dimension
+                                                            - 'c': color dimension
+                                                            - 't': temporal dimension
+                                                            - 'o': any other dimension
+                                                         For example, "xyc" describes a 2-dimensional
+                                                         Image structured in color planes. This could
+                                                         be for example a ColorType::GRAY Image with
+                                                         dims_[2] = 1 or a ColorType::RGB Image with
+                                                         dims_[2] = 3 an so on. The ColorType constrains
+                                                         the value of the dimension corresponding to
+                                                         the color channel.
+                                                         Another example is "cxy" with dims_[0] = 3 and
+                                                         ColorType::BGR. In this case the color dimension
+                                                         is the one which changes faster as it is done
+                                                         in other libraries such as OpenCV. */
+    ColorType                   colortype_;         /**< @brief Image ColorType.
 
-                                         If this is different from ColorType::none
-                                         the channels_ string must contain a 'c' and the
-                                         corresponding dimension must have the appropriate
-                                         value. See @ref ColorType for the possible values. */
+                                                         If this is different from ColorType::none
+                                                         the channels_ string must contain a 'c' and the
+                                                         corresponding dimension must have the appropriate
+                                                         value. See @ref ColorType for the possible values. */
 
-    std::vector<float> spacings_;   /**< @brief Space between pixels/voxels. */
-                                    /**< Vector with the same size as @ref dims_, storing the
-                                         distance in mm between consecutive pixels/voxels
-                                         on every axis. */
+    std::vector<float>          spacings_;          /**< @brief Space between pixels/voxels. */
+                                                    /**< Vector with the same size as @ref dims_, storing the
+                                                         distance in mm between consecutive pixels/voxels
+                                                         on every axis. */
 
-    uint8_t*            data_;      /**< @brief Pointer to Image data.
+    uint8_t*                    data_;              /**< @brief Pointer to Image data.
 
-                                         If the Image is not the owner
-                                         of data, for example when using Image views, this
-                                         attribute will point to the data of another Image.
-                                         The possession or not of the data depends on the
-                                         MemoryManager. */
-    size_t              datasize_;  /**< @brief Size of Image data in bytes. */
-    bool                contiguous_;/**< @brief Whether the image is stored contiguously or not in memory. */
+                                                         If the Image is not the owner
+                                                         of data, for example when using Image views, this
+                                                         attribute will point to the data of another Image.
+                                                         The possession or not of the data depends on the
+                                                         HardwareAbstractionLayer. */
+    size_t                      datasize_;          /**< @brief Size of Image data in bytes. */
+    bool                        contiguous_;        /**< @brief Whether the image is stored contiguously or not in memory. */
 
-    MetaData* meta_;                /**< @brief Pointer to Image MetaData. */
-    MemoryManager* mem_;            /**< @brief Pointer to the MemoryManager employed by the Image.
+    MetaData* meta_;                                /**< @brief Pointer to Image MetaData. */
+    HardwareAbstractionLayer*   hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
 
-                                         It can be DefaultMemoryManager or ShallowMemoryManager. The
-                                         former is responsible for allocating and deallocating data,
-                                         when using the DefaultMemoryManager the Image is the owner
-                                         of data. When ShallowMemoryManager is employed the Image
-                                         does not own data and operations on memory are not allowed
-                                         or does not produce any effect.*/
+                                                         It can be CpuHal or ShallowCpuHal. The
+                                                         former is responsible for allocating and deallocating data,
+                                                         when using the CpuHal the Image is the owner
+                                                         of data. When ShallowCpuHal is employed the Image
+                                                         does not own data and operations on memory are not allowed
+                                                         or does not produce any effect.*/
+    Device                      dev_;               /**< @brief Identifier for the device on which the image data is.
 
-                                         /** @brief Generic non-const Begin Iterator.
+                                                         This is just informative and should be always synchronized
+                                                         with the HAL pointer.*/
 
-                                         This function gives you a non-const generic Begin Iterator that can be used both for contiguous and
-                                         non-contiguous non-const Images. It is useful to iterate over a non-const Image. If the Image is contiguous
-                                         prefer the use of ContiguousIterato which in most cases improve the performance.
-                                         */
+    /** @brief Generic non-const Begin Iterator.
+
+    This function gives you a non-const generic Begin Iterator that can be used both for contiguous and
+    non-contiguous non-const Images. It is useful to iterate over a non-const Image. If the Image is contiguous
+    prefer the use of ContiguousIterato which in most cases improve the performance.
+    */
     template<typename T>
     Iterator<T> Begin() { return Iterator<T>(*this); }
 
@@ -222,7 +269,8 @@ public:
         datasize_{ 0 },
         contiguous_{ true },
         meta_{ nullptr },
-        mem_{ nullptr }
+        hal_{ nullptr },
+        dev_{ Device::NONE }
     {
     }
 
@@ -230,7 +278,8 @@ public:
 
         The initializing constructor creates a proper image and allocates the data.
     */
-    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings = std::vector<float>()) :
+    Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{ dims },
@@ -242,18 +291,10 @@ public:
         datasize_{ 0 },
         contiguous_{ true },
         meta_{ nullptr },
-        mem_{ DefaultMemoryManager::GetInstance() }
+        hal_{ HardwareAbstractionLayer::Factory(dev) },
+        dev_{ dev }
     {
-        // Compute strides
-        strides_ = { elemsize_ };
-        int dsize = vsize(dims_);
-        for (int i = 0; i < dsize - 1; ++i) {
-            strides_.push_back(strides_[i] * dims_[i]);
-        }
-        // Compute datasize
-        datasize_ = elemsize_;
-        datasize_ = std::accumulate(std::begin(dims_), std::end(dims_), datasize_, std::multiplies<size_t>());
-        data_ = mem_->Allocate(datasize_);
+        hal_->Create(*this);
     }
 
     /** @brief Copy constructor.
@@ -274,82 +315,100 @@ public:
         datasize_{ img.datasize_ },
         contiguous_{ img.contiguous_ },
         meta_{ img.meta_ },
-        mem_{ img.mem_ }
+        hal_{ img.hal_ },
+        dev_{ img.dev_ }
     {
-        if (mem_ == ShallowMemoryManager::GetInstance()) {
-            // When copying from non owning memory we become owners of the original data.
-            mem_ = DefaultMemoryManager::GetInstance();
-        }
-        if (mem_ == DefaultMemoryManager::GetInstance()) {
-            if (contiguous_) {
-                data_ = mem_->AllocateAndCopy(datasize_, img.data_);
-            }
-            else {
-                // When copying a non contiguous image, we make it contiguous
-                contiguous_ = true;
-                // Compute strides
-                strides_ = { elemsize_ };
-                int dsize = vsize(dims_);
-                for (int i = 0; i < dsize - 1; ++i) {
-                    strides_.push_back(strides_[i] * dims_[i]);
-                }
-                // Compute datasize
-                datasize_ = elemsize_;
-                datasize_ = std::accumulate(dims_.begin(), std::end(dims_), datasize_, std::multiplies<size_t>());
-                data_ = mem_->Allocate(datasize_);
-                // Copy with iterators
-                // TODO: optimize so that we can memcpy one block at a time on the first dimension
-                // This will require Iterators to increment more than one
-                auto p = data_;
-                auto i = img.Begin<uint8_t>(), e = img.End<uint8_t>();
-                for (; i != e; ++i) {
-                    memcpy(p++, i.ptr_, elemsize_);
-                }
-            }
-        }
+        hal_->Copy(img, *this);
     }
 
     /** @brief Move constructor
 
         Move constructor
     */
-    Image(Image&& img) :
-        elemtype_{ img.elemtype_ },
-        elemsize_{ img.elemsize_ },
-        dims_{ move(img.dims_) },
-        spacings_{ move(img.spacings_) },
-        strides_{ move(img.strides_) },
-        channels_{ move(img.channels_) },
-        colortype_{ img.colortype_ },
-        data_{ img.data_ },
-        datasize_{ img.datasize_ },
-        contiguous_{ img.contiguous_ },
-        meta_{ img.meta_ },
-        mem_{ img.mem_ }
+    Image(Image&& img)
     {
-        img.data_ = nullptr;
+        elemtype_ = img.elemtype_;
+        elemsize_ = img.elemsize_;
+        dims_ = img.dims_;
+        spacings_ = img.spacings_;
+        strides_ = img.strides_;
+        channels_ = img.channels_;
+        colortype_ = img.colortype_;
+        data_ = img.data_;
+        datasize_ = img.datasize_;
+        contiguous_ = img.contiguous_;
+        meta_ = img.meta_;
+        hal_ = img.hal_;
+        dev_ = img.dev_;
+        img.hal_ = nullptr; // This disables destruction of rhs.data_
     }
 
     friend void swap(Image& lhs, Image& rhs)
     {
-        std::swap(lhs.elemtype_, rhs.elemtype_);
-        std::swap(lhs.elemsize_, rhs.elemsize_);
-        std::swap(lhs.dims_, rhs.dims_);
-        std::swap(lhs.spacings_, rhs.spacings_);
-        std::swap(lhs.strides_, rhs.strides_);
-        std::swap(lhs.channels_, rhs.channels_);
-        std::swap(lhs.colortype_, rhs.colortype_);
-        std::swap(lhs.data_, rhs.data_);
-        std::swap(lhs.datasize_, rhs.datasize_);
-        std::swap(lhs.contiguous_, rhs.contiguous_);
-        std::swap(lhs.meta_, rhs.meta_);
-        std::swap(lhs.mem_, rhs.mem_);
+        using std::swap;
+        swap(lhs.elemtype_, rhs.elemtype_);
+        swap(lhs.elemsize_, rhs.elemsize_);
+        swap(lhs.dims_, rhs.dims_);
+        swap(lhs.spacings_, rhs.spacings_);
+        swap(lhs.strides_, rhs.strides_);
+        swap(lhs.channels_, rhs.channels_);
+        swap(lhs.colortype_, rhs.colortype_);
+        swap(lhs.data_, rhs.data_);
+        swap(lhs.datasize_, rhs.datasize_);
+        swap(lhs.contiguous_, rhs.contiguous_);
+        swap(lhs.meta_, rhs.meta_);
+        swap(lhs.hal_, rhs.hal_);
+        swap(lhs.dev_, rhs.dev_);
     }
 
-    Image& operator=(Image rhs)
+    Image& operator=(const Image& rhs)
     {
-        swap(*this, rhs);
+        if (this != &rhs) {
+            Image tmp = rhs;  // Copy and swap because I'm lazy, but still want super cheap self assignment
+            swap(*this, tmp);
+        }
         return *this;
+    }
+
+    Image& operator=(Image&& rhs)
+    {
+        assert(this != &rhs);
+        elemtype_ = rhs.elemtype_;
+        elemsize_ = rhs.elemsize_;
+        dims_ = rhs.dims_;
+        spacings_ = rhs.spacings_;
+        strides_ = rhs.strides_;
+        channels_ = rhs.channels_;
+        colortype_ = rhs.colortype_;
+        data_ = rhs.data_;
+        datasize_ = rhs.datasize_;
+        contiguous_ = rhs.contiguous_;
+        meta_ = rhs.meta_;
+        hal_ = rhs.hal_;
+        dev_ = rhs.dev_;
+        rhs.hal_ = nullptr; // This disables destruction of rhs.data_
+        return *this;
+    }
+
+    void To(Device dev)
+    {
+        if (dev_ == dev) {
+            return;
+        }
+        if (dev_ == Device::NONE || dev == Device::NONE) {
+            throw std::runtime_error(ECVL_ERROR_MSG "Source or dest device is NONE");
+        }
+
+        if (dev_ == Device::CPU) { // Move from CPU to other device
+            auto dst_hal_ = HardwareAbstractionLayer::Factory(dev);
+            dst_hal_->FromCpu(*this);
+        }
+        else if (dev == Device::CPU) { // Move from other device to CPU
+            hal_->ToCpu(*this);
+        }
+        else {
+            throw std::runtime_error(ECVL_ERROR_MSG "Source or dest device must be CPU");
+        }
     }
 
     /** @brief Allocates new contiguous data if needed.
@@ -366,7 +425,8 @@ public:
     @param[in] colortype New Image colortype.
     @param[in] spacings New Image spacings.
     */
-    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype, const std::vector<float>& spacings = std::vector<float>());
+    void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU);
 
     /** @brief Destructor
 
@@ -374,15 +434,19 @@ public:
     */
     ~Image()
     {
-        if (mem_)
-            mem_->Deallocate(data_);
+        if (hal_)
+            hal_->MemDeallocate(data_);
     }
 
     /** @brief To check whether the Image contains data or not, regardless of the owning status. */
     bool IsEmpty() const { return data_ == nullptr; }
 
-    /** @brief To check whether the Image is owner of the data. */
-    bool IsOwner() const { return mem_ != ShallowMemoryManager::GetInstance(); }
+    /** @brief To check whether the Image is owner of the data.
+
+        \todo Move the implementation to the specific hals if other shallow hals will be introduced.
+
+    */
+    bool IsOwner() const { return hal_->IsOwner(); }
 
     /** @brief Returns the number of channels. */
     int Channels() const
@@ -395,6 +459,24 @@ public:
         }
         if (size_t c = channels_.find('o'); c != std::string::npos) {
             return dims_[c];
+        }
+        return 0;
+    }
+
+    /** @brief Returns the width of Image. */
+    int Width() const
+    {
+        if (size_t x = channels_.find('x'); x != std::string::npos) {
+            return dims_[x];
+        }
+        return 0;
+    }
+
+    /** @brief Returns the height of Image. */
+    int Height() const
+    {
+        if (size_t y = channels_.find('y'); y != std::string::npos) {
+            return dims_[y];
         }
         return 0;
     }
@@ -412,65 +494,41 @@ public:
         return std::inner_product(std::begin(coords), std::end(coords), std::begin(strides_), data_);
     }
 
-    /** @brief In-place addition of a scalar value. */
+    /** @brief In-place negation. */
+    void Neg()
+    {
+        hal_->Neg(*this, *this, elemtype_, false);
+    }
+
+    /** @brief In-place addition. */
     template<typename T>
     void Add(const T& rhs, bool saturate = true)
     {
-        static constexpr Table1D<ImageScalarAddImpl, T> table;
-        table(elemtype_)(*this, rhs, saturate);
+        hal_->Add(*this, rhs, *this, elemtype_, saturate);
     }
 
-    /** @brief In-place addition of an Image. */
-    void Add(const Image& rhs, bool saturate = true)
-    {
-        static constexpr Table2D<StructAdd> table;
-        table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
-    }
-
-    /** @brief In-place subtraction of a scalar value. */
+    /** @brief In-place subtraction. */
     template<typename T>
     void Sub(const T& rhs, bool saturate = true)
     {
-        static constexpr Table1D<ImageScalarSubImpl, T> table;
-        table(elemtype_)(*this, rhs, saturate);
+        hal_->Sub(*this, rhs, *this, elemtype_, saturate);
     }
 
-    /** @brief In-place subtraction of an Image. */
-    void Sub(const Image& rhs, bool saturate = true)
-    {
-        static constexpr Table2D<StructSub> table;
-        table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
-    }
-
-    /** @brief In-place multiplication for a scalar value. */
+    /** @brief In-place multiplication. */
     template<typename T>
     void Mul(const T& rhs, bool saturate = true)
     {
-        static constexpr Table1D<ImageScalarMulImpl, T> table;
-        table(elemtype_)(*this, rhs, saturate);
+        hal_->Mul(*this, rhs, *this, elemtype_, saturate);
     }
 
-    /** @brief In-place multiplication for an Image. */
-    void Mul(const Image& rhs, bool saturate = true)
-    {
-        static constexpr Table2D<StructMul> table;
-        table(elemtype_, rhs.elemtype_)(*this, rhs, saturate);
-    }
-
-    /** @brief In-place division for a scalar value. */
+    /** @brief In-place division. */
     template<typename T>
     void Div(const T& rhs, bool saturate = true)
     {
-        static constexpr Table1D<ImageScalarDivImpl, int> table;
-        table(elemtype_)(*this, rhs, saturate, 0);
+        hal_->Div(*this, rhs, *this, elemtype_, saturate);
     }
 
-    /** @brief In-place division for an Image. */
-    void Div(const Image& rhs, bool saturate = true)
-    {
-        static constexpr Table2D<StructDiv, int> table;
-        table(elemtype_, rhs.elemtype_)(*this, rhs, saturate, 0);
-    }
+    Image operator-() const;
 
     Image& operator+=(const Image& rhs);
 
@@ -513,7 +571,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     View(Image& img, const std::vector<int>& start, const std::vector<int>& size) : View(img)
@@ -557,33 +616,22 @@ public:
         return *reinterpret_cast<basetype*>(Ptr(coords));
     }
 
-    void Create(const std::vector<int>& dims, std::string channels, ColorType colortype, uint8_t* ptr, const std::vector<float>& spacings = std::vector<float>())
+    void Create(std::vector<int> dims, std::string channels, ColorType colortype, uint8_t* ptr,
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU)
     {
-        // Compute datasize
-        size_t new_datasize = DataTypeSize(DT);
-        new_datasize = std::accumulate(begin(dims), end(dims), new_datasize, std::multiplies<size_t>());
-
-        if (datasize_ != new_datasize) {
-            datasize_ = new_datasize;
-        }
-
         elemtype_ = DT;
         elemsize_ = DataTypeSize(elemtype_);
-        dims_ = dims;   // A check could be added to save this copy
+        dims_ = std::move(dims);
         spacings_ = spacings;
         channels_ = std::move(channels);
         colortype_ = colortype;
-        datasize_ = new_datasize;
 
-        // Compute strides
-        strides_ = { elemsize_ };
-        int dsize = vsize(dims_);
-        for (int i = 0; i < dsize - 1; ++i) {
-            strides_.push_back(strides_[i] * dims_[i]);
-        }
+        SetDefaultDatasize();
+        SetDefaultStrides();
 
         data_ = ptr;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(dev, true);
+        dev_ = dev;
         return;
     }
 
@@ -612,7 +660,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     const basetype& operator()(const std::vector<int>& coords)
@@ -645,7 +694,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     basetype& operator()(const std::vector<int>& coords)
@@ -678,7 +728,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     const basetype& operator()(const std::vector<int>& coords)
@@ -713,7 +764,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     int width() const { return dims_[0]; }
@@ -752,7 +804,8 @@ public:
         datasize_ = img.datasize_;
         contiguous_ = img.contiguous_;
         meta_ = img.meta_;
-        mem_ = ShallowMemoryManager::GetInstance();
+        hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
+        dev_ = img.dev_;
     }
 
     int width() const { return dims_[0]; }
@@ -794,48 +847,6 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
 */
 void RearrangeChannels(const Image& src, Image& dst, const std::string& channels, DataType new_type);
-
-/** @brief Copy Images of different DataTypes. */
-template<DataType SDT, DataType DDT>
-struct StructCopyImage
-{
-    static void _(const Image& src, Image& dst)
-    {
-        using dsttype = typename TypeInfo<DDT>::basetype;
-
-        ConstView<SDT> vsrc(src);
-        View<DDT> vdst(dst);
-        auto is = vsrc.Begin(), es = vsrc.End();
-        auto id = vdst.Begin();
-        for (; is != es; ++is, ++id) {
-            *id = static_cast<dsttype>(*is);
-        }
-    }
-};
-
-/** @brief Rearrange channels between Images of different DataTypes. */
-template<DataType SDT, DataType DDT>
-struct StructRearrangeImage
-{
-    static void _(const Image& src, Image& dst, const std::vector<int>& bindings)
-    {
-        using dsttype = typename TypeInfo<DDT>::basetype;
-        ConstView<SDT> vsrc(src);
-        View<DDT> vdst(dst);
-        auto id = vdst.Begin();
-
-        for (size_t tmp_pos = 0; tmp_pos < dst.datasize_; tmp_pos += dst.elemsize_, ++id) {
-            int x = static_cast<int>(tmp_pos);
-            int src_pos = 0;
-            for (int i = vsize(dst.dims_) - 1; i >= 0; i--) {
-                src_pos += (x / dst.strides_[i]) * src.strides_[bindings[i]];
-                x %= dst.strides_[i];
-            }
-
-            *id = static_cast<dsttype>(*(vsrc.data_ + src_pos));
-        }
-    }
-};
 
 /** @brief Copies the source Image into the destination Image.
 
