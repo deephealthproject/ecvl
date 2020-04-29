@@ -84,6 +84,22 @@ TEST_F(CoreImage, Copy##type) \
     EXPECT_TRUE(img_v({ 0,1,0 }) == 14); EXPECT_TRUE(img_v({ 1,1,0 }) == 60); \
 } \
 \
+TEST_F(CoreImage, CopyNonContiguous##type) \
+{ \
+    Image src({ 2, 3, 3, 1 }, DataType::type, "xyzc", ColorType::GRAY); \
+    View<DataType::type> src_v(src, { 0, 0, 0, 0 }, { 2, 2, 2, 1 }); \
+    src_v({ 0,0,0,0 }) = 50; src_v({ 0,0,1,0 }) = 32; \
+    src_v({ 0,1,0,0 }) = 14; src_v({ 0,1,1,0 }) = 60; \
+    src_v({ 1,0,0,0 }) = 54; src_v({ 1,0,1,0 }) = 41; \
+    src_v({ 1,1,0,0 }) = 97; src_v({ 1,1,1,0 }) = 79; \
+    Image dst(src_v); \
+    View<DataType::type> dst_v(dst); \
+    EXPECT_TRUE(dst_v({ 0,0,0,0 }) == 50); EXPECT_TRUE(dst_v({ 0,0,1,0 }) == 32); \
+    EXPECT_TRUE(dst_v({ 0,1,0,0 }) == 14); EXPECT_TRUE(dst_v({ 0,1,1,0 }) == 60); \
+    EXPECT_TRUE(dst_v({ 1,0,0,0 }) == 54); EXPECT_TRUE(dst_v({ 1,0,1,0 }) == 41); \
+    EXPECT_TRUE(dst_v({ 1,1,0,0 }) == 97); EXPECT_TRUE(dst_v({ 1,1,1,0 }) == 79); \
+} \
+\
 TEST_F(CoreImage, Rearrange##type) \
 { \
     Image img({ 3, 4, 3, 2 }, DataType::type, "cxyz", ColorType::RGB); \

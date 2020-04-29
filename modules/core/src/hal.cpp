@@ -63,13 +63,31 @@ void HardwareAbstractionLayer::Copy(const Image& src, Image& dst)
         // When copying a non contiguous image, we make it contiguous (is this choice ok?)
         dst.contiguous_ = true;
         dst.hal_->Create(dst);
-        // Copy with iterators: this is SUPER SLOW!
-        // TODO: optimize so that we can memcpy one block at a time on the first dimension
-        // This will require Iterators to increment more than one
-        auto p = dst.data_;
-        auto i = src.Begin<uint8_t>(), e = src.End<uint8_t>();
-        for (; i != e; ++i) {
-            dst.hal_->MemCopy(p++, i.ptr_, dst.elemsize_);
+
+        int ndims = vsize(src.dims_);
+        int sncd;    // smallest non-contiguous dimension
+        for (sncd = 0; sncd < ndims && src.strides_[sncd] == dst.strides_[sncd]; ++sncd);
+
+        std::vector<int> pos(ndims, 0);
+        uint8_t* dst_data_ptr = dst.data_;
+        const uint8_t* src_data_ptr = src.data_;
+        while (true) {
+            dst.hal_->MemCopy(dst_data_ptr, src_data_ptr, dst.strides_[sncd]);
+            dst_data_ptr += dst.strides_[sncd];
+
+            // Increment source pointer
+            int dim;
+            for (dim = sncd; dim < ndims; ++dim) {
+                ++pos[dim];
+                src_data_ptr += src.strides_[dim];
+                if (pos[dim] != src.dims_[dim])
+                    break;
+                // Back to dimension starting position
+                pos[dim] = 0;
+                src_data_ptr -= src.dims_[dim] * src.strides_[dim];
+            }
+            if (dim == ndims)
+                break;
         }
     }
 }
