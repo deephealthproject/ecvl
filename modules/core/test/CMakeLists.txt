@@ -13,3 +13,10 @@ target_sources(ECVL_TESTS PRIVATE
         test_core.cpp
         test_imgproc.cpp
 )
+
+if(ECVL_GPU_AVAILABLE)
+    target_sources(ECVL_CORE PRIVATE
+        test_cuda.cu
+        test_cuda.h
+    )
+endif()

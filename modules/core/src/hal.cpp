@@ -18,7 +18,9 @@
 #include "ecvl/core/cpu_hal.h"
 #include "ecvl/core/fpga_hal.h"
 
-#include "ecvl/core/gpu_hal.h"
+#if defined ECVL_GPU
+#include "ecvl/core/cuda/gpu_hal.h"
+#endif // ECVL_GPU
 
 #include "ecvl/core/image.h"
 
@@ -38,7 +40,11 @@ HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool sha
             return CpuHal::GetInstance();
         }
     case ecvl::Device::GPU:
-        throw std::runtime_error("GpuHal not implemented");
+#if defined ECVL_GPU
+        return GpuHal::GetInstance();
+#else
+        ECVL_ERROR_DEVICE_UNAVAILABLE(GPU)
+#endif
     case ecvl::Device::FPGA:
         return FpgaHal::GetInstance();
     default:

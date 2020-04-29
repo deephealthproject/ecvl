@@ -10,6 +10,7 @@
 # All rights reserved.
 
 cmake_minimum_required (VERSION 3.13)
+#cmake_policy(SET CMP0091 NEW)  # must be set in order to use CMAKE_MSVC_RUNTIME_LIBRARY
 project (ecvl CXX)
 
 include(CheckCXXCompilerFlag)
@@ -71,6 +72,39 @@ message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Check for CUDA support
+#--------------------------------------------------------------------------------------------------------
+set(ECVL_GPU_AVAILABLE OFF) # ON if GPU support is chosen AND actually available
+#set(ECVL_GPU ON CACHE BOOL "Build for GPU hardware (requires the NVIDIA CUDA toolkit)")
+option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON) 
+if(ECVL_GPU)
+    if(${CMAKE_VERSION} VERSION_LESS "3.17.0") 
+        message(WARNING "Build for GPU hardware is only supported with CMake 3.17 or later.")
+    else()
+        include(CheckLanguage)
+        check_language(CUDA)
+        if(CMAKE_CUDA_COMPILER)
+            enable_language(CUDA)
+            find_package(CUDAToolkit)
+            if(CUDAToolkit_FOUND)
+                set(ECVL_GPU_AVAILABLE ON)      
+                set(CMAKE_CUDA_STANDARD 14)                
+                add_compile_definitions(ECVL_GPU)                
+            else()
+                message(WARNING "The CUDA toolkit was not found, GPU support has been disabled.")
+            endif()            
+        else()
+            message(WARNING "No CUDA compiler was found, GPU support has been disabled.")
+        endif()
+    endif()
+endif()
+#--------------------------------------------------------------------------------------------------------
+# END: Check for CUDA support
+#--------------------------------------------------------------------------------------------------------
+
+
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: static/dynamic runtime
 #--------------------------------------------------------------------------------------------------------
@@ -84,17 +118,36 @@ endif()
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    
+    # The following part should be made like this starting from CMake 3.15. It also requires policy CMP0091 set to NEW.
+    # if(ECVL_SHARED)
+        # set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+    # else()
+        # set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    # endif()
+    
     if(ECVL_SHARED)
         message(STATUS "Setting dynamic runtime for MSVC")
         foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
             string(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
+        if(ECVL_GPU_AVAILABLE)
+            foreach(flag_var CMAKE_CUDA_FLAGS_DEBUG CMAKE_CUDA_FLAGS_RELEASE CMAKE_CUDA_FLAGS_MINSIZEREL CMAKE_CUDA_FLAGS_RELWITHDEBINFO) 
+                string(REGEX REPLACE "-MT" "-MD" ${flag_var} "${${flag_var}}")
+            endforeach(flag_var)
+        endif()
     else()
         message(STATUS "Setting static runtime for MSVC")
-        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO ) 
+        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
             string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
+        if(ECVL_GPU_AVAILABLE)
+            foreach(flag_var CMAKE_CUDA_FLAGS_DEBUG CMAKE_CUDA_FLAGS_RELEASE CMAKE_CUDA_FLAGS_MINSIZEREL CMAKE_CUDA_FLAGS_RELWITHDEBINFO) 
+                string(REGEX REPLACE "-MD" "-MT" ${flag_var} "${${flag_var}}")
+            endforeach(flag_var)
+        endif()
     endif()
+    
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: static/dynamic runtime
@@ -122,6 +175,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
 endif()
 
+if(ECVL_GPU_AVAILABLE)
+    if(ECVL_SHARED)
+        target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart)
+    else()
+        target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart_static)
+    endif()
+endif()
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------

@@ -13,6 +13,12 @@
 
 #include <gtest/gtest.h>
 
+#ifdef ECVL_GPU
+#include <cuda_runtime.h>
+#include "test_cuda.h"
+#include "ecvl/core/cuda/common.h"
+#endif 
+
 #include "ecvl/core.h"
 
 using namespace ecvl;
@@ -117,12 +123,6 @@ TEST_F(CoreImage, Rearrange##type) \
     EXPECT_TRUE(view2({ 3, 1, 1, 2 }) == 59); \
     EXPECT_TRUE(view2({ 0, 2, 0, 1 }) == 25); \
     EXPECT_TRUE(view2({ 1, 2, 0, 1 }) == 28); \
-} \
-\
-TEST_F(CoreImage, ToGpu##type) \
-{ \
-    Image tmp(g2_##type); \
-    EXPECT_THROW(tmp.To(Device::GPU), std::runtime_error); \
 } \
 \
 TEST_F(CoreImage, ToFpga##type) \
@@ -245,6 +245,34 @@ TEST_F(CoreArithmetics, Neg##type) \
 
 #include "ecvl/core/datatype_existing_tuples_signed.inc.h"
 #undef ECVL_TUPLE
+
+#ifdef ECVL_GPU
+#define ECVL_TUPLE(type, ...) \
+TEST_F(CoreImage, CpuToGpu##type) \
+{ \
+    Image tmp(g2_##type); \
+    tmp.To(Device::GPU); \
+    uint8_t res_h; \
+    uint8_t* res_d; \
+    checkCudaError(cudaMalloc(&res_d, 1)); \
+    RunTestCpuToGpuKernel##type(tmp.data_, res_d); \
+    checkCudaError(cudaMemcpy(&res_h, res_d, 1, cudaMemcpyDeviceToHost)); \
+    checkCudaError(cudaFree(res_d)); \
+    EXPECT_TRUE(res_h == 1); \
+} \
+\
+TEST_F(CoreImage, GpuToCpu##type) { \
+    Image gpu_img({ 2, 2, 1 }, DataType::type, "xyc", ColorType::GRAY, { 1, 1, 1 }, Device::GPU); \
+    RunTestGpuToCpuKernel##type(gpu_img.data_); \
+    checkCudaError(cudaDeviceSynchronize()); \
+    gpu_img.To(Device::CPU); \
+    View<DataType::type> img_v(gpu_img); \
+    EXPECT_TRUE(img_v({ 0,0,0 }) == 50); EXPECT_TRUE(img_v({ 1,0,0 }) == 32); \
+    EXPECT_TRUE(img_v({ 0,1,0 }) == 14); EXPECT_TRUE(img_v({ 1,1,0 }) == 60); \
+}
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+#undef ECVL_TUPLE
+#endif
 
 #if 0 // Functions reimplementation needed
 TEST_F(CoreArithmetics, Anduint8)
