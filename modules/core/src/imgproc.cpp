@@ -176,7 +176,7 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
 {
     AlwaysCheck(src, dst);
 
-    if (src.channels_ != "xyc" || src.elemtype_ != DataType::uint8 || !src.contiguous_) {
+    if (src.channels_ != "xyc" || !src.contiguous_) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
@@ -449,14 +449,14 @@ void VConcat(const vector<Image>& src, Image& dst)
     src_0.hal_->VConcat(src, dst);
 }
 
-void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue)
+void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue)
 {
     AlwaysCheck(src, dst);
 
     src.hal_->Morphology(src, dst, op, kernel, anchor, iterations, borderType, borderValue);
 }
 
-void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag)
+void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag)
 {
     AlwaysCheck(src, dst);
 
@@ -470,5 +470,26 @@ void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>
     }
 
     src.hal_->MeanStdDev(src, mean, stddev);
+}
+
+void Transpose(const Image& src, Image& dst)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->Transpose(src, dst);
+}
+
+void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->GridDistortion(src, dst, num_steps, distort_limit, interp, borderType, borderValue);
+}
+
+void ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->ElasticTransform(src, dst, alpha, sigma, interp, borderType, borderValue);
 }
 } // namespace ecvl

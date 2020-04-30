@@ -13,6 +13,7 @@
 
 #include "ecvl/core/support_opencv.h"
 
+#include "ecvl/core/imgproc.h"
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl
@@ -60,12 +61,14 @@ Image MatToImage(const cv::Mat& m)
         }
 
         ColorType colortype;
-        if (m.type() == CV_8UC1 || m.type() == CV_16UC1 || m.type() == CV_32FC1 || m.type() == CV_64FC1) { // Guess this is a gray level image
+        if (m.type() == CV_8UC1 || m.type() == CV_16UC1 || m.type() == CV_32FC1 || m.type() == CV_64FC1
+            || m.type() == CV_8SC1 || m.type() == CV_16SC1 || m.type() == CV_32SC1) { // Guess this is a gray level image
             channels += "c";
             dims.push_back(1); // Add another dim for color planes (but it is one dimensional)
             colortype = ColorType::GRAY;
         }
-        else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3) { // Guess this is a BGR image
+        else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3
+            || m.type() == CV_8SC3 || m.type() == CV_16SC3 || m.type() == CV_32SC3) { // Guess this is a BGR image
             channels += "c";
             dims.push_back(3); // Add another dim for color planes
             colortype = ColorType::BGR;
@@ -102,12 +105,7 @@ Image MatToImage(const cv::Mat& m)
 
 cv::Mat ImageToMat(const Image& img)
 {
-    if (img.channels_ != "cxy" && img.channels_ != "xyc" &&
-        img.channels_ != "zxy" && img.channels_ != "xyz" &&
-        img.channels_ != "oxy" && img.channels_ != "xyo") {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
-    if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY) {
+    if (!(img.Width() && img.Height() && img.Channels() && vsize(img.dims_) == 3 && img.elemtype_ != DataType::int64)) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
@@ -120,6 +118,13 @@ cv::Mat ImageToMat(const Image& img)
     }
     else if (img.channels_.find('o') != std::string::npos) {
         RearrangeChannels(img, tmp, "oxy");
+    }
+
+    if (img.colortype_ == ColorType::RGB) {
+        ChangeColorSpace(tmp, tmp, ColorType::BGR);
+    }
+    else if (img.colortype_ != ColorType::BGR && img.colortype_ != ColorType::GRAY && img.colortype_ != ColorType::none) {
+        ECVL_ERROR_NOT_IMPLEMENTED
     }
 
     int type;
@@ -215,7 +220,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
             for (size_t j = 0; j < v.size(); j++) {
                 cv::split(v[j], vchannels);
 
-                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2], 
+                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
                     vchannels[i].data, img.strides_[img.strides_.size() - 2]);
             }
         }

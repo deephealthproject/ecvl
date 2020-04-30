@@ -17,6 +17,7 @@
 #include <opencv2/photo.hpp>
 
 #include "ecvl/core/imgproc.h"
+#include "ecvl/core/arithmetic.h"
 #include "ecvl/core/support_opencv.h"
 
 using namespace std;
@@ -42,31 +43,32 @@ case DataType::type: DEREF(dst, type) = saturate_cast<DataType::type>(0.299 * CO
 #undef CONST_DEREF
 }
 
-void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
+void OpenCVAlwaysCheck(const ecvl::Image& src)
 {
-    if (src.channels_ == "xyc" || src.channels_ == "cxy" || src.channels_ == "xyz" || src.channels_ == "zxy" || src.channels_ == "xyo" || src.channels_ == "oxy") {
-        cv::Mat m;
-        cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
+    if (!(src.Width() && src.Height() && src.Channels() && vsize(src.dims_) == 3 && src.elemtype_ != DataType::int64)) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 }
 
+void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
+{
+    OpenCVAlwaysCheck(src);
+
+    cv::Mat m;
+    cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
+    dst = ecvl::MatToImage(m);
+}
+
 void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
 {
-    if (src.channels_ == "xyc" || src.channels_ == "cxy" || src.channels_ == "xyz" || src.channels_ == "zxy" || src.channels_ == "xyo" || src.channels_ == "oxy") {
-        int nw = lround(src.dims_[0] * scales[0]);
-        int nh = lround(src.dims_[1] * scales[1]);
+    OpenCVAlwaysCheck(src);
 
-        cv::Mat m;
-        cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
+    int nw = lround(src.dims_[0] * scales[0]);
+    int nh = lround(src.dims_[1] * scales[1]);
+
+    cv::Mat m;
+    cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
+    dst = ecvl::MatToImage(m);
 }
 
 void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
@@ -179,6 +181,8 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 
 void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)
 {
+    OpenCVAlwaysCheck(src);
+
     cv::Point2f pt;
     if (center.empty()) {
         pt = { src.dims_[0] / 2.0f, src.dims_[1] / 2.0f };
@@ -187,46 +191,38 @@ void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, co
         pt = { float(center[0]), float(center[1]) };
     }
 
-    if (src.channels_ == "xyc" || src.channels_ == "cxy" || src.channels_ == "xyz" || src.channels_ == "zxy" || src.channels_ == "xyo" || src.channels_ == "oxy") {
-        cv::Mat rot_matrix;
-        rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
-        cv::Mat m;
-        cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
+    cv::Mat rot_matrix;
+    rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
+    cv::Mat m;
+    cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
+    dst = ecvl::MatToImage(m);
 }
 
 void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp)
 {
-    if (src.channels_ == "xyc" || src.channels_ == "cxy" || src.channels_ == "xyz" || src.channels_ == "zxy" || src.channels_ == "xyo" || src.channels_ == "oxy") {
-        cv::Point2f pt;
-        pt = { src.dims_[0] / 2.0f, src.dims_[1] / 2.0f };
+    OpenCVAlwaysCheck(src);
 
-        cv::Mat1d rot_matrix;
-        rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
+    cv::Point2f pt;
+    pt = { src.dims_[0] / 2.0f, src.dims_[1] / 2.0f };
 
-        int w = src.dims_[0];
-        int h = src.dims_[1];
+    cv::Mat1d rot_matrix;
+    rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
 
-        double cos = abs(rot_matrix(0, 0));
-        double sin = abs(rot_matrix(0, 1));
+    int w = src.dims_[0];
+    int h = src.dims_[1];
 
-        int nw = lround((h * sin) + (w * cos));
-        int nh = lround((h * cos) + (w * sin));
+    double cos = abs(rot_matrix(0, 0));
+    double sin = abs(rot_matrix(0, 1));
 
-        rot_matrix(0, 2) += (nw / 2) - pt.x;
-        rot_matrix(1, 2) += (nh / 2) - pt.y;
+    int nw = lround((h * sin) + (w * cos));
+    int nh = lround((h * cos) + (w * sin));
 
-        cv::Mat m;
-        cv::warpAffine(ImageToMat(src), m, rot_matrix, { nw, nh }, GetOpenCVInterpolation(interp));
-        dst = ecvl::MatToImage(m);
-    }
-    else {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
+    rot_matrix(0, 2) += (nw / 2) - pt.x;
+    rot_matrix(1, 2) += (nh / 2) - pt.y;
+
+    cv::Mat m;
+    cv::warpAffine(ImageToMat(src), m, rot_matrix, { nw, nh }, GetOpenCVInterpolation(interp));
+    dst = ecvl::MatToImage(m);
 }
 
 void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
@@ -517,25 +513,33 @@ void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double
 
     // X direction
     auto tmp1_it = tmp1.ContiguousBegin<TypeInfo_t<DataType::float64>>();
-    TypeInfo_t<DataType::uint8>* src_data = reinterpret_cast<TypeInfo_t<DataType::uint8>*>(src.data_);
-    for (int chan = 0; chan < tmp1.dims_[2]; chan++) {
-        for (int r = 0; r < tmp1.dims_[1]; r++) {
-            for (int c = 0; c < tmp1.dims_[0]; c++) {
-                double acc = 0;
-                for (unsigned int ck = 0; ck < kerX.size(); ck++) {
-                    int x = c + ck - hlf_width;
-                    if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1;
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: \
+    { \
+        TypeInfo_t<DataType::type>* src_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(src.data_); \
+        for (int chan = 0; chan < tmp1.dims_[2]; chan++) { \
+            for (int r = 0; r < tmp1.dims_[1]; r++) { \
+                for (int c = 0; c < tmp1.dims_[0]; c++) { \
+                    double acc = 0; \
+                    for (unsigned int ck = 0; ck < kerX.size(); ck++) { \
+                        int x = c + ck - hlf_width; \
+                        if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1; \
+                        acc += kerX[ck] * src_data[x]; \
+                    } \
+                *tmp1_it = acc; \
+                ++tmp1_it; \
+                } \
+                src_data += src.strides_[1] / sizeof(*src_data); \
+            } \
+        } \
+    } \
+    break;
 
-                    acc += kerX[ck] * src_data[x];
-                }
-
-                *tmp1_it = acc;
-                ++tmp1_it;
-            }
-
-            src_data += src.strides_[1] / sizeof(*src_data);
-        }
+    switch (type) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
     }
+
+#undef ECVL_TUPLE
 
     uint8_t* tmp2_ptr = tmp2.data_;
 
@@ -1176,6 +1180,8 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
 void CpuHal::FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
 {
+    OpenCVAlwaysCheck(src);
+
     cv::Mat cv_src = ecvl::ImageToMat(src);
 
     vector<vector<cv::Point>> cv_contours;
@@ -1363,8 +1369,10 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
     dst = std::move(tmp);
 }
 
-void CpuHal::Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue)
+void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue)
 {
+    OpenCVAlwaysCheck(src);
+
     using namespace cv;
     Mat src_(ImageToMat(src));
     Mat kernel_(ImageToMat(kernel));
@@ -1372,13 +1380,15 @@ void CpuHal::Morphology(const Image& src, Image& dst, MorphTypes op, Image& kern
     Point anchor_{ anchor[0], anchor[1] };
 
     int op_ = static_cast<int>(op);
-    morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, borderType, borderValue);
+    morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, static_cast<int>(borderType), borderValue);
 
     dst = MatToImage(dst_);
 }
 
-void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag)
+void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag)
 {
+    OpenCVAlwaysCheck(src);
+
     using namespace cv;
     Mat src_(ImageToMat(src));
     Mat inpaintMask_(ImageToMat(inpaintMask));
@@ -1392,6 +1402,8 @@ void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, dou
 
 void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev)
 {
+    OpenCVAlwaysCheck(src);
+
     using namespace cv;
     Mat src_(ImageToMat(src));
     Scalar mean_, stddev_;
@@ -1402,6 +1414,199 @@ void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector
     for (int i = 0; i < src.Channels(); ++i) {
         mean.push_back(mean_[i]);
         stddev.push_back(stddev_[i]);
+    }
+}
+
+void CpuHal::Transpose(const Image& src, Image& dst)
+{
+    size_t c_pos = src.channels_.find('c');
+    size_t x_pos = src.channels_.find('x');
+    size_t y_pos = src.channels_.find('y');
+
+    if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+        ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+    }
+
+    int src_width = src.Width();
+    int src_height = src.Height();
+    int src_channels = src.Channels();
+
+    vector<int> new_dims(src.dims_);
+    new_dims[x_pos] = src_height;
+    new_dims[y_pos] = src_width;
+
+    Image tmp(new_dims, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+    int src_stride_c = src.strides_[c_pos];
+    int tmp_stride_c = tmp.strides_[c_pos];
+    int src_stride_x = src.strides_[x_pos];
+    int tmp_stride_x = tmp.strides_[x_pos];
+    int src_stride_y = src.strides_[y_pos];
+    int tmp_stride_y = tmp.strides_[y_pos];
+    vector<uint8_t*> src_vch(src_channels), tmp_vch(src_channels);
+
+    // Get the pointers to channels starting pixels
+    for (int i = 0; i < src_channels; ++i) {
+        src_vch[i] = src.data_ + i * src_stride_c;
+        tmp_vch[i] = tmp.data_ + i * tmp_stride_c;
+    }
+
+    for (int c = 0; c < src_width; ++c) {
+        // Get the address of pixels in current row
+        int pos = src_stride_x * c;
+        int pos_dst = tmp_stride_y * c;
+        for (int r = 0; r < src_height; ++r) {
+            // Get the address of next row
+            int p1 = pos + r * src_stride_y;
+            int p2 = pos_dst + r * tmp_stride_x;
+
+#define ECVL_TUPLE(type, ...) \
+            case DataType::type: \
+                for (int ch = 0; ch < src_channels; ++ch) { \
+                    *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
+                } \
+                break;
+
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+
+    dst = std::move(tmp);
+}
+
+void FillCoordsVector(vector<float>& v, vector<float>& steps, int size, int num_steps)
+{
+    int step = size / num_steps;
+    int prev = 0, start = 0, end = 0, x = 0;
+    float cur = 0, diff = 0, div = 0;
+
+    for (int idx = 0; idx < num_steps; ++idx) {
+        x = idx * step;
+        start = x;
+        end = x + step;
+        if (end > size) {
+            end = size;
+            cur = static_cast<float>(size);
+        }
+        else {
+            cur = prev + step * steps[idx];
+        }
+
+        diff = cur - prev;
+        div = diff / (step - 1);
+        v[start] = static_cast<float>(prev);
+
+        for (int j = start; j < end - 1; ++j) {
+            v[j + 1] = v[j] + div;
+        }
+        prev = static_cast<int>(cur);
+    }
+}
+
+void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue)
+{
+    OpenCVAlwaysCheck(src);
+
+    std::default_random_engine re(std::random_device{}());
+    vector<float> xsteps, ysteps;
+    for (int i = 0; i < num_steps + 1; ++i) {
+        xsteps.push_back(1 + std::uniform_real_distribution<float>(distort_limit[0], distort_limit[1])(re));
+        ysteps.push_back(1 + std::uniform_real_distribution<float>(distort_limit[0], distort_limit[1])(re));
+    }
+
+    int height = src.Height();
+    int width = src.Width();
+
+    int x_step = width / num_steps;
+    vector<float> xx(width, 0.);
+    int y_step = height / num_steps;
+    vector<float> yy(height, 0.);
+
+    FillCoordsVector(xx, xsteps, width, num_steps);
+    FillCoordsVector(yy, ysteps, height, num_steps);
+
+    Image map_x({ width, height, 1 }, DataType::float32, "xyc", ColorType::none);
+    Image map_y({ width, height, 1 }, DataType::float32, "xyc", ColorType::none);
+
+    for (int i = 0; i < height; ++i) {
+        memcpy(map_x.data_ + (width * i * map_x.elemsize_), xx.data(), width * map_x.elemsize_);
+    }
+    for (int r = 0; r < height; ++r) {
+        for (int c = 0; c < width; ++c) {
+            memcpy(map_y.data_ + map_y.elemsize_ * c + map_y.strides_[1] * r, yy.data() + r, map_y.elemsize_);
+        }
+    }
+    
+    if (src.elemtype_ == DataType::int8 || src.elemtype_ == DataType::int32) {
+        interp = InterpolationType::nearest;
+    }
+
+    cv::Mat tmp;
+    cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(borderType), borderValue);
+    dst = MatToImage(tmp);
+    if (dst.colortype_ != src.colortype_) {
+        ChangeColorSpace(dst, dst, src.colortype_);
+    }
+}
+
+void CpuHal::ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue)
+{
+    OpenCVAlwaysCheck(src);
+
+    std::default_random_engine re(std::random_device{}());
+
+    int height = src.Height();
+    int width = src.Width();
+
+    Image dx({ src.Width(), src.Height(), 1 }, DataType::float32, "xyc", ColorType::none);
+    auto it = dx.Begin<float>(), e = dx.End<float>();
+    for (; it != e; ++it) {
+        *it = std::uniform_real_distribution<float>(-1, 1)(re);
+    }
+    ecvl::GaussianBlur(dx, dx, 17, 17, sigma);
+    ecvl::Mul(dx, alpha, dx, dx.elemtype_);
+
+    Image dy({ src.Width(), src.Height(), 1 }, DataType::float32, "xyc", ColorType::none);
+    it = dy.Begin<float>(), e = dy.End<float>();
+    for (; it != e; ++it) {
+        *it = std::uniform_real_distribution<float>(-1, 1)(re);
+    }
+    ecvl::GaussianBlur(dy, dy, 17, 17, sigma);
+    ecvl::Mul(dy, alpha, dy, dy.elemtype_);
+
+    vector<float> width_range(width);
+    vector<float> height_range(height);
+    iota(width_range.begin(), width_range.end(), 0.f);
+    iota(height_range.begin(), height_range.end(), 0.f);
+
+    Image map_x({ width, height, 1 }, DataType::float32, "xyc", ColorType::none);
+    Image map_y({ width, height, 1 }, DataType::float32, "xyc", ColorType::none);
+
+    for (int i = 0; i < height; ++i) {
+        memcpy(map_x.data_ + (width * i * map_x.elemsize_), width_range.data(), width * map_x.elemsize_);
+    }
+    for (int r = 0; r < height; ++r) {
+        for (int c = 0; c < width; ++c) {
+            memcpy(map_y.data_ + map_y.elemsize_ * c + map_y.strides_[1] * r, height_range.data() + r, map_y.elemsize_);
+        }
+    }
+
+    ecvl::Add(map_x, dx, map_x, map_x.elemtype_);
+    ecvl::Add(map_y, dy, map_y, map_y.elemtype_);
+
+    if (src.elemtype_ == DataType::int8 || src.elemtype_ == DataType::int32) {
+        interp = InterpolationType::nearest;
+    }
+
+    cv::Mat tmp;
+    cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(borderType), borderValue);
+    dst = MatToImage(tmp);
+    if (dst.colortype_ != src.colortype_) {
+        ChangeColorSpace(dst, dst, src.colortype_);
     }
 }
 } // namespace ecvl

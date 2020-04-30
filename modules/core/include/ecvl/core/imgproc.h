@@ -277,7 +277,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst);
 /** @brief Finds contours in a binary image
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
-@param[out] dst Output contours.
+@param[out] contours Output contours.
 */
 void FindContours(const Image& src, std::vector<std::vector<Point2i>>& contours);
 
@@ -302,10 +302,14 @@ void HConcat(const std::vector<Image>& src, Image& dst);
 */
 void VConcat(const std::vector<Image>& src, Image& dst);
 
-enum class MorphTypes
+/** @brief Enum class representing the ECVL morphology types.
+
+    @anchor MorphType
+ */
+enum class MorphType
 {
-    MORPH_ERODE   , /**< see #erode */
-    MORPH_DILATE  , /**< see #dilate */
+    MORPH_ERODE   ,
+    MORPH_DILATE  ,
     MORPH_OPEN    , /**< an opening operation  \f[\texttt{dst} = \mathrm{open} ( \texttt{src} , \texttt{element} )= \mathrm{dilate} ( \mathrm{erode} ( \texttt{src} , \texttt{element} ))\f] */
     MORPH_CLOSE   , /**< a closing operation */
                     /**< \f[\texttt{dst} = \mathrm{close} ( \texttt{src} , \texttt{element} )= \mathrm{erode} ( \mathrm{dilate} ( \texttt{src} , \texttt{element} ))\f]*/
@@ -315,25 +319,114 @@ enum class MorphTypes
                     /**< \f[\texttt{dst} = \mathrm{tophat} ( \texttt{src} , \texttt{element} )= \texttt{src} - \mathrm{open} ( \texttt{src} , \texttt{element} )\f] */
     MORPH_BLACKHAT, /**< "black hat" */
                     /**< \f[\texttt{dst} = \mathrm{blackhat} ( \texttt{src} , \texttt{element} )= \mathrm{close} ( \texttt{src} , \texttt{element} )- \texttt{src}\f] */
-    MORPH_HITMISS   /**< "hit or miss" */
-                    /**<   .- Only supported for CV_8UC1 binary images. A tutorial can be found in the documentation */
+    MORPH_HITMISS   /**< "hit or miss". */
+                    /**<   Only supported for DataType::uint8 binary images.*/
 };
 
-void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel,
+/** @brief Enum class representing the ECVL border types.
+
+    @anchor BorderType
+ */
+enum class BorderType
+{
+    BORDER_CONSTANT,     //!< `iiiiii|abcdefgh|iiiiiii`  with some specified `i`
+    BORDER_REPLICATE,    //!< `aaaaaa|abcdefgh|hhhhhhh`
+    BORDER_REFLECT,      //!< `fedcba|abcdefgh|hgfedcb`
+    BORDER_WRAP,         //!< `cdefgh|abcdefgh|abcdefg`
+    BORDER_REFLECT_101,  //!< `gfedcb|abcdefgh|gfedcba`
+    BORDER_TRANSPARENT   //!< `uvwxyz|abcdefgh|ijklmno`
+};
+
+/** @brief Performs advanced morphological transformations using an erosion and dilation as basic operations.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] op Type of a morphological operation, see MorphType.
+@param[in] kernel Structuring element.
+@param[in] anchor Anchor position with the kernel. Negative values mean that the anchor is at the kernel center.
+@param[in] iterations Number of times erosion and dilation are applied.
+@param[in] borderType Pixel extrapolation method, see BorderType. BorderType::BORDER_WRAP is not supported.
+@param[in] borderValue Border value in case of a constant border.
+*/
+void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel,
     Point2i anchor = { -1, -1 },
     int iterations = 1,
-    int borderType = 1 /*BORDER_CONSTANT*/,
+    BorderType borderType = BorderType::BORDER_CONSTANT,
     const int& borderValue = 0 /*morphologyDefaultBorderValue()*/
 );
-enum class InpaintTypes
+
+/** @brief Enum class representing the ECVL inpaint types.
+
+    @anchor InpaintType
+ */
+enum class InpaintType
 {
-    INPAINT_NS, //!< Use Navier-Stokes based method
-    INPAINT_TELEA //!< Use the algorithm proposed by Alexandru Telea @cite Telea04
+    INPAINT_NS,     //!< Use Navier-Stokes based method
+    INPAINT_TELEA   //!< Use the algorithm proposed by Alexandru Telea
 };
 
-void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag = InpaintTypes::INPAINT_TELEA);
+/** @brief Restores the selected region in an image using the region neighborhood.
 
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] inpaintMask Inpainting mask, an Image with 1-channel and DataType::uint8. Non-zero pixels indicate the area that needs to be inpainted.
+@param[in] inpaintRadius Radius of a circular neighborhood of each point inpainted that is considered by the algorithm.
+@param[in] flag Inpainting method that could be InpaintType::INPAINT_NS or InpaintType::INPAINT_TELEA.
+*/
+void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag = InpaintType::INPAINT_TELEA);
+
+/** @brief Calculates the mean and the standard deviation of an Image.
+
+@param[in] src Input Image.
+@param[out] mean Mean of the Image pixels.
+@param[out] stddev Standard deviation of the Image pixels.
+*/
 void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev);
+
+/** @brief Swap rows and columns of an Image.
+
+@param[in] src Input Image.
+@param[out] dst Output transposed Image.
+*/
+void Transpose(const Image& src, Image& dst);
+
+/** @brief Randomly stretch or reduce each cell of the grid in which the input Image is divided into.
+Based on https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1175
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] num_steps Count of grid cells on each side.
+@param[in] distort_limit Range of distortion steps.
+@param[in] interp Interpolation type used. Default is InterpolationType::linear.
+@param[in] borderType Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+@param[in] borderValue Padding value if borderType is BorderType::BORDER_CONSTANT.
+*/
+void GridDistortion(const Image& src, Image& dst,
+    int num_steps = 5,
+    const std::array<float, 2>& distort_limit = { -0.3f, 0.3f },
+    InterpolationType interp = InterpolationType::linear,
+    BorderType borderType = BorderType::BORDER_REFLECT_101,
+    const int& borderValue = 0
+);
+
+/** @brief Elastic deformation of input Image.
+Based on https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1235.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] alpha Scaling factor that controls the intensity of the deformation.
+@param[in] sigma Gaussian kernel standard deviation
+@param[in] interp Interpolation type used. If src is DataType::int8 or DataType::int32, Interpolation::nearest is used. Default is InterpolationType::linear.
+@param[in] borderType Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+@param[in] borderValue Padding value if borderType is BorderType::BORDER_CONSTANT.
+*/
+void ElasticTransform(const Image& src, Image& dst, 
+    float alpha = 34, 
+    float sigma = 4,
+    InterpolationType interp = InterpolationType::linear,
+    BorderType borderType = BorderType::BORDER_REFLECT_101,
+    const int& borderValue = 0
+);
 
 /** @example example_imgproc.cpp
  Imgproc example.

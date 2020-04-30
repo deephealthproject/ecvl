@@ -69,9 +69,12 @@ public:
     void Stack(const std::vector<Image>& src, Image& dst) override;
     void HConcat(const std::vector<Image>& src, Image& dst) override;
     void VConcat(const std::vector<Image>& src, Image& dst) override;
-    void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue) override;
-    void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag) override;
+    void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue) override;
+    void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag) override;
     void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) override;
+    void Transpose(const Image& src, Image& dst) override;
+    void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue) override;
+    void ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

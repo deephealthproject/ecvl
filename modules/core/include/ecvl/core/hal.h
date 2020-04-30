@@ -38,8 +38,9 @@ enum class Device
 enum class ThresholdingType;
 enum class InterpolationType;
 enum class ColorType;
-enum class MorphTypes;
-enum class InpaintTypes;
+enum class MorphType;
+enum class InpaintType;
+enum class BorderType;
 
 class Image;
 
@@ -75,7 +76,7 @@ public:
     // They MUST also take care of updating the hal_ and dev_ members and deallocate the
     // original memory. Template:
     /*
-        void FromCpu(Image& src) override { 
+        void FromCpu(Image& src) override {
             uint8_t* new_ptr; // This will be a device address
             // Allocate new_ptr on device
             // Make host->device copy from src.data_ into new_ptr
@@ -150,9 +151,12 @@ public:
     virtual void Stack(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void HConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void VConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void Morphology(const Image& src, Image& dst, MorphTypes op, Image& kernel, Point2i anchor, int iterations, int borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintTypes flag) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Transpose(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 
