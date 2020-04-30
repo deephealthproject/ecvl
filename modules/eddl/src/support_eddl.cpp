@@ -225,7 +225,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     for (int i = start; i < start + bs; ++i) {
         // Read the image
         const int index = GetSplit()[i];
-        const Sample& elem = samples_[index];
+        Sample& elem = samples_[index];
         img = elem.LoadImage(ctype_, false);
 
         // Classification problem
@@ -290,7 +290,7 @@ void DLDataset::LoadBatch(tensor& images)
     for (int i = start; i < start + bs; ++i) {
         // Read the image
         const int index = GetSplit()[i];
-        const Sample& elem = samples_[index];
+        Sample& elem = samples_[index];
         img = elem.LoadImage(ctype_, false);
 
         // Apply chain of augmentations only to sample image

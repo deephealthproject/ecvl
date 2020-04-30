@@ -44,7 +44,7 @@ void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
     }
 }
 
-Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
+Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
 {
     bool status;
     Image img;
@@ -89,6 +89,10 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt) const
 
     if (images.size() > 1) {
         Stack(images, img);
+    }
+
+    if (size_.empty()) {
+        size_.insert(size_.begin(), { img.Width(),img.Height() });
     }
 
     return img;
