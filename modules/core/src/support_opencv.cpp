@@ -215,7 +215,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
             for (size_t j = 0; j < v.size(); j++) {
                 cv::split(v[j], vchannels);
 
-                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2], 
+                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
                     vchannels[i].data, img.strides_[img.strides_.size() - 2]);
             }
         }

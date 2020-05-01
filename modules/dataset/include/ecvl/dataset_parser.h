@@ -21,6 +21,7 @@
 #include <map>
 #include <optional>
 #include <vector>
+#include <regex>
 
 #include "yaml-cpp/yaml.h"
 
@@ -41,7 +42,8 @@ This class provides the information to describe a dataset sample.
 `label_` and `label_path_` are mutually exclusive.
 @anchor Sample
 */
-class Sample {
+class Sample
+{
 public:
     std::vector<std::filesystem::path> location_; /**< @brief Absolute path of the sample. */
     std::optional<std::vector<int>> label_; /**< @brief Vector of sample labels. */
@@ -66,7 +68,8 @@ This class provides the splits a dataset can have: training, validation, and tes
 
 @anchor Split
 */
-class Split {
+class Split
+{
 public:
     std::vector<int> training_;   /**< @brief Vector containing samples of training split. */
     std::vector<int> validation_; /**< @brief Vector containing samples of validation split. */
@@ -79,7 +82,8 @@ This class implements the DeepHealth Dataset Format (https://github.com/deepheal
 
 @anchor Dataset
 */
-class Dataset {
+class Dataset
+{
 public:
     std::string name_ = "DeepHealth dataset"; /**< @brief Name of the Dataset. */
     std::string description_ = "This is the DeepHealth example dataset!"; /**< @brief Description of the Dataset. */
@@ -99,10 +103,13 @@ public:
 
     The YAML file is saved into the dataset root directory.
     Samples paths are relative to the dataset root directory.
-    
+
     @param[in] file_path Where to save the YAML file.
     */
     void Dump(const std::filesystem::path& file_path);
+
+    // RegEx which matchs URLs
+    static const std::regex url_regex_;
 
 private:
     std::map<std::string, int> features_map_;
@@ -119,7 +126,8 @@ namespace YAML
     Hidden from docs.
 */
 template<>
-struct convert<ecvl::Split> {
+struct convert<ecvl::Split>
+{
     /*static Node encode(const ecvl::Split& rhs)
     {
         Node node;
