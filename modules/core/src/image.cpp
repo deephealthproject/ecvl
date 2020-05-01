@@ -47,7 +47,6 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
     }
 }
 
-
 void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels, DataType new_type)
 {
     if (src.elemtype_ == DataType::none)

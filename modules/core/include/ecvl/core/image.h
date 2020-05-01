@@ -363,6 +363,7 @@ public:
 
     Image& operator=(const Image& rhs)
     {
+        // Self-assignment detection
         if (this != &rhs) {
             Image tmp = rhs;  // Copy and swap because I'm lazy, but still want super cheap self assignment
             swap(*this, tmp);
@@ -372,7 +373,10 @@ public:
 
     Image& operator=(Image&& rhs)
     {
-        assert(this != &rhs);
+        // Self-assignment detection
+        if (this == &rhs) {
+            return *this;
+        }
         elemtype_ = rhs.elemtype_;
         elemsize_ = rhs.elemsize_;
         dims_ = rhs.dims_;
@@ -380,6 +384,10 @@ public:
         strides_ = rhs.strides_;
         channels_ = rhs.channels_;
         colortype_ = rhs.colortype_;
+        // Release any resource we are holding
+        if (hal_) {
+            hal_->MemDeallocate(data_);
+        }
         data_ = rhs.data_;
         datasize_ = rhs.datasize_;
         contiguous_ = rhs.contiguous_;
@@ -434,8 +442,9 @@ public:
     */
     ~Image()
     {
-        if (hal_)
+        if (hal_) {
             hal_->MemDeallocate(data_);
+        }
     }
 
     /** @brief To check whether the Image contains data or not, regardless of the owning status. */

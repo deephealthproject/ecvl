@@ -30,13 +30,14 @@ This is just a shallow container for the Augmentations
 
 @anchor DatasetAugmentations
 */
-class DatasetAugmentations {
+class DatasetAugmentations
+{
     std::array<shared_ptr<Augmentation>, 3> augs_;
 public:
-	DatasetAugmentations(std::array<shared_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
-		: augs_(augs) {}
+    DatasetAugmentations(std::array<shared_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
+        : augs_(augs) {}
 
-	// Getters: YAGNI
+    // Getters: YAGNI
 
     void Apply(SplitType st, Image& img, const Image& gt = Image())
     {
@@ -52,7 +53,8 @@ This class extends the DeepHealth Dataset with Deep Learning specific members.
 
 @anchor DLDataset
 */
-class DLDataset : public Dataset {
+class DLDataset : public Dataset
+{
 public:
     int batch_size_; /**< @brief Size of each dataset mini batch. */
     int n_channels_; /**< @brief Number of channels of the images. */
@@ -90,7 +92,7 @@ public:
         // Initialize resize_dims_ after that augmentations on images are performed
         augs_.Apply(current_split_, tmp);
         auto y = tmp.channels_.find('y');
-		auto x = tmp.channels_.find('x');
+        auto x = tmp.channels_.find('x');
         assert(y != std::string::npos && x != std::string::npos);
         resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
 

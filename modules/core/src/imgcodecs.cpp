@@ -25,7 +25,8 @@
 
 using namespace std::filesystem;
 
-namespace ecvl {
+namespace ecvl
+{
 bool ImRead(const path& filename, Image& dst, ImReadMode flags)
 {
     dst = MatToImage(cv::imread(filename.string(), (int)flags));
