@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['read',['read',['../classecvl_1_1param.html#a5840f507b11041a53256a215cee1b931',1,'ecvl::param']]],
+  ['read',['read',['../classecvl_1_1param.html#a6cf85aed34b4402aab4f7f1d5f54d3d6',1,'ecvl::param']]],
   ['readswapendianness',['ReadSwapEndianness',['../structecvl_1_1_endian_reader.html#ac4a09af05b202cd5db28efcbf10b137d',1,'ecvl::EndianReader']]],
   ['rearrangeandcopy',['RearrangeAndCopy',['../namespaceecvl.html#ab11349d243391015d1f125eed9e3c42a',1,'ecvl']]],
   ['rearrangechannels',['RearrangeChannels',['../classecvl_1_1_cpu_hal.html#a722d5e5ebdb811a0e2a7fd8d7473c6a4',1,'ecvl::CpuHal::RearrangeChannels()'],['../classecvl_1_1_hardware_abstraction_layer.html#a678483a1a3d5af45d92dfaf5ae25f321',1,'ecvl::HardwareAbstractionLayer::RearrangeChannels()'],['../namespaceecvl.html#a1536192e99512f3f0861136540217333',1,'ecvl::RearrangeChannels(const Image &amp;src, Image &amp;dst, const std::string &amp;channels)'],['../namespaceecvl.html#ad7c0141f7c5608427cbbbde765532b34',1,'ecvl::RearrangeChannels(const Image &amp;src, Image &amp;dst, const std::string &amp;channels, DataType new_type)']]],

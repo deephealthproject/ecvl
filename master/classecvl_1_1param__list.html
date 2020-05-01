@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECVL: ecvl::AugmentationFactory Struct Reference</title>
+<title>ECVL: ecvl::param_list Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,33 +87,35 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespaceecvl.html">ecvl</a></li><li class="navelem"><a class="el" href="structecvl_1_1_augmentation_factory.html">AugmentationFactory</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceecvl.html">ecvl</a></li><li class="navelem"><a class="el" href="classecvl_1_1param__list.html">param_list</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="structecvl_1_1_augmentation_factory-members.html">List of all members</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classecvl_1_1param__list-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">ecvl::AugmentationFactory Struct Reference</div>  </div>
+<div class="title">ecvl::param_list Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="augmentations_8h_source.html">augmentations.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a94a4bceb85c9e08c97eef7474d9c0aae"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_augmentation_factory.html#a94a4bceb85c9e08c97eef7474d9c0aae">create</a> (std::istream &amp;is)</td></tr>
-<tr class="separator:a94a4bceb85c9e08c97eef7474d9c0aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a454c7600ba4b329d078a4af160628bf0"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_augmentation_factory.html#a454c7600ba4b329d078a4af160628bf0">create</a> (const std::string &amp;name, std::istream &amp;is)</td></tr>
-<tr class="separator:a454c7600ba4b329d078a4af160628bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ae32ea683714787908da78fce6710bd48"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param__list.html#ae32ea683714787908da78fce6710bd48">param_list</a> (std::string fn_name)</td></tr>
+<tr class="separator:ae32ea683714787908da78fce6710bd48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27b976dcf79658e370c311f71b97d6c6"><td class="memItemLeft" align="right" valign="top">auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param__list.html#a27b976dcf79658e370c311f71b97d6c6">operator[]</a> (const std::string &amp;s)</td></tr>
+<tr class="separator:a27b976dcf79658e370c311f71b97d6c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d0f475c949b13e0df1080160c1e7c0c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param__list.html#a9d0f475c949b13e0df1080160c1e7c0c">Get</a> (const std::string &amp;name, <a class="el" href="classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4">param::type</a> type, bool required, <a class="el" href="classecvl_1_1param.html">param</a> &amp;value)</td></tr>
+<tr class="separator:a9d0f475c949b13e0df1080160c1e7c0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00201">201</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a94a4bceb85c9e08c97eef7474d9c0aae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94a4bceb85c9e08c97eef7474d9c0aae">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00118">118</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ae32ea683714787908da78fce6710bd48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae32ea683714787908da78fce6710bd48">&#9670;&nbsp;</a></span>param_list()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -122,28 +124,27 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::shared_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt; ecvl::AugmentationFactory::create </td>
+          <td class="memname">ecvl::param_list::param_list </td>
           <td>(</td>
-          <td class="paramtype">std::istream &amp;&#160;</td>
-          <td class="paramname"><em>is</em></td><td>)</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>fn_name</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a15">example_ecvl_eddl.cpp</a>.</dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00202">202</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00122">122</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
-<a id="a454c7600ba4b329d078a4af160628bf0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a454c7600ba4b329d078a4af160628bf0">&#9670;&nbsp;</a></span>create() <span class="overload">[2/2]</span></h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9d0f475c949b13e0df1080160c1e7c0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d0f475c949b13e0df1080160c1e7c0c">&#9670;&nbsp;</a></span>Get()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -152,7 +153,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt; ecvl::AugmentationFactory::create </td>
+          <td class="memname">bool ecvl::param_list::Get </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>name</em>, </td>
@@ -160,8 +161,20 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::istream &amp;&#160;</td>
-          <td class="paramname"><em>is</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4">param::type</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>required</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1param.html">param</a> &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -171,18 +184,45 @@ Static Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8cpp_source.html#l00033">33</a> of file <a class="el" href="augmentations_8cpp_source.html">augmentations.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00128">128</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following files:<ul>
+<a id="a27b976dcf79658e370c311f71b97d6c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27b976dcf79658e370c311f71b97d6c6">&#9670;&nbsp;</a></span>operator[]()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto&amp; ecvl::param_list::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00124">124</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="augmentations_8h_source.html">augmentations.h</a></li>
-<li><a class="el" href="augmentations_8cpp_source.html">augmentations.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
