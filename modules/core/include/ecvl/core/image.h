@@ -294,6 +294,9 @@ public:
         hal_{ HardwareAbstractionLayer::Factory(dev) },
         dev_{ dev }
     {
+        if (dims_.size() != channels_.size()) {
+            throw std::runtime_error("Number of dimensions must match number of channels.");
+        }
         hal_->Create(*this);
     }
 
