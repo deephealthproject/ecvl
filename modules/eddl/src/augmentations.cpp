@@ -17,6 +17,16 @@ namespace ecvl
 {
 std::default_random_engine AugmentationParam::re_(std::random_device{}());
 
+param_list param::read(std::istream& is, std::string fn_name_) {
+    param_list m(move(fn_name_));
+    is >> std::ws;
+    while (is.peek() >= 0 && is.peek() != '\n') { // peek first, then check if it failed
+        param p(is);
+        m[p.name_] = p;
+    }
+    return m;
+}
+
 // This factory must be manually populated! Don't forget to do it, otherwise no creation from streams
 
 #define AUG(x) if (name == #x) return std::make_shared<x>(is)
