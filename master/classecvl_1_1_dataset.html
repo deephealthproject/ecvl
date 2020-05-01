@@ -94,6 +94,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classecvl_1_1_dataset-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ecvl::Dataset Class Reference</div>  </div>
@@ -120,9 +121,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a26ae39bc2426816e364559ded105225e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c507f92b0c6ba0dff187add10b9a316"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#a6c507f92b0c6ba0dff187add10b9a316">Dataset</a> (const std::filesystem::path &amp;filename, bool verify=false)</td></tr>
 <tr class="separator:a6c507f92b0c6ba0dff187add10b9a316"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee9d2ca0df0478f6df2223e6cb83e44a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#aee9d2ca0df0478f6df2223e6cb83e44a">Dump</a> (const std::filesystem::path &amp;file_path)</td></tr>
-<tr class="memdesc:aee9d2ca0df0478f6df2223e6cb83e44a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dump the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> into a YAML file following the DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Format.  <a href="#aee9d2ca0df0478f6df2223e6cb83e44a">More...</a><br /></td></tr>
-<tr class="separator:aee9d2ca0df0478f6df2223e6cb83e44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab42db884c4b75b213f421e5914b5c429"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#ab42db884c4b75b213f421e5914b5c429">Dump</a> (const std::filesystem::path &amp;file_path)</td></tr>
+<tr class="memdesc:ab42db884c4b75b213f421e5914b5c429"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dump the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> into a YAML file following the DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Format.  <a href="#ab42db884c4b75b213f421e5914b5c429">More...</a><br /></td></tr>
+<tr class="separator:ab42db884c4b75b213f421e5914b5c429"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -144,13 +145,18 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a999787c1a37e1d7320f034d5828574e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_split.html">Split</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#a999787c1a37e1d7320f034d5828574e8">split_</a></td></tr>
 <tr class="memdesc:a999787c1a37e1d7320f034d5828574e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. See <a class="el" href="classecvl_1_1_split.html#Split">Split</a>.  <a href="#a999787c1a37e1d7320f034d5828574e8">More...</a><br /></td></tr>
 <tr class="separator:a999787c1a37e1d7320f034d5828574e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a689e36ae1e54252a7631e1f5795f0fd9"><td class="memItemLeft" align="right" valign="top">static const std::regex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#a689e36ae1e54252a7631e1f5795f0fd9">url_regex_</a> = std::regex{ R&quot;(https?://.*)&quot; }</td></tr>
+<tr class="separator:a689e36ae1e54252a7631e1f5795f0fd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 <p>This class implements the DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> Format (<a href="https://github.com/deephealthproject/ecvl/wiki/DeepHealth-Toolkit-Dataset-Format">https://github.com/deephealthproject/ecvl/wiki/DeepHealth-Toolkit-Dataset-Format</a>).</p>
 <p><a class="anchor" id="Dataset"></a></p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00082">82</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00085">85</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a26ae39bc2426816e364559ded105225e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26ae39bc2426816e364559ded105225e">&#9670;&nbsp;</a></span>Dataset() <span class="overload">[1/2]</span></h2>
@@ -175,7 +181,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00091">91</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00095">95</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -214,14 +220,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aee9d2ca0df0478f6df2223e6cb83e44a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee9d2ca0df0478f6df2223e6cb83e44a">&#9670;&nbsp;</a></span>Dump()</h2>
+<a id="ab42db884c4b75b213f421e5914b5c429"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab42db884c4b75b213f421e5914b5c429">&#9670;&nbsp;</a></span>Dump()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Dataset::Dump </td>
+          <td class="memname">void ecvl::Dataset::Dump </td>
           <td>(</td>
           <td class="paramtype">const std::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>file_path</em></td><td>)</td>
@@ -239,7 +245,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8cpp_source.html#l00189">189</a> of file <a class="el" href="dataset__parser_8cpp_source.html">dataset_parser.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8cpp_source.html#l00188">188</a> of file <a class="el" href="dataset__parser_8cpp_source.html">dataset_parser.cpp</a>.</p>
 
 </div>
 </div>
@@ -260,7 +266,7 @@ Public Attributes</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a21">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00086">86</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00090">90</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -278,7 +284,7 @@ Public Attributes</h2></td></tr>
 
 <p>Description of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00085">85</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00089">89</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -296,7 +302,7 @@ Public Attributes</h2></td></tr>
 
 <p>Vector with all the features available in the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00087">87</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00091">91</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -314,7 +320,7 @@ Public Attributes</h2></td></tr>
 
 <p>Name of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00084">84</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00088">88</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -332,7 +338,7 @@ Public Attributes</h2></td></tr>
 
 <p>Vector containing all the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> samples. See <a class="el" href="classecvl_1_1_sample.html#Sample">Sample</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00088">88</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00092">92</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -350,7 +356,31 @@ Public Attributes</h2></td></tr>
 
 <p>Splits of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>. See <a class="el" href="classecvl_1_1_split.html#Split">Split</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00089">89</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00093">93</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+
+</div>
+</div>
+<a id="a689e36ae1e54252a7631e1f5795f0fd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a689e36ae1e54252a7631e1f5795f0fd9">&#9670;&nbsp;</a></span>url_regex_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::regex ecvl::Dataset::url_regex_ = std::regex{ R&quot;(https?://.*)&quot; }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00112">112</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
