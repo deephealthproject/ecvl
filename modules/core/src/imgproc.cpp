@@ -39,6 +39,7 @@ int GetOpenCVInterpolation(InterpolationType interp)
     case InterpolationType::cubic:      return cv::INTER_CUBIC;
     case InterpolationType::lanczos4:   return cv::INTER_LANCZOS4;
     default:
+        // This error occurs when interp is an uninitialized variable
         ECVL_ERROR_NOT_REACHABLE_CODE
     }
 }
