@@ -35,15 +35,18 @@ class DatasetAugmentations
     std::array<shared_ptr<Augmentation>, 3> augs_;
 public:
     DatasetAugmentations(std::array<shared_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
-        : augs_(augs) {}
+        : augs_(augs)
+    {}
 
-    // Getters: YAGNI
+// Getters: YAGNI
 
-    void Apply(SplitType st, Image& img, const Image& gt = Image())
+    bool Apply(SplitType st, Image& img, const Image& gt = Image())
     {
         if (augs_[+st]) { // Magic + operator
             augs_[+st]->Apply(img, gt);
+            return true;
         }
+        return false;
     }
 };
 
@@ -59,7 +62,7 @@ public:
     int batch_size_; /**< @brief Size of each dataset mini batch. */
     int n_channels_; /**< @brief Number of channels of the images. */
     int n_channels_gt_; /**< @brief Number of channels of the ground truth images. */
-    SplitType current_split_ = SplitType::training; /**< @brief Current split from which images are loaded. */
+    SplitType current_split_; /**< @brief Current split from which images are loaded. */
     std::vector<int> resize_dims_; /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
     std::array<int, 3> current_batch_ = { 0,0,0 }; /**< @brief Number of batches already loaded for each split. */
     ColorType ctype_; /**< @brief ecvl::ColorType of the Dataset images. */
@@ -88,9 +91,24 @@ public:
         ctype_{ ctype },
         ctype_gt_{ ctype_gt }
     {
+        current_split_ = SplitType::training;
+        // if training is empty check test and validation and if one of them isn't empty, set it as current split
+        if (GetSplit(SplitType::training).empty()) {
+            if (!GetSplit(SplitType::test).empty()) {
+                current_split_ = SplitType::test;
+            }
+            else if (!GetSplit(SplitType::validation).empty()) {
+                current_split_ = SplitType::validation;
+            }
+        }
+
         Image tmp = this->samples_[0].LoadImage(ctype);
         // Initialize resize_dims_ after that augmentations on images are performed
-        augs_.Apply(current_split_, tmp);
+        if (!augs_.Apply(SplitType::training, tmp)) {
+            if (!augs_.Apply(SplitType::validation, tmp)) {
+                augs_.Apply(SplitType::test, tmp);
+            }
+        }
         auto y = tmp.channels_.find('y');
         auto x = tmp.channels_.find('x');
         assert(y != std::string::npos && x != std::string::npos);
@@ -98,10 +116,11 @@ public:
 
         // Initialize n_channels_
         n_channels_ = tmp.Channels();
+
         // Initialize n_channels_gt_ if exists
-        if (this->split_.training_.size() > 0) {
-            if (this->samples_[this->split_.training_[0]].label_path_.has_value()) {
-                n_channels_gt_ = this->samples_[this->split_.training_[0]].LoadImage(ctype_gt_, true).Channels();
+        if (!GetSplit().empty()) {
+            if (samples_[GetSplit()[0]].label_path_.has_value()) {
+                n_channels_gt_ = samples_[GetSplit()[0]].LoadImage(ctype_gt_, true).Channels();
             }
         }
     }
