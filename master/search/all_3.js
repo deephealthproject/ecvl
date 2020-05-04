@@ -53,7 +53,5 @@ var searchData=
   ['ctype_5fgt_5f',['ctype_gt_',['../classecvl_1_1_d_l_dataset.html#ae5df606d050434b5f959b6a649bebf09',1,'ecvl::DLDataset']]],
   ['cubic',['cubic',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca7ab93feeb36d98e584d10de2e2f68843',1,'ecvl']]],
   ['current_5fbatch_5f',['current_batch_',['../classecvl_1_1_d_l_dataset.html#a0d71f7a048afec20e00f92a9442ff0dd',1,'ecvl::DLDataset']]],
-  ['current_5fsplit_5f',['current_split_',['../classecvl_1_1_d_l_dataset.html#af39c84d00f0132c5fb70c3eef3b823ca',1,'ecvl::DLDataset']]],
-  ['gpu_5fhal_2ecpp',['gpu_hal.cpp',['../cuda_2gpu__hal_8cpp.html',1,'']]],
-  ['gpu_5fhal_2eh',['gpu_hal.h',['../cuda_2gpu__hal_8h.html',1,'']]]
+  ['current_5fsplit_5f',['current_split_',['../classecvl_1_1_d_l_dataset.html#af39c84d00f0132c5fb70c3eef3b823ca',1,'ecvl::DLDataset']]]
 ];

@@ -16,7 +16,7 @@ var searchData=
   ['thresholdingtype',['ThresholdingType',['../namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92e',1,'ecvl']]],
   ['to',['To',['../classecvl_1_1_image.html#a5e97f965d2525e2a8312a25da4a07eb2',1,'ecvl::Image']]],
   ['to_5fstring',['to_string',['../classecvl_1_1param.html#a9b913225b75f25dd9e20d7cc14d104b2',1,'ecvl::param']]],
-  ['tocpu',['ToCpu',['../classecvl_1_1_gpu_hal.html#a4e36d461785e93cd5b8941bf00bc159f',1,'ecvl::GpuHal::ToCpu()'],['../classecvl_1_1_fpga_hal.html#a593a413c0d4c793f9162b33b41b58ee6',1,'ecvl::FpgaHal::ToCpu()'],['../classecvl_1_1_gpu_hal.html#a4e36d461785e93cd5b8941bf00bc159f',1,'ecvl::GpuHal::ToCpu()'],['../classecvl_1_1_hardware_abstraction_layer.html#a9973f46d07f21e64271fab61b8df2420',1,'ecvl::HardwareAbstractionLayer::ToCpu()']]],
+  ['tocpu',['ToCpu',['../classecvl_1_1_gpu_hal.html#a4e36d461785e93cd5b8941bf00bc159f',1,'ecvl::GpuHal::ToCpu()'],['../classecvl_1_1_fpga_hal.html#a593a413c0d4c793f9162b33b41b58ee6',1,'ecvl::FpgaHal::ToCpu()'],['../classecvl_1_1_hardware_abstraction_layer.html#a9973f46d07f21e64271fab61b8df2420',1,'ecvl::HardwareAbstractionLayer::ToCpu()']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
   ['training',['training',['../namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214',1,'ecvl']]],
   ['training_5f',['training_',['../classecvl_1_1_split.html#afaf86f02035d49e319bbac90a46921e2',1,'ecvl::Split']]],

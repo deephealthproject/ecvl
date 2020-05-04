@@ -14,6 +14,6 @@ var searchData=
   ['fpga_5fhal_2ecpp',['fpga_hal.cpp',['../fpga__hal_8cpp.html',1,'']]],
   ['fpga_5fhal_2eh',['fpga_hal.h',['../fpga__hal_8h.html',1,'']]],
   ['fpgahal',['FpgaHal',['../classecvl_1_1_fpga_hal.html',1,'ecvl']]],
-  ['fromcpu',['FromCpu',['../classecvl_1_1_gpu_hal.html#a38cb9bafce2efc8d0aefadb67fefaafc',1,'ecvl::GpuHal::FromCpu()'],['../classecvl_1_1_fpga_hal.html#a95366cc1c0d2a4edddb779188bae0e5f',1,'ecvl::FpgaHal::FromCpu()'],['../classecvl_1_1_gpu_hal.html#a38cb9bafce2efc8d0aefadb67fefaafc',1,'ecvl::GpuHal::FromCpu()'],['../classecvl_1_1_hardware_abstraction_layer.html#af6d74fad0050835717e2200cae5fb2b8',1,'ecvl::HardwareAbstractionLayer::FromCpu()']]],
+  ['fromcpu',['FromCpu',['../classecvl_1_1_gpu_hal.html#a38cb9bafce2efc8d0aefadb67fefaafc',1,'ecvl::GpuHal::FromCpu()'],['../classecvl_1_1_fpga_hal.html#a95366cc1c0d2a4edddb779188bae0e5f',1,'ecvl::FpgaHal::FromCpu()'],['../classecvl_1_1_hardware_abstraction_layer.html#af6d74fad0050835717e2200cae5fb2b8',1,'ecvl::HardwareAbstractionLayer::FromCpu()']]],
   ['fun_5ftype',['fun_type',['../structecvl_1_1_table1_d.html#aef07abffbbb79adce057fc8d1f24dc2a',1,'ecvl::Table1D::fun_type()'],['../structecvl_1_1_signed_table1_d.html#a928773c5a41879a0778187f1afdd0d7b',1,'ecvl::SignedTable1D::fun_type()'],['../structecvl_1_1_table2_d.html#ab2d4cca1b9cc3469e28549ba4865c6dd',1,'ecvl::Table2D::fun_type()'],['../structecvl_1_1_signed_table2_d.html#aef6c5e1443e2ef7614c73c3ac9b25316',1,'ecvl::SignedTable2D::fun_type()']]]
 ];
