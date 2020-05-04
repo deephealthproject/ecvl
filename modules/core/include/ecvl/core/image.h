@@ -376,10 +376,7 @@ public:
 
     Image& operator=(Image&& rhs)
     {
-        // Self-assignment detection
-        if (this == &rhs) {
-            return *this;
-        }
+        assert(this != &rhs);
         elemtype_ = rhs.elemtype_;
         elemsize_ = rhs.elemsize_;
         dims_ = rhs.dims_;
