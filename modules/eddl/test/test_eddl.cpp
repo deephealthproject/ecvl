@@ -54,6 +54,18 @@ TEST(Augmentations, ConstructFromStreamAllParamsOk)
     ss = std::stringstream("p=[0,0.55] drop_size=[0.02,0.1] per_channel=0");
     EXPECT_NO_THROW(p = make_unique<AugCoarseDropout>(ss));
     EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("p=0.4");
+    EXPECT_NO_THROW(p = make_unique<AugTranspose>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("beta=[30,60]");
+    EXPECT_NO_THROW(p = make_unique<AugBrightness>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("num_steps=[5,10] distort_limit=[-0.2,0.2] interp=\"linear\" border_type=\"reflect_101\" border_value=0");
+    EXPECT_NO_THROW(p = make_unique<AugGridDistortion>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("alpha=[34,60] sigma=[4,6] interp=\"linear\" border_type=\"reflect_101\" border_value=0");
+    EXPECT_NO_THROW(p = make_unique<AugElasticTransform>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
 }
 
 TEST(Augmentations, ConstructFromStreamWithoutOptionalParms)
@@ -75,5 +87,36 @@ TEST(Augmentations, ConstructFromStreamWithoutOptionalParms)
     ss = std::stringstream("");
     EXPECT_NO_THROW(p = make_unique<AugMirror>(ss));
     EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("");
+    EXPECT_NO_THROW(p = make_unique<AugTranspose>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("beta=[30,60]");
+    EXPECT_NO_THROW(p = make_unique<AugBrightness>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("num_steps=[5,10] distort_limit=[-0.2,0.2]");
+    EXPECT_NO_THROW(p = make_unique<AugGridDistortion>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
+    ss = std::stringstream("alpha=[34,60] sigma=[4,6]");
+    EXPECT_NO_THROW(p = make_unique<AugElasticTransform>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
 }
 
+TEST(Augmentations, ConstructFromStreamWithWrongParms)
+{
+    Image img({ 5, 5, 1 }, DataType::uint8, "xyc", ColorType::GRAY);
+    std::unique_ptr<Augmentation> p;
+    std::stringstream ss("angle=(-5,5)");
+    EXPECT_THROW(p = make_unique<AugRotate>(ss), std::runtime_error);
+    ss = std::stringstream("dims=100");
+    EXPECT_THROW(p = make_unique<AugResizeDim>(ss), std::runtime_error);
+    ss = std::stringstream("");
+    EXPECT_THROW(p = make_unique<AugResizeScale>(ss), std::runtime_error);
+    ss = std::stringstream("p=\"test\"");
+    EXPECT_THROW(p = make_unique<AugFlip>(ss), std::runtime_error);
+    ss = std::stringstream("");
+    EXPECT_THROW(p = make_unique<AugBrightness>(ss), std::runtime_error);
+    ss = std::stringstream("num_steps=[5,10] distort_limit=(-0.2,0.2)");
+    EXPECT_THROW(p = make_unique<AugGridDistortion>(ss), std::runtime_error);
+    ss = std::stringstream("alpha=34");
+    EXPECT_THROW(p = make_unique<AugElasticTransform>(ss), std::runtime_error);
+}
