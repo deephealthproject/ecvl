@@ -450,11 +450,11 @@ void VConcat(const vector<Image>& src, Image& dst)
     src_0.hal_->VConcat(src, dst);
 }
 
-void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue)
+void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType border_type, const int& border_value)
 {
     AlwaysCheck(src, dst);
 
-    src.hal_->Morphology(src, dst, op, kernel, anchor, iterations, borderType, borderValue);
+    src.hal_->Morphology(src, dst, op, kernel, anchor, iterations, border_type, border_value);
 }
 
 void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag)
@@ -480,17 +480,17 @@ void Transpose(const Image& src, Image& dst)
     src.hal_->Transpose(src, dst);
 }
 
-void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue)
+void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value)
 {
     AlwaysCheck(src, dst);
 
-    src.hal_->GridDistortion(src, dst, num_steps, distort_limit, interp, borderType, borderValue);
+    src.hal_->GridDistortion(src, dst, num_steps, distort_limit, interp, border_type, border_value);
 }
 
-void ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue)
+void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value)
 {
     AlwaysCheck(src, dst);
 
-    src.hal_->ElasticTransform(src, dst, alpha, sigma, interp, borderType, borderValue);
+    src.hal_->ElasticTransform(src, dst, alpha, sigma, interp, border_type, border_value);
 }
 } // namespace ecvl

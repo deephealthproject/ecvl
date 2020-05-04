@@ -14,6 +14,7 @@
 #ifndef AUGMENTATIONS_H_
 #define AUGMENTATIONS_H_
 
+#include "ecvl/core/arithmetic.h"
 #include "ecvl/core/imgproc.h"
 #include <array>
 #include <map>
@@ -515,7 +516,7 @@ class AugMirror : public Augmentation
         }
     }
 public:
-    /** @brief AugFlip constructor
+    /** @brief AugMirror constructor
 
     @param[in] p Probability of each image to get mirrored.
     */
@@ -699,6 +700,280 @@ public:
         m.Get("per_channel", param::type::number, true, p);
         params_["per_channel"] = AugmentationParam(0, 1);
         per_channel_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::Transpose.
+
+@anchor AugTranspose
+*/
+class AugTranspose : public Augmentation
+{
+    double p_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        if (params_["p"].value_ <= p_) {
+            Transpose(img, img);
+            if (!gt.IsEmpty()) {
+                Transpose(gt, const_cast<Image&>(gt));
+            }
+        }
+    }
+public:
+    /** @brief AugTranspose constructor
+
+    @param[in] p Probability of each image to get transposed.
+    */
+    AugTranspose(double p = 0.5) : p_{ p }
+    {
+        params_["p"] = AugmentationParam(0, 1);
+    }
+
+    AugTranspose(std::istream& is) : AugTranspose()
+    {
+        auto m = param::read(is, "AugTranspose");
+        param p;
+
+        if (m.Get("p", param::type::number, false, p)) {
+            p_ = p.vals_[0];
+        }
+    }
+};
+
+/** @brief Augmentation wrapper for brightness adjustment.
+
+@anchor AugBrightness
+*/
+class AugBrightness : public Augmentation
+{
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        Add(img, params_["beta"].value_, img);
+    }
+public:
+    /** @brief AugBrightness constructor
+
+    @param[in] beta Parameter which determines the range of values [min,max] to randomly select the value for the brightness adjustment.
+                    Suggested values are around 0 to 100.
+    */
+    AugBrightness(const std::array<double, 2>& beta)
+    {
+        params_["beta"] = AugmentationParam(beta[0], beta[1]);
+    }
+
+    AugBrightness(std::istream& is)
+    {
+        auto m = param::read(is, "AugBrightness");
+
+        param p;
+
+        m.Get("beta", param::type::range, true, p);
+        params_["beta"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::GridDistortion.
+
+@anchor AugGridDistortion
+*/
+class AugGridDistortion : public Augmentation
+{
+    std::array<float, 2> distort_limit_;
+    InterpolationType interp_;
+    BorderType border_type_;
+    int border_value_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        GridDistortion(img, img, static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_, border_value_);
+        if (!gt.IsEmpty()) {
+            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_, border_value_);
+        }
+    }
+public:
+    /** @brief AugGridDistortion constructor
+
+    @param[in] num_steps Parameter which determines the range of values [min,max] to randomly select the number of grid cells on each side.
+    @param[in] distort_limit Parameter which determines the range of values [min,max] to randomly select the distortion steps.
+    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+    @param[in] border_value Integer padding value if border_type is BorderType::BORDER_CONSTANT.
+    */
+    AugGridDistortion(const std::array<int, 2>& num_steps,
+        const std::array<float, 2>& distort_limit,
+        const InterpolationType& interp = InterpolationType::linear,
+        const BorderType& border_type = BorderType::BORDER_REFLECT_101,
+        const int& border_value = 0)
+        : distort_limit_(distort_limit), interp_(interp), border_type_(border_type), border_value_(border_value)
+    {
+        params_["num_steps"] = AugmentationParam(num_steps[0], num_steps[1]);
+    }
+
+    AugGridDistortion(std::istream& is)
+    {
+        auto m = param::read(is, "AugGridDistortion");
+
+        param p;
+
+        m.Get("num_steps", param::type::range, true, p);
+        params_["num_steps"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        m.Get("distort_limit", param::type::range, true, p);
+        distort_limit_ = { static_cast<float>(p.vals_[0]), static_cast<float>(p.vals_[1]) };
+
+        interp_ = InterpolationType::linear;
+        if (m.Get("interp", param::type::string, false, p)) {
+            if (p.str_ == "linear") {
+                interp_ = InterpolationType::linear;
+            }
+            else if (p.str_ == "area") {
+                interp_ = InterpolationType::area;
+            }
+            else if (p.str_ == "cubic") {
+                interp_ = InterpolationType::cubic;
+            }
+            else if (p.str_ == "lanczos4") {
+                interp_ = InterpolationType::lanczos4;
+            }
+            else if (p.str_ == "nearest") {
+                interp_ = InterpolationType::nearest;
+            }
+            else {
+                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
+            }
+        }
+
+        border_type_ = BorderType::BORDER_REFLECT_101;
+        if (m.Get("border_type", param::type::string, false, p)) {
+            if (p.str_ == "constant") {
+                border_type_ = BorderType::BORDER_CONSTANT;
+            }
+            else if (p.str_ == "replicate") {
+                border_type_ = BorderType::BORDER_REPLICATE;
+            }
+            else if (p.str_ == "reflect") {
+                border_type_ = BorderType::BORDER_REFLECT;
+            }
+            else if (p.str_ == "wrap") {
+                border_type_ = BorderType::BORDER_WRAP;
+            }
+            else if (p.str_ == "reflect_101") {
+                border_type_ = BorderType::BORDER_REFLECT_101;
+            }
+            else if (p.str_ == "transparent") {
+                border_type_ = BorderType::BORDER_TRANSPARENT;
+            }
+            else {
+                throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
+            }
+        }
+
+        border_value_ = 0;
+        m.Get("border_value", param::type::number, false, p);
+        border_value_ = static_cast<int>(p.vals_[0]);
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::ElasticTransform.
+
+@anchor AugElasticTransform
+*/
+class AugElasticTransform : public Augmentation
+{
+    InterpolationType interp_;
+    BorderType border_type_;
+    int border_value_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_);
+        if (!gt.IsEmpty()) {
+            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_);
+        }
+    }
+public:
+    /** @brief AugElasticTransform constructor
+
+    @param[in] alpha Parameter which determines the range of values [min,max] to randomly select the scaling factor that controls the intensity of the deformation.
+    @param[in] sigma Parameter which determines the range of values [min,max] to randomly select the gaussian kernel standard deviation.
+    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+    @param[in] border_value Integer padding value if border_type is BorderType::BORDER_CONSTANT.
+    */
+    AugElasticTransform(const std::array<double, 2>& alpha,
+        const std::array<double, 2>& sigma,
+        const InterpolationType& interp = InterpolationType::linear,
+        const BorderType& border_type = BorderType::BORDER_REFLECT_101,
+        const int& border_value = 0)
+        : interp_(interp), border_type_(border_type), border_value_(border_value)
+    {
+        params_["alpha"] = AugmentationParam(alpha[0], alpha[1]);
+        params_["sigma"] = AugmentationParam(sigma[0], sigma[1]);
+    }
+
+    AugElasticTransform(std::istream& is)
+    {
+        auto m = param::read(is, "AugElasticTransform");
+
+        param p;
+
+        m.Get("alpha", param::type::range, true, p);
+        params_["alpha"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        m.Get("sigma", param::type::range, true, p);
+        params_["sigma"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        interp_ = InterpolationType::linear;
+        if (m.Get("interp", param::type::string, false, p)) {
+            if (p.str_ == "linear") {
+                interp_ = InterpolationType::linear;
+            }
+            else if (p.str_ == "area") {
+                interp_ = InterpolationType::area;
+            }
+            else if (p.str_ == "cubic") {
+                interp_ = InterpolationType::cubic;
+            }
+            else if (p.str_ == "lanczos4") {
+                interp_ = InterpolationType::lanczos4;
+            }
+            else if (p.str_ == "nearest") {
+                interp_ = InterpolationType::nearest;
+            }
+            else {
+                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
+            }
+        }
+
+        border_type_ = BorderType::BORDER_REFLECT_101;
+        if (m.Get("border_type", param::type::string, false, p)) {
+            if (p.str_ == "constant") {
+                border_type_ = BorderType::BORDER_CONSTANT;
+            }
+            else if (p.str_ == "replicate") {
+                border_type_ = BorderType::BORDER_REPLICATE;
+            }
+            else if (p.str_ == "reflect") {
+                border_type_ = BorderType::BORDER_REFLECT;
+            }
+            else if (p.str_ == "wrap") {
+                border_type_ = BorderType::BORDER_WRAP;
+            }
+            else if (p.str_ == "reflect_101") {
+                border_type_ = BorderType::BORDER_REFLECT_101;
+            }
+            else if (p.str_ == "transparent") {
+                border_type_ = BorderType::BORDER_TRANSPARENT;
+            }
+            else {
+                throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
+            }
+        }
+
+        border_value_ = 0;
+        m.Get("border_value", param::type::number, false, p);
+        border_value_ = static_cast<int>(p.vals_[0]);
     }
 };
 } // namespace ecvl

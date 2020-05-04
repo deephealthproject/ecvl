@@ -151,12 +151,12 @@ public:
     virtual void Stack(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void HConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void VConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType border_type, const int& border_value) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Transpose(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

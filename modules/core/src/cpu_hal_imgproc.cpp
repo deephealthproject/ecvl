@@ -1369,7 +1369,7 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
     dst = std::move(tmp);
 }
 
-void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType borderType, const int& borderValue)
+void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType border_type, const int& border_value)
 {
     OpenCVAlwaysCheck(src);
 
@@ -1380,7 +1380,7 @@ void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kerne
     Point anchor_{ anchor[0], anchor[1] };
 
     int op_ = static_cast<int>(op);
-    morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, static_cast<int>(borderType), borderValue);
+    morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, static_cast<int>(border_type), border_value);
 
     dst = MatToImage(dst_);
 }
@@ -1507,7 +1507,7 @@ void FillCoordsVector(vector<float>& v, vector<float>& steps, int size, int num_
     }
 }
 
-void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType borderType, const int& borderValue)
+void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value)
 {
     OpenCVAlwaysCheck(src);
 
@@ -1546,14 +1546,14 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
     }
 
     cv::Mat tmp;
-    cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(borderType), borderValue);
+    cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
     dst = MatToImage(tmp);
     if (dst.colortype_ != src.colortype_) {
         ChangeColorSpace(dst, dst, src.colortype_);
     }
 }
 
-void CpuHal::ElasticTransform(const Image& src, Image& dst, float alpha, float sigma, InterpolationType interp, BorderType borderType, const int& borderValue)
+void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value)
 {
     OpenCVAlwaysCheck(src);
 
@@ -1603,7 +1603,7 @@ void CpuHal::ElasticTransform(const Image& src, Image& dst, float alpha, float s
     }
 
     cv::Mat tmp;
-    cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(borderType), borderValue);
+    cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
     dst = MatToImage(tmp);
     if (dst.colortype_ != src.colortype_) {
         ChangeColorSpace(dst, dst, src.colortype_);

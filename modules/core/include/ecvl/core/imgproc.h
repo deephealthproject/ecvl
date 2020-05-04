@@ -345,14 +345,14 @@ enum class BorderType
 @param[in] kernel Structuring element.
 @param[in] anchor Anchor position with the kernel. Negative values mean that the anchor is at the kernel center.
 @param[in] iterations Number of times erosion and dilation are applied.
-@param[in] borderType Pixel extrapolation method, see BorderType. BorderType::BORDER_WRAP is not supported.
-@param[in] borderValue Border value in case of a constant border.
+@param[in] border_type Pixel extrapolation method, see BorderType. BorderType::BORDER_WRAP is not supported.
+@param[in] border_value Border value in case of a constant border.
 */
 void Morphology(const Image& src, Image& dst, MorphType op, Image& kernel,
     Point2i anchor = { -1, -1 },
     int iterations = 1,
-    BorderType borderType = BorderType::BORDER_CONSTANT,
-    const int& borderValue = 0 /*morphologyDefaultBorderValue()*/
+    BorderType border_type = BorderType::BORDER_CONSTANT,
+    const int& border_value = 0 /*morphologyDefaultBorderValue()*/
 );
 
 /** @brief Enum class representing the ECVL inpaint types.
@@ -398,15 +398,15 @@ Based on https://github.com/albumentations-team/albumentations/blob/master/album
 @param[in] num_steps Count of grid cells on each side.
 @param[in] distort_limit Range of distortion steps.
 @param[in] interp Interpolation type used. Default is InterpolationType::linear.
-@param[in] borderType Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
-@param[in] borderValue Padding value if borderType is BorderType::BORDER_CONSTANT.
+@param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT.
 */
 void GridDistortion(const Image& src, Image& dst,
     int num_steps = 5,
     const std::array<float, 2>& distort_limit = { -0.3f, 0.3f },
     InterpolationType interp = InterpolationType::linear,
-    BorderType borderType = BorderType::BORDER_REFLECT_101,
-    const int& borderValue = 0
+    BorderType border_type = BorderType::BORDER_REFLECT_101,
+    const int& border_value = 0
 );
 
 /** @brief Elastic deformation of input Image.
@@ -417,15 +417,15 @@ Based on https://github.com/albumentations-team/albumentations/blob/master/album
 @param[in] alpha Scaling factor that controls the intensity of the deformation.
 @param[in] sigma Gaussian kernel standard deviation
 @param[in] interp Interpolation type used. If src is DataType::int8 or DataType::int32, Interpolation::nearest is used. Default is InterpolationType::linear.
-@param[in] borderType Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
-@param[in] borderValue Padding value if borderType is BorderType::BORDER_CONSTANT.
+@param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT.
 */
 void ElasticTransform(const Image& src, Image& dst, 
-    float alpha = 34, 
-    float sigma = 4,
+    double alpha = 34,
+    double sigma = 4,
     InterpolationType interp = InterpolationType::linear,
-    BorderType borderType = BorderType::BORDER_REFLECT_101,
-    const int& borderValue = 0
+    BorderType border_type = BorderType::BORDER_REFLECT_101,
+    const int& border_value = 0
 );
 
 /** @example example_imgproc.cpp
