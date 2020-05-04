@@ -73,7 +73,12 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_FILE_DOES_NOT_EXIST
         }
 
-        status = ImRead(location, img);
+        if (ctype == ColorType::GRAY) {
+            status = ImRead(location, img, ImReadMode::GRAYSCALE);
+        }
+        else {
+            status = ImRead(location, img);
+        }
 
         if (!status) {
             // Image not correctly loaded
@@ -81,6 +86,7 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_CANNOT_LOAD_IMAGE
         }
 
+        // TODO is this needed?
         if (img.colortype_ != ctype) {
             ChangeColorSpace(img, img, ctype);
         }
