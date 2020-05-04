@@ -16,5 +16,6 @@ var searchData=
   ['getopencvinterpolation',['GetOpenCVInterpolation',['../namespaceecvl.html#a0f9583965531c991ddc9e1375ba3be93',1,'ecvl']]],
   ['getsplit',['GetSplit',['../classecvl_1_1_d_l_dataset.html#a4cc9a0a5a6730e3cc768db7c49fdd3f9',1,'ecvl::DLDataset::GetSplit()'],['../classecvl_1_1_d_l_dataset.html#a7aa15fd307fa65525c95a980bc1dc9e9',1,'ecvl::DLDataset::GetSplit(const SplitType &amp;split)']]],
   ['getwidth',['getWidth',['../classecvl_1_1_basic_g_l_pane.html#a9dce80bbed9d27f1087f63b3c53dd4ca',1,'ecvl::BasicGLPane']]],
-  ['getwximage',['GetWXImage',['../classecvl_1_1wx_image_panel.html#a9102278d6b9d32e586d641ed4c22285f',1,'ecvl::wxImagePanel']]]
+  ['getwximage',['GetWXImage',['../classecvl_1_1wx_image_panel.html#a9102278d6b9d32e586d641ed4c22285f',1,'ecvl::wxImagePanel']]],
+  ['griddistortion',['GridDistortion',['../classecvl_1_1_cpu_hal.html#a41ce61dfd68885190e7ec9214ddbd5e4',1,'ecvl::CpuHal::GridDistortion()'],['../classecvl_1_1_hardware_abstraction_layer.html#aad9990d86a12e32bf104c7175e0bd0d2',1,'ecvl::HardwareAbstractionLayer::GridDistortion()'],['../namespaceecvl.html#a1cdc3b6e68412f54d3d38b4fea5be07c',1,'ecvl::GridDistortion()']]]
 ];

@@ -1,6 +1,7 @@
 var searchData=
 [
   ['samples_5f',['samples_',['../classecvl_1_1_dataset.html#a7d4abab1f90aabf7f53ad0179a051365',1,'ecvl::Dataset']]],
+  ['size_5f',['size_',['../classecvl_1_1_sample.html#a4af5a7c2c257ae3525df865e371804c6',1,'ecvl::Sample']]],
   ['spacings_5f',['spacings_',['../classecvl_1_1_image.html#ac08c58802200db31fb2167c5ade4367d',1,'ecvl::Image']]],
   ['split_5f',['split_',['../classecvl_1_1_dataset.html#a999787c1a37e1d7320f034d5828574e8',1,'ecvl::Dataset']]],
   ['splits_5f',['splits_',['../classecvl_1_1_generate_dataset.html#a92114bdfc9c88a0804d25d9587a53c88',1,'ecvl::GenerateDataset']]],

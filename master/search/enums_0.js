@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['colortype',['ColorType',['../namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3',1,'ecvl']]]
+  ['bordertype',['BorderType',['../namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3',1,'ecvl']]]
 ];

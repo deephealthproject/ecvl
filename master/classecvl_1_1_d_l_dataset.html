@@ -159,7 +159,7 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a7e601a1276fc41d9822d22c4dedfdcdc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a7e601a1276fc41d9822d22c4dedfdcdc">n_channels_gt_</a></td></tr>
 <tr class="memdesc:a7e601a1276fc41d9822d22c4dedfdcdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of channels of the ground truth images.  <a href="#a7e601a1276fc41d9822d22c4dedfdcdc">More...</a><br /></td></tr>
 <tr class="separator:a7e601a1276fc41d9822d22c4dedfdcdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af39c84d00f0132c5fb70c3eef3b823ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">SplitType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#af39c84d00f0132c5fb70c3eef3b823ca">current_split_</a> = <a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214">SplitType::training</a></td></tr>
+<tr class="memitem:af39c84d00f0132c5fb70c3eef3b823ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">SplitType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#af39c84d00f0132c5fb70c3eef3b823ca">current_split_</a></td></tr>
 <tr class="memdesc:af39c84d00f0132c5fb70c3eef3b823ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current split from which images are loaded.  <a href="#af39c84d00f0132c5fb70c3eef3b823ca">More...</a><br /></td></tr>
 <tr class="separator:af39c84d00f0132c5fb70c3eef3b823ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ff1fc9079de2bf56b3c82e3912e8612"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a6ff1fc9079de2bf56b3c82e3912e8612">resize_dims_</a></td></tr>
@@ -210,7 +210,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a17">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00056">56</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00059">59</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="adcf8e2118c903a4298030da472dcc44b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adcf8e2118c903a4298030da472dcc44b">&#9670;&nbsp;</a></span>DLDataset()</h2>
@@ -281,7 +281,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00078">78</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00081">81</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Returns the image indexes of the requested <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">split</td><td><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569" title="Enum class representing the DLDataset supported splits.">ecvl::SplitType</a> representing the <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a> to get ("training", "validation", or "test"). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">split</td><td><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569" title="Enum class representing the Dataset supported splits.">ecvl::SplitType</a> representing the <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a> to get ("training", "validation", or "test"). </td></tr>
   </table>
   </dd>
 </dl>
@@ -467,7 +467,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Set the current <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">split</td><td><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569" title="Enum class representing the DLDataset supported splits.">ecvl::SplitType</a> representing the <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a> to set ("training", "validation", or "test"). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">split</td><td><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569" title="Enum class representing the Dataset supported splits.">ecvl::SplitType</a> representing the <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a> to set ("training", "validation", or "test"). </td></tr>
   </table>
   </dd>
 </dl>
@@ -493,7 +493,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00067">67</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00070">70</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -511,7 +511,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Size of each dataset mini batch. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00059">59</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00062">62</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +529,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00065">65</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00068">68</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -547,7 +547,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00066">66</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00069">69</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -565,7 +565,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of batches already loaded for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00064">64</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00067">67</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -576,14 +576,14 @@ Additional Inherited Members</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">SplitType</a> ecvl::DLDataset::current_split_ = <a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214">SplitType::training</a></td>
+          <td class="memname"><a class="el" href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">SplitType</a> ecvl::DLDataset::current_split_</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Current split from which images are loaded. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00062">62</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00065">65</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -603,7 +603,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a19">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00060">60</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00063">63</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -621,7 +621,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of channels of the ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00061">61</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00064">64</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -641,7 +641,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a20">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00063">63</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00066">66</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>

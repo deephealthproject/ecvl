@@ -99,7 +99,8 @@ $(function() {
 <div class="title">augmentations.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="imgproc_8h_source.html">ecvl/core/imgproc.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="arithmetic_8h_source.html">ecvl/core/arithmetic.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="imgproc_8h_source.html">ecvl/core/imgproc.h</a>&quot;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
@@ -158,6 +159,18 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_coarse_dropout.html">ecvl::AugCoarseDropout</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#abf7537b0520ba88dd624839bc7a951dd" title="Sets rectangular areas within an Image to zero.">ecvl::CoarseDropout</a>.  <a href="classecvl_1_1_aug_coarse_dropout.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_transpose.html">ecvl::AugTranspose</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#aeb20ecb4f245bbd530c845e96d4b5c59" title="Swap rows and columns of an Image.">ecvl::Transpose</a>.  <a href="classecvl_1_1_aug_transpose.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_brightness.html">ecvl::AugBrightness</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for brightness adjustment.  <a href="classecvl_1_1_aug_brightness.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_grid_distortion.html">ecvl::AugGridDistortion</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a1cdc3b6e68412f54d3d38b4fea5be07c" title="Randomly stretch or reduce each cell of the grid in which the input Image is divided into....">ecvl::GridDistortion</a>.  <a href="classecvl_1_1_aug_grid_distortion.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_elastic_transform.html">ecvl::AugElasticTransform</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a358fde6185e077d91b4ea3e0ebbda1de" title="Elastic deformation of input Image. Based on https://github.com/albumentations-team/albumentations/bl...">ecvl::ElasticTransform</a>.  <a href="classecvl_1_1_aug_elastic_transform.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -184,7 +197,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00030">30</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00031">31</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
@@ -200,7 +213,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00029">29</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00030">30</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
