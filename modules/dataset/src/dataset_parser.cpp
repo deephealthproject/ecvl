@@ -18,7 +18,9 @@
 using namespace std;
 using namespace std::filesystem;
 using namespace YAML;
-using namespace ecvl;
+namespace ecvl
+{
+const std::regex Dataset::url_regex_ = std::regex{ R"(https?://.*)" };
 
 void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
 {
@@ -49,11 +51,10 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
     bool status;
     Image img;
     vector<Image> images;
-    static std::regex r{ R"(https?://.*)" };
 
     for (int i = 0; i < location_.size(); ++i) {
         auto location = is_gt ? label_path_.value() : location_[i];
-        if (std::regex_match(location.string(), r)) {
+        if (std::regex_match(location.string(), Dataset::url_regex_)) {
             // TODO: Use libcurl instead of system call
             path image_filename = location.filename();
             string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
@@ -103,8 +104,6 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
     // Allocate memory for the images
     this->samples_.resize(node.size());
     int counter = -1;
-    // RegEx which matchs URLs
-    std::regex r{ R"(https?://.*)" };
 
     for (auto& n : node) {
         // iterate over images
@@ -169,7 +168,7 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
         }
 
         for (int i = 0; i < sample.location_.size(); ++i) {
-            if (sample.location_[i].is_relative() && !std::regex_match(sample.location_[i].string(), r)) {
+            if (sample.location_[i].is_relative() && !std::regex_match(sample.location_[i].string(), url_regex_)) {
                 // Convert relative path to absolute
                 sample.location_[i] = root_path / sample.location_[i];
                 if (sample.label_path_.has_value()) {
@@ -285,4 +284,5 @@ Dataset::Dataset(const path& filename, bool verify)
     if (config["split"].IsDefined()) {
         this->split_ = config["split"].as<Split>();
     }
+}
 }

@@ -298,7 +298,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         std::vector<int> tmp_dims = src.dims_;
         tmp_dims[c_pos] = 1;
 
-        tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_);
+        tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_, src.dev_);
 
         const uint8_t* r = src.data_ + ((src.colortype_ == ColorType::RGB) ? 0 : 2) * src.strides_[c_pos];
         const uint8_t* g = src.data_ + 1 * src.strides_[c_pos];

@@ -21,6 +21,7 @@
 #include <map>
 #include <optional>
 #include <vector>
+#include <regex>
 
 #include "yaml-cpp/yaml.h"
 
@@ -108,6 +109,9 @@ public:
     */
     void Dump(const std::filesystem::path& file_path);
 
+    // RegEx which matchs URLs
+    static const std::regex url_regex_;
+
 private:
     std::map<std::string, int> features_map_;
     void DecodeImages(const YAML::Node& node, const std::filesystem::path& root_path, bool verify);
@@ -125,12 +129,12 @@ namespace YAML
 template<>
 struct convert<ecvl::Split>
 {
-/*static Node encode(const ecvl::Split& rhs)
-{
-    Node node;
-    node.push_back(rhs.x);
-    return node;
-}*/
+    /*static Node encode(const ecvl::Split& rhs)
+    {
+        Node node;
+        node.push_back(rhs.x);
+        return node;
+    }*/
 
     static bool decode(const YAML::Node& node, ecvl::Split& rhs)
     {
