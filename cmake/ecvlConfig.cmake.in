@@ -1,3 +1,14 @@
+# ECVL - European Computer Vision Library
+# Version: 0.2.1
+# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# Authors:
+#    Costantino Grana (costantino.grana@unimore.it)
+#    Federico Bolelli (federico.bolelli@unimore.it)
+#    Michele Cancilla (michele.cancilla@unimore.it)
+#    Laura Canalini (laura.canalini@unimore.it)
+#    Stefano Allegretti (stefano.allegretti@unimore.it)
+# All rights reserved.
+
 include(CMakeFindDependencyMacro)
 
 SET(ECVL_WITH_DICOM @ECVL_WITH_DICOM@)
@@ -5,18 +16,9 @@ SET(ECVL_WITH_OPENGL @ECVL_WITH_OPENGL@)
 SET(ECVL_BUILD_EDDL @ECVL_BUILD_EDDL@)
 SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
 SET(ECVL_DATASET @ECVL_DATASET@)
+SET(ECVL_GPU_AVAILABLE @ECVL_GPU_AVAILABLE@)
 
 set(OpenCV_DIR "@OpenCV_DIR@")
-# ECVL - European Computer Vision Library
-# Version: 0.1
-# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
-# Authors: 
-#    Costantino Grana (costantino.grana@unimore.it)
-#    Federico Bolelli (federico.bolelli@unimore.it)
-#    Michele Cancilla (michele.cancilla@unimore.it)
-#    Laura Canalini (laura.canalini@unimore.it)
-#    Stefano Allegretti (stefano.allegretti@unimore.it)
-# All rights reserved.
 
 find_dependency(OpenCV)
 
@@ -54,6 +56,11 @@ if (${ECVL_DATASET})
         set(yaml-cpp_DIR "@ECVL_CONFIG_INSTALL_PATH@/lib/cmake/yaml-cpp")
     endif()
     find_dependency(yaml-cpp)
+endif()
+
+if(ECVL_GPU_AVAILABLE)
+    enable_language(CUDA)
+    find_dependency(CUDAToolkit)
 endif()
 
 include("@ECVL_CONFIG_INSTALL_PATH@/ecvlTargets.cmake")
