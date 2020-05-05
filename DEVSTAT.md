@@ -39,6 +39,7 @@
 | Rotate | :heavy_check_mark: | :x: | :x: |
 | RotateFullImage | :heavy_check_mark: | :x: | :x: |
 | Stack | :heavy_check_mark: | :x: | :x: |
+| Transpose | :heavy_check_mark: | :x: | :x: |
 | VConcat | :heavy_check_mark: | :x: | :x: |
 
 ## Pre- Post-processing and Augmentation
@@ -52,10 +53,12 @@
 | Coarse Dropout | :heavy_check_mark: | :x: | :x: |
 | Connected Components Labeling | :heavy_check_mark: | :x: | :x: |
 | Dropout | :x: | :x: | :x: |
+| Elastic Transform | :heavy_check_mark: | :x: | :x: |
 | Filter2D | :heavy_check_mark: | :x: | :x: |
 | FindContours | :heavy_check_mark: | :x: | :x: |
 | Gamma Contrast | :heavy_check_mark: | :x: | :x: |
 | Gaussian Blur | :heavy_check_mark: | :x: | :x: |
+| Grid Distorsion | :heavy_check_mark: | :x: | :x: |
 | Histogram Equalization | :x: | :x: | :x: |
 | Impulse Noise | :x: | :x: | :x: |
 | Integral Image | :heavy_check_mark: | :x: | :x: |
