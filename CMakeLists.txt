@@ -1,5 +1,5 @@
 # ECVL - European Computer Vision Library
-# Version: 0.1
+# Version: 0.2.1
 # copyright (c) 2020, Universit� degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
@@ -40,7 +40,7 @@ endif()
 # END: Install (first step)
 #--------------------------------------------------------------------------------------------------------
 
-# SET BUILD TYPE (RELEASE/DEBUG)
+# Set build type (RELEASE/DEBUG)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -61,13 +61,8 @@ if(NOT COMPILER_SUPPORTS_CXX17)
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
-message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS}")
-message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 #--------------------------------------------------------------------------------------------------------
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
@@ -77,10 +72,9 @@ message(STATUS "C flags: ${CMAKE_C_FLAGS}")
 # BEGIN: Check for CUDA support
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_GPU_AVAILABLE OFF) # ON if GPU support is chosen AND actually available
-#set(ECVL_GPU ON CACHE BOOL "Build for GPU hardware (requires the NVIDIA CUDA toolkit)")
-option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON) 
+option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON)
 if(ECVL_GPU)
-    if(${CMAKE_VERSION} VERSION_LESS "3.17.0") 
+    if(${CMAKE_VERSION} VERSION_LESS "3.17.0")
         message(WARNING "Build for GPU hardware is only supported with CMake 3.17 or later.")
     else()
         include(CheckLanguage)
@@ -89,12 +83,11 @@ if(ECVL_GPU)
             enable_language(CUDA)
             find_package(CUDAToolkit)
             if(CUDAToolkit_FOUND)
-                set(ECVL_GPU_AVAILABLE ON)      
-                set(CMAKE_CUDA_STANDARD 14)                
-                add_compile_definitions(ECVL_GPU)                
+                set(ECVL_GPU_AVAILABLE ON)
+                add_compile_definitions(ECVL_GPU)
             else()
                 message(WARNING "The CUDA toolkit was not found, GPU support has been disabled.")
-            endif()            
+            endif()
         else()
             message(WARNING "No CUDA compiler was found, GPU support has been disabled.")
         endif()
@@ -118,36 +111,36 @@ endif()
 
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    
+
     # The following part should be made like this starting from CMake 3.15. It also requires policy CMP0091 set to NEW.
     # if(ECVL_SHARED)
         # set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     # else()
         # set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     # endif()
-    
+
     if(ECVL_SHARED)
         message(STATUS "Setting dynamic runtime for MSVC")
-        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
+        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
             string(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
         if(ECVL_GPU_AVAILABLE)
-            foreach(flag_var CMAKE_CUDA_FLAGS_DEBUG CMAKE_CUDA_FLAGS_RELEASE CMAKE_CUDA_FLAGS_MINSIZEREL CMAKE_CUDA_FLAGS_RELWITHDEBINFO) 
+            foreach(flag_var CMAKE_CUDA_FLAGS_DEBUG CMAKE_CUDA_FLAGS_RELEASE CMAKE_CUDA_FLAGS_MINSIZEREL CMAKE_CUDA_FLAGS_RELWITHDEBINFO)
                 string(REGEX REPLACE "-MT" "-MD" ${flag_var} "${${flag_var}}")
             endforeach(flag_var)
         endif()
     else()
         message(STATUS "Setting static runtime for MSVC")
-        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO) 
+        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
             string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         endforeach(flag_var)
         if(ECVL_GPU_AVAILABLE)
-            foreach(flag_var CMAKE_CUDA_FLAGS_DEBUG CMAKE_CUDA_FLAGS_RELEASE CMAKE_CUDA_FLAGS_MINSIZEREL CMAKE_CUDA_FLAGS_RELWITHDEBINFO) 
+            foreach(flag_var CMAKE_CUDA_FLAGS_DEBUG CMAKE_CUDA_FLAGS_RELEASE CMAKE_CUDA_FLAGS_MINSIZEREL CMAKE_CUDA_FLAGS_RELWITHDEBINFO)
                 string(REGEX REPLACE "-MD" "-MT" ${flag_var} "${${flag_var}}")
             endforeach(flag_var)
         endif()
     endif()
-    
+
 endif()
 #--------------------------------------------------------------------------------------------------------
 # END: static/dynamic runtime
@@ -171,9 +164,6 @@ target_include_directories(ECVL_CORE PUBLIC
 set_target_properties(ECVL_CORE PROPERTIES FOLDER "Modules")
 set(ECVL_MODULES ECVL_CORE)
 set(ECVL_MODULES_DIRS core)
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-    target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
-endif()
 
 if(ECVL_GPU_AVAILABLE)
     if(ECVL_SHARED)
@@ -181,7 +171,18 @@ if(ECVL_GPU_AVAILABLE)
     else()
         target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart_static)
     endif()
+    # Enable cuda14 features
+    target_compile_features(ECVL_CORE PUBLIC cuda_std_14)
 endif()
+
+# Enable c++17 features
+target_compile_features(ECVL_CORE PUBLIC cxx_std_17)
+
+# Enable link of stdc++fs library
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+    target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
+endif()
+
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL_CORE (the main target)
 #--------------------------------------------------------------------------------------------------------
@@ -194,7 +195,7 @@ find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 message(STATUS "OpenCV version: ${OpenCV_VERSION}")
-target_compile_definitions(ECVL_CORE PUBLIC OpenCV_VERSION_MAJOR=${OpenCV_VERSION_MAJOR})
+target_compile_definitions(ECVL_CORE PRIVATE OpenCV_VERSION_MAJOR=${OpenCV_VERSION_MAJOR})
 #--------------------------------------------------------------------------------------------------------
 # END: OpenCV
 #--------------------------------------------------------------------------------------------------------
@@ -226,7 +227,7 @@ if(ECVL_BUILD_GUI)
             add_library(ECVL_GUI ${ecvl-type} "")
             add_subdirectory("modules/gui")
             include_directories("modules/gui/include")
-            message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")   
+            message(STATUS "wxWidgets include directories: ${wxWidgets_INCLUDE_DIRS}")
 
             # Remove these global defines, add to GUI only
             remove_definitions(-DUNICODE -D_UNICODE)
@@ -292,7 +293,6 @@ foreach(MODULE ${ECVL_MODULES})
         )
 endforeach()
 
-message(STATUS "Modules to be built: ${ECVL_MODULES}")
 #--------------------------------------------------------------------------------------------------------
 # END: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
@@ -372,11 +372,26 @@ foreach(module_name ${ECVL_MODULES_DIRS})
         DESTINATION "."
         FILES_MATCHING PATTERN "*.h")
 endforeach()
-message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")   
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ecvlConfig.cmake.in ${CMAKE_BINARY_DIR}/cmake/ecvlConfig.cmake @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/cmake/ecvlConfig.cmake
-        DESTINATION ${ECVL_CONFIG_INSTALL_PATH}) 
+        DESTINATION ${ECVL_CONFIG_INSTALL_PATH})
 #--------------------------------------------------------------------------------------------------------
 # END: Install
+#--------------------------------------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------------------------------------
+# BEGIN: Summary
+#--------------------------------------------------------------------------------------------------------
+message(STATUS "--------------------------------------")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE} - ${ecvl-type}")
+message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS}")
+message(STATUS "C++ Release flags: ${CMAKE_CXX_FLAGS_RELEASE}")
+message(STATUS "C++ Debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
+# message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")
+message(STATUS "ECVL modules to build: ${ECVL_MODULES}")
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+#--------------------------------------------------------------------------------------------------------
+# END: Summary
 #--------------------------------------------------------------------------------------------------------
