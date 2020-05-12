@@ -126,7 +126,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#ae723594306a62266207448cf9277687a" title="Blurs an Image using a Gaussian kernel.">ecvl::GaussianBlur</a>.  <a href="classecvl_1_1_aug_gaussian_blur.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_grid_distortion.html">AugGridDistortion</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a1cdc3b6e68412f54d3d38b4fea5be07c" title="Randomly stretch or reduce each cell of the grid in which the input Image is divided into....">ecvl::GridDistortion</a>.  <a href="classecvl_1_1_aug_grid_distortion.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a1448dd4601763e88cdeba26c6c1ef310" title="Randomly stretch or reduce each cell of the grid in which the input Image is divided into....">ecvl::GridDistortion</a>.  <a href="classecvl_1_1_aug_grid_distortion.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract class which represent a generic <a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> function.  <a href="classecvl_1_1_augmentation.html#details">More...</a><br /></td></tr>
@@ -590,9 +590,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aeb20ecb4f245bbd530c845e96d4b5c59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aeb20ecb4f245bbd530c845e96d4b5c59">Transpose</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
 <tr class="memdesc:aeb20ecb4f245bbd530c845e96d4b5c59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Swap rows and columns of an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#aeb20ecb4f245bbd530c845e96d4b5c59">More...</a><br /></td></tr>
 <tr class="separator:aeb20ecb4f245bbd530c845e96d4b5c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cdc3b6e68412f54d3d38b4fea5be07c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a1cdc3b6e68412f54d3d38b4fea5be07c">GridDistortion</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, int num_steps=5, const std::array&lt; float, 2 &gt; &amp;distort_limit={ -0.3f, 0.3f }, InterpolationType interp=InterpolationType::linear, BorderType border_type=BorderType::BORDER_REFLECT_101, const int &amp;border_value=0)</td></tr>
-<tr class="memdesc:a1cdc3b6e68412f54d3d38b4fea5be07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomly stretch or reduce each cell of the grid in which the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is divided into. Based on <a href="https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1175">https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1175</a>.  <a href="#a1cdc3b6e68412f54d3d38b4fea5be07c">More...</a><br /></td></tr>
-<tr class="separator:a1cdc3b6e68412f54d3d38b4fea5be07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1448dd4601763e88cdeba26c6c1ef310"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a1448dd4601763e88cdeba26c6c1ef310">GridDistortion</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, int num_steps=5, const std::array&lt; float, 2 &gt; &amp;distort_limit={ -0.3f, 0.3f }, InterpolationType interp=InterpolationType::linear, BorderType border_type=BorderType::BORDER_REFLECT_101, const int &amp;border_value=0, const unsigned seed=std::default_random_engine::default_seed)</td></tr>
+<tr class="memdesc:a1448dd4601763e88cdeba26c6c1ef310"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomly stretch or reduce each cell of the grid in which the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is divided into. Based on <a href="https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1175">https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1175</a>.  <a href="#a1448dd4601763e88cdeba26c6c1ef310">More...</a><br /></td></tr>
+<tr class="separator:a1448dd4601763e88cdeba26c6c1ef310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0cadcb0a4b3bc15cb00dade7c004686"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ac0cadcb0a4b3bc15cb00dade7c004686">ElasticTransform</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double alpha=34., double sigma=4., <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp=<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a>, const int &amp;border_value=0, const unsigned seed=std::default_random_engine::default_seed)</td></tr>
 <tr class="memdesc:ac0cadcb0a4b3bc15cb00dade7c004686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elastic deformation of input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. Based on <a href="https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1235">https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1235</a>.  <a href="#ac0cadcb0a4b3bc15cb00dade7c004686">More...</a><br /></td></tr>
 <tr class="separator:ac0cadcb0a4b3bc15cb00dade7c004686"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2868,8 +2868,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a1cdc3b6e68412f54d3d38b4fea5be07c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cdc3b6e68412f54d3d38b4fea5be07c">&#9670;&nbsp;</a></span>GridDistortion()</h2>
+<a id="a1448dd4601763e88cdeba26c6c1ef310"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1448dd4601763e88cdeba26c6c1ef310">&#9670;&nbsp;</a></span>GridDistortion()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2914,7 +2914,13 @@ template&lt;typename ST1 &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const int &amp;&#160;</td>
-          <td class="paramname"><em>border_value</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>border_value</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>seed</em> = <code>std::default_random_engine::default_seed</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2934,6 +2940,7 @@ template&lt;typename ST1 &gt; </div>
     <tr><td class="paramdir">[in]</td><td class="paramname">interp</td><td>Interpolation type used. Default is <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">border_type</td><td>Flag used to specify the pixel extrapolation method. Default is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9" title="gfedcb|abcdefgh|gfedcba">BorderType::BORDER_REFLECT_101</a>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">border_value</td><td>Padding value if border_type is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>Seed to use for this function's random number generator. </td></tr>
   </table>
   </dd>
 </dl>
