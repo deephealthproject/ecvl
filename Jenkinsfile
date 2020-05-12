@@ -13,7 +13,7 @@ pipeline {
                     stages {
                         stage('Build') {
                             steps {
-                                timeout(15) {
+                                timeout(60) {
                                     echo 'Building..'
                                     cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
                                         [args: '--parallel 4', withCmake: true]
@@ -43,7 +43,7 @@ pipeline {
                     stages {
                         stage('Build') {
                             steps {
-                                timeout(15) {
+                                timeout(60) {
                                     echo 'Building..'
                                     bat 'powershell ../../ecvl_dependencies/ecvl_dependencies.ps1'
                                     cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=C:/Library/openslide-win32-20171122/lib/libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
