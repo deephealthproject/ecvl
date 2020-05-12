@@ -487,10 +487,10 @@ void GridDistortion(const Image& src, Image& dst, int num_steps, const std::arra
     src.hal_->GridDistortion(src, dst, num_steps, distort_limit, interp, border_type, border_value);
 }
 
-void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value)
+void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
 {
     AlwaysCheck(src, dst);
 
-    src.hal_->ElasticTransform(src, dst, alpha, sigma, interp, border_type, border_value);
+    src.hal_->ElasticTransform(src, dst, alpha, sigma, interp, border_type, border_value, seed);
 }
 } // namespace ecvl

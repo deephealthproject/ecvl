@@ -74,7 +74,7 @@ public:
     void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) override;
     void Transpose(const Image& src, Image& dst) override;
     void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value) override;
-    void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value) override;
+    void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

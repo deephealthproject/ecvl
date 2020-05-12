@@ -175,6 +175,9 @@ public:
     }
     static std::default_random_engine re_;
 
+    static constexpr unsigned seed_min = std::numeric_limits<unsigned>::min();
+    static constexpr unsigned seed_max = std::numeric_limits<unsigned>::max();
+
     /** @brief Set a fixed seed for the random generated values. Useful to reproduce experiments with same augmentations.
     @param[in] seed Value of the seed for the random engine.
     */
@@ -887,9 +890,9 @@ class AugElasticTransform : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_);
+        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
         if (!gt.IsEmpty()) {
-            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_);
+            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
         }
     }
 public:
@@ -910,6 +913,7 @@ public:
     {
         params_["alpha"] = AugmentationParam(alpha[0], alpha[1]);
         params_["sigma"] = AugmentationParam(sigma[0], sigma[1]);
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
     }
 
     AugElasticTransform(std::istream& is)
@@ -923,6 +927,9 @@ public:
 
         m.Get("sigma", param::type::range, true, p);
         params_["sigma"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        // seed is managed by AugmentationParam
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
