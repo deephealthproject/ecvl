@@ -155,7 +155,7 @@ public:
     virtual void Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Transpose(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };

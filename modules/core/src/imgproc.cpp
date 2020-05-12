@@ -480,11 +480,11 @@ void Transpose(const Image& src, Image& dst)
     src.hal_->Transpose(src, dst);
 }
 
-void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value)
+void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
 {
     AlwaysCheck(src, dst);
 
-    src.hal_->GridDistortion(src, dst, num_steps, distort_limit, interp, border_type, border_value);
+    src.hal_->GridDistortion(src, dst, num_steps, distort_limit, interp, border_type, border_value, seed);
 }
 
 void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)

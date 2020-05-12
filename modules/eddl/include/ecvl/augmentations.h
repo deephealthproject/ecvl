@@ -789,9 +789,11 @@ class AugGridDistortion : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GridDistortion(img, img, static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_, border_value_);
+        GridDistortion(img, img, static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_,
+            border_value_, static_cast<unsigned>(params_["seed"].value_));
         if (!gt.IsEmpty()) {
-            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_, border_value_);
+            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(params_["num_steps"].value_), distort_limit_,
+                interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
         }
     }
 public:
@@ -811,6 +813,7 @@ public:
         : distort_limit_(distort_limit), interp_(interp), border_type_(border_type), border_value_(border_value)
     {
         params_["num_steps"] = AugmentationParam(num_steps[0], num_steps[1]);
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
     }
 
     AugGridDistortion(std::istream& is)
@@ -821,6 +824,9 @@ public:
 
         m.Get("num_steps", param::type::range, true, p);
         params_["num_steps"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        // seed is managed by AugmentationParam
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
 
         m.Get("distort_limit", param::type::range, true, p);
         distort_limit_ = { static_cast<float>(p.vals_[0]), static_cast<float>(p.vals_[1]) };
@@ -890,9 +896,11 @@ class AugElasticTransform : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
+        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_,
+            border_value_, static_cast<unsigned>(params_["seed"].value_));
         if (!gt.IsEmpty()) {
-            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
+            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_,
+                border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
         }
     }
 public:

@@ -1507,11 +1507,16 @@ void FillCoordsVector(vector<float>& v, vector<float>& steps, int size, int num_
     }
 }
 
-void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value)
+void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit,
+    InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
 {
     OpenCVAlwaysCheck(src);
 
     std::default_random_engine re(std::random_device{}());
+    if (seed != re.default_seed) {
+        re.seed(seed);
+    }
+
     vector<float> xsteps, ysteps;
     for (int i = 0; i < num_steps + 1; ++i) {
         xsteps.push_back(1 + std::uniform_real_distribution<float>(distort_limit[0], distort_limit[1])(re));

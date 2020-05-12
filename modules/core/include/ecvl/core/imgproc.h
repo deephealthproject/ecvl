@@ -401,13 +401,15 @@ Based on https://github.com/albumentations-team/albumentations/blob/master/album
 @param[in] interp Interpolation type used. Default is InterpolationType::linear.
 @param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
 @param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT.
+@param[in] seed Seed to use for this function's random number generator.
 */
 void GridDistortion(const Image& src, Image& dst,
     int num_steps = 5,
     const std::array<float, 2>& distort_limit = { -0.3f, 0.3f },
     InterpolationType interp = InterpolationType::linear,
     BorderType border_type = BorderType::BORDER_REFLECT_101,
-    const int& border_value = 0
+    const int& border_value = 0,
+    const unsigned seed = std::default_random_engine::default_seed
 );
 
 /** @brief Elastic deformation of input Image.
