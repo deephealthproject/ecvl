@@ -16,7 +16,7 @@ pipeline {
                                 timeout(15) {
                                     echo 'Building..'
                                     cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
-                                        [args: '-j4', withCmake: true]
+                                        [args: '--parallel 4', withCmake: true]
                                     ]
                                 }
                             }
@@ -47,7 +47,7 @@ pipeline {
                                     echo 'Building..'
                                     bat 'powershell ../../ecvl_dependencies/ecvl_dependencies.ps1'
                                     cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=C:/Library/openslide-win32-20171122/lib/libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
-                                        [args: '-j4', withCmake: true]
+                                        [args: '--parallel 4', withCmake: true]
                                     ]
                                 }
                             }
@@ -66,7 +66,7 @@ pipeline {
                                     echo 'Calculating coverage..'
                                     bat '"C:/Program Files/OpenCppCoverage/OpenCppCoverage.exe" --source %cd% --export_type=cobertura --excluded_sources=3rdparty -- "build/bin/Debug/ECVL_TESTS.exe"'
                                     cobertura coberturaReportFile: 'ECVL_TESTSCoverage.xml'
-                                    bat '"C:/ProgramData/chocolatey/bin/codecov.exe" -f ECVL_TESTSCoverage.xml -t 7635bd2e-51cf-461e-bb1b-fc7ba9fb26d1'
+                                    bat 'codecov -f ECVL_TESTSCoverage.xml -t 7635bd2e-51cf-461e-bb1b-fc7ba9fb26d1'
                                 }
                             }
                         }
