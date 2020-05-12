@@ -202,8 +202,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acf6b82550565f5d6bc7f77374252c196"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad9990d86a12e32bf104c7175e0bd0d2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#aad9990d86a12e32bf104c7175e0bd0d2">GridDistortion</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, int num_steps, const std::array&lt; float, 2 &gt; &amp;distort_limit, <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type, const int &amp;border_value)</td></tr>
 <tr class="separator:aad9990d86a12e32bf104c7175e0bd0d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53c79ddef01199d78f0bdfde2cb649b1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a53c79ddef01199d78f0bdfde2cb649b1">ElasticTransform</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double alpha, double sigma, <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type, const int &amp;border_value)</td></tr>
-<tr class="separator:a53c79ddef01199d78f0bdfde2cb649b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a499b0848ffb8434785a1115b6da4c51e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a499b0848ffb8434785a1115b6da4c51e">ElasticTransform</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double alpha, double sigma, <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type, const int &amp;border_value, const unsigned seed)</td></tr>
+<tr class="separator:a499b0848ffb8434785a1115b6da4c51e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0c7375cb0fd6f7d48e6c1e3576d5dc6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ac0c7375cb0fd6f7d48e6c1e3576d5dc6">IsOwner</a> () const</td></tr>
 <tr class="separator:ac0c7375cb0fd6f7d48e6c1e3576d5dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc948210dd2bef323a871d6345698748"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#adc948210dd2bef323a871d6345698748">Neg</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, bool saturate)</td></tr>
@@ -2679,8 +2679,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a53c79ddef01199d78f0bdfde2cb649b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53c79ddef01199d78f0bdfde2cb649b1">&#9670;&nbsp;</a></span>ElasticTransform()</h2>
+<a id="a499b0848ffb8434785a1115b6da4c51e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a499b0848ffb8434785a1115b6da4c51e">&#9670;&nbsp;</a></span>ElasticTransform()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2728,7 +2728,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const int &amp;&#160;</td>
-          <td class="paramname"><em>border_value</em>&#160;</td>
+          <td class="paramname"><em>border_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>seed</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2743,7 +2749,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented in <a class="el" href="classecvl_1_1_cpu_hal.html#ad0fd870b72e137913a42c3239614ae57">ecvl::CpuHal</a>.</p>
+<p>Reimplemented in <a class="el" href="classecvl_1_1_cpu_hal.html#a493262c0ddb6b18d97d47386b736e722">ecvl::CpuHal</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="hal_8h_source.html#l00159">159</a> of file <a class="el" href="hal_8h_source.html">hal.h</a>.</p>
 
