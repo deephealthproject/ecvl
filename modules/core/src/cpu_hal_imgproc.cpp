@@ -1507,11 +1507,16 @@ void FillCoordsVector(vector<float>& v, vector<float>& steps, int size, int num_
     }
 }
 
-void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value)
+void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit,
+    InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
 {
     OpenCVAlwaysCheck(src);
 
     std::default_random_engine re(std::random_device{}());
+    if (seed != re.default_seed) {
+        re.seed(seed);
+    }
+
     vector<float> xsteps, ysteps;
     for (int i = 0; i < num_steps + 1; ++i) {
         xsteps.push_back(1 + std::uniform_real_distribution<float>(distort_limit[0], distort_limit[1])(re));
@@ -1540,7 +1545,7 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
             memcpy(map_y.data_ + map_y.elemsize_ * c + map_y.strides_[1] * r, yy.data() + r, map_y.elemsize_);
         }
     }
-    
+
     if (src.elemtype_ == DataType::int8 || src.elemtype_ == DataType::int32) {
         interp = InterpolationType::nearest;
     }
@@ -1553,11 +1558,13 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
     }
 }
 
-void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value)
+void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp,
+    BorderType border_type, const int& border_value, const unsigned seed)
 {
-    OpenCVAlwaysCheck(src);
-
     std::default_random_engine re(std::random_device{}());
+    if (seed != re.default_seed) {
+        re.seed(seed);
+    }
 
     int height = src.Height();
     int width = src.Width();

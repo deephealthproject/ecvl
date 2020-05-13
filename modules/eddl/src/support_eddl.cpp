@@ -216,7 +216,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     start = current_batch_[+current_split_] * bs;
     ++current_batch_[+current_split_];
 
-    if (GetSplit().size() < start + bs) {
+    if (vsize(GetSplit()) < start + bs) {
         cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
         ECVL_ERROR_CANNOT_LOAD_IMAGE
     }
@@ -235,7 +235,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
 
             // Copy label into tensor (labels)
             vector<float> lab(classes_.size(), 0);
-            for (int j = 0; j < elem.label_.value().size(); ++j) {
+            for (int j = 0; j < vsize(elem.label_.value()); ++j) {
                 lab[elem.label_.value()[j]] = 1;
             }
             memcpy(labels->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
@@ -281,7 +281,7 @@ void DLDataset::LoadBatch(tensor& images)
     start = current_batch_[+current_split_] * bs;
     ++current_batch_[+current_split_];
 
-    if (GetSplit().size() < start + bs) {
+    if (vsize(GetSplit()) < start + bs) {
         cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
         ECVL_ERROR_CANNOT_LOAD_IMAGE
     }
