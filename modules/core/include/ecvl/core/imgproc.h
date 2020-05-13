@@ -433,6 +433,27 @@ void ElasticTransform(const Image& src, Image& dst,
     const unsigned seed = std::default_random_engine::default_seed
 );
 
+/** @brief Barrel / pincushion distortion.
+Based on https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1114
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] distort_limit Range to randomly select the intensity of the distortion.
+@param[in] shift_limit Range of image shifting.
+@param[in] interp Interpolation type used. Default is InterpolationType::linear.
+@param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT.
+@param[in] seed Seed to use for this function's random number generator.
+*/
+void OpticalDistortion(const Image& src, Image& dst,
+    const std::array<float, 2>& distort_limit = { -0.3f, 0.3f },
+    const std::array<float, 2>& shift_limit = { -0.1f, 0.1f },
+    InterpolationType interp = InterpolationType::linear,
+    BorderType border_type = BorderType::BORDER_REFLECT_101,
+    const int& border_value = 0,
+    const unsigned seed = std::default_random_engine::default_seed
+);
+
 /** @example example_imgproc.cpp
  Imgproc example.
 */

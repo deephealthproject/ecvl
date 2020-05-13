@@ -1526,6 +1526,10 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
     int height = src.Height();
     int width = src.Width();
 
+    if (num_steps == 0) {
+        ECVL_ERROR_DIVISION_BY_ZERO
+    }
+
     int x_step = width / num_steps;
     vector<float> xx(width, 0.);
     int y_step = height / num_steps;
@@ -1611,6 +1615,49 @@ void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double
 
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
+    dst = MatToImage(tmp);
+    if (dst.colortype_ != src.colortype_) {
+        ChangeColorSpace(dst, dst, src.colortype_);
+    }
+}
+
+void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit,
+    InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
+{
+    OpenCVAlwaysCheck(src);
+
+    std::default_random_engine re(std::random_device{}());
+    if (seed != re.default_seed) {
+        re.seed(seed);
+    }
+
+    float k = std::uniform_real_distribution<float>(distort_limit[0], distort_limit[1])(re);
+    float dx = std::uniform_real_distribution<float>(shift_limit[0], shift_limit[1])(re);
+    float dy = std::uniform_real_distribution<float>(shift_limit[0], shift_limit[1])(re);
+
+    int height = src.Height();
+    int width = src.Width();
+
+    float fx = static_cast<float>(width);
+    float fy = static_cast<float>(height);
+
+    float cx = width * 0.5f + round(dx);
+    float cy = height * 0.5f + round(dy);
+
+    float data[9] = { fx, 0, cx, 0, fy, cy, 0, 0, 1 };
+    float data2[5] = { k, k, 0, 0, 0 };
+    cv::Mat camera_matrix = cv::Mat(3, 3, CV_32F, data);
+    cv::Mat distortion = cv::Mat(1, 5, CV_32F, data2);
+
+    cv::Mat map1, map2, tmp;
+    cv::initUndistortRectifyMap(camera_matrix, distortion, cv::Mat(), cv::Mat(), { width, height }, CV_32FC1, map1, map2);
+
+    if (src.elemtype_ == DataType::int8 || src.elemtype_ == DataType::int32) {
+        interp = InterpolationType::nearest;
+    }
+
+    cv::remap(ImageToMat(src), tmp, map1, map2, GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
+
     dst = MatToImage(tmp);
     if (dst.colortype_ != src.colortype_) {
         ChangeColorSpace(dst, dst, src.colortype_);
