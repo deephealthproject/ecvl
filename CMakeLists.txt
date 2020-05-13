@@ -14,10 +14,18 @@ cmake_minimum_required (VERSION 3.13)
 project (ecvl CXX)
 
 include(CheckCXXCompilerFlag)
+include(GNUInstallDirs)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
-set(CMAKE_POSITION_INDEPENDENT_CODE True) # To always generate position independent code
+set(CMAKE_POSITION_INDEPENDENT_CODE ON) # To always generate position independent code
+if (WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: Install(first step): must be at the beginning otherwise in case of any failure (i.e. OpenCV not found) won't work
@@ -105,12 +113,15 @@ set(ECVL_SHARED OFF CACHE BOOL "Whether to build static or dynamic libraries")
 set(ecvl-type STATIC)
 
 if (ECVL_SHARED)
-    # TODO Shared building
-    set(ecvl-type STATIC) #SHARED)
+    set(ecvl-type SHARED)
 endif()
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # Eliminate deprecation warnings less secure functions
+
+    # https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/MP>)
+    add_link_options($<$<CONFIG:DEBUG>:/debug:fastlink>)
 
     # The following part should be made like this starting from CMake 3.15. It also requires policy CMP0091 set to NEW.
     # if(ECVL_SHARED)
@@ -362,9 +373,9 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 install(TARGETS ${ECVL_MODULES}
         EXPORT ecvlTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         )
 install(EXPORT ecvlTargets DESTINATION ${ECVL_CONFIG_INSTALL_PATH})
 foreach(module_name ${ECVL_MODULES_DIRS})
@@ -386,12 +397,22 @@ install(FILES ${CMAKE_BINARY_DIR}/cmake/ecvlConfig.cmake
 message(STATUS "--------------------------------------")
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE} - ${ecvl-type}")
+message(STATUS "ECVL modules to build: ${ECVL_MODULES}")
+message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+message("")
 message(STATUS "C++ flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "C++ Release flags: ${CMAKE_CXX_FLAGS_RELEASE}")
 message(STATUS "C++ Debug flags: ${CMAKE_CXX_FLAGS_DEBUG}")
+
+if(ECVL_GPU_AVAILABLE)
+    message("")
+    message(STATUS "CUDA flags: ${CMAKE_CUDA_FLAGS}")
+    message(STATUS "CUDA Release flags: ${CMAKE_CUDA_FLAGS_RELEASE}")
+    message(STATUS "CUDA Debug flags: ${CMAKE_CUDA_FLAGS_DEBUG}")
+endif()
 # message(STATUS "ECVL MODULES DIRS ${ECVL_MODULES_DIRS}")
-message(STATUS "ECVL modules to build: ${ECVL_MODULES}")
-message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "--------------------------------------")
 #--------------------------------------------------------------------------------------------------------
 # END: Summary
 #--------------------------------------------------------------------------------------------------------
