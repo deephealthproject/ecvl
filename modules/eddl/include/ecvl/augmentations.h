@@ -230,7 +230,7 @@ struct AugmentationFactory
 
 /** @brief SequentialAugmentationContainer.
 
-This class represent a container for multiple augmentations which will be sequentially applied to the Dataset images.
+This class represents a container for multiple augmentations which will be sequentially applied to the Dataset images.
 
 @anchor SequentialAugmentationContainer
 */
@@ -270,6 +270,67 @@ public:
     }
 };
 
+/** @brief OneOfAugmentationContainer.
+
+This class represents a container for multiple augmentations from which one will be randomly chosen.
+The chosen augmentation will be applied with a probability that must be specified by the user.
+
+@anchor OneOfAugmentationContainer
+*/
+class OneOfAugmentationContainer : public Augmentation
+{
+/** @brief Call the specialized augmentation functions.
+
+@param[in] img Image on which apply the augmentations.
+@param[in] gt Ground truth image on which apply the augmentations.
+*/
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        int index = std::uniform_int_distribution<>(0, vsize(augs_) - 1)(AugmentationParam::re_);
+        if (params_["p"].value_ <= p_) {
+            augs_[index]->Apply(img, gt);
+        }
+    }
+    std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
+    double p_;
+public:
+    template<typename ...Ts>
+    OneOfAugmentationContainer(double p, Ts&&... t) : p_(p), augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... })
+    {
+        params_["p"] = AugmentationParam(0, 1);
+    }
+
+    OneOfAugmentationContainer(double p, std::vector<std::shared_ptr<Augmentation>> augs) : p_(p), augs_(augs)
+    {
+        params_["p"] = AugmentationParam(0, 1);
+    }
+
+    OneOfAugmentationContainer(std::istream& is)
+    {
+        param p;
+        try {
+            auto m = param::read(is, "OneOfAugmentationContainer");
+            if (m.Get("p", param::type::number, true, p)) {
+                p_ = p.vals_[0];
+            }
+        }
+        catch (std::runtime_error& e) {
+            ECVL_ERROR_WRONG_PARAMS("The first parameter in OneOfAugmentationContainer must be the probability p");
+        }
+
+        while (true) {
+            std::string name;
+            is >> name;
+            if (!is) {
+                ECVL_ERROR_AUGMENTATION_NAME
+            }
+            if (name == "end") {
+                break;
+            }
+            augs_.emplace_back(AugmentationFactory::create(name, is));
+        }
+    }
+};
 ///////////////////////////////////////////////////////////////////////////////////
 // Augmentations
 ///////////////////////////////////////////////////////////////////////////////////
@@ -938,6 +999,114 @@ public:
 
         // seed is managed by AugmentationParam
         params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+
+        interp_ = InterpolationType::linear;
+        if (m.Get("interp", param::type::string, false, p)) {
+            if (p.str_ == "linear") {
+                interp_ = InterpolationType::linear;
+            }
+            else if (p.str_ == "area") {
+                interp_ = InterpolationType::area;
+            }
+            else if (p.str_ == "cubic") {
+                interp_ = InterpolationType::cubic;
+            }
+            else if (p.str_ == "lanczos4") {
+                interp_ = InterpolationType::lanczos4;
+            }
+            else if (p.str_ == "nearest") {
+                interp_ = InterpolationType::nearest;
+            }
+            else {
+                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
+            }
+        }
+
+        border_type_ = BorderType::BORDER_REFLECT_101;
+        if (m.Get("border_type", param::type::string, false, p)) {
+            if (p.str_ == "constant") {
+                border_type_ = BorderType::BORDER_CONSTANT;
+            }
+            else if (p.str_ == "replicate") {
+                border_type_ = BorderType::BORDER_REPLICATE;
+            }
+            else if (p.str_ == "reflect") {
+                border_type_ = BorderType::BORDER_REFLECT;
+            }
+            else if (p.str_ == "wrap") {
+                border_type_ = BorderType::BORDER_WRAP;
+            }
+            else if (p.str_ == "reflect_101") {
+                border_type_ = BorderType::BORDER_REFLECT_101;
+            }
+            else if (p.str_ == "transparent") {
+                border_type_ = BorderType::BORDER_TRANSPARENT;
+            }
+            else {
+                throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
+            }
+        }
+
+        border_value_ = 0;
+        m.Get("border_value", param::type::number, false, p);
+        border_value_ = static_cast<int>(p.vals_[0]);
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::OpticalDistortion.
+
+@anchor AugOpticalDistortion
+*/
+class AugOpticalDistortion : public Augmentation
+{
+    std::array<float, 2> distort_limit_;
+    std::array<float, 2> shift_limit_;
+    InterpolationType interp_;
+    BorderType border_type_;
+    int border_value_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        OpticalDistortion(img, img, distort_limit_, shift_limit_, interp_, border_type_,
+            border_value_, static_cast<unsigned>(params_["seed"].value_));
+        if (!gt.IsEmpty()) {
+            OpticalDistortion(gt, const_cast<Image&>(gt), distort_limit_, shift_limit_, interp_, border_type_,
+                border_value_, static_cast<unsigned>(params_["seed"].value_));
+        }
+    }
+public:
+    /** @brief AugOpticalDistortion constructor
+
+    @param[in] distort_limit Parameter which determines the range of values [min,max] to randomly select the distortion steps.
+    @param[in] shift_limit Parameter which determines the range of values [min,max] to randomly select the image shifting.
+    @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_REFLECT_101.
+    @param[in] border_value Integer padding value if border_type is BorderType::BORDER_CONSTANT.
+    */
+    AugOpticalDistortion(const std::array<float, 2>& distort_limit,
+        const std::array<float, 2>& shift_limit,
+        const InterpolationType& interp = InterpolationType::linear,
+        const BorderType& border_type = BorderType::BORDER_REFLECT_101,
+        const int& border_value = 0)
+        : distort_limit_(distort_limit), shift_limit_(shift_limit), interp_(interp), border_type_(border_type), border_value_(border_value)
+    {
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+    }
+
+    AugOpticalDistortion(std::istream& is)
+    {
+        auto m = param::read(is, "AugOpticalDistortion");
+
+        param p;
+
+        // seed is managed by AugmentationParam
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+
+        m.Get("distort_limit", param::type::range, true, p);
+        distort_limit_ = { static_cast<float>(p.vals_[0]), static_cast<float>(p.vals_[1]) };
+
+        m.Get("shift_limit", param::type::range, true, p);
+        shift_limit_ = { static_cast<float>(p.vals_[0]), static_cast<float>(p.vals_[1]) };
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {

@@ -34,6 +34,7 @@ param_list param::read(std::istream& is, std::string fn_name_)
 std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& name, std::istream& is)
 {
     AUG(SequentialAugmentationContainer);
+    AUG(OneOfAugmentationContainer);
     AUG(AugRotate);
     AUG(AugResizeDim);
     AUG(AugResizeScale);
@@ -48,6 +49,7 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugBrightness);
     AUG(AugGridDistortion);
     AUG(AugElasticTransform);
+    AUG(AugOpticalDistortion);
 
     return nullptr; // Maybe throw?
 }
