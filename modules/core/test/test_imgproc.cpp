@@ -573,6 +573,58 @@ TEST_F(Imgproc, ElasticTransformSameDst##type) \
         EXPECT_THROW(ElasticTransform(g1_##type, g1_##type), std::runtime_error); \
     } \
 } \
+\
+TEST_F(Imgproc, OpticalDistortion##type) \
+{ \
+    if (DataType::type != DataType::int64) { \
+        OpticalDistortion(g1_##type, out); \
+        View<DataType::type> out_v(out); \
+        EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+        \
+        OpticalDistortion(g2_##type, out); \
+        out_v = out; \
+        EXPECT_EQ(g2_##type.dims_, out_v.dims_); \
+        EXPECT_EQ(g2_##type.colortype_, out_v.colortype_); \
+        EXPECT_EQ(g2_##type.elemtype_, out_v.elemtype_); \
+        EXPECT_EQ(g2_##type.channels_, out_v.channels_); \
+        \
+        OpticalDistortion(rgb2_##type, out); \
+        out_v = out; \
+        EXPECT_EQ(rgb2_##type.dims_, out_v.dims_); \
+        EXPECT_EQ(rgb2_##type.colortype_, out_v.colortype_); \
+        EXPECT_EQ(rgb2_##type.elemtype_, out_v.elemtype_); \
+        EXPECT_EQ(rgb2_##type.channels_, out_v.channels_); \
+    } \
+    else { \
+        EXPECT_THROW(OpticalDistortion(g1_##type, out), std::runtime_error); \
+    } \
+} \
+\
+TEST_F(Imgproc, OpticalDistortionSameDst##type) \
+{ \
+    if (DataType::type != DataType::int64) { \
+        OpticalDistortion(g1_##type, g1_##type); \
+        View<DataType::type> out_v(g1_##type); \
+        EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+        \
+        OpticalDistortion(g2_##type, g2_##type); \
+        out_v = g2_##type; \
+        EXPECT_EQ(g2_##type.dims_, out_v.dims_); \
+        EXPECT_EQ(g2_##type.colortype_, out_v.colortype_); \
+        EXPECT_EQ(g2_##type.elemtype_, out_v.elemtype_); \
+        EXPECT_EQ(g2_##type.channels_, out_v.channels_); \
+        \
+        OpticalDistortion(rgb2_##type, rgb2_##type); \
+        out_v = rgb2_##type; \
+        EXPECT_EQ(rgb2_##type.dims_, out_v.dims_); \
+        EXPECT_EQ(rgb2_##type.colortype_, out_v.colortype_); \
+        EXPECT_EQ(rgb2_##type.elemtype_, out_v.elemtype_); \
+        EXPECT_EQ(rgb2_##type.channels_, out_v.channels_); \
+    } \
+    else { \
+        EXPECT_THROW(OpticalDistortion(g1_##type, g1_##type), std::runtime_error); \
+    } \
+}
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
