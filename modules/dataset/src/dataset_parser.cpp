@@ -11,13 +11,16 @@
 * All rights reserved.
 */
 
+#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_parser.h"
+
 #include <fstream>
 #include <regex>
 
 using namespace std;
-using namespace std::filesystem;
+using namespace fs;
 using namespace YAML;
+
 namespace ecvl
 {
 const std::regex Dataset::url_regex_ = std::regex{ R"(https?://.*)" };

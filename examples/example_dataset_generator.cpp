@@ -12,14 +12,14 @@
 */
 
 #include "ecvl/core.h"
+#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_generator.h"
 
-#include <filesystem>
 #include <iostream>
 
 using namespace std;
 using namespace ecvl;
-using namespace std::filesystem;
+using namespace fs;
 
 int main()
 {

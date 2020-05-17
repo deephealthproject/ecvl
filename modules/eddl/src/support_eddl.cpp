@@ -13,15 +13,15 @@
 
 #include <ecvl/support_eddl.h>
 
-#include "ecvl/core/imgproc.h"
+#include "ecvl/core/filesystem.h"
 #include "ecvl/core/imgcodecs.h"
+#include "ecvl/core/imgproc.h"
 #include "ecvl/core/standard_errors.h"
 
-#include <filesystem>
 #include <iostream>
 
 using namespace eddl;
-using namespace std::filesystem;
+using namespace fs;
 
 namespace ecvl
 {

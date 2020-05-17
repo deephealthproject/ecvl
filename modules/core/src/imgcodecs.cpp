@@ -16,6 +16,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 
+#include "ecvl/core/filesystem.h"
 #include "ecvl/core/support_nifti.h"
 #include "ecvl/core/support_opencv.h"
 
@@ -23,7 +24,7 @@
 #include "ecvl/core/support_dcmtk.h"
 #endif
 
-using namespace std::filesystem;
+using namespace fs;
 
 namespace ecvl
 {

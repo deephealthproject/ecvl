@@ -11,12 +11,14 @@
 * All rights reserved.
 */
 
+#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_generator.h"
+
 #include <iostream>
 #include <optional>
 
 using namespace std;
-using namespace std::filesystem;
+using namespace fs;
 using namespace ecvl;
 
 int GenerateClassificationDataset::LoadSplitImages(const path& split)

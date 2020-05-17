@@ -16,10 +16,11 @@
 #include <fstream>
 #include <string>
 
+#include "ecvl/core/filesystem.h"
 #include "ecvl/core/standard_errors.h"
 
 using namespace std;
-using namespace std::filesystem;
+using namespace fs;
 
 namespace ecvl
 {

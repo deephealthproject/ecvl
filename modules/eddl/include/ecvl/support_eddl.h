@@ -18,6 +18,7 @@
 #include <eddl/apis/eddlT.h>
 #include "ecvl/augmentations.h"
 #include "ecvl/core/image.h"
+#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_parser.h"
 
 namespace ecvl
@@ -78,7 +79,7 @@ public:
     @param[in] ctype_gt ecvl::ColorType of the Dataset ground truth images.
     @param[in] verify If true, a list of all the images in the Dataset file which don't exist is printed with an ECVL_WARNING_MSG.
     */
-    DLDataset(const std::filesystem::path& filename,
+    DLDataset(const fs::path& filename,
         const int batch_size,
         DatasetAugmentations augs = DatasetAugmentations(),
         ColorType ctype = ColorType::BGR,
