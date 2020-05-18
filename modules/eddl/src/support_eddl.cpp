@@ -91,7 +91,7 @@ void ImageToTensor(const Image& img, tensor& t)
     else {
         CopyImage(img, tmp, DataType::float32);
     }
-    t = eddlT::create({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
+    t = new Tensor({ tmp.dims_[2], tmp.dims_[1], tmp.dims_[0] });
 
     memcpy(t->ptr, tmp.data_, tmp.datasize_);
 }
