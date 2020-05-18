@@ -139,6 +139,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_mirror.html">AugMirror</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a616ea6f429139cd593198b7804a2a5fd" title="Mirrors an Image.">ecvl::Mirror2D</a>.  <a href="classecvl_1_1_aug_mirror.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_optical_distortion.html">AugOpticalDistortion</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b" title="Barrel / pincushion distortion. Based on https://github.com/albumentations-team/albumentations/blob/m...">ecvl::OpticalDistortion</a>.  <a href="classecvl_1_1_aug_optical_distortion.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_resize_dim.html">AugResizeDim</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a010dd55cace0a7b700391238952f9e55" title="Resizes an Image to the specified dimensions.">ecvl::ResizeDim</a>.  <a href="classecvl_1_1_aug_resize_dim.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,6 +214,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_meta_data.html">MetaData</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_normalize_to_uint8_struct.html">NormalizeToUint8Struct</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_one_of_augmentation_container.html">OneOfAugmentationContainer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_one_of_augmentation_container.html" title="OneOfAugmentationContainer.">OneOfAugmentationContainer</a>.  <a href="classecvl_1_1_one_of_augmentation_container.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param.html">param</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -596,6 +602,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ac0cadcb0a4b3bc15cb00dade7c004686"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ac0cadcb0a4b3bc15cb00dade7c004686">ElasticTransform</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double alpha=34., double sigma=4., <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp=<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a>, const int &amp;border_value=0, const unsigned seed=std::default_random_engine::default_seed)</td></tr>
 <tr class="memdesc:ac0cadcb0a4b3bc15cb00dade7c004686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Elastic deformation of input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. Based on <a href="https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1235">https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1235</a>.  <a href="#ac0cadcb0a4b3bc15cb00dade7c004686">More...</a><br /></td></tr>
 <tr class="separator:ac0cadcb0a4b3bc15cb00dade7c004686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a371534ebd422c20d6905bc0013bca16b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b">OpticalDistortion</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::array&lt; float, 2 &gt; &amp;distort_limit={ -0.3f, 0.3f }, const std::array&lt; float, 2 &gt; &amp;shift_limit={ -0.1f, 0.1f }, InterpolationType interp=InterpolationType::linear, BorderType border_type=BorderType::BORDER_REFLECT_101, const int &amp;border_value=0, const unsigned seed=std::default_random_engine::default_seed)</td></tr>
+<tr class="memdesc:a371534ebd422c20d6905bc0013bca16b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Barrel / pincushion distortion. Based on <a href="https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1114">https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1114</a>.  <a href="#a371534ebd422c20d6905bc0013bca16b">More...</a><br /></td></tr>
+<tr class="separator:a371534ebd422c20d6905bc0013bca16b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplParams" colspan="2">template&lt;DataType ODT, typename IDT &gt; </td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_type_info.html">TypeInfo</a>&lt; ODT &gt;::basetype&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10">saturate_cast</a> (IDT v)</td></tr>
 <tr class="memdesc:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saturate a value (of any type) to the specified type.  <a href="#afaa228c1d0b2e3eef2622ca7e4ffec10">More...</a><br /></td></tr>
@@ -4602,6 +4611,87 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="image_8cpp_source.html#l00369">369</a> of file <a class="el" href="image_8cpp_source.html">image.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a371534ebd422c20d6905bc0013bca16b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a371534ebd422c20d6905bc0013bca16b">&#9670;&nbsp;</a></span>OpticalDistortion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::OpticalDistortion </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::array&lt; float, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>distort_limit</em> = <code>{&#160;-0.3f,&#160;0.3f&#160;}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::array&lt; float, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>shift_limit</em> = <code>{&#160;-0.1f,&#160;0.1f&#160;}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a>&#160;</td>
+          <td class="paramname"><em>interp</em> = <code><a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a>&#160;</td>
+          <td class="paramname"><em>border_type</em> = <code><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int &amp;&#160;</td>
+          <td class="paramname"><em>border_value</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>seed</em> = <code>std::default_random_engine::default_seed</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Barrel / pincushion distortion. Based on <a href="https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1114">https://github.com/albumentations-team/albumentations/blob/master/albumentations/augmentations/transforms.py#L1114</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">distort_limit</td><td>Range to randomly select the intensity of the distortion. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">shift_limit</td><td>Range of image shifting. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">interp</td><td>Interpolation type used. Default is <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_type</td><td>Flag used to specify the pixel extrapolation method. Default is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9" title="gfedcb|abcdefgh|gfedcba">BorderType::BORDER_REFLECT_101</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_value</td><td>Padding value if border_type is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">seed</td><td>Seed to use for this function's random number generator. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00497">497</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
 
 </div>
 </div>

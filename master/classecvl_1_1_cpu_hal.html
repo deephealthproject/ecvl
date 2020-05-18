@@ -191,6 +191,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ace651fdc48970d8c0e5c211a662364b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a493262c0ddb6b18d97d47386b736e722"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a493262c0ddb6b18d97d47386b736e722">ElasticTransform</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double alpha, double sigma, <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type, const int &amp;border_value, const unsigned seed) override</td></tr>
 <tr class="separator:a493262c0ddb6b18d97d47386b736e722"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8be0e6d090bef68f79af0da1dd086d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#aa8be0e6d090bef68f79af0da1dd086d5">OpticalDistortion</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::array&lt; float, 2 &gt; &amp;distort_limit, const std::array&lt; float, 2 &gt; &amp;shift_limit, <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type, const int &amp;border_value, const unsigned seed) override</td></tr>
+<tr class="separator:aa8be0e6d090bef68f79af0da1dd086d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79c25fad2d7043b4cd62a73b39703366"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a79c25fad2d7043b4cd62a73b39703366">Neg</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, bool saturate) override</td></tr>
 <tr class="separator:a79c25fad2d7043b4cd62a73b39703366"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ab333cefa66afbd3c50dfe2d5ccf35b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a4ab333cefa66afbd3c50dfe2d5ccf35b">Add</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src1, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src2, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, bool saturate) override</td></tr>
@@ -1966,66 +1968,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a6ff2493a1310764f07d18fdf2e44f8a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ff2493a1310764f07d18fdf2e44f8a7">&#9670;&nbsp;</a></span>Div() <span class="overload">[5/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Div </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a715cd054b1e6076ab0769a307890769b">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00016">16</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
 <a id="adc3c04bcf04c9aca1026452b90d4c38b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc3c04bcf04c9aca1026452b90d4c38b">&#9670;&nbsp;</a></span>Div() <span class="overload">[6/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adc3c04bcf04c9aca1026452b90d4c38b">&#9670;&nbsp;</a></span>Div() <span class="overload">[5/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2082,8 +2026,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afee3e6fb3677f78f2badd3c12c6386b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afee3e6fb3677f78f2badd3c12c6386b0">&#9670;&nbsp;</a></span>Div() <span class="overload">[7/17]</span></h2>
+<a id="a6ff2493a1310764f07d18fdf2e44f8a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ff2493a1310764f07d18fdf2e44f8a7">&#9670;&nbsp;</a></span>Div() <span class="overload">[6/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2100,7 +2044,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>src2</em>, </td>
         </tr>
         <tr>
@@ -2134,14 +2078,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a694f244cae59479edf6b33e32a0f83cc">ecvl::HardwareAbstractionLayer</a>.</p>
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a715cd054b1e6076ab0769a307890769b">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00016">16</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
 </div>
 </div>
 <a id="aaad503aa98532d3ca08f7921af6ef325"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaad503aa98532d3ca08f7921af6ef325">&#9670;&nbsp;</a></span>Div() <span class="overload">[8/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaad503aa98532d3ca08f7921af6ef325">&#9670;&nbsp;</a></span>Div() <span class="overload">[7/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2193,6 +2137,64 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a7019218250a7a0325ac6e089ede519a8">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00016">16</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
+<a id="afee3e6fb3677f78f2badd3c12c6386b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afee3e6fb3677f78f2badd3c12c6386b0">&#9670;&nbsp;</a></span>Div() <span class="overload">[8/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Div </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a694f244cae59479edf6b33e32a0f83cc">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00016">16</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
@@ -2314,66 +2316,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a66d6db6ce5ce0f3889cac6c9a7bf8072"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66d6db6ce5ce0f3889cac6c9a7bf8072">&#9670;&nbsp;</a></span>Div() <span class="overload">[11/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Div </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int64_t&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ae14fa3169353421388bc4860c7bce675">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00018">18</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
 <a id="a96bcbfedc050c6a1cccee2d1ab00904a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96bcbfedc050c6a1cccee2d1ab00904a">&#9670;&nbsp;</a></span>Div() <span class="overload">[12/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a96bcbfedc050c6a1cccee2d1ab00904a">&#9670;&nbsp;</a></span>Div() <span class="overload">[11/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2425,6 +2369,64 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#aceab7fc68f98ef5e23754c62e05790c4">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00018">18</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a66d6db6ce5ce0f3889cac6c9a7bf8072"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66d6db6ce5ce0f3889cac6c9a7bf8072">&#9670;&nbsp;</a></span>Div() <span class="overload">[12/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Div </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ae14fa3169353421388bc4860c7bce675">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00018">18</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
@@ -2792,7 +2794,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a499b0848ffb8434785a1115b6da4c51e">ecvl::HardwareAbstractionLayer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01561">1561</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01565">1565</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -3787,66 +3789,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aca3dc1a7ef2ca2119145baaad1abe02d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca3dc1a7ef2ca2119145baaad1abe02d">&#9670;&nbsp;</a></span>Mul() <span class="overload">[1/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Mul </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a9c002cd7f1a078912ad0c6aa2eacef16">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
 <a id="a9b9c3dbc412e8451fdaddc065adb99a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b9c3dbc412e8451fdaddc065adb99a3">&#9670;&nbsp;</a></span>Mul() <span class="overload">[2/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b9c3dbc412e8451fdaddc065adb99a3">&#9670;&nbsp;</a></span>Mul() <span class="overload">[1/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3898,6 +3842,64 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a351dfa803375314c0c0c139bbd4ee5f7">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a46720d275420caef6e09070145e48ad6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46720d275420caef6e09070145e48ad6">&#9670;&nbsp;</a></span>Mul() <span class="overload">[2/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Mul </td>
+          <td>(</td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a4123329e35783007a83d9c7d20e0fcb8">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
@@ -3961,8 +3963,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a46720d275420caef6e09070145e48ad6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46720d275420caef6e09070145e48ad6">&#9670;&nbsp;</a></span>Mul() <span class="overload">[4/17]</span></h2>
+<a id="aca3dc1a7ef2ca2119145baaad1abe02d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca3dc1a7ef2ca2119145baaad1abe02d">&#9670;&nbsp;</a></span>Mul() <span class="overload">[4/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3973,7 +3975,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void ecvl::CpuHal::Mul </td>
           <td>(</td>
-          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramtype">uint8_t&#160;</td>
           <td class="paramname"><em>src1</em>, </td>
         </tr>
         <tr>
@@ -4013,7 +4015,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a4123329e35783007a83d9c7d20e0fcb8">ecvl::HardwareAbstractionLayer</a>.</p>
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a9c002cd7f1a078912ad0c6aa2eacef16">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
@@ -4251,66 +4253,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a07bc839bb663330f5443a74ceea581d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07bc839bb663330f5443a74ceea581d2">&#9670;&nbsp;</a></span>Mul() <span class="overload">[9/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Mul </td>
-          <td>(</td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a35edff410a66f15bffbf66c32eb827ee">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00017">17</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
 <a id="aff20c8b57b38b6758dfbc2fe5759ea2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff20c8b57b38b6758dfbc2fe5759ea2f">&#9670;&nbsp;</a></span>Mul() <span class="overload">[10/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aff20c8b57b38b6758dfbc2fe5759ea2f">&#9670;&nbsp;</a></span>Mul() <span class="overload">[9/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4362,6 +4306,64 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a460b114b8b2b6d267a21a1ea89f8c02e">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00017">17</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a07bc839bb663330f5443a74ceea581d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07bc839bb663330f5443a74ceea581d2">&#9670;&nbsp;</a></span>Mul() <span class="overload">[10/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Mul </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a35edff410a66f15bffbf66c32eb827ee">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00017">17</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
@@ -4865,6 +4867,82 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="aa8be0e6d090bef68f79af0da1dd086d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8be0e6d090bef68f79af0da1dd086d5">&#9670;&nbsp;</a></span>OpticalDistortion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::OpticalDistortion </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::array&lt; float, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>distort_limit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::array&lt; float, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>shift_limit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a>&#160;</td>
+          <td class="paramname"><em>interp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a>&#160;</td>
+          <td class="paramname"><em>border_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int &amp;&#160;</td>
+          <td class="paramname"><em>border_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>seed</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a5ce3c95a85a42258bd0331e69c8b3270">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01624">1624</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a8a962810c0592d108c5b564d32353115"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a962810c0592d108c5b564d32353115">&#9670;&nbsp;</a></span>OtsuThreshold()</h2>
 
@@ -5324,8 +5402,124 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a3166ec0452503678335058bb6341b70d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3166ec0452503678335058bb6341b70d">&#9670;&nbsp;</a></span>Sub() <span class="overload">[1/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Sub </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a22c37546cb5c1d4cd469bb88296908d8">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aafd4503912d74be9d617c2f4e3ec5b42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafd4503912d74be9d617c2f4e3ec5b42">&#9670;&nbsp;</a></span>Sub() <span class="overload">[2/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Sub </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ac2865f8fb8046090cb36ad16d7b9c7f9">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a04fa5823e7413c269ee425035e4ab4b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04fa5823e7413c269ee425035e4ab4b9">&#9670;&nbsp;</a></span>Sub() <span class="overload">[1/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a04fa5823e7413c269ee425035e4ab4b9">&#9670;&nbsp;</a></span>Sub() <span class="overload">[3/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5383,7 +5577,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac1612043effe7b608a4d0eb54594d1c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1612043effe7b608a4d0eb54594d1c7">&#9670;&nbsp;</a></span>Sub() <span class="overload">[2/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1612043effe7b608a4d0eb54594d1c7">&#9670;&nbsp;</a></span>Sub() <span class="overload">[4/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5440,182 +5634,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aafd4503912d74be9d617c2f4e3ec5b42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafd4503912d74be9d617c2f4e3ec5b42">&#9670;&nbsp;</a></span>Sub() <span class="overload">[3/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Sub </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ac2865f8fb8046090cb36ad16d7b9c7f9">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a3166ec0452503678335058bb6341b70d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3166ec0452503678335058bb6341b70d">&#9670;&nbsp;</a></span>Sub() <span class="overload">[4/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Sub </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a22c37546cb5c1d4cd469bb88296908d8">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00015">15</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
-<a id="aab677977f44f50701802ff858f1a42a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab677977f44f50701802ff858f1a42a5">&#9670;&nbsp;</a></span>Sub() <span class="overload">[5/17]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ecvl::CpuHal::Sub </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>src1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>src2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
-          <td class="paramname"><em>dst_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>saturate</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a825d37d97a5753c7ee6244520a871e22">ecvl::HardwareAbstractionLayer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00016">16</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
-
-</div>
-</div>
 <a id="aa7bd733aff5cb9db775698976e3afa61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7bd733aff5cb9db775698976e3afa61">&#9670;&nbsp;</a></span>Sub() <span class="overload">[6/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7bd733aff5cb9db775698976e3afa61">&#9670;&nbsp;</a></span>Sub() <span class="overload">[5/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5673,7 +5693,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="aaf7e85efb7568c58f3951b6b1561a5a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf7e85efb7568c58f3951b6b1561a5a6">&#9670;&nbsp;</a></span>Sub() <span class="overload">[7/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf7e85efb7568c58f3951b6b1561a5a6">&#9670;&nbsp;</a></span>Sub() <span class="overload">[6/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5731,7 +5751,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a411554ddef11209cd89d91677eb5d6e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a411554ddef11209cd89d91677eb5d6e7">&#9670;&nbsp;</a></span>Sub() <span class="overload">[8/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a411554ddef11209cd89d91677eb5d6e7">&#9670;&nbsp;</a></span>Sub() <span class="overload">[7/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5788,8 +5808,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a15866077643517e64bf7522cd6879599"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a15866077643517e64bf7522cd6879599">&#9670;&nbsp;</a></span>Sub() <span class="overload">[9/17]</span></h2>
+<a id="aab677977f44f50701802ff858f1a42a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab677977f44f50701802ff858f1a42a5">&#9670;&nbsp;</a></span>Sub() <span class="overload">[8/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5800,13 +5820,13 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void ecvl::CpuHal::Sub </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>src1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
           <td class="paramname"><em>src2</em>, </td>
         </tr>
         <tr>
@@ -5840,14 +5860,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a69233ba6ee0d20baf9cba7fdd7af2241">ecvl::HardwareAbstractionLayer</a>.</p>
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a825d37d97a5753c7ee6244520a871e22">ecvl::HardwareAbstractionLayer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00017">17</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00016">16</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a3ce2f75dd52e4ecc62ce943674f93d8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ce2f75dd52e4ecc62ce943674f93d8b">&#9670;&nbsp;</a></span>Sub() <span class="overload">[10/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ce2f75dd52e4ecc62ce943674f93d8b">&#9670;&nbsp;</a></span>Sub() <span class="overload">[9/17]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -5899,6 +5919,64 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a64706977c508e30be0159192589555f4">ecvl::HardwareAbstractionLayer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00017">17</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a15866077643517e64bf7522cd6879599"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15866077643517e64bf7522cd6879599">&#9670;&nbsp;</a></span>Sub() <span class="overload">[10/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CpuHal::Sub </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>src2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>dst_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saturate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#a69233ba6ee0d20baf9cba7fdd7af2241">ecvl::HardwareAbstractionLayer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="cpu__hal__arithmetic_8cpp_source.html#l00017">17</a> of file <a class="el" href="cpu__hal__arithmetic_8cpp_source.html">cpu_hal_arithmetic.cpp</a>.</p>
 

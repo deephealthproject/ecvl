@@ -1,25 +1,6 @@
 var searchData=
 [
-  ['sample',['Sample',['../classecvl_1_1_sample.html',1,'ecvl']]],
-  ['sequentialaugmentationcontainer',['SequentialAugmentationContainer',['../classecvl_1_1_sequential_augmentation_container.html',1,'ecvl']]],
-  ['shader',['Shader',['../structecvl_1_1_shader.html',1,'ecvl']]],
-  ['shallowcpuhal',['ShallowCpuHal',['../classecvl_1_1_shallow_cpu_hal.html',1,'ecvl']]],
-  ['show3dapp',['Show3DApp',['../classecvl_1_1_show3_d_app.html',1,'ecvl']]],
-  ['showapp',['ShowApp',['../classecvl_1_1_show_app.html',1,'ecvl']]],
-  ['signedtable1d',['SignedTable1D',['../structecvl_1_1_signed_table1_d.html',1,'ecvl']]],
-  ['signedtable2d',['SignedTable2D',['../structecvl_1_1_signed_table2_d.html',1,'ecvl']]],
-  ['split',['Split',['../classecvl_1_1_split.html',1,'ecvl']]],
-  ['structaddii',['StructAddII',['../structecvl_1_1_struct_add_i_i.html',1,'ecvl']]],
-  ['structaddis',['StructAddIS',['../structecvl_1_1_struct_add_i_s.html',1,'ecvl']]],
-  ['structcopyimage',['StructCopyImage',['../structecvl_1_1_struct_copy_image.html',1,'ecvl']]],
-  ['structdivii',['StructDivII',['../structecvl_1_1_struct_div_i_i.html',1,'ecvl']]],
-  ['structdivis',['StructDivIS',['../structecvl_1_1_struct_div_i_s.html',1,'ecvl']]],
-  ['structdivsi',['StructDivSI',['../structecvl_1_1_struct_div_s_i.html',1,'ecvl']]],
-  ['structmulii',['StructMulII',['../structecvl_1_1_struct_mul_i_i.html',1,'ecvl']]],
-  ['structmulis',['StructMulIS',['../structecvl_1_1_struct_mul_i_s.html',1,'ecvl']]],
-  ['structnegii',['StructNegII',['../structecvl_1_1_struct_neg_i_i.html',1,'ecvl']]],
-  ['structrearrangeimage',['StructRearrangeImage',['../structecvl_1_1_struct_rearrange_image.html',1,'ecvl']]],
-  ['structsubii',['StructSubII',['../structecvl_1_1_struct_sub_i_i.html',1,'ecvl']]],
-  ['structsubis',['StructSubIS',['../structecvl_1_1_struct_sub_i_s.html',1,'ecvl']]],
-  ['structsubsi',['StructSubSI',['../structecvl_1_1_struct_sub_s_i.html',1,'ecvl']]]
+  ['param',['param',['../classecvl_1_1param.html',1,'ecvl']]],
+  ['param_5flist',['param_list',['../classecvl_1_1param__list.html',1,'ecvl']]],
+  ['promote_5fsuperior_5ftype',['promote_superior_type',['../structecvl_1_1promote__superior__type.html',1,'ecvl']]]
 ];

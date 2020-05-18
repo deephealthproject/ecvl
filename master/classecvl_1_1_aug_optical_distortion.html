@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECVL: ecvl::AugGaussianBlur Class Reference</title>
+<title>ECVL: ecvl::AugOpticalDistortion Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,39 +87,39 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespaceecvl.html">ecvl</a></li><li class="navelem"><a class="el" href="classecvl_1_1_aug_gaussian_blur.html">AugGaussianBlur</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceecvl.html">ecvl</a></li><li class="navelem"><a class="el" href="classecvl_1_1_aug_optical_distortion.html">AugOpticalDistortion</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classecvl_1_1_aug_gaussian_blur-members.html">List of all members</a>  </div>
+<a href="classecvl_1_1_aug_optical_distortion-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">ecvl::AugGaussianBlur Class Reference</div>  </div>
+<div class="title">ecvl::AugOpticalDistortion Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#ae723594306a62266207448cf9277687a" title="Blurs an Image using a Gaussian kernel.">ecvl::GaussianBlur</a>.  
- <a href="classecvl_1_1_aug_gaussian_blur.html#details">More...</a></p>
+<p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b" title="Barrel / pincushion distortion. Based on https://github.com/albumentations-team/albumentations/blob/m...">ecvl::OpticalDistortion</a>.  
+ <a href="classecvl_1_1_aug_optical_distortion.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="augmentations_8h_source.html">augmentations.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for ecvl::AugGaussianBlur:</div>
+Inheritance diagram for ecvl::AugOpticalDistortion:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classecvl_1_1_aug_gaussian_blur.png" usemap="#ecvl::AugGaussianBlur_map" alt=""/>
-  <map id="ecvl::AugGaussianBlur_map" name="ecvl::AugGaussianBlur_map">
-<area href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function." alt="ecvl::Augmentation" shape="rect" coords="0,0,140,24"/>
+  <img src="classecvl_1_1_aug_optical_distortion.png" usemap="#ecvl::AugOpticalDistortion_map" alt=""/>
+  <map id="ecvl::AugOpticalDistortion_map" name="ecvl::AugOpticalDistortion_map">
+<area href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function." alt="ecvl::Augmentation" shape="rect" coords="0,0,158,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:addca7da366923e5efd2c51444f314927"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_gaussian_blur.html#addca7da366923e5efd2c51444f314927">AugGaussianBlur</a> (const std::array&lt; double, 2 &gt; &amp;sigma)</td></tr>
-<tr class="memdesc:addca7da366923e5efd2c51444f314927"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_gaussian_blur.html" title="Augmentation wrapper for ecvl::GaussianBlur.">AugGaussianBlur</a> constructor.  <a href="#addca7da366923e5efd2c51444f314927">More...</a><br /></td></tr>
-<tr class="separator:addca7da366923e5efd2c51444f314927"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af32a68f55c0b1ba6d01f39678e5af2a6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_gaussian_blur.html#af32a68f55c0b1ba6d01f39678e5af2a6">AugGaussianBlur</a> (std::istream &amp;is)</td></tr>
-<tr class="separator:af32a68f55c0b1ba6d01f39678e5af2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41827cb383034220d1c8de470210358b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_optical_distortion.html#a41827cb383034220d1c8de470210358b">AugOpticalDistortion</a> (const std::array&lt; float, 2 &gt; &amp;distort_limit, const std::array&lt; float, 2 &gt; &amp;shift_limit, const <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> &amp;interp=<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>, const <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> &amp;border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a>, const int &amp;border_value=0)</td></tr>
+<tr class="memdesc:a41827cb383034220d1c8de470210358b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_optical_distortion.html" title="Augmentation wrapper for ecvl::OpticalDistortion.">AugOpticalDistortion</a> constructor.  <a href="#a41827cb383034220d1c8de470210358b">More...</a><br /></td></tr>
+<tr class="separator:a41827cb383034220d1c8de470210358b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f3d8d513b83cabc7d7facd03f06b4c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_optical_distortion.html#a9f3d8d513b83cabc7d7facd03f06b4c8">AugOpticalDistortion</a> (std::istream &amp;is)</td></tr>
+<tr class="separator:a9f3d8d513b83cabc7d7facd03f06b4c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classecvl_1_1_augmentation"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classecvl_1_1_augmentation')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classecvl_1_1_augmentation.html">ecvl::Augmentation</a></td></tr>
 <tr class="memitem:a3b6e1ed0d34f12c7a4869a5f3e27b79a inherit pub_methods_classecvl_1_1_augmentation"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_augmentation.html#a3b6e1ed0d34f12c7a4869a5f3e27b79a">Apply</a> (<a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;img, const <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;gt=<a class="el" href="classecvl_1_1_image.html">Image</a>())</td></tr>
 <tr class="memdesc:a3b6e1ed0d34f12c7a4869a5f3e27b79a inherit pub_methods_classecvl_1_1_augmentation"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate the random value for each parameter and call the specialized augmentation functions.  <a href="classecvl_1_1_augmentation.html#a3b6e1ed0d34f12c7a4869a5f3e27b79a">More...</a><br /></td></tr>
@@ -134,13 +134,13 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a82381f1fb8f33603caa594a61910fd5c inherit pub_attribs_classecvl_1_1_augmentation"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#ae723594306a62266207448cf9277687a" title="Blurs an Image using a Gaussian kernel.">ecvl::GaussianBlur</a>. </p>
-<p><a class="anchor" id="AugGaussianBlur"></a></p>
+<div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b" title="Barrel / pincushion distortion. Based on https://github.com/albumentations-team/albumentations/blob/m...">ecvl::OpticalDistortion</a>. </p>
+<p><a class="anchor" id="AugOpticalDistortion"></a></p>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00607">607</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01060">1060</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="addca7da366923e5efd2c51444f314927"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addca7da366923e5efd2c51444f314927">&#9670;&nbsp;</a></span>AugGaussianBlur() <span class="overload">[1/2]</span></h2>
+<a id="a41827cb383034220d1c8de470210358b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41827cb383034220d1c8de470210358b">&#9670;&nbsp;</a></span>AugOpticalDistortion() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -149,11 +149,39 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ecvl::AugGaussianBlur::AugGaussianBlur </td>
+          <td class="memname">ecvl::AugOpticalDistortion::AugOpticalDistortion </td>
           <td>(</td>
-          <td class="paramtype">const std::array&lt; double, 2 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>sigma</em></td><td>)</td>
+          <td class="paramtype">const std::array&lt; float, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>distort_limit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::array&lt; float, 2 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>shift_limit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> &amp;&#160;</td>
+          <td class="paramname"><em>interp</em> = <code><a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> &amp;&#160;</td>
+          <td class="paramname"><em>border_type</em> = <code><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int &amp;&#160;</td>
+          <td class="paramname"><em>border_value</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -163,20 +191,24 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="classecvl_1_1_aug_gaussian_blur.html" title="Augmentation wrapper for ecvl::GaussianBlur.">AugGaussianBlur</a> constructor. </p>
+<p><a class="el" href="classecvl_1_1_aug_optical_distortion.html" title="Augmentation wrapper for ecvl::OpticalDistortion.">AugOpticalDistortion</a> constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">sigma</td><td>Parameter which determines the range of sigma [min,max] to randomly select from. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">distort_limit</td><td>Parameter which determines the range of values [min,max] to randomly select the distortion steps. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">shift_limit</td><td>Parameter which determines the range of values [min,max] to randomly select the image shifting. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">interp</td><td>InterpolationType to be used. Default is <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_type</td><td>Flag used to specify the pixel extrapolation method. Default is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9" title="gfedcb|abcdefgh|gfedcba">BorderType::BORDER_REFLECT_101</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_value</td><td>Integer padding value if border_type is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a>. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00618">618</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01086">1086</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
-<a id="af32a68f55c0b1ba6d01f39678e5af2a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af32a68f55c0b1ba6d01f39678e5af2a6">&#9670;&nbsp;</a></span>AugGaussianBlur() <span class="overload">[2/2]</span></h2>
+<a id="a9f3d8d513b83cabc7d7facd03f06b4c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f3d8d513b83cabc7d7facd03f06b4c8">&#9670;&nbsp;</a></span>AugOpticalDistortion() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +217,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ecvl::AugGaussianBlur::AugGaussianBlur </td>
+          <td class="memname">ecvl::AugOpticalDistortion::AugOpticalDistortion </td>
           <td>(</td>
           <td class="paramtype">std::istream &amp;&#160;</td>
           <td class="paramname"><em>is</em></td><td>)</td>
@@ -199,7 +231,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00623">623</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01096">1096</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
