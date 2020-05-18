@@ -201,7 +201,7 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: OpenCV
 #--------------------------------------------------------------------------------------------------------
-set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc;photo" CACHE STRING "OpenCV required packages")
+set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc;photo;calib3d" CACHE STRING "OpenCV required packages")
 find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})

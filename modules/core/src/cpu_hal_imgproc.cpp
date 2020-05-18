@@ -15,6 +15,7 @@
 
 #include <random>
 #include <opencv2/photo.hpp>
+#include <opencv2/calib3d.hpp>
 
 #include "ecvl/core/imgproc.h"
 #include "ecvl/core/arithmetic.h"

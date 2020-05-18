@@ -24,7 +24,7 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
 ## Requirements
 - CMake 3.13 or later
 - C++ Compiler with C++17 support (e.g. gcc-8 or later, Visual Studio 2017 or later)
-- [OpenCV](https://opencv.org) 3.0 or later (modules required: `core`, `imgproc`, `imgcodecs`, `photo`)
+- [OpenCV](https://opencv.org) 3.0 or later (modules required: `core`, `imgproc`, `imgcodecs`, `photo`, `calib3d`)
 
 ### Optional
 - [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled
