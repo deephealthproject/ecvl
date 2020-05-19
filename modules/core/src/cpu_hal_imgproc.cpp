@@ -15,7 +15,10 @@
 
 #include <random>
 #include <opencv2/photo.hpp>
+
+#if OpenCV_VERSION_MAJOR >= 4
 #include <opencv2/calib3d.hpp>
+#endif // #if OpenCV_VERSION_MAJOR >= 4
 
 #include "ecvl/core/imgproc.h"
 #include "ecvl/core/arithmetic.h"
