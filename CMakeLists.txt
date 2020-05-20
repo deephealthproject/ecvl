@@ -1,6 +1,6 @@
 # ECVL - European Computer Vision Library
 # Version: 0.2.1
-# copyright (c) 2020, Universit� degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
@@ -201,8 +201,18 @@ endif()
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: OpenCV
 #--------------------------------------------------------------------------------------------------------
-set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc;photo" CACHE STRING "OpenCV required packages")
+set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc;photo" CACHE STRING "OpenCV required packages" FORCE)
 find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
+
+if(${OpenCV_FOUND})
+	# message(WARNING ${OpenCV_FOUND})
+	if(${OpenCV_VERSION} GREATER_EQUAL 4)
+		# message(WARNING ${OpenCV_VERSION})
+		set(OpenCV_REQUIRED_PACKAGES "core;imgcodecs;imgproc;photo;calib3d" CACHE STRING "OpenCV required packages" FORCE)
+		find_package(OpenCV REQUIRED ${OpenCV_REQUIRED_PACKAGES})
+	endif()
+endif()
+
 target_include_directories(ECVL_CORE PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(ECVL_CORE PUBLIC ${OpenCV_LIBS})
 message(STATUS "OpenCV version: ${OpenCV_VERSION}")

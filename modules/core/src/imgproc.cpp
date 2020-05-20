@@ -493,4 +493,11 @@ void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, 
 
     src.hal_->ElasticTransform(src, dst, alpha, sigma, interp, border_type, border_value, seed);
 }
+
+void OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->OpticalDistortion(src, dst, distort_limit, shift_limit, interp, border_type, border_value, seed);
+}
 } // namespace ecvl
