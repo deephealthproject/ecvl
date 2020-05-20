@@ -30,6 +30,23 @@ using namespace std::filesystem;
 using namespace std;
 namespace ecvl {
 
+bool OverlayMetaData::Query(const std::string& name, std::string& value) const {
+    if (name == "overlay") {
+
+        if (!overlay_.contiguous_) {
+            ECVL_ERROR_NOT_REACHABLE_CODE
+        }
+
+        value.resize(overlay_.datasize_);
+        memcpy(value.data(), overlay_.data_, overlay_.datasize_);
+
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 
 bool DicomRead(const std::string& filename, Image& dst) {
 
