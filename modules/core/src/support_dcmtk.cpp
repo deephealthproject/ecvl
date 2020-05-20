@@ -174,7 +174,9 @@ static vector<uint8_t> CompressOverlay(_RunIt first, _RunIt last, size_t size) {
     int pos = 0;
     for (auto it = first; it != last; ++it) {
         uint8_t x = *it;
-        out[i] |= x << pos;                             // only works if foreground value is 1
+        if (x != 0) {
+            out[i] |= 1u << pos;                             
+        }
         pos++;
         if (pos == 8) {
             pos = 0;
@@ -185,8 +187,8 @@ static vector<uint8_t> CompressOverlay(_RunIt first, _RunIt last, size_t size) {
 }
 
 static vector<uint8_t> CompressOverlay(const Image& src) {
-    if (src.channels_ != "xyc" || src.colortype_ != ColorType::GRAY) {
-        ECVL_ERROR_WRONG_PARAMS("src Image must have channels xyc and colortype GRAY")
+    if (src.channels_ != "xyc" || src.colortype_ != ColorType::GRAY || src.elemsize_ != 1) {
+        ECVL_ERROR_WRONG_PARAMS("src Image must have channels xyc, colortype GRAY and elemsize 1")
     }
     ConstView<DataType::uint8> v(src);
     return CompressOverlay(v.Begin(), v.End(), src.dims_[0] * src.dims_[1]);
