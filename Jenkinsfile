@@ -7,7 +7,7 @@ pipeline {
                     agent {
                         docker {
                             label 'docker'
-                            image 'aimagelab/ecvl'
+                            image 'aimagelab/ecvl:latest'
                         }
                     }
                     stages {
