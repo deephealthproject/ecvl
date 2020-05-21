@@ -202,11 +202,17 @@ bool DicomWrite(const std::string& filename, const Image& src) {
 
     DcmTag tag;
 
-    // These tags are probably useless
-    //char uid[100];
-    /*dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
-    dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
-    */
+    // Required tags
+    char uid[100];
+    dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
+    dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));  
+    dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
+    dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+    dataset->putAndInsertString(DCM_Modality, "RTIMAGE");
+    dataset->putAndInsertString(DCM_PatientID, "");
+    dataset->putAndInsertString(DCM_PatientName, "");
+    dataset->putAndInsertString(DCM_PatientBirthDate, "");
+    dataset->putAndInsertString(DCM_PatientSex, "");
 
     // Insert metadata tags (strings only) - not currently considered 
     //if (src.meta_) {
