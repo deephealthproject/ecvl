@@ -1,0 +1,40 @@
+dist: bionic
+language: cpp
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-8
+      - g++-8
+env:
+  global:
+    - PROC=2
+    - MAKEFLAGS="-j ${PROC}"
+    - DEPS_BUILD_DIR="${HOME}/deps"
+    - DEPS_INSTALL_DIR="${HOME}/install"
+    - BUILD_TYPE=Release
+    - OPENCV_VERSION="3.4.10"
+
+install:
+  - chmod ugo+x tools/travis/cmake.sh
+  - chmod ugo+x tools/travis/opencv.sh
+
+  - . ./tools/travis/cmake.sh
+  - . ./tools/travis/opencv.sh
+
+before_script:
+  # Set gcc-8 as default gcc
+  - export CC=gcc-8
+  - export CXX=g++-8
+
+  - mkdir build && cd build
+  - cmake ..
+
+script:
+  - cmake --build . --config ${BUILD_TYPE} --parallel ${PROC}
+  - bin/ECVL_TESTS
+
+cache:
+  directories:
+    - ${DEPS_INSTALL_DIR}/
