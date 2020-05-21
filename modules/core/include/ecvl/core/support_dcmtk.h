@@ -14,10 +14,26 @@
 #ifndef SUPPORT_DCMTK_H_
 #define SUPPORT_DCMTK_H_
 
-#include "ecvl/core/image.h"
 #include <filesystem>
 
+#include "ecvl/core/image.h"
+
+
 namespace ecvl {
+
+
+class OverlayMetaData : public MetaData
+{
+    ecvl::Image overlay_;
+
+public:
+
+    OverlayMetaData(const ecvl::Image& overlay) : overlay_(overlay) {}
+    OverlayMetaData(ecvl::Image&& overlay) = delete;    // always copy, so that memory is contiguous
+    virtual bool Query(const std::string& name, std::string& value) const override;
+
+};
+
 
 /** @brief Loads an image from a DICOM file.
 
