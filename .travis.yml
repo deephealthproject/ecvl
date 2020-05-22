@@ -1,12 +1,5 @@
-dist: bionic
+dist: bionic # Ubuntu 18.04
 language: cpp
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-8
-      - g++-8
 env:
   global:
     - PROC=2
@@ -15,7 +8,40 @@ env:
     - DEPS_INSTALL_DIR="${HOME}/install"
     - BUILD_TYPE=Release
     - OPENCV_VERSION="3.4.10"
+matrix:
+  # fast_finish: true
+  include:
+    # - os: linux
+      # addons:
+        # apt:
+          # sources:
+            # - ubuntu-toolchain-r-test
+          # packages:
+            # - g++-6
+      # env:
+        # - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
+before_install:
+    - eval "${MATRIX_EVAL}"
+    
 install:
   - chmod ugo+x tools/travis/cmake.sh
   - chmod ugo+x tools/travis/opencv.sh
@@ -24,10 +50,6 @@ install:
   - . ./tools/travis/opencv.sh
 
 before_script:
-  # Set gcc-8 as default gcc
-  - export CC=gcc-8
-  - export CXX=g++-8
-
   - mkdir build && cd build
   - cmake ..
 
