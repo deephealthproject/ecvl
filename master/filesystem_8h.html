@@ -92,45 +92,37 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">filesystem.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;string&gt;</code><br />
-<code>#include &lt;system_error&gt;</code><br />
+<div class="textblock"><code>#include &lt;experimental/filesystem&gt;</code><br />
 </div>
 <p><a href="filesystem_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfilesystem_1_1path.html">filesystem::path</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespacefilesystem"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html">filesystem</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a0ddf870f384e61dc7d5e4eebe5661f5e"><td class="memItemLeft" align="right" valign="top">path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a0ddf870f384e61dc7d5e4eebe5661f5e">filesystem::operator/</a> (const path &amp;lhs, const path &amp;rhs)</td></tr>
-<tr class="separator:a0ddf870f384e61dc7d5e4eebe5661f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e291e4379f5f063edd3a37fb623a536"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a9e291e4379f5f063edd3a37fb623a536">filesystem::exists</a> (const path &amp;p)</td></tr>
-<tr class="separator:a9e291e4379f5f063edd3a37fb623a536"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5afe12710146c602a4e2b4ba81fcdfe8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a5afe12710146c602a4e2b4ba81fcdfe8">filesystem::exists</a> (const path &amp;p, std::error_code &amp;ec)</td></tr>
-<tr class="separator:a5afe12710146c602a4e2b4ba81fcdfe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02544035cdec4e720ec4431d5a5e7af8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a02544035cdec4e720ec4431d5a5e7af8">filesystem::create_directories</a> (const path &amp;p)</td></tr>
-<tr class="separator:a02544035cdec4e720ec4431d5a5e7af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3341d7eef82ce8e93ae0d75e7f6395c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a3341d7eef82ce8e93ae0d75e7f6395c4">filesystem::create_directories</a> (const path &amp;p, std::error_code &amp;ec)</td></tr>
-<tr class="separator:a3341d7eef82ce8e93ae0d75e7f6395c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c036bcc7d47af04cc1369fabf16e9db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a2c036bcc7d47af04cc1369fabf16e9db">filesystem::copy</a> (const path &amp;from, const path &amp;to)</td></tr>
-<tr class="separator:a2c036bcc7d47af04cc1369fabf16e9db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a844ab86f9f90f11dd3a406d80e6294bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefilesystem.html#a844ab86f9f90f11dd3a406d80e6294bd">filesystem::copy</a> (const path &amp;from, const path &amp;to, std::error_code &amp;ec)</td></tr>
-<tr class="separator:a844ab86f9f90f11dd3a406d80e6294bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a792cd8b20352622f1e04c47c3349dfc7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filesystem_8h.html#a792cd8b20352622f1e04c47c3349dfc7">INCLUDE_STD_FILESYSTEM_EXPERIMENTAL</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a792cd8b20352622f1e04c47c3349dfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a792cd8b20352622f1e04c47c3349dfc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a792cd8b20352622f1e04c47c3349dfc7">&#9670;&nbsp;</a></span>INCLUDE_STD_FILESYSTEM_EXPERIMENTAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define INCLUDE_STD_FILESYSTEM_EXPERIMENTAL&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="filesystem_8h_source.html#l00030">30</a> of file <a class="el" href="filesystem_8h_source.html">filesystem.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

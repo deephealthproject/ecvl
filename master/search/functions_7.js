@@ -2,9 +2,9 @@ var searchData=
 [
   ['gammacontrast',['GammaContrast',['../classecvl_1_1_cpu_hal.html#a2487d7778f9de12c9b198dda3c9aa83b',1,'ecvl::CpuHal::GammaContrast()'],['../classecvl_1_1_hardware_abstraction_layer.html#a3655c9f4d7a790a82547e85a2e03a78f',1,'ecvl::HardwareAbstractionLayer::GammaContrast()'],['../namespaceecvl.html#ac8a3ad3fc46ff27075d4b671cc996b6c',1,'ecvl::GammaContrast()']]],
   ['gaussianblur',['GaussianBlur',['../classecvl_1_1_cpu_hal.html#afd50ff378233554fbbb27fdb542b5c80',1,'ecvl::CpuHal::GaussianBlur()'],['../classecvl_1_1_hardware_abstraction_layer.html#a529d49494d352e83db11defb9b0981ea',1,'ecvl::HardwareAbstractionLayer::GaussianBlur()'],['../namespaceecvl.html#ae723594306a62266207448cf9277687a',1,'ecvl::GaussianBlur(const Image &amp;src, Image &amp;dst, int sizeX, int sizeY, double sigmaX, double sigmaY=0)'],['../namespaceecvl.html#af5edd7721315dc3c3b050c3c65834ff8',1,'ecvl::GaussianBlur(const Image &amp;src, Image &amp;dst, double sigma)']]],
-  ['generateclassificationdataset',['GenerateClassificationDataset',['../classecvl_1_1_generate_classification_dataset.html#afa84333f6caf88b8cbb1aab122f2e8b3',1,'ecvl::GenerateClassificationDataset']]],
-  ['generatedataset',['GenerateDataset',['../classecvl_1_1_generate_dataset.html#ab1d63edf58a60d13c0aea331fbfa87cf',1,'ecvl::GenerateDataset']]],
-  ['generatesegmentationdataset',['GenerateSegmentationDataset',['../classecvl_1_1_generate_segmentation_dataset.html#a06c5034c3b6ac06f05a3ea968d908815',1,'ecvl::GenerateSegmentationDataset']]],
+  ['generateclassificationdataset',['GenerateClassificationDataset',['../classecvl_1_1_generate_classification_dataset.html#a37252e9d18a375dff80ce45c7b0033c8',1,'ecvl::GenerateClassificationDataset']]],
+  ['generatedataset',['GenerateDataset',['../classecvl_1_1_generate_dataset.html#aeba9a5551fb81c40dbb30abf7b6fc09f',1,'ecvl::GenerateDataset']]],
+  ['generatesegmentationdataset',['GenerateSegmentationDataset',['../classecvl_1_1_generate_segmentation_dataset.html#ade0d0404b5327cdeafd191232ae26e28',1,'ecvl::GenerateSegmentationDataset']]],
   ['generatevalue',['GenerateValue',['../classecvl_1_1_augmentation_param.html#a4e5edf6594822a33f8f376927eab02c7',1,'ecvl::AugmentationParam']]],
   ['get',['Get',['../classecvl_1_1param__list.html#a9d0f475c949b13e0df1080160c1e7c0c',1,'ecvl::param_list']]],
   ['getdataset',['GetDataset',['../classecvl_1_1_generate_dataset.html#a91fc4a9c068f1ae4b028b9e675b974dc',1,'ecvl::GenerateDataset']]],

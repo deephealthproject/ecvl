@@ -1,7 +1,7 @@
 var searchData=
 [
   ['label_5f',['label_',['../classecvl_1_1_sample.html#a076341d325d6a9bafd6331bf099b4067',1,'ecvl::Sample']]],
-  ['label_5fpath_5f',['label_path_',['../classecvl_1_1_sample.html#a5ecdb5f0ff2b4b977edd32ba5f460b46',1,'ecvl::Sample']]],
+  ['label_5fpath_5f',['label_path_',['../classecvl_1_1_sample.html#a4593522827ccb917b8619a07cdd8adad',1,'ecvl::Sample']]],
   ['labeling_5fbolelli_5f2019_5fforest_2einc',['labeling_bolelli_2019_forest.inc',['../labeling__bolelli__2019__forest_8inc.html',1,'']]],
   ['labeling_5fbolelli_5f2019_5fforest_5ffirstline_2einc',['labeling_bolelli_2019_forest_firstline.inc',['../labeling__bolelli__2019__forest__firstline_8inc.html',1,'']]],
   ['labeling_5fbolelli_5f2019_5fforest_5flastline_2einc',['labeling_bolelli_2019_forest_lastline.inc',['../labeling__bolelli__2019__forest__lastline_8inc.html',1,'']]],
@@ -14,6 +14,6 @@ var searchData=
   ['loadbatch',['LoadBatch',['../classecvl_1_1_d_l_dataset.html#a1604b3caf751cb0a60f289d752b1443b',1,'ecvl::DLDataset::LoadBatch(tensor &amp;images, tensor &amp;labels)'],['../classecvl_1_1_d_l_dataset.html#a9425e594bc706cdd12896bfa262d4f28',1,'ecvl::DLDataset::LoadBatch(tensor &amp;images)']]],
   ['loadimage',['LoadImage',['../classecvl_1_1_sample.html#a1fd9093c12999323dc4651ac859ff392',1,'ecvl::Sample']]],
   ['loadimagesandsplits',['LoadImagesAndSplits',['../classecvl_1_1_generate_dataset.html#a63d03b7397277aa85215b9d3cd436e92',1,'ecvl::GenerateDataset']]],
-  ['loadsplitimages',['LoadSplitImages',['../classecvl_1_1_generate_dataset.html#af31e1f62bb62d523c85809f3aaec50cf',1,'ecvl::GenerateDataset::LoadSplitImages()'],['../classecvl_1_1_generate_segmentation_dataset.html#a79b0baf505780f00e8453b310a3e7cd3',1,'ecvl::GenerateSegmentationDataset::LoadSplitImages()'],['../classecvl_1_1_generate_classification_dataset.html#aebd0235bd28eb02a05f96ccd9ebb0df5',1,'ecvl::GenerateClassificationDataset::LoadSplitImages()']]],
-  ['location_5f',['location_',['../classecvl_1_1_sample.html#a8c39006d4361e68768ed6d5f044bcc9b',1,'ecvl::Sample']]]
+  ['loadsplitimages',['LoadSplitImages',['../classecvl_1_1_generate_dataset.html#a25781b231ee26f6c0e3b150bd80d4d74',1,'ecvl::GenerateDataset::LoadSplitImages()'],['../classecvl_1_1_generate_segmentation_dataset.html#ae630053bed9e77071bbf05ed6b2bb726',1,'ecvl::GenerateSegmentationDataset::LoadSplitImages()'],['../classecvl_1_1_generate_classification_dataset.html#ac9ea95717be588e3a38f0a83d6636a83',1,'ecvl::GenerateClassificationDataset::LoadSplitImages()']]],
+  ['location_5f',['location_',['../classecvl_1_1_sample.html#a634815222397eba6500ed3055bf0ed4c',1,'ecvl::Sample']]]
 ];
