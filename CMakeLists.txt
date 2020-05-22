@@ -190,7 +190,7 @@ endif()
 target_compile_features(ECVL_CORE PUBLIC cxx_std_17)
 
 # Enable link of stdc++fs library
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" AND NOT APPLE)
     target_link_libraries(ECVL_CORE PUBLIC stdc++fs)
 endif()
 

@@ -4,7 +4,7 @@ if [ -d "${DEPS_INSTALL_DIR}/opencv" ]; then
     echo -e "OpenCV already installed"
 else
     mkdir -p ${DEPS_BUILD_DIR} && cd ${DEPS_BUILD_DIR}
-    wget -t 3 --no-check-certificate https://github.com/opencv/opencv/archive/$OPENCV_VERSION.tar.gz
+    wget --no-check-certificate https://github.com/opencv/opencv/archive/$OPENCV_VERSION.tar.gz
     tar xf $OPENCV_VERSION.tar.gz
     mv opencv-$OPENCV_VERSION opencv
     cd opencv
@@ -29,7 +29,7 @@ else
     cmake --build . --config $BUILD_TYPE --target install
 fi
 
-export OpenCV_DIR=${DEPS_INSTALL_DIR}/opencv
+export OpenCV_DIR="${DEPS_INSTALL_DIR}"/opencv
 
 # don't forget to switch back to the main build directory once you are done
 cd ${TRAVIS_BUILD_DIR}
