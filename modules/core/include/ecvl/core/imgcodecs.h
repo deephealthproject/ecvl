@@ -14,11 +14,11 @@
 #ifndef ECVL_IMGCODECS_H_
 #define ECVL_IMGCODECS_H_
 
-#include <filesystem>
+#include "ecvl/core/filesystem.h"
 #include <string>
 
-#include "image.h"
 
+#include "image.h"
 namespace ecvl {
 /** @brief Enum class representing the ECVL ImRead flags.
 
@@ -45,7 +45,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImRead(const std::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
+bool ImRead(const fs::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
 
 /** @brief Loads a multi-page image from a file.
 
@@ -57,7 +57,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImReadMulti(const std::filesystem::path& filename, Image& dst);
+bool ImReadMulti(const fs::path& filename, Image& dst);
 
 /** @brief Saves an image into a specified file.
 
@@ -72,7 +72,7 @@ filename extension. The following sample shows how to create a BGR image and sav
 
 @return true if the image is correctly written, false otherwise.
 */
-bool ImWrite(const std::filesystem::path& filename, const Image& src);
+bool ImWrite(const fs::path& filename, const Image& src);
 
 /** @example example_imgcodecs.cpp
  Imgcodecs example.

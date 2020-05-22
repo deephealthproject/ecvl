@@ -12,17 +12,18 @@
 */
 
 #include "ecvl/core.h"
+#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_parser.h"
 
-#include <filesystem>
 #include <iostream>
 
 using std::cout;
 using std::endl;
+using fs::path;
 
 int main()
 {
-    std::filesystem::path file = "../examples/data/mnist/mnist.yml";
+    path file = "../examples/data/mnist/mnist.yml";
     cout << "Reading Dataset from " << file << " file" << endl;
     ecvl::Dataset d(file);
 

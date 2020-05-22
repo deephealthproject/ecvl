@@ -22,6 +22,7 @@ target_sources(ECVL_CORE
     core/datatype_existing_tuples_unsigned.inc.h
     core/datatype_matrix.h
     core/datatype_tuples.inc.h
+    core/filesystem.h
     core/fpga_hal.h
     core/hal.h
     core/image.h

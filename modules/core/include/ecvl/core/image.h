@@ -460,13 +460,16 @@ public:
     /** @brief Returns the number of channels. */
     int Channels() const
     {
-        if (size_t c = channels_.find('c'); c != std::string::npos) {
+        size_t c = channels_.find('c');
+        if (c != std::string::npos) {
             return dims_[c];
         }
-        if (size_t c = channels_.find('z'); c != std::string::npos) {
+        c = channels_.find('z');
+        if (c != std::string::npos) {
             return dims_[c];
         }
-        if (size_t c = channels_.find('o'); c != std::string::npos) {
+        c = channels_.find('o');
+        if (c != std::string::npos) {
             return dims_[c];
         }
         return 0;
@@ -475,7 +478,8 @@ public:
     /** @brief Returns the width of Image. */
     int Width() const
     {
-        if (size_t x = channels_.find('x'); x != std::string::npos) {
+        size_t x = channels_.find('x');
+        if (x != std::string::npos) {
             return dims_[x];
         }
         return 0;
@@ -484,7 +488,8 @@ public:
     /** @brief Returns the height of Image. */
     int Height() const
     {
-        if (size_t y = channels_.find('y'); y != std::string::npos) {
+        size_t y = channels_.find('y');
+        if (y != std::string::npos) {
             return dims_[y];
         }
         return 0;
