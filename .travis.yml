@@ -131,10 +131,12 @@ before_install:
 install:
   - chmod ugo+x tools/travis/cmake.sh
   - chmod ugo+x tools/travis/opencv.sh
+  - chmod ugo+x tools/travis/eddl.sh
 
   - source tools/travis/cmake.sh
   - cmake --version
   - source tools/travis/opencv.sh
+  - source tools/travis/eddl.sh
 
 before_script:
   - mkdir build && cd build
