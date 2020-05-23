@@ -11,6 +11,7 @@
 * All rights reserved.
 */
 
+#include "ecvl/core/filesystem.h"
 #include "ecvl/core/support_openslide.h"
 
 #include <iostream>
@@ -18,7 +19,7 @@
 
 #include "ecvl/core/standard_errors.h"
 
-using namespace std::filesystem;
+using namespace fs;
 using namespace std;
 
 namespace ecvl

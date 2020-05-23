@@ -11,16 +11,16 @@
 * All rights reserved.
 */
 
-#include <filesystem>
 #include <iostream>
 #include "ecvl/core.h"
+#include "ecvl/core/filesystem.h"
 
 using namespace ecvl;
 using namespace std;
 
 int main()
 {
-    filesystem::path filename("../examples/data/hamamatsu/test3-DAPI 2 (387).ndpi");
+    fs::path filename("../examples/data/hamamatsu/test3-DAPI 2 (387).ndpi");
     Image img;
     vector<array<int, 2>> levels;
 
