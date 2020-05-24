@@ -15,8 +15,8 @@
 
 #include <iostream>
 
-using namespace std;
 using namespace ecvl;
+using namespace std;
 
 int main()
 {

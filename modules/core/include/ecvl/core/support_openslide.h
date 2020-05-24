@@ -14,10 +14,11 @@
 #ifndef SUPPORT_OPENSLIDE_H_
 #define SUPPORT_OPENSLIDE_H_
 
+#include "ecvl/core/filesystem.h"
 #include "ecvl/core/image.h"
-#include <filesystem>
 
-namespace ecvl {
+namespace ecvl
+{
 /** @brief Loads a region of a whole-slide image file.
 
 Loads a region from the specified whole-slide image file. Supported formats are those supported by OpenSlide library.
@@ -34,7 +35,7 @@ If the region cannot be read for any reason, the function creates an empty Image
 
 @return true if the image is correctly read, false otherwise.
 */
-extern bool OpenSlideRead(const std::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
+extern bool OpenSlideRead(const ecvl::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
 
 /** @brief Get width and height for each level of a whole-slide image.
 
@@ -44,7 +45,7 @@ extern bool OpenSlideRead(const std::filesystem::path& filename, Image& dst, con
 
 @return true if the image is correctly read, false otherwise.
 */
-extern bool OpenSlideGetLevels(const std::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
+extern bool OpenSlideGetLevels(const ecvl::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
 
 /** @example example_openslide.cpp
  Openslide support example.

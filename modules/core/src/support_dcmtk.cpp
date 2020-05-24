@@ -26,13 +26,14 @@
 
 #include <ecvl/core/standard_errors.h>
 
-using namespace std::filesystem;
+using namespace ecvl::filesystem;
 using namespace std;
-namespace ecvl {
 
-bool OverlayMetaData::Query(const std::string& name, std::string& value) const {
+namespace ecvl
+{
+bool OverlayMetaData::Query(const std::string& name, std::string& value) const
+{
     if (name == "overlay") {
-
         if (!overlay_.contiguous_) {
             ECVL_ERROR_NOT_REACHABLE_CODE
         }
@@ -47,9 +48,8 @@ bool OverlayMetaData::Query(const std::string& name, std::string& value) const {
     }
 }
 
-
-bool DicomRead(const std::string& filename, Image& dst) {
-
+bool DicomRead(const std::string& filename, Image& dst)
+{
     bool return_value = true;
 
     DJDecoderRegistration::registerCodecs();
@@ -60,7 +60,6 @@ bool DicomRead(const std::string& filename, Image& dst) {
     }
     else {
         if (image->getStatus() == EIS_Normal) {
-
             // Read raw data
             const DiPixel* dipixel = image->getInterData();
             const void* dipixel_data = dipixel->getData();
@@ -91,7 +90,7 @@ bool DicomRead(const std::string& filename, Image& dst) {
             dst.Create({ x, y, planes }, dst_datatype, "xyc", color_type);
             memcpy(dst.data_, dipixel_data, x * y * planes * DataTypeSize(dst_datatype));
 
-            // Read metadata, only of string type - not currently considered 
+            // Read metadata, only of string type - not currently considered
             //DcmFileFormat fileformat;
             //OFCondition status = fileformat.loadFile(filename.c_str());
             //if (status.good())
@@ -108,7 +107,6 @@ bool DicomRead(const std::string& filename, Image& dst) {
             //    string name, value;
 
             //    while (true) {
-
             //        object = dataset->nextInContainer(object);
             //        if (object == nullptr)
             //            break;
@@ -128,7 +126,7 @@ bool DicomRead(const std::string& filename, Image& dst) {
             //    dst.meta_ = metadata;
             //}
 
-            // Read possible overlays - not currently considered 
+            // Read possible overlays - not currently considered
             //unsigned int overlay_count = image->getOverlayCount();
             //vector<Image> overlay_data;
 
@@ -141,7 +139,6 @@ bool DicomRead(const std::string& filename, Image& dst) {
             //    overlay_data.emplace_back(dims, DataType::uint8, "xyc", ColorType::GRAY);
             //    memcpy(overlay_data.back().data_, overlay_pixels, width * height);
             //}
-
         }
         else {
             std::cerr << "Error: cannot load DICOM image (" << DicomImage::getString(image->getStatus()) << ")" << std::endl;
@@ -159,23 +156,21 @@ bool DicomRead(const std::string& filename, Image& dst) {
     return return_value;
 }
 
-bool DicomRead(const path& filename, Image& dst) {
+bool DicomRead(const path& filename, Image& dst)
+{
     return DicomRead(filename.string(), dst);
 }
 
-
-
-
 template <class _RunIt>
-static vector<uint8_t> CompressOverlay(_RunIt first, _RunIt last, size_t size) {
-
+static vector<uint8_t> CompressOverlay(_RunIt first, _RunIt last, size_t size)
+{
     vector<uint8_t> out((size + 7) / 8, uint8_t(0));
     int i = 0;
     int pos = 0;
     for (auto it = first; it != last; ++it) {
         uint8_t x = *it;
         if (x != 0) {
-            out[i] |= 1u << pos;                             
+            out[i] |= 1u << pos;
         }
         pos++;
         if (pos == 8) {
@@ -186,7 +181,8 @@ static vector<uint8_t> CompressOverlay(_RunIt first, _RunIt last, size_t size) {
     return out;
 }
 
-static vector<uint8_t> CompressOverlay(const Image& src) {
+static vector<uint8_t> CompressOverlay(const Image& src)
+{
     if (src.channels_ != "xyc" || src.colortype_ != ColorType::GRAY || src.elemsize_ != 1) {
         ECVL_ERROR_WRONG_PARAMS("src Image must have channels xyc, colortype GRAY and elemsize 1")
     }
@@ -194,9 +190,8 @@ static vector<uint8_t> CompressOverlay(const Image& src) {
     return CompressOverlay(v.Begin(), v.End(), src.dims_[0] * src.dims_[1]);
 }
 
-
-bool DicomWrite(const std::string& filename, const Image& src) {
-
+bool DicomWrite(const std::string& filename, const Image& src)
+{
     DcmFileFormat fileformat;
     DcmDataset* dataset = fileformat.getDataset();
 
@@ -205,7 +200,7 @@ bool DicomWrite(const std::string& filename, const Image& src) {
     // Required tags
     char uid[100];
     dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
-    dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));  
+    dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
     dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
     dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
     dataset->putAndInsertString(DCM_Modality, "RTIMAGE");
@@ -214,7 +209,7 @@ bool DicomWrite(const std::string& filename, const Image& src) {
     dataset->putAndInsertString(DCM_PatientBirthDate, "");
     dataset->putAndInsertString(DCM_PatientSex, "");
 
-    // Insert metadata tags (strings only) - not currently considered 
+    // Insert metadata tags (strings only) - not currently considered
     //if (src.meta_) {
     //    DicomMetaData* metadata = dynamic_cast<DicomMetaData*>(src.meta_);
     //    for (const auto& x : metadata->tags) {
@@ -325,7 +320,6 @@ bool DicomWrite(const std::string& filename, const Image& src) {
     string overlay_str;
     if (src.meta_ != nullptr) {
         if (src.meta_->Query("overlay", overlay_str)) {
-
             DcmTagKey tag_key(0x6000, 0x0010);
             dataset->putAndInsertUint16(tag_key, src.dims_[1]);         // overlay image must be "xyc"
 
@@ -348,7 +342,6 @@ bool DicomWrite(const std::string& filename, const Image& src) {
             auto compressed_overlay = CompressOverlay(overlay_str.begin(), overlay_str.end(), overlay_str.length());
             tag_key.setElement(0x3000);
             dataset->putAndInsertUint8Array(tag_key, compressed_overlay.data(), static_cast<const unsigned long>(compressed_overlay.size()));
-
         }
     }
 
@@ -363,7 +356,6 @@ bool DicomWrite(const std::string& filename, const Image& src) {
     //overlay_data.back().data_[462 * 201 + 0] = 1;
     //int count = 0;
     //for (const auto& overlay : overlay_data) {
-
     //    DcmTagKey tag_key(0x6000 + count, 0x0010);
     //    dataset->putAndInsertUint16(tag_key, overlay.dims_[1]);         // overlay image must be "xyc"
 
@@ -394,11 +386,10 @@ bool DicomWrite(const std::string& filename, const Image& src) {
         return false;
 
     return true;
-
 }
 
-bool DicomWrite(const path& filename, const Image& src) {
+bool DicomWrite(const path& filename, const Image& src)
+{
     return DicomWrite(filename.string(), src);
 }
-
 } // namespace ecvl

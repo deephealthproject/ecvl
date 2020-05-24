@@ -14,11 +14,11 @@
 #ifndef ECVL_SUPPORT_NIFTI_H_
 #define ECVL_SUPPORT_NIFTI_H_
 
-#include "filesystem.h"
-#include "image.h"
+#include "ecvl/core/filesystem.h"
+#include "ecvl/core/image.h"
 
-namespace ecvl {
-
+namespace ecvl
+{
 /** @brief Loads a nifti image from a file.
 
 The function NiftiRead loads an image from the specified nifti file. If the image cannot
@@ -31,7 +31,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool NiftiRead(const fs::path& filename, Image& dst);
+bool NiftiRead(const ecvl::filesystem::path& filename, Image& dst);
 
 /** @brief Saves an image into a specified nifti file.
 
@@ -44,7 +44,7 @@ The function NiftiWrite saves the input image into a specified file, with the NI
 
 @return true if the image is correctly written, false otherwise.
 */
-bool NiftiWrite(const fs::path& filename, const Image& src);
-} // namespace ecvl 
+bool NiftiWrite(const ecvl::filesystem::path& filename, const Image& src);
+} // namespace ecvl
 
 #endif // ECVL_SUPPORT_NIFTI_H_

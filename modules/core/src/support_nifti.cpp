@@ -19,8 +19,8 @@
 #include "ecvl/core/filesystem.h"
 #include "ecvl/core/standard_errors.h"
 
+using namespace ecvl::filesystem;
 using namespace std;
-using namespace fs;
 
 namespace ecvl
 {

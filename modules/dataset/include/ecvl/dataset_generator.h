@@ -26,7 +26,7 @@ namespace ecvl
 class GenerateDataset
 {
 public:
-    const fs::path dataset_root_directory_;  /**< @brief path containing the root directory of the dataset */
+    const filesystem::path dataset_root_directory_;  /**< @brief path containing the root directory of the dataset */
     std::vector<std::string> splits_;        /**< @brief vector containing the splits found in the dataset directory, if present */
     std::vector<int> num_samples_;           /**< @brief vector containing the number of samples for each split*/
     ecvl::Dataset d_;                        /**< @brief Dataset object to fill */
@@ -35,10 +35,10 @@ public:
 
     @param[in] dataset_root_directory path containing the root directory of the dataset.
     */
-    GenerateDataset(const fs::path& dataset_root_directory) :
+    GenerateDataset(const filesystem::path& dataset_root_directory) :
         dataset_root_directory_(dataset_root_directory)
     {
-        for (auto& p : fs::directory_iterator(dataset_root_directory_)) {
+        for (auto& p : filesystem::directory_iterator(dataset_root_directory_)) {
             std::string tmp = p.path().stem().string();
 
             // Check if split folders exist
@@ -71,7 +71,7 @@ public:
     @param[in] split directory name of the split that we are considering.
     @return The number of samples of the split.
     */
-    virtual int LoadSplitImages(const fs::path& split) = 0;
+    virtual int LoadSplitImages(const filesystem::path& split) = 0;
 };
 
 /** @brief Generate an ecvl::Dataset from a directory tree for a segmentation task.
@@ -88,8 +88,8 @@ For more detailed information about the supported directory structure check http
 class GenerateSegmentationDataset : public GenerateDataset
 {
 public:
-    fs::path suffix_;  /**< @brief path containing the suffix or extension of ground truth images */
-    fs::path gt_name_; /**< @brief path containing the ground truth name for images that share the same ground truth */
+    filesystem::path suffix_;  /**< @brief path containing the suffix or extension of ground truth images */
+    filesystem::path gt_name_; /**< @brief path containing the ground truth name for images that share the same ground truth */
 
     /** @brief GenerateSegmentationDataset constructor
 
@@ -98,7 +98,7 @@ public:
     @param[in] gt_name name of the ground truth for images that share the same ground truth.
                        All images in the split (if available) which don't have their own ground truth will use this one.
     */
-    GenerateSegmentationDataset(const fs::path& dataset_root_directory, fs::path suffix = "", fs::path gt_name = "") :
+    GenerateSegmentationDataset(const filesystem::path& dataset_root_directory, filesystem::path suffix = "", filesystem::path gt_name = "") :
         GenerateDataset{ dataset_root_directory },
         suffix_{ suffix },
         gt_name_{ gt_name }
@@ -106,7 +106,7 @@ public:
         LoadImagesAndSplits();
     }
 
-    virtual int LoadSplitImages(const fs::path& split) override;
+    virtual int LoadSplitImages(const filesystem::path& split) override;
 };
 
 /** @brief Generate an ecvl::Dataset from a directory tree for a classification task.
@@ -128,9 +128,9 @@ public:
 
     @param[in] dataset_root_directory path containing the root directory of the dataset.
     */
-    GenerateClassificationDataset(const fs::path& dataset_root_directory) : GenerateDataset{ dataset_root_directory }
+    GenerateClassificationDataset(const filesystem::path& dataset_root_directory) : GenerateDataset{ dataset_root_directory }
     {
-        fs::path tmp;
+        filesystem::path tmp;
 
         if (splits_.empty()) {
             tmp = dataset_root_directory_;
@@ -140,8 +140,8 @@ public:
             tmp = dataset_root_directory_ / splits_[0];
         }
 
-        for (auto& p : fs::directory_iterator(tmp)) {
-            if (fs::is_directory(p.path())) {
+        for (auto& p : filesystem::directory_iterator(tmp)) {
+            if (filesystem::is_directory(p.path())) {
                 d_.classes_.push_back(p.path().stem().string());
             }
         }
@@ -149,7 +149,7 @@ public:
         LoadImagesAndSplits();
     }
 
-    virtual int LoadSplitImages(const fs::path& split) override;
+    virtual int LoadSplitImages(const filesystem::path& split) override;
 };
 } // namespace ecvl
 
