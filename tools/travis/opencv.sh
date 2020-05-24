@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 if [ -d "${DEPS_INSTALL_DIR}/opencv" ]; then
     echo -e "OpenCV already installed"

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 if [ -d "${DEPS_INSTALL_DIR}/cmake" ]; then
     echo -e "CMake already installed"

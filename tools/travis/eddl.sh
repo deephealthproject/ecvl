@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 if [[ "$TRAVIS_OS" == "Linux" ]]; then
     sudo apt-get install libeigen3-dev zlib1g-dev
