@@ -26,7 +26,7 @@
 
 #include <ecvl/core/standard_errors.h>
 
-using namespace fs;
+using namespace ecvl::filesystem;
 using namespace std;
 
 namespace ecvl

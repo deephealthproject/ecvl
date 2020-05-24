@@ -11,14 +11,15 @@
 * All rights reserved.
 */
 
-#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_parser.h"
 
 #include <fstream>
 #include <regex>
 
+#include "ecvl/core/filesystem.h"
+
+using namespace ecvl::filesystem;
 using namespace std;
-using namespace fs;
 using namespace YAML;
 
 namespace ecvl

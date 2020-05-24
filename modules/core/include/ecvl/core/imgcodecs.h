@@ -15,19 +15,21 @@
 #define ECVL_IMGCODECS_H_
 
 #include "ecvl/core/filesystem.h"
+#include "ecvl/core/image.h"
+
 #include <string>
 
-
-#include "image.h"
-namespace ecvl {
+namespace ecvl
+{
 /** @brief Enum class representing the ECVL ImRead flags.
 
     @anchor ImReadMode
  */
-enum class ImReadMode {
-    //IMREAD_UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
-    GRAYSCALE = 0,  //!< If set, always convert image to the single channel grayscale image (codec internal conversion).
-    COLOR = 1,  //!< If set, always convert image to the 3 channel BGR color image.
+enum class ImReadMode
+{
+//IMREAD_UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
+    GRAYSCALE = 0,       //!< If set, always convert image to the single channel grayscale image (codec internal conversion).
+    COLOR = 1,           //!< If set, always convert image to the 3 channel BGR color image.
     //IMREAD_ANYDEPTH = 2,  //!< If set, return 16-bit/32-bit image when the input has the corresponding depth, otherwise convert it to 8-bit.
     //IMREAD_ANYCOLOR = 4,  //!< If set, the image is read in any possible color format.
 };
@@ -45,7 +47,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImRead(const fs::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
+bool ImRead(const ecvl::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
 
 /** @brief Loads a multi-page image from a file.
 
@@ -57,7 +59,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImReadMulti(const fs::path& filename, Image& dst);
+bool ImReadMulti(const ecvl::filesystem::path& filename, Image& dst);
 
 /** @brief Saves an image into a specified file.
 
@@ -72,7 +74,7 @@ filename extension. The following sample shows how to create a BGR image and sav
 
 @return true if the image is correctly written, false otherwise.
 */
-bool ImWrite(const fs::path& filename, const Image& src);
+bool ImWrite(const ecvl::filesystem::path& filename, const Image& src);
 
 /** @example example_imgcodecs.cpp
  Imgcodecs example.

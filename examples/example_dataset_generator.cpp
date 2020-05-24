@@ -17,9 +17,9 @@
 
 #include <iostream>
 
-using namespace std;
 using namespace ecvl;
-using namespace fs;
+using namespace ecvl::filesystem;
+using namespace std;
 
 int main()
 {
@@ -30,7 +30,7 @@ int main()
     // Classification dataset
     GenerateClassificationDataset c(dateset_root_folder_classification);
     d_classification = c.GetDataset();
-    
+
     // Dump the Dataset on file
     d_classification.Dump(dateset_root_folder_classification / path(dateset_root_folder_classification.stem().string() + ".yml"));
 

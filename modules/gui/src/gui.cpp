@@ -15,59 +15,56 @@
 
 #include "ecvl/core/imgproc.h"
 
-namespace ecvl{
-
-   
-
-    /** @brief wxImagePanel creates a wxPanel to contain an Image.
-
-    */
-    class wxImagePanel : public wxPanel
-    {
-        wxImage wxImage_;
-        Image ecvlImage_;
-        wxBitmap resized_;
-        int w_, h_;
-        void PaintEvent(wxPaintEvent & evt);
-        void Render(wxDC& dc);
-
-    public:
-        wxImagePanel(wxPanel* parent) : wxPanel(parent) {}
-        wxImagePanel(wxFrame* parent) : wxPanel(parent) {}
-        wxImagePanel(wxNotebook* parent, wxWindowID id) : wxPanel(parent, id) {}
-        void SetImage(const wxImage& img);
-        wxImage GetWXImage();
-        Image GetECVLImage();
-        void OnSize(wxSizeEvent& event);
-        bool IsEmpty();
-
-        DECLARE_EVENT_TABLE()
-    };
-
-    /** @brief ShowApp is a custom wxApp which allows you to visualize an ECVL Image.
+namespace ecvl
+{
+/** @brief wxImagePanel creates a wxPanel to contain an Image.
 
 */
-    class ShowApp : public wxApp
-    {
-        Image img_;      /**< Image to be shown. */
+class wxImagePanel : public wxPanel
+{
+    wxImage wxImage_;
+    Image ecvlImage_;
+    wxBitmap resized_;
+    int w_, h_;
+    void PaintEvent(wxPaintEvent& evt);
+    void Render(wxDC& dc);
 
-    public:
-        /** @brief Initialization function. Starts the main loop of the application.
+public:
+    wxImagePanel(wxPanel* parent) : wxPanel(parent) {}
+    wxImagePanel(wxFrame* parent) : wxPanel(parent) {}
+    wxImagePanel(wxNotebook* parent, wxWindowID id) : wxPanel(parent, id) {}
+    void SetImage(const wxImage& img);
+    wxImage GetWXImage();
+    Image GetECVLImage();
+    void OnSize(wxSizeEvent& event);
+    bool IsEmpty();
 
-            The OnInit() function creates a wxFrame which has the width and the height of the Image that has to be shown.
-            It also creates the wxImagePanel which contains the frame and employs the conversion from Image to
-            wxImage.
-            It set the wxImage in the frame and starts the main loop of the ShowApp.
-        */
-        bool OnInit();
+    DECLARE_EVENT_TABLE()
+};
 
-        /** @brief Constructor.
+/** @brief ShowApp is a custom wxApp which allows you to visualize an ECVL Image.
 
-            The constructor creates a ShowApp initializing its Image with the given input Image.
-        */
-        ShowApp(const Image &img) : img_{ img } {}
+*/
+class ShowApp : public wxApp
+{
+    Image img_;      /**< Image to be shown. */
 
-    };
+public:
+    /** @brief Initialization function. Starts the main loop of the application.
+
+        The OnInit() function creates a wxFrame which has the width and the height of the Image that has to be shown.
+        It also creates the wxImagePanel which contains the frame and employs the conversion from Image to
+        wxImage.
+        It set the wxImage in the frame and starts the main loop of the ShowApp.
+    */
+    bool OnInit();
+
+    /** @brief Constructor.
+
+        The constructor creates a ShowApp initializing its Image with the given input Image.
+    */
+    ShowApp(const Image& img) : img_{ img } {}
+};
 
 BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
 EVT_PAINT(wxImagePanel::PaintEvent)
@@ -97,14 +94,14 @@ bool wxImagePanel::IsEmpty()
     else return true;
 }
 
-void wxImagePanel::PaintEvent(wxPaintEvent & evt)
+void wxImagePanel::PaintEvent(wxPaintEvent& evt)
 {
     wxPaintDC dc(this);
     Render(dc);
     wxTheApp->OnExit();
 }
 
-void wxImagePanel::Render(wxDC&  dc)
+void wxImagePanel::Render(wxDC& dc)
 {
     int neww, newh;
     dc.GetSize(&neww, &newh);
@@ -126,8 +123,8 @@ bool ShowApp::OnInit()
     wxImage imwx = WxFromImg(img_);
 
     wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-    wxFrame *frame = new wxFrame(NULL, wxID_ANY, wxT("Image"), wxPoint(10, 10), wxSize(imwx.GetWidth(), imwx.GetHeight()));
-    wxImagePanel *drawPane = new wxImagePanel(frame);
+    wxFrame* frame = new wxFrame(NULL, wxID_ANY, wxT("Image"), wxPoint(10, 10), wxSize(imwx.GetWidth(), imwx.GetHeight()));
+    wxImagePanel* drawPane = new wxImagePanel(frame);
 
     drawPane->SetImage(imwx);
     sizer->Add(drawPane, 1, wxEXPAND);
@@ -160,10 +157,9 @@ wxImage WxFromImg(Image& img)
     wxImage wx(img.dims_[1], img.dims_[2], (uint8_t*)malloc(img.datasize_), false);
     uint8_t* wx_data = wx.GetData();
 
-    if(img.contiguous_)
+    if (img.contiguous_)
         memcpy(wx_data, img.data_, img.datasize_);
-    else
-    {
+    else {
         auto i = img.Begin<uint8_t>(), e = img.End<uint8_t>();
         for (; i != e; ++i) {
             *wx_data = *i;
@@ -181,8 +177,7 @@ Image ImgFromWx(const wxImage& wx)
 
     if (img.contiguous_)
         memcpy(img.data_, wx_data, img.datasize_);
-    else
-    {
+    else {
         auto i = img.Begin<uint8_t>(), e = img.End<uint8_t>();
         for (; i != e; ++i) {
             *i = *wx_data;
@@ -192,5 +187,4 @@ Image ImgFromWx(const wxImage& wx)
 
     return img;
 }
-
 } // namespace ecvl

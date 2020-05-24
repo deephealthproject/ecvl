@@ -20,7 +20,7 @@ using namespace std;
 
 int main()
 {
-    fs::path filename("../examples/data/hamamatsu/test3-DAPI 2 (387).ndpi");
+    filesystem::path filename("../examples/data/hamamatsu/test3-DAPI 2 (387).ndpi");
     Image img;
     vector<array<int, 2>> levels;
 
