@@ -70,6 +70,8 @@ namespace ecvl
 {
 template<typename T>
 using optional = std::experimental::optional<T>;
+
+using bad_optional_access = std::experimental::bad_optional_access;
 }
 #   else
 #       include <optional>
@@ -77,6 +79,8 @@ namespace ecvl
 {
 template<typename T>
 using optional = std::optional<T>;
+
+using bad_optional_access = std::bad_optional_access;
 }
 #   endif
 
