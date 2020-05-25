@@ -2,7 +2,6 @@ language: cpp
 env:
   global:
     - PROC=2
-    - MAKEFLAGS="-j ${PROC}"
     - DEPS_BUILD_DIR="${HOME}/deps"
     - DEPS_INSTALL_DIR="${HOME}/install"
     - BUILD_TYPE=Release

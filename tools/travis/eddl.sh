@@ -5,10 +5,23 @@ if [[ "$TRAVIS_OS" == "Linux" ]]; then
 elif [[ "$TRAVIS_OS" == "Darwin" ]]; then
     brew install eigen zlib
 fi
+
 # Protobuf
-wget --no-check-certificate https://github.com/protocolbuffers/protobuf/releases/download/v3.12.1/protobuf-cpp-3.12.1.tar.gz
-tar -xzf protobuf-cpp-3.12.1.tar.gz
-cd protobuf-3.12.1 && ./configure --prefix=/usr && make && sudo make install
+if [ -d "${DEPS_INSTALL_DIR}/protobuf" ]; then
+    echo -e "Protobuf already built"
+else
+    mkdir -p ${DEPS_BUILD_DIR} && cd ${DEPS_BUILD_DIR}
+    wget --no-check-certificate https://github.com/protocolbuffers/protobuf/releases/download/v3.12.1/protobuf-cpp-3.12.1.tar.gz
+    tar -xzf protobuf-cpp-3.12.1.tar.gz
+    mv protobuf-3.12.1 protobuf
+    cd protobuf 
+    mkdir -p ${DEPS_INSTALL_DIR}/protobuf && cd ${DEPS_INSTALL_DIR}/protobuf
+    ${DEPS_BUILD_DIR}/protobuf/configure --prefix=/usr
+    make -j ${PROC}
+fi
+# Install Protobuf
+cd ${DEPS_INSTALL_DIR}/protobuf
+sudo make install
 sudo ldconfig
 
 if [ -d "${DEPS_INSTALL_DIR}/eddl-${EDDL_VERSION}" ]; then
