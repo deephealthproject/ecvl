@@ -16,7 +16,7 @@ else
     rm protobuf-cpp-3.12.1.tar.gz
     mv protobuf-3.12.1 protobuf
     cd protobuf
-    mkdir -p build && cd build
+    mkdir -p build_dir && cd build_dir
     cmake -G "Unix Makefiles" -Dprotobuf_BUILD_TESTS=OFF \
         -DCMAKE_INSTALL_PREFIX=/usr ../cmake
     cmake --build . --config $BUILD_TYPE --parallel $PROC
@@ -25,7 +25,7 @@ fi
 # Install Protobuf
 cd ${DEPS_INSTALL_DIR}/protobuf
 # Use cmake absolute path for sudo
-sudo ${CMAKE_BIN} --build build --config $BUILD_TYPE --target install
+sudo ${CMAKE_BIN} --build build_dir --config $BUILD_TYPE --target install
 sudo ldconfig
 
 if [ -d "${DEPS_INSTALL_DIR}/eddl-${EDDL_VERSION}" ]; then

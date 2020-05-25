@@ -39,7 +39,7 @@ bool OverlayMetaData::Query(const std::string& name, std::string& value) const
         }
 
         value.resize(overlay_.datasize_);
-        memcpy(value.data(), overlay_.data_, overlay_.datasize_);
+        memcpy(const_cast<char*>(value.data()), overlay_.data_, overlay_.datasize_);
 
         return true;
     }
