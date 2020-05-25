@@ -121,7 +121,7 @@ public:
 
         // Initialize n_channels_gt_ if exists
         if (!GetSplit().empty()) {
-            if (samples_[GetSplit()[0]].label_path_.has_value()) {
+            if (samples_[GetSplit()[0]].label_path_ != nullopt) {
                 n_channels_gt_ = samples_[GetSplit()[0]].LoadImage(ctype_gt_, true).Channels();
             }
         }

@@ -72,6 +72,7 @@ template<typename T>
 using optional = std::experimental::optional<T>;
 
 using bad_optional_access = std::experimental::bad_optional_access;
+static auto& nullopt = std::experimental::nullopt;
 }
 #   else
 #       include <optional>
@@ -81,6 +82,7 @@ template<typename T>
 using optional = std::optional<T>;
 
 using bad_optional_access = std::bad_optional_access;
+static auto& nullopt = std::nullopt;
 }
 #   endif
 
