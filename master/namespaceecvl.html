@@ -316,6 +316,11 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a3300301af431df44980395b301ac4190"><td class="memTemplParams" colspan="2">template&lt;ecvl::DataType DT&gt; </td></tr>
 <tr class="memitem:a3300301af431df44980395b301ac4190"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a3300301af431df44980395b301ac4190">TypeInfo_t</a> = typename <a class="el" href="structecvl_1_1_type_info.html">TypeInfo</a>&lt; DT &gt;::basetype</td></tr>
 <tr class="separator:a3300301af431df44980395b301ac4190"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a526e1a5708238efff7d1b578fb59d692"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a526e1a5708238efff7d1b578fb59d692"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a526e1a5708238efff7d1b578fb59d692">optional</a> = std::experimental::optional&lt; T &gt;</td></tr>
+<tr class="separator:a526e1a5708238efff7d1b578fb59d692"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe42fade722b44c382d8f0aaaf558169"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afe42fade722b44c382d8f0aaaf558169">bad_optional_access</a> = std::experimental::bad_optional_access</td></tr>
+<tr class="separator:afe42fade722b44c382d8f0aaaf558169"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b1d568c55db655cdf97d744af726563"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
 <tr class="memitem:a0b1d568c55db655cdf97d744af726563"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a0b1d568c55db655cdf97d744af726563">larger_arithmetic_type_t</a> = typename <a class="el" href="structecvl_1_1larger__arithmetic__type.html">larger_arithmetic_type</a>&lt; T, U &gt;::type</td></tr>
 <tr class="separator:a0b1d568c55db655cdf97d744af726563"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -500,15 +505,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a94b055a6b66b58b02a3b0f1b794c56e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a94b055a6b66b58b02a3b0f1b794c56e7">CopyImage</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> new_type, const std::string &amp;channels)</td></tr>
 <tr class="memdesc:a94b055a6b66b58b02a3b0f1b794c56e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as <a class="el" href="namespaceecvl.html#af9f141dad11461dfa9975dd176e8a913" title="Copies the source Image into the destination Image.">CopyImage()</a>, with the chance to specify the channels order of the output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a94b055a6b66b58b02a3b0f1b794c56e7">More...</a><br /></td></tr>
 <tr class="separator:a94b055a6b66b58b02a3b0f1b794c56e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af80a87ca9b18cd4f02c2a0f461b2cfc7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af80a87ca9b18cd4f02c2a0f461b2cfc7">ImRead</a> (const fs::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408">ImReadMode</a> flags=<a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a04bd834032febb3fda8c6936ee140949">ImReadMode::COLOR</a>)</td></tr>
-<tr class="memdesc:af80a87ca9b18cd4f02c2a0f461b2cfc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a file.  <a href="#af80a87ca9b18cd4f02c2a0f461b2cfc7">More...</a><br /></td></tr>
-<tr class="separator:af80a87ca9b18cd4f02c2a0f461b2cfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a9615f24ab8952da354d5a6134627f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a5a9615f24ab8952da354d5a6134627f3">ImReadMulti</a> (const fs::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
-<tr class="memdesc:a5a9615f24ab8952da354d5a6134627f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a multi-page image from a file.  <a href="#a5a9615f24ab8952da354d5a6134627f3">More...</a><br /></td></tr>
-<tr class="separator:a5a9615f24ab8952da354d5a6134627f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe818d40f92721176e5e3c2f8069b087"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#abe818d40f92721176e5e3c2f8069b087">ImWrite</a> (const fs::path &amp;filename, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
-<tr class="memdesc:abe818d40f92721176e5e3c2f8069b087"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an image into a specified file.  <a href="#abe818d40f92721176e5e3c2f8069b087">More...</a><br /></td></tr>
-<tr class="separator:abe818d40f92721176e5e3c2f8069b087"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60d66ac37fe87a275767d80b93aaa3f6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a60d66ac37fe87a275767d80b93aaa3f6">ImRead</a> (const ecvl::filesystem::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408">ImReadMode</a> flags=<a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a04bd834032febb3fda8c6936ee140949">ImReadMode::COLOR</a>)</td></tr>
+<tr class="memdesc:a60d66ac37fe87a275767d80b93aaa3f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a file.  <a href="#a60d66ac37fe87a275767d80b93aaa3f6">More...</a><br /></td></tr>
+<tr class="separator:a60d66ac37fe87a275767d80b93aaa3f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acba09d5e0c958dfee5093f60a89688ae"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#acba09d5e0c958dfee5093f60a89688ae">ImReadMulti</a> (const ecvl::filesystem::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
+<tr class="memdesc:acba09d5e0c958dfee5093f60a89688ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a multi-page image from a file.  <a href="#acba09d5e0c958dfee5093f60a89688ae">More...</a><br /></td></tr>
+<tr class="separator:acba09d5e0c958dfee5093f60a89688ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11e25b58a987c02f5050d494f222b381"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a11e25b58a987c02f5050d494f222b381">ImWrite</a> (const ecvl::filesystem::path &amp;filename, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
+<tr class="memdesc:a11e25b58a987c02f5050d494f222b381"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an image into a specified file.  <a href="#a11e25b58a987c02f5050d494f222b381">More...</a><br /></td></tr>
+<tr class="separator:a11e25b58a987c02f5050d494f222b381"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f9583965531c991ddc9e1375ba3be93"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a0f9583965531c991ddc9e1375ba3be93">GetOpenCVInterpolation</a> (<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp)</td></tr>
 <tr class="memdesc:a0f9583965531c991ddc9e1375ba3be93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given an InterpolationType, the GetOpenCVInterpolation function returns the associated OpenCV enum value.  <a href="#a0f9583965531c991ddc9e1375ba3be93">More...</a><br /></td></tr>
 <tr class="separator:a0f9583965531c991ddc9e1375ba3be93"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -615,18 +620,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a2079b9789abfbb37d389825269364c84"><td class="memTemplItemLeft" align="right" valign="top">ODT&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a2079b9789abfbb37d389825269364c84">saturate_cast</a> (const IDT &amp;v)</td></tr>
 <tr class="memdesc:a2079b9789abfbb37d389825269364c84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saturate a value (of any type) to the specified type.  <a href="#a2079b9789abfbb37d389825269364c84">More...</a><br /></td></tr>
 <tr class="separator:a2079b9789abfbb37d389825269364c84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b4591782cb1ad50d1075be1af971a05"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a8b4591782cb1ad50d1075be1af971a05">DicomRead</a> (const fs::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
-<tr class="memdesc:a8b4591782cb1ad50d1075be1af971a05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a DICOM file.  <a href="#a8b4591782cb1ad50d1075be1af971a05">More...</a><br /></td></tr>
-<tr class="separator:a8b4591782cb1ad50d1075be1af971a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ebfa4481907f011d9f6c06f56c29f92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a8ebfa4481907f011d9f6c06f56c29f92">DicomWrite</a> (const fs::path &amp;filename, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
-<tr class="memdesc:a8ebfa4481907f011d9f6c06f56c29f92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an image into a specified DICOM file.  <a href="#a8ebfa4481907f011d9f6c06f56c29f92">More...</a><br /></td></tr>
-<tr class="separator:a8ebfa4481907f011d9f6c06f56c29f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c26d3a9e573f974f46d946546c12b0b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6c26d3a9e573f974f46d946546c12b0b">NiftiRead</a> (const fs::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
-<tr class="memdesc:a6c26d3a9e573f974f46d946546c12b0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a nifti image from a file.  <a href="#a6c26d3a9e573f974f46d946546c12b0b">More...</a><br /></td></tr>
-<tr class="separator:a6c26d3a9e573f974f46d946546c12b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41bae561acd0d40cd1c16258b40ad7dd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a41bae561acd0d40cd1c16258b40ad7dd">NiftiWrite</a> (const fs::path &amp;filename, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
-<tr class="memdesc:a41bae561acd0d40cd1c16258b40ad7dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an image into a specified nifti file.  <a href="#a41bae561acd0d40cd1c16258b40ad7dd">More...</a><br /></td></tr>
-<tr class="separator:a41bae561acd0d40cd1c16258b40ad7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a24c2fd23ca0b2ff9932639670cb462"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a5a24c2fd23ca0b2ff9932639670cb462">DicomRead</a> (const ecvl::filesystem::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
+<tr class="memdesc:a5a24c2fd23ca0b2ff9932639670cb462"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a DICOM file.  <a href="#a5a24c2fd23ca0b2ff9932639670cb462">More...</a><br /></td></tr>
+<tr class="separator:a5a24c2fd23ca0b2ff9932639670cb462"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a320e10aa5a8503df04214d12f2870adf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a320e10aa5a8503df04214d12f2870adf">DicomWrite</a> (const ecvl::filesystem::path &amp;filename, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
+<tr class="memdesc:a320e10aa5a8503df04214d12f2870adf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an image into a specified DICOM file.  <a href="#a320e10aa5a8503df04214d12f2870adf">More...</a><br /></td></tr>
+<tr class="separator:a320e10aa5a8503df04214d12f2870adf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa97c8b6896da19f4ecd6a90b8d3fef0c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aa97c8b6896da19f4ecd6a90b8d3fef0c">NiftiRead</a> (const ecvl::filesystem::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst)</td></tr>
+<tr class="memdesc:aa97c8b6896da19f4ecd6a90b8d3fef0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a nifti image from a file.  <a href="#aa97c8b6896da19f4ecd6a90b8d3fef0c">More...</a><br /></td></tr>
+<tr class="separator:aa97c8b6896da19f4ecd6a90b8d3fef0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a591dcd099666b3326c48d8651c9ea2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a4a591dcd099666b3326c48d8651c9ea2">NiftiWrite</a> (const ecvl::filesystem::path &amp;filename, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
+<tr class="memdesc:a4a591dcd099666b3326c48d8651c9ea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves an image into a specified nifti file.  <a href="#a4a591dcd099666b3326c48d8651c9ea2">More...</a><br /></td></tr>
+<tr class="separator:a4a591dcd099666b3326c48d8651c9ea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8316acc95f4f4127a702c643eff92b51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">ecvl::Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a8316acc95f4f4127a702c643eff92b51">MatToImage</a> (const cv::Mat &amp;m)</td></tr>
 <tr class="memdesc:a8316acc95f4f4127a702c643eff92b51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a cv::Mat into an <a class="el" href="classecvl_1_1_image.html" title="Image class.">ecvl::Image</a>.  <a href="#a8316acc95f4f4127a702c643eff92b51">More...</a><br /></td></tr>
 <tr class="separator:a8316acc95f4f4127a702c643eff92b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -636,12 +641,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a1acfb7be8dd74703ac91f916339c464b"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a1acfb7be8dd74703ac91f916339c464b">ImageToMat</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;img)</td></tr>
 <tr class="memdesc:a1acfb7be8dd74703ac91f916339c464b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an ECVL <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> into OpenCV Mat.  <a href="#a1acfb7be8dd74703ac91f916339c464b">More...</a><br /></td></tr>
 <tr class="separator:a1acfb7be8dd74703ac91f916339c464b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af108a22909cfb908dd0531e59e295793"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af108a22909cfb908dd0531e59e295793">OpenSlideRead</a> (const fs::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const int level, const std::vector&lt; int &gt; &amp;dims)</td></tr>
-<tr class="memdesc:af108a22909cfb908dd0531e59e295793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a region of a whole-slide image file.  <a href="#af108a22909cfb908dd0531e59e295793">More...</a><br /></td></tr>
-<tr class="separator:af108a22909cfb908dd0531e59e295793"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7283717f9a81e1340c89ab07fce4d6a7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a7283717f9a81e1340c89ab07fce4d6a7">OpenSlideGetLevels</a> (const fs::path &amp;filename, std::vector&lt; std::array&lt; int, 2 &gt;&gt; &amp;levels)</td></tr>
-<tr class="memdesc:a7283717f9a81e1340c89ab07fce4d6a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get width and height for each level of a whole-slide image.  <a href="#a7283717f9a81e1340c89ab07fce4d6a7">More...</a><br /></td></tr>
-<tr class="separator:a7283717f9a81e1340c89ab07fce4d6a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63b1b4b994be5bda327aa849926f9ddc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a63b1b4b994be5bda327aa849926f9ddc">OpenSlideRead</a> (const ecvl::filesystem::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const int level, const std::vector&lt; int &gt; &amp;dims)</td></tr>
+<tr class="memdesc:a63b1b4b994be5bda327aa849926f9ddc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a region of a whole-slide image file.  <a href="#a63b1b4b994be5bda327aa849926f9ddc">More...</a><br /></td></tr>
+<tr class="separator:a63b1b4b994be5bda327aa849926f9ddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6736ca5f0334fe68bf80f3de78012d54"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6736ca5f0334fe68bf80f3de78012d54">OpenSlideGetLevels</a> (const ecvl::filesystem::path &amp;filename, std::vector&lt; std::array&lt; int, 2 &gt;&gt; &amp;levels)</td></tr>
+<tr class="memdesc:a6736ca5f0334fe68bf80f3de78012d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get width and height for each level of a whole-slide image.  <a href="#a6736ca5f0334fe68bf80f3de78012d54">More...</a><br /></td></tr>
+<tr class="separator:a6736ca5f0334fe68bf80f3de78012d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fe4f56be5197fb90c999611fcae2986"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
 <tr class="memitem:a9fe4f56be5197fb90c999611fcae2986"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#a7ee5ed6d32342065f2cd14d92698df95">promote_superior_type_t</a>&lt; T, U &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9fe4f56be5197fb90c999611fcae2986">PromoteAdd</a> (T lhs, U rhs)</td></tr>
 <tr class="separator:a9fe4f56be5197fb90c999611fcae2986"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -760,6 +765,22 @@ template&lt;typename T , typename U &gt; </div>
 
 </div>
 </div>
+<a id="afe42fade722b44c382d8f0aaaf558169"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe42fade722b44c382d8f0aaaf558169">&#9670;&nbsp;</a></span>bad_optional_access</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespaceecvl.html#afe42fade722b44c382d8f0aaaf558169">ecvl::bad_optional_access</a> = typedef std::experimental::bad_optional_access</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8h_source.html#l00074">74</a> of file <a class="el" href="optional_8h_source.html">optional.h</a>.</p>
+
+</div>
+</div>
 <a id="a0b1d568c55db655cdf97d744af726563"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0b1d568c55db655cdf97d744af726563">&#9670;&nbsp;</a></span>larger_arithmetic_type_t</h2>
 
@@ -775,6 +796,24 @@ template&lt;typename T , typename U &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="type__promotion_8h_source.html#l00032">32</a> of file <a class="el" href="type__promotion_8h_source.html">type_promotion.h</a>.</p>
+
+</div>
+</div>
+<a id="a526e1a5708238efff7d1b578fb59d692"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a526e1a5708238efff7d1b578fb59d692">&#9670;&nbsp;</a></span>optional</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespaceecvl.html#a526e1a5708238efff7d1b578fb59d692">ecvl::optional</a> = typedef std::experimental::optional&lt;T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="optional_8h_source.html#l00072">72</a> of file <a class="el" href="optional_8h_source.html">optional.h</a>.</p>
 
 </div>
 </div>
@@ -1063,7 +1102,7 @@ template&lt;ecvl::DataType DT&gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="imgcodecs_8h_source.html#l00027">27</a> of file <a class="el" href="imgcodecs_8h_source.html">imgcodecs.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgcodecs_8h_source.html#l00028">28</a> of file <a class="el" href="imgcodecs_8h_source.html">imgcodecs.h</a>.</p>
 
 </div>
 </div>
@@ -2008,8 +2047,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a8b4591782cb1ad50d1075be1af971a05"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b4591782cb1ad50d1075be1af971a05">&#9670;&nbsp;</a></span>DicomRead() <span class="overload">[1/3]</span></h2>
+<a id="a5a24c2fd23ca0b2ff9932639670cb462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a24c2fd23ca0b2ff9932639670cb462">&#9670;&nbsp;</a></span>DicomRead() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2017,7 +2056,7 @@ template&lt;typename ST1 &gt; </div>
         <tr>
           <td class="memname">bool ecvl::DicomRead </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -2109,8 +2148,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a8ebfa4481907f011d9f6c06f56c29f92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ebfa4481907f011d9f6c06f56c29f92">&#9670;&nbsp;</a></span>DicomWrite() <span class="overload">[1/3]</span></h2>
+<a id="a320e10aa5a8503df04214d12f2870adf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a320e10aa5a8503df04214d12f2870adf">&#9670;&nbsp;</a></span>DicomWrite() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2118,7 +2157,7 @@ template&lt;typename ST1 &gt; </div>
         <tr>
           <td class="memname">bool ecvl::DicomWrite </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -3195,7 +3234,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a8">example_ecvl_gui.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="gui_8cpp_source.html#l00177">177</a> of file <a class="el" href="gui_8cpp_source.html">gui.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gui_8cpp_source.html#l00173">173</a> of file <a class="el" href="gui_8cpp_source.html">gui.cpp</a>.</p>
 
 </div>
 </div>
@@ -3235,8 +3274,8 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 
 </div>
 </div>
-<a id="af80a87ca9b18cd4f02c2a0f461b2cfc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af80a87ca9b18cd4f02c2a0f461b2cfc7">&#9670;&nbsp;</a></span>ImRead() <span class="overload">[2/2]</span></h2>
+<a id="a60d66ac37fe87a275767d80b93aaa3f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60d66ac37fe87a275767d80b93aaa3f6">&#9670;&nbsp;</a></span>ImRead() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3244,7 +3283,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
         <tr>
           <td class="memname">bool ecvl::ImRead </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -3278,7 +3317,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly read, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a1">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a1">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a1">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a7">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a3">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a1">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a10">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a1">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a1">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a1">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a7">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a5">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a1">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a10">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -3313,8 +3352,8 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 
 </div>
 </div>
-<a id="a5a9615f24ab8952da354d5a6134627f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a9615f24ab8952da354d5a6134627f3">&#9670;&nbsp;</a></span>ImReadMulti() <span class="overload">[2/2]</span></h2>
+<a id="acba09d5e0c958dfee5093f60a89688ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acba09d5e0c958dfee5093f60a89688ae">&#9670;&nbsp;</a></span>ImReadMulti() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3322,7 +3361,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
         <tr>
           <td class="memname">bool ecvl::ImReadMulti </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -3379,7 +3418,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a3">example_ecvl_gui.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="gui_8cpp_source.html#l00143">143</a> of file <a class="el" href="gui_8cpp_source.html">gui.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gui_8cpp_source.html#l00140">140</a> of file <a class="el" href="gui_8cpp_source.html">gui.cpp</a>.</p>
 
 </div>
 </div>
@@ -3433,8 +3472,8 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 
 </div>
 </div>
-<a id="abe818d40f92721176e5e3c2f8069b087"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe818d40f92721176e5e3c2f8069b087">&#9670;&nbsp;</a></span>ImWrite() <span class="overload">[2/2]</span></h2>
+<a id="a11e25b58a987c02f5050d494f222b381"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11e25b58a987c02f5050d494f222b381">&#9670;&nbsp;</a></span>ImWrite() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3442,7 +3481,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
         <tr>
           <td class="memname">bool ecvl::ImWrite </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -3460,7 +3499,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 </div><div class="memdoc">
 
 <p>Saves an image into a specified file. </p>
-<p>The function ImWrite saves the input image into a specified file. The image format is chosen based on the filename extension. The following sample shows how to create a BGR image and save it to the PNG file "test.png": </p><div class="fragment"><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment">* ECVL - European Computer Vision Library</span></div><div class="line"><span class="comment">* Version: 0.2.1</span></div><div class="line"><span class="comment">* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab</span></div><div class="line"><span class="comment">* Authors:</span></div><div class="line"><span class="comment">*    Costantino Grana (costantino.grana@unimore.it)</span></div><div class="line"><span class="comment">*    Federico Bolelli (federico.bolelli@unimore.it)</span></div><div class="line"><span class="comment">*    Michele Cancilla (michele.cancilla@unimore.it)</span></div><div class="line"><span class="comment">*    Laura Canalini (laura.canalini@unimore.it)</span></div><div class="line"><span class="comment">*    Stefano Allegretti (stefano.allegretti@unimore.it)</span></div><div class="line"><span class="comment">* All rights reserved.</span></div><div class="line"><span class="comment">*/</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="core_8h.html">ecvl/core.h</a>&quot;</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span>std;</div><div class="line"><span class="keyword">using namespace </span><a class="code" href="namespaceecvl.html">ecvl</a>;</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// Create BGR Image</span></div><div class="line">    <a class="code" href="classecvl_1_1_image.html">Image</a> img({ 500, 500, 3 }, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a5f423e669d0a8f4ab7c4c3e6da27161a">DataType::uint8</a>, <span class="stringliteral">&quot;xyc&quot;</span>, <a class="code" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a2ad5640ebdec72fc79531d1778c6c2dc">ColorType::BGR</a>);</div><div class="line"></div><div class="line">    <span class="comment">// Populate Image with pseudo-random data</span></div><div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> r = 0; r &lt; img.dims_[1]; ++r) {</div><div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> c = 0; c &lt; img.dims_[0]; ++c) {</div><div class="line">            *img.<a class="code" href="classecvl_1_1_image.html#ac666790c7b5bcdb955c7d32938b1f0f9">Ptr</a>({ c, r, 0 }) = 255;</div><div class="line">            *img.Ptr({ c, r, 1 }) = (r / 2) % 255;</div><div class="line">            *img.Ptr({ c, r, 2 }) = (r / 2) % 255;</div><div class="line">        }</div><div class="line">    }</div><div class="line"></div><div class="line">    <a class="code" href="namespaceecvl.html#abe818d40f92721176e5e3c2f8069b087">ImWrite</a>(<span class="stringliteral">&quot;example_imgcodecs.png&quot;</span>, img);</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (!<a class="code" href="namespaceecvl.html#af80a87ca9b18cd4f02c2a0f461b2cfc7">ImRead</a>(<span class="stringliteral">&quot;example_imgcodecs.png&quot;</span>, img)) {</div><div class="line">        <span class="keywordflow">return</span> EXIT_FAILURE;</div><div class="line">    }</div><div class="line">    cout &lt;&lt; <span class="stringliteral">&quot;Successfully read a color image&quot;</span> &lt;&lt; endl;</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (!<a class="code" href="namespaceecvl.html#af80a87ca9b18cd4f02c2a0f461b2cfc7">ImRead</a>(<span class="stringliteral">&quot;example_imgcodecs.png&quot;</span>, img, <a class="code" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408abfc52a030be6cc5e47fe83a81e3175a0">ImReadMode::GRAYSCALE</a>)) {</div><div class="line">        <span class="keywordflow">return</span> EXIT_FAILURE;</div><div class="line">    }</div><div class="line">    cout &lt;&lt; <span class="stringliteral">&quot;Successfully read a grayscale image&quot;</span> &lt;&lt; endl;</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div><div class="line">}</div></div><!-- fragment --><p><a class="anchor" id="imwrite_path"></a> </p><dl class="params"><dt>Parameters</dt><dd>
+<p>The function ImWrite saves the input image into a specified file. The image format is chosen based on the filename extension. The following sample shows how to create a BGR image and save it to the PNG file "test.png": </p><div class="fragment"><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment">* ECVL - European Computer Vision Library</span></div><div class="line"><span class="comment">* Version: 0.2.1</span></div><div class="line"><span class="comment">* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab</span></div><div class="line"><span class="comment">* Authors:</span></div><div class="line"><span class="comment">*    Costantino Grana (costantino.grana@unimore.it)</span></div><div class="line"><span class="comment">*    Federico Bolelli (federico.bolelli@unimore.it)</span></div><div class="line"><span class="comment">*    Michele Cancilla (michele.cancilla@unimore.it)</span></div><div class="line"><span class="comment">*    Laura Canalini (laura.canalini@unimore.it)</span></div><div class="line"><span class="comment">*    Stefano Allegretti (stefano.allegretti@unimore.it)</span></div><div class="line"><span class="comment">* All rights reserved.</span></div><div class="line"><span class="comment">*/</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="core_8h.html">ecvl/core.h</a>&quot;</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">using namespace </span><a class="code" href="namespaceecvl.html">ecvl</a>;</div><div class="line"><span class="keyword">using namespace </span>std;</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// Create BGR Image</span></div><div class="line">    <a class="code" href="classecvl_1_1_image.html">Image</a> img({ 500, 500, 3 }, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a5f423e669d0a8f4ab7c4c3e6da27161a">DataType::uint8</a>, <span class="stringliteral">&quot;xyc&quot;</span>, <a class="code" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a2ad5640ebdec72fc79531d1778c6c2dc">ColorType::BGR</a>);</div><div class="line"></div><div class="line">    <span class="comment">// Populate Image with pseudo-random data</span></div><div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> r = 0; r &lt; img.dims_[1]; ++r) {</div><div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> c = 0; c &lt; img.dims_[0]; ++c) {</div><div class="line">            *img.<a class="code" href="classecvl_1_1_image.html#ac666790c7b5bcdb955c7d32938b1f0f9">Ptr</a>({ c, r, 0 }) = 255;</div><div class="line">            *img.Ptr({ c, r, 1 }) = (r / 2) % 255;</div><div class="line">            *img.Ptr({ c, r, 2 }) = (r / 2) % 255;</div><div class="line">        }</div><div class="line">    }</div><div class="line"></div><div class="line">    <a class="code" href="namespaceecvl.html#a11e25b58a987c02f5050d494f222b381">ImWrite</a>(<span class="stringliteral">&quot;example_imgcodecs.png&quot;</span>, img);</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (!<a class="code" href="namespaceecvl.html#a60d66ac37fe87a275767d80b93aaa3f6">ImRead</a>(<span class="stringliteral">&quot;example_imgcodecs.png&quot;</span>, img)) {</div><div class="line">        <span class="keywordflow">return</span> EXIT_FAILURE;</div><div class="line">    }</div><div class="line">    cout &lt;&lt; <span class="stringliteral">&quot;Successfully read a color image&quot;</span> &lt;&lt; endl;</div><div class="line"></div><div class="line">    <span class="keywordflow">if</span> (!<a class="code" href="namespaceecvl.html#a60d66ac37fe87a275767d80b93aaa3f6">ImRead</a>(<span class="stringliteral">&quot;example_imgcodecs.png&quot;</span>, img, <a class="code" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408abfc52a030be6cc5e47fe83a81e3175a0">ImReadMode::GRAYSCALE</a>)) {</div><div class="line">        <span class="keywordflow">return</span> EXIT_FAILURE;</div><div class="line">    }</div><div class="line">    cout &lt;&lt; <span class="stringliteral">&quot;Successfully read a grayscale image&quot;</span> &lt;&lt; endl;</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div><div class="line">}</div></div><!-- fragment --><p><a class="anchor" id="imwrite_path"></a> </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>A std::filesystem::path identifying the output file name. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> to be saved.</td></tr>
@@ -3468,7 +3507,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly written, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a4">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a2">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a10">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a2">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a4">example_imgproc.cpp</a>, and <a class="el" href="example_openslide_8cpp-example.html#a3">example_openslide.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a4">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a2">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a10">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a4">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a4">example_imgproc.cpp</a>, and <a class="el" href="example_openslide_8cpp-example.html#a3">example_openslide.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -4027,8 +4066,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a6c26d3a9e573f974f46d946546c12b0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c26d3a9e573f974f46d946546c12b0b">&#9670;&nbsp;</a></span>NiftiRead() <span class="overload">[1/2]</span></h2>
+<a id="aa97c8b6896da19f4ecd6a90b8d3fef0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa97c8b6896da19f4ecd6a90b8d3fef0c">&#9670;&nbsp;</a></span>NiftiRead() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4036,7 +4075,7 @@ template&lt;typename ST1 &gt; </div>
         <tr>
           <td class="memname">bool ecvl::NiftiRead </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -4141,8 +4180,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a41bae561acd0d40cd1c16258b40ad7dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41bae561acd0d40cd1c16258b40ad7dd">&#9670;&nbsp;</a></span>NiftiWrite() <span class="overload">[1/2]</span></h2>
+<a id="a4a591dcd099666b3326c48d8651c9ea2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a591dcd099666b3326c48d8651c9ea2">&#9670;&nbsp;</a></span>NiftiWrite() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4150,7 +4189,7 @@ template&lt;typename ST1 &gt; </div>
         <tr>
           <td class="memname">bool ecvl::NiftiWrite </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -4331,8 +4370,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a7283717f9a81e1340c89ab07fce4d6a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7283717f9a81e1340c89ab07fce4d6a7">&#9670;&nbsp;</a></span>OpenSlideGetLevels() <span class="overload">[2/2]</span></h2>
+<a id="a6736ca5f0334fe68bf80f3de78012d54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6736ca5f0334fe68bf80f3de78012d54">&#9670;&nbsp;</a></span>OpenSlideGetLevels() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4340,7 +4379,7 @@ template&lt;typename ST1 &gt; </div>
         <tr>
           <td class="memname">bool ecvl::OpenSlideGetLevels </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -4371,8 +4410,8 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="af108a22909cfb908dd0531e59e295793"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af108a22909cfb908dd0531e59e295793">&#9670;&nbsp;</a></span>OpenSlideRead() <span class="overload">[1/2]</span></h2>
+<a id="a63b1b4b994be5bda327aa849926f9ddc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63b1b4b994be5bda327aa849926f9ddc">&#9670;&nbsp;</a></span>OpenSlideRead() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4380,7 +4419,7 @@ template&lt;typename ST1 &gt; </div>
         <tr>
           <td class="memname">bool ecvl::OpenSlideRead </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -6187,7 +6226,7 @@ template&lt;typename T &gt; </div>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a7">example_ecvl_gui.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="gui_8cpp_source.html#l00152">152</a> of file <a class="el" href="gui_8cpp_source.html">gui.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gui_8cpp_source.html#l00149">149</a> of file <a class="el" href="gui_8cpp_source.html">gui.cpp</a>.</p>
 
 </div>
 </div>

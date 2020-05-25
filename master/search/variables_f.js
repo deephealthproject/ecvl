@@ -9,6 +9,6 @@ var searchData=
   ['splits_5f',['splits_',['../classecvl_1_1_generate_dataset.html#a92114bdfc9c88a0804d25d9587a53c88',1,'ecvl::GenerateDataset']]],
   ['str_5f',['str_',['../classecvl_1_1param.html#a1d8ac9209d2cbf5f7d6516ed5e9a1edd',1,'ecvl::param']]],
   ['strides_5f',['strides_',['../classecvl_1_1_image.html#a6a74e60fe9da7dd77117b50122d492cb',1,'ecvl::Image']]],
-  ['suffix_5f',['suffix_',['../classecvl_1_1_generate_segmentation_dataset.html#ae07b0a23251f95aca4f33446df90d93d',1,'ecvl::GenerateSegmentationDataset']]],
+  ['suffix_5f',['suffix_',['../classecvl_1_1_generate_segmentation_dataset.html#a8245227b5ea991b3009b6987d07cc1d3',1,'ecvl::GenerateSegmentationDataset']]],
   ['swap_5fendianness_5f',['swap_endianness_',['../structecvl_1_1_endian_reader.html#a3e3aa008f7dba0b271b76999a4fe5885',1,'ecvl::EndianReader']]]
 ];

@@ -117,9 +117,9 @@ Inheritance diagram for ecvl::GenerateDataset:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aeba9a5551fb81c40dbb30abf7b6fc09f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#aeba9a5551fb81c40dbb30abf7b6fc09f">GenerateDataset</a> (const fs::path &amp;dataset_root_directory)</td></tr>
-<tr class="memdesc:aeba9a5551fb81c40dbb30abf7b6fc09f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_generate_dataset.html" title="Abstract class which fill the dataset object with name and description, features common to all types ...">GenerateDataset</a> constructor.  <a href="#aeba9a5551fb81c40dbb30abf7b6fc09f">More...</a><br /></td></tr>
-<tr class="separator:aeba9a5551fb81c40dbb30abf7b6fc09f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6942b18f739fb51cd56c5e288795dc33"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#a6942b18f739fb51cd56c5e288795dc33">GenerateDataset</a> (const filesystem::path &amp;dataset_root_directory)</td></tr>
+<tr class="memdesc:a6942b18f739fb51cd56c5e288795dc33"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_generate_dataset.html" title="Abstract class which fill the dataset object with name and description, features common to all types ...">GenerateDataset</a> constructor.  <a href="#a6942b18f739fb51cd56c5e288795dc33">More...</a><br /></td></tr>
+<tr class="separator:a6942b18f739fb51cd56c5e288795dc33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef36f813d42d1d6d4e00ee3e7bcdc5be"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#aef36f813d42d1d6d4e00ee3e7bcdc5be">~GenerateDataset</a> ()=default</td></tr>
 <tr class="separator:aef36f813d42d1d6d4e00ee3e7bcdc5be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63d03b7397277aa85215b9d3cd436e92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#a63d03b7397277aa85215b9d3cd436e92">LoadImagesAndSplits</a> ()</td></tr>
@@ -128,15 +128,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a91fc4a9c068f1ae4b028b9e675b974dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_dataset.html">Dataset</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#a91fc4a9c068f1ae4b028b9e675b974dc">GetDataset</a> ()</td></tr>
 <tr class="memdesc:a91fc4a9c068f1ae4b028b9e675b974dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> object obtained from the directory structure.  <a href="#a91fc4a9c068f1ae4b028b9e675b974dc">More...</a><br /></td></tr>
 <tr class="separator:a91fc4a9c068f1ae4b028b9e675b974dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25781b231ee26f6c0e3b150bd80d4d74"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#a25781b231ee26f6c0e3b150bd80d4d74">LoadSplitImages</a> (const fs::path &amp;split)=0</td></tr>
-<tr class="memdesc:a25781b231ee26f6c0e3b150bd80d4d74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the path of images and labels of the specified split.  <a href="#a25781b231ee26f6c0e3b150bd80d4d74">More...</a><br /></td></tr>
-<tr class="separator:a25781b231ee26f6c0e3b150bd80d4d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac813f36642932256231c450fd95fc289"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#ac813f36642932256231c450fd95fc289">LoadSplitImages</a> (const filesystem::path &amp;split)=0</td></tr>
+<tr class="memdesc:ac813f36642932256231c450fd95fc289"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the path of images and labels of the specified split.  <a href="#ac813f36642932256231c450fd95fc289">More...</a><br /></td></tr>
+<tr class="separator:ac813f36642932256231c450fd95fc289"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:adc87d2516b5ca682fa16a3674fd5de08"><td class="memItemLeft" align="right" valign="top">const fs::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#adc87d2516b5ca682fa16a3674fd5de08">dataset_root_directory_</a></td></tr>
-<tr class="memdesc:adc87d2516b5ca682fa16a3674fd5de08"><td class="mdescLeft">&#160;</td><td class="mdescRight">path containing the root directory of the dataset  <a href="#adc87d2516b5ca682fa16a3674fd5de08">More...</a><br /></td></tr>
-<tr class="separator:adc87d2516b5ca682fa16a3674fd5de08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af207f8100cb54739e698406170f1a848"><td class="memItemLeft" align="right" valign="top">const filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#af207f8100cb54739e698406170f1a848">dataset_root_directory_</a></td></tr>
+<tr class="memdesc:af207f8100cb54739e698406170f1a848"><td class="mdescLeft">&#160;</td><td class="mdescRight">path containing the root directory of the dataset  <a href="#af207f8100cb54739e698406170f1a848">More...</a><br /></td></tr>
+<tr class="separator:af207f8100cb54739e698406170f1a848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92114bdfc9c88a0804d25d9587a53c88"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_generate_dataset.html#a92114bdfc9c88a0804d25d9587a53c88">splits_</a></td></tr>
 <tr class="memdesc:a92114bdfc9c88a0804d25d9587a53c88"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector containing the splits found in the dataset directory, if present  <a href="#a92114bdfc9c88a0804d25d9587a53c88">More...</a><br /></td></tr>
 <tr class="separator:a92114bdfc9c88a0804d25d9587a53c88"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,8 +153,8 @@ Public Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="dataset__generator_8h_source.html#l00026">26</a> of file <a class="el" href="dataset__generator_8h_source.html">dataset_generator.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aeba9a5551fb81c40dbb30abf7b6fc09f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeba9a5551fb81c40dbb30abf7b6fc09f">&#9670;&nbsp;</a></span>GenerateDataset()</h2>
+<a id="a6942b18f739fb51cd56c5e288795dc33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6942b18f739fb51cd56c5e288795dc33">&#9670;&nbsp;</a></span>GenerateDataset()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,7 +165,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">ecvl::GenerateDataset::GenerateDataset </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>dataset_root_directory</em></td><td>)</td>
           <td></td>
         </tr>
@@ -267,8 +267,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a25781b231ee26f6c0e3b150bd80d4d74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25781b231ee26f6c0e3b150bd80d4d74">&#9670;&nbsp;</a></span>LoadSplitImages()</h2>
+<a id="ac813f36642932256231c450fd95fc289"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac813f36642932256231c450fd95fc289">&#9670;&nbsp;</a></span>LoadSplitImages()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -279,7 +279,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">virtual int ecvl::GenerateDataset::LoadSplitImages </td>
           <td>(</td>
-          <td class="paramtype">const fs::path &amp;&#160;</td>
+          <td class="paramtype">const filesystem::path &amp;&#160;</td>
           <td class="paramname"><em>split</em></td><td>)</td>
           <td></td>
         </tr>
@@ -300,7 +300,7 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of samples of the split. </dd></dl>
 
-<p>Implemented in <a class="el" href="classecvl_1_1_generate_classification_dataset.html#ac9ea95717be588e3a38f0a83d6636a83">ecvl::GenerateClassificationDataset</a>, and <a class="el" href="classecvl_1_1_generate_segmentation_dataset.html#ae630053bed9e77071bbf05ed6b2bb726">ecvl::GenerateSegmentationDataset</a>.</p>
+<p>Implemented in <a class="el" href="classecvl_1_1_generate_classification_dataset.html#ada27f3dde5d53ae2ca3dea3cee5cd9c1">ecvl::GenerateClassificationDataset</a>, and <a class="el" href="classecvl_1_1_generate_segmentation_dataset.html#af15e8f8699d95c40ae4552245940b503">ecvl::GenerateSegmentationDataset</a>.</p>
 
 </div>
 </div>
@@ -323,14 +323,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="adc87d2516b5ca682fa16a3674fd5de08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc87d2516b5ca682fa16a3674fd5de08">&#9670;&nbsp;</a></span>dataset_root_directory_</h2>
+<a id="af207f8100cb54739e698406170f1a848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af207f8100cb54739e698406170f1a848">&#9670;&nbsp;</a></span>dataset_root_directory_</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const fs::path ecvl::GenerateDataset::dataset_root_directory_</td>
+          <td class="memname">const filesystem::path ecvl::GenerateDataset::dataset_root_directory_</td>
         </tr>
       </table>
 </div><div class="memdoc">
