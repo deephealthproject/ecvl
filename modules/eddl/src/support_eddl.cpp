@@ -200,7 +200,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     }
 
     // if it is a classification problem, size of labels tensor must be equal to batch_size * number_of_classes
-    if (samples_[0].label_.has_value()) {
+    if (samples_[0].label_ != nullopt) {
         if (labels->size != bs * classes_.size()) {
             cerr << ECVL_ERROR_MSG "labels tensor must have N = batch_size, C = number_of_classes" << endl;
             ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
