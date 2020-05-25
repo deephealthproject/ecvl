@@ -124,7 +124,7 @@ before_install:
     elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       export TRAVIS_OS=Darwin
     elif [[ "${TRAVIS_OS_NAME}" == "windows" ]]; then
-      export TRAVIS_OS=Darwin
+      export TRAVIS_OS=Windows
     fi
 
 install:
@@ -132,6 +132,12 @@ install:
   - chmod ugo+x tools/travis/opencv.sh
   - chmod ugo+x tools/travis/eddl.sh
 
+  - |
+    if [[ "$TRAVIS_OS" == "Linux" ]]; then
+      sudo apt-get install -y openslide-tools
+    elif [[ "$TRAVIS_OS" == "Darwin" ]]; then
+      brew install openslide
+    fi
   - source tools/travis/cmake.sh
   - cmake --version
   - source tools/travis/opencv.sh
@@ -139,7 +145,7 @@ install:
 
 before_script:
   - mkdir build && cd build
-  - cmake ..
+  - cmake -DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON ..
 
 script:
   - cmake --build . --config ${BUILD_TYPE} --parallel ${PROC}

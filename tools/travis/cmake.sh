@@ -13,8 +13,10 @@ fi
 # Add CMake to path
 if [[ "$TRAVIS_OS" == "Linux" ]]; then
     export PATH="${DEPS_INSTALL_DIR}/cmake/bin":${PATH}
+    export CMAKE_BIN="${DEPS_INSTALL_DIR}/cmake/bin/cmake"
 elif [[ "$TRAVIS_OS" == "Darwin" ]]; then
     export PATH="${DEPS_INSTALL_DIR}/cmake/CMake.app/Contents/bin":${PATH}
+    export CMAKE_BIN="${DEPS_INSTALL_DIR}/cmake/CMake.app/Contents/bin/cmake"
 fi
 
 # don't forget to switch back to the main build directory once you are done

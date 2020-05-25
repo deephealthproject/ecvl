@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$TRAVIS_OS" == "Linux" ]]; then
-    sudo apt-get install libeigen3-dev zlib1g-dev
+    sudo apt-get install -y libeigen3-dev zlib1g-dev
 elif [[ "$TRAVIS_OS" == "Darwin" ]]; then
     brew install eigen zlib
 fi
@@ -10,18 +10,22 @@ fi
 if [ -d "${DEPS_INSTALL_DIR}/protobuf" ]; then
     echo -e "Protobuf already built"
 else
-    mkdir -p ${DEPS_BUILD_DIR} && cd ${DEPS_BUILD_DIR}
+    mkdir -p ${DEPS_INSTALL_DIR} && cd ${DEPS_INSTALL_DIR}
     wget --no-check-certificate https://github.com/protocolbuffers/protobuf/releases/download/v3.12.1/protobuf-cpp-3.12.1.tar.gz
     tar -xzf protobuf-cpp-3.12.1.tar.gz
+    rm protobuf-cpp-3.12.1.tar.gz
     mv protobuf-3.12.1 protobuf
-    cd protobuf 
-    mkdir -p ${DEPS_INSTALL_DIR}/protobuf && cd ${DEPS_INSTALL_DIR}/protobuf
-    ${DEPS_BUILD_DIR}/protobuf/configure --prefix=/usr
-    make -j ${PROC}
+    cd protobuf
+    mkdir -p build && cd build
+    cmake -G "Unix Makefiles" -Dprotobuf_BUILD_TESTS=OFF \
+        -DCMAKE_INSTALL_PREFIX=/usr ../cmake
+    cmake --build . --config $BUILD_TYPE --parallel $PROC
 fi
+
 # Install Protobuf
 cd ${DEPS_INSTALL_DIR}/protobuf
-sudo make install
+# Use cmake absolute path for sudo
+sudo ${CMAKE_BIN} --build build --config $BUILD_TYPE --target install
 sudo ldconfig
 
 if [ -d "${DEPS_INSTALL_DIR}/eddl-${EDDL_VERSION}" ]; then
