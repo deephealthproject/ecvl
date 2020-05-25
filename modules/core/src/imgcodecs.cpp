@@ -24,7 +24,7 @@
 #include "ecvl/core/support_dcmtk.h"
 #endif
 
-using namespace fs;
+using namespace ecvl::filesystem;
 
 namespace ecvl
 {

@@ -11,15 +11,15 @@
 * All rights reserved.
 */
 
-#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_generator.h"
 
 #include <iostream>
-#include <optional>
+
+#include "ecvl/core/filesystem.h"
 
 using namespace std;
-using namespace fs;
 using namespace ecvl;
+using namespace ecvl::filesystem;
 
 int GenerateClassificationDataset::LoadSplitImages(const path& split)
 {
@@ -92,7 +92,7 @@ int GenerateSegmentationDataset::LoadSplitImages(const path& split)
                 }
             }
             else {
-                if ((!suffix_.empty() && img.find(suffix_.string()) != string::npos) || 
+                if ((!suffix_.empty() && img.find(suffix_.string()) != string::npos) ||
                     (!gt_name_.empty() && img.find(gt_name_.string()) != string::npos)) {
                     // suffix found, it is a gt -> skip
                     continue;
@@ -104,7 +104,7 @@ int GenerateSegmentationDataset::LoadSplitImages(const path& split)
                     s.label_path_ = (split / ground_truth / gt_img.filename()).generic_string();
                     gt_exist = true;
                 }
-                else if (exists(root_directory / ground_truth / gt_name_) && !gt_name_.empty() ) {
+                else if (exists(root_directory / ground_truth / gt_name_) && !gt_name_.empty()) {
                     s.label_path_ = (split / ground_truth / gt_name_).generic_string();
                     gt_exist = true;
                 }

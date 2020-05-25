@@ -13,8 +13,8 @@
 
 #include "ecvl/core.h"
 
-using namespace std;
 using namespace ecvl;
+using namespace std;
 
 int main()
 {

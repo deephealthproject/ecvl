@@ -20,11 +20,12 @@
 
 #include "ecvl/core/image.h"
 
-namespace ecvl {
+namespace ecvl
+{
 /** @brief Displays an Image.
 
 The ImShow function instantiates a ShowApp and starts it with a wxEntry() call.
-The image is shown with its original size. 
+The image is shown with its original size.
 
 @param[in] img Image to be shown.
 

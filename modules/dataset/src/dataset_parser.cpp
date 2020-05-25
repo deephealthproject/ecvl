@@ -11,14 +11,15 @@
 * All rights reserved.
 */
 
-#include "ecvl/core/filesystem.h"
 #include "ecvl/dataset_parser.h"
 
 #include <fstream>
 #include <regex>
 
+#include "ecvl/core/filesystem.h"
+
+using namespace ecvl::filesystem;
 using namespace std;
-using namespace fs;
 using namespace YAML;
 
 namespace ecvl
@@ -44,7 +45,7 @@ void Dataset::FindLabel(Sample& sample, const YAML::Node& n)
         else {
             // TODO label as path?
             sample.label_path_ = n.as<string>();
-            sample.label_.reset();
+            sample.label_ = optional<vector<int>>(); // sample.label_.reset();
         }
     }
 }
@@ -180,7 +181,7 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
             if (sample.location_[i].is_relative() && !std::regex_match(sample.location_[i].string(), url_regex_)) {
                 // Convert relative path to absolute
                 sample.location_[i] = root_path / sample.location_[i];
-                if (sample.label_path_.has_value()) {
+                if (sample.label_path_ != nullopt) {
                     sample.label_path_ = root_path / sample.label_path_.value();
                 }
             }
@@ -188,7 +189,7 @@ void Dataset::DecodeImages(const YAML::Node& node, const path& root_path, bool v
                 if (!filesystem::exists(sample.location_[i])) {
                     cerr << ECVL_WARNING_MSG "sample file " << sample.location_[i] << " does not exist" << endl;
                 }
-                if (sample.label_path_.has_value()) {
+                if (sample.label_path_ != nullopt) {
                     if (!filesystem::exists(sample.label_path_.value())) {
                         cerr << ECVL_WARNING_MSG "label file " << sample.label_path_.value() << " does not exist" << endl;
                     }
@@ -218,12 +219,12 @@ void Dataset::Dump(const path& file_path)
         for (auto& loc : s.location_) {
             os << tab + "- location: " << loc.generic_string() << endl;
         }
-        if (s.label_.has_value()) {
+        if (s.label_ != nullopt) {
             for (auto& lab : s.label_.value()) {
                 os << tab + tab + "label: " << classes_[lab] << endl;
             }
         }
-        else if (s.label_path_.has_value()) {
+        else if (s.label_path_ != nullopt) {
             os << tab + tab + "label: " << s.label_path_.value().generic_string() << endl;
         }
     }

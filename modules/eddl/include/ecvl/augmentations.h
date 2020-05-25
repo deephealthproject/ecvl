@@ -314,7 +314,7 @@ public:
                 p_ = p.vals_[0];
             }
         }
-        catch (std::runtime_error& e) {
+        catch (std::runtime_error) {
             ECVL_ERROR_WRONG_PARAMS("The first parameter in OneOfAugmentationContainer must be the probability p");
         }
 

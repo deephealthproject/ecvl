@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit� degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -14,12 +14,13 @@
 #ifndef ECVL_SUPPORT_EDDL_H_
 #define ECVL_SUPPORT_EDDL_H_
 
+#include "ecvl/augmentations.h"
+#include "ecvl/core/filesystem.h"
+#include "ecvl/core/image.h"
+#include "ecvl/dataset_parser.h"
+
 #include <eddl/apis/eddl.h>
 #include <eddl/apis/eddlT.h>
-#include "ecvl/augmentations.h"
-#include "ecvl/core/image.h"
-#include "ecvl/core/filesystem.h"
-#include "ecvl/dataset_parser.h"
 
 namespace ecvl
 {
@@ -79,7 +80,7 @@ public:
     @param[in] ctype_gt ecvl::ColorType of the Dataset ground truth images.
     @param[in] verify If true, a list of all the images in the Dataset file which don't exist is printed with an ECVL_WARNING_MSG.
     */
-    DLDataset(const fs::path& filename,
+    DLDataset(const filesystem::path& filename,
         const int batch_size,
         DatasetAugmentations augs = DatasetAugmentations(),
         ColorType ctype = ColorType::BGR,
@@ -120,7 +121,7 @@ public:
 
         // Initialize n_channels_gt_ if exists
         if (!GetSplit().empty()) {
-            if (samples_[GetSplit()[0]].label_path_.has_value()) {
+            if (samples_[GetSplit()[0]].label_path_ != nullopt) {
                 n_channels_gt_ = samples_[GetSplit()[0]].LoadImage(ctype_gt_, true).Channels();
             }
         }

@@ -67,14 +67,17 @@
 
 // We previously determined that we need the experimental version
 #   if INCLUDE_STD_FILESYSTEM_EXPERIMENTAL
-// Include it
 #       include <experimental/filesystem>
-// We need the alias from std::experimental::filesystem to std::filesystem
-namespace fs = std::experimental::filesystem;
+namespace ecvl
+{
+namespace filesystem = std::experimental::filesystem;
+}
 #   else
 #       include <filesystem>
-namespace fs = std::filesystem;
-
+namespace ecvl
+{
+namespace filesystem = std::filesystem;
+}
 #   endif
 
 #endif // #ifndef INCLUDE_STD_FILESYSTEM_EXPERIMENTAL

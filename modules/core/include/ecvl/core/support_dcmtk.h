@@ -42,7 +42,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-extern bool DicomRead(const fs::path& filename, Image& dst);
+extern bool DicomRead(const ecvl::filesystem::path& filename, Image& dst);
 
 /** @brief Saves an image into a specified DICOM file.
 
@@ -55,7 +55,7 @@ The function DicomWrite saves the input image into a specified file, with the DI
 
 @return true if the image is correctly written, false otherwise.
 */
-extern bool DicomWrite(const fs::path& filename, const Image& src);
+extern bool DicomWrite(const ecvl::filesystem::path& filename, const Image& src);
 
 /** @example example_nifti_dicom.cpp
  Nifti and Dicom support example.

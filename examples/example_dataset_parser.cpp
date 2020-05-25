@@ -17,9 +17,9 @@
 
 #include <iostream>
 
+using ecvl::filesystem::path;
 using std::cout;
 using std::endl;
-using fs::path;
 
 int main()
 {

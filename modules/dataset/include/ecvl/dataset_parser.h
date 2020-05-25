@@ -16,10 +16,10 @@
 
 #include "ecvl/core.h"
 #include "ecvl/core/filesystem.h"
+#include "ecvl/core/optional.h"
 
 #include <iostream>
 #include <map>
-#include <optional>
 #include <vector>
 #include <regex>
 
@@ -45,10 +45,10 @@ This class provides the information to describe a dataset sample.
 class Sample
 {
 public:
-    std::vector<fs::path> location_; /**< @brief Absolute path of the sample. */
-    std::optional<std::vector<int>> label_; /**< @brief Vector of sample labels. */
-    std::optional<fs::path> label_path_; /**< @brief Absolute path of sample ground truth. */
-    std::optional<std::map<int, std::string>> values_; /**< @brief Map (`map<feature-index,feature-value>`) which stores the features of a sample. */
+    std::vector<filesystem::path> location_; /**< @brief Absolute path of the sample. */
+    optional<std::vector<int>> label_; /**< @brief Vector of sample labels. */
+    optional<filesystem::path> label_path_; /**< @brief Absolute path of sample ground truth. */
+    optional<std::map<int, std::string>> values_; /**< @brief Map (`map<feature-index,feature-value>`) which stores the features of a sample. */
     std::vector<int> size_; /**< @brief Original x and y dimensions of the sample */
 
     /** @brief Return an Image of the dataset.
@@ -98,7 +98,7 @@ public:
     /**
     @param[in] filename Path to the Dataset file.
     */
-    Dataset(const fs::path& filename, bool verify = false);
+    Dataset(const filesystem::path& filename, bool verify = false);
 
     /** @brief Dump the Dataset into a YAML file following the DeepHealth Dataset Format.
 
@@ -107,14 +107,14 @@ public:
 
     @param[in] file_path Where to save the YAML file.
     */
-    void Dump(const fs::path& file_path);
+    void Dump(const filesystem::path& file_path);
 
     // RegEx which matchs URLs
     static const std::regex url_regex_;
 
 private:
     std::map<std::string, int> features_map_;
-    void DecodeImages(const YAML::Node& node, const fs::path& root_path, bool verify);
+    void DecodeImages(const YAML::Node& node, const filesystem::path& root_path, bool verify);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
 } // namespace ecvl

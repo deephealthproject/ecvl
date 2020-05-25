@@ -82,7 +82,7 @@ private:
 template <typename T>
 struct ConstContiguousIterator
 {
-    uint8_t* ptr_;
+    const uint8_t* ptr_;
     const Image* img_;
 
     ConstContiguousIterator(const Image& img, std::vector<int> pos = {});
