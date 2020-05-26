@@ -3,6 +3,7 @@
 # ECVL - European Computer Vision Library 
 [![release](https://img.shields.io/github/v/release/deephealthproject/ecvl)](https://github.com/deephealthproject/ecvl/releases/latest/)
 [![docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=flat)](https://deephealthproject.github.io/ecvl/)
+[![build](https://travis-ci.com/deephealthproject/ecvl.svg?branch=master)](#CI)
 [![cobertura](https://img.shields.io/jenkins/coverage/cobertura?jobUrl=https%3A%2F%2Fjenkins-master-deephealth-unix01.ing.unimore.it%2Fjob%2FDeepHealth%2Fjob%2Fecvl%2Fjob%2Fmaster%2F&label=cobertura)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/cobertura/)
 [![codecov](https://codecov.io/gh/deephealthproject/ecvl/branch/master/graph/badge.svg)](https://codecov.io/gh/deephealthproject/ecvl)
 [![license](https://img.shields.io/github/license/deephealthproject/ecvl)](https://github.com/deephealthproject/ecvl/blob/master/LICENSE)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
@@ -102,9 +103,15 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 This project follows the [all-contributors](https://allcontributors.org) specification.
 Contributions of any kind are welcome!
 
-## Continuous integration
+## <a name="CI">Continuous integration (CPU)</a>
 
-### Linux CPU
+### Windows
+
+|   OS    |  Compiler  | OpenCV | Infrastructure | Status | 
+|:-------:|:----------:|:------:|:------:|:------:|
+| Windows 10 1903 | VS 15.9.11 | 3.4.6 | Jenkins |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/windows_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
+
+### Linux
 
 |   OS    |  Compiler  | OpenCV | Infrastructure | Status | 
 |:-------:|:----------:|:------:|:------:|:------:|
@@ -120,26 +127,23 @@ Contributions of any kind are welcome!
 | Ubuntu 18.04.4  | Clang 9.0.0  | 3.4.10  | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/9?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
 | Ubuntu 18.04.4  | Clang 10.0.1  | 3.4.10  | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/10?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
 
-### Linux GPU
-
-|   OS    |  Compiler  | OpenCV | Status | 
-|:-------:|:----------:|:------:|:------:|
-| Linux (GPU)   | GCC 8.4.0  | 3.4.6  |  Not available yet        |
-
-### MacOS CPU
+### MacOS
 
 |   OS    |  Compiler  | OpenCV | Infrastructure | Status | 
 |:-------:|:----------:|:------:|:------:|:------:|
 | MacOSX 10.15.4 | Apple Clang 11.0.3 | 3.4.10  | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/11?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
 
-### Windows CPU
+## <a name="CI">Continuous integration (GPU)</a> 
 
-|   OS    |  Compiler  | OpenCV | Status | 
-|:-------:|:----------:|:------:|:------:|
-| Windows 10 1903 | VS 15.9.11 | 3.4.6 |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/windows_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
+### Windows
 
-### Windows GPU
+|   OS    |  Compiler  | OpenCV | Infrastructure | Status | 
+|:-------:|:----------:|:------:|:------:|:------:|
+| Windows 10 1903 | VS 16.2.0 | - | Jenkins |  Not available yet        |
 
-|   OS    |  Compiler  | OpenCV | Status | 
-|:-------:|:----------:|:------:|:------:|
-| Windows 10 1903 | VS 16.2.0 | - |  Not available yet        |
+### Linux
+
+|   OS    |  Compiler  | OpenCV | Infrastructure | Status | 
+|:-------:|:----------:|:------:|:------:|:------:|
+| Linux (GPU)   | GCC 8.4.0  | 3.4.6  | Jenkins | Not available yet        |
+
