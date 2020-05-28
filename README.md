@@ -73,7 +73,7 @@ An extension of ImageWatch is available to visually inspect ecvl::Image when deb
 
 ## ECVL Development Status
 
-ECVL development status is available [here](DEVSTAT.md).
+ECVL development status is available [here](PROGRESS.md).
 
 ## Contributing
 
