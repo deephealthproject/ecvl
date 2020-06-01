@@ -61,7 +61,7 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
         if (std::regex_match(location.string(), Dataset::url_regex_)) {
             // TODO: Use libcurl instead of system call
             path image_filename = location.filename();
-            string cmd = "curl -s -o " + image_filename.string() + " " + location.string();
+            string cmd = "curl -L -s -o " + image_filename.string() + " " + location.string();
             if (system(cmd.c_str()) != 0) {
                 // Failed to download image
                 cerr << ECVL_ERROR_MSG "Cannot download image '" + location.string() + "'.\n";
