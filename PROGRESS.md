@@ -64,6 +64,7 @@
 | Integral Image | :heavy_check_mark: | :x: | :x: |
 | Median Blur | :x: | :x: | :x: |
 | Non Maxima Suppression | :heavy_check_mark: | :x: | :x: |
+| OpticalDistortion | :heavy_check_mark: | :x: | :x: |
 | Pepper | :x: | :x: | :x: |
 | Salt | :x: | :x: | :x: |
 | Salt And Pepper | :x: | :x: | :x: |
