@@ -22,6 +22,8 @@
 #include <eddl/apis/eddl.h>
 #include <eddl/apis/eddlT.h>
 
+#include <mutex>
+
 namespace ecvl
 {
 /** @brief Dataset Augmentations.
@@ -70,6 +72,7 @@ public:
     ColorType ctype_; /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_; /**< @brief ecvl::ColorType of the Dataset ground truth images. */
     DatasetAugmentations augs_; /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
+    std::mutex  mutex_current_batch; /**< @breif std::mutex to add exclusive access to attribute current_batch_. */
 
     /**
     @param[in] filename Path to the Dataset file.
