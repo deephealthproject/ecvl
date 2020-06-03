@@ -173,12 +173,20 @@ void DLDataset::SetSplit(const SplitType& split)
 
 void DLDataset::ResetCurrentBatch()
 {
-    this->current_batch_[+current_split_] = 0;
+    { // CRITICAL REGION STARTS
+        std::unique_lock<std::mutex>    lck(mutex_current_batch);
+
+        this->current_batch_[+current_split_] = 0;
+    } // CRITICAL REGION ENDS
 }
 
 void DLDataset::ResetAllBatches()
 {
-    this->current_batch_.fill(0);
+    { // CRITICAL REGION STARTS
+        std::unique_lock<std::mutex>    lck(mutex_current_batch);
+        
+        this->current_batch_.fill(0);
+    } // CRITICAL REGION ENDS
 }
 
 void DLDataset::LoadBatch(tensor& images, tensor& labels)
@@ -214,7 +222,11 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
 
     // Move to next samples
     start = current_batch_[+current_split_] * bs;
-    ++current_batch_[+current_split_];
+    { // CRITICAL REGION STARTS
+        std::unique_lock<std::mutex>    lck(mutex_current_batch);
+
+        ++current_batch_[+current_split_];
+    } // CRITICAL REGION ENDS
 
     if (vsize(GetSplit()) < start + bs) {
         cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
@@ -279,7 +291,11 @@ void DLDataset::LoadBatch(tensor& images)
 
     // Move to next samples
     start = current_batch_[+current_split_] * bs;
-    ++current_batch_[+current_split_];
+    { // CRITICAL REGION STARTS
+        std::unique_lock<std::mutex>    lck(mutex_current_batch);
+
+        ++current_batch_[+current_split_];
+    } // CRITICAL REGION ENDS
 
     if (vsize(GetSplit()) < start + bs) {
         cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
