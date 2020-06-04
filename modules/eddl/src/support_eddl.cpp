@@ -221,10 +221,10 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     }
 
     // Move to next samples
-    start = current_batch_[+current_split_] * bs;
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex>    lck(mutex_current_batch);
-
+        
+        start = current_batch_[+current_split_] * bs;
         ++current_batch_[+current_split_];
     } // CRITICAL REGION ENDS
 
@@ -290,10 +290,10 @@ void DLDataset::LoadBatch(tensor& images)
     }
 
     // Move to next samples
-    start = current_batch_[+current_split_] * bs;
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex>    lck(mutex_current_batch);
-
+        
+        start = current_batch_[+current_split_] * bs;
         ++current_batch_[+current_split_];
     } // CRITICAL REGION ENDS
 
