@@ -72,7 +72,7 @@ public:
     ColorType ctype_; /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_; /**< @brief ecvl::ColorType of the Dataset ground truth images. */
     DatasetAugmentations augs_; /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
-    std::mutex  mutex_current_batch; /**< @breif std::mutex to add exclusive access to attribute current_batch_. */
+    std::mutex  mutex_current_batch_; /**< @breif std::mutex to add exclusive access to attribute current_batch_. */
 
     /**
     @param[in] filename Path to the Dataset file.
