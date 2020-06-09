@@ -177,6 +177,8 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a0419df94e1f53c0376e00e7479ed8eff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a0419df94e1f53c0376e00e7479ed8eff">augs_</a></td></tr>
 <tr class="memdesc:a0419df94e1f53c0376e00e7479ed8eff"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split.  <a href="#a0419df94e1f53c0376e00e7479ed8eff">More...</a><br /></td></tr>
 <tr class="separator:a0419df94e1f53c0376e00e7479ed8eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13f7c815daf802af4d3e4aa19e4ca831"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a13f7c815daf802af4d3e4aa19e4ca831">mutex_current_batch_</a></td></tr>
+<tr class="separator:a13f7c815daf802af4d3e4aa19e4ca831"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classecvl_1_1_dataset"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classecvl_1_1_dataset')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classecvl_1_1_dataset.html">ecvl::Dataset</a></td></tr>
 <tr class="memitem:af3d06d128f553e35b6df1f9f80b424ab inherit pub_attribs_classecvl_1_1_dataset"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab">name_</a> = &quot;DeepHealth dataset&quot;</td></tr>
 <tr class="memdesc:af3d06d128f553e35b6df1f9f80b424ab inherit pub_attribs_classecvl_1_1_dataset"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>.  <a href="classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab">More...</a><br /></td></tr>
@@ -210,7 +212,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a17">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00061">61</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00063">63</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae0c3fed2cde721a4b26e86b12720905c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae0c3fed2cde721a4b26e86b12720905c">&#9670;&nbsp;</a></span>DLDataset()</h2>
@@ -281,7 +283,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00083">83</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00086">86</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -374,7 +376,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a22">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8cpp_source.html#l00184">184</a> of file <a class="el" href="support__eddl_8cpp_source.html">support_eddl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8cpp_source.html#l00192">192</a> of file <a class="el" href="support__eddl_8cpp_source.html">support_eddl.cpp</a>.</p>
 
 </div>
 </div>
@@ -402,7 +404,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8cpp_source.html#l00262">262</a> of file <a class="el" href="support__eddl_8cpp_source.html">support_eddl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8cpp_source.html#l00274">274</a> of file <a class="el" href="support__eddl_8cpp_source.html">support_eddl.cpp</a>.</p>
 
 </div>
 </div>
@@ -423,7 +425,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reset the batch counter of each <a class="el" href="classecvl_1_1_split.html" title="Splits of a dataset.">Split</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8cpp_source.html#l00179">179</a> of file <a class="el" href="support__eddl_8cpp_source.html">support_eddl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8cpp_source.html#l00183">183</a> of file <a class="el" href="support__eddl_8cpp_source.html">support_eddl.cpp</a>.</p>
 
 </div>
 </div>
@@ -493,7 +495,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00072">72</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00074">74</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -511,7 +513,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Size of each dataset mini batch. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00064">64</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00066">66</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +531,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00070">70</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00072">72</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -547,7 +549,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00071">71</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00073">73</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -565,7 +567,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of batches already loaded for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00069">69</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00071">71</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -583,7 +585,24 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Current split from which images are loaded. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00067">67</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00069">69</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+
+</div>
+</div>
+<a id="a13f7c815daf802af4d3e4aa19e4ca831"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13f7c815daf802af4d3e4aa19e4ca831">&#9670;&nbsp;</a></span>mutex_current_batch_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex ecvl::DLDataset::mutex_current_batch_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>@breif std::mutex to add exclusive access to attribute current_batch_. </p>
+
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00075">75</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -603,7 +622,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a19">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00065">65</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00067">67</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -621,7 +640,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of channels of the ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00066">66</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00068">68</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -641,7 +660,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a20">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00068">68</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00070">70</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
