@@ -107,7 +107,7 @@ void gaussian_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH>
 #pragma HLS DATAFLOW
 
 	xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
-	xf::GaussianBlur<FILTER_SIZE,XF_BORDER_CONSTANT,TYPE,HEIGHT,WIDTH,1> (in_mat, out_mat, sigma);
+	xf::GaussianBlur<FILTER_SIZE,XF_BORDER_CONSTANT,TYPE,HEIGHT,WIDTH,NPC_T> (in_mat, out_mat, sigma);
 	xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
 }
 }

@@ -127,9 +127,20 @@ void Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     }
 
     if (src.channels_ == "xyc") {
+#ifdef ECVL_WITH_FPGA
+		cv::Mat src_mat = ImageToMat(src);
+		cv::Mat m = cv::Mat::zeros({ src.dims_[0], src.dims_[1] },  CV_8UC(src_mat.channels()));
+		
+		cv::Mat map_x = cv::Mat(cv::Size(src.dims_[0], src.dims_[1]), CV_32FC1);
+		cv::Mat map_y = cv::Mat(cv::Size(src.dims_[0], src.dims_[1]), CV_32FC1);
+		
+		Flip2D_FPGA(src_mat, m);
+		dst = ecvl::MatToImage(m);
+#else
         cv::Mat m;
         cv::flip(ImageToMat(src), m, 0);
         dst = ecvl::MatToImage(m);
+#endif
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED
@@ -143,9 +154,20 @@ void Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
     }
 
     if (src.channels_ == "xyc") {
+#ifdef ECVL_WITH_FPGA
+		cv::Mat src_mat = ImageToMat(src);
+		cv::Mat m = cv::Mat::zeros({ src.dims_[0], src.dims_[1] },  CV_8UC(src_mat.channels()));
+		
+		cv::Mat map_x = cv::Mat(cv::Size(src.dims_[0], src.dims_[1]), CV_32FC1);
+		cv::Mat map_y = cv::Mat(cv::Size(src.dims_[0], src.dims_[1]), CV_32FC1);
+		
+		Mirror2D_FPGA(src_mat, m);
+		dst = ecvl::MatToImage(m);
+#else
         cv::Mat m;
         cv::flip(ImageToMat(src), m, 1);
         dst = ecvl::MatToImage(m);
+#endif
     }
     else {
         ECVL_ERROR_NOT_IMPLEMENTED

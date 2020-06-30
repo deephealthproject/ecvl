@@ -29,8 +29,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 #include "hls_stream.h"
 #include "ap_int.h"
+#include "assert.h"
 #include "common/xf_common.h"
-#include "imgproc/xf_cvt_color.hpp"
+#include "common/xf_utility.h"
+#include  "hls_video.h"
+
+
 
 /* Optimization type */
 
@@ -38,8 +42,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NO 			1	 // Normal Operation (1-pixel implementation)
 
 // port widths
-#define INPUT_PTR_WIDTH  512
-#define OUTPUT_PTR_WIDTH 512
+#define INPUT_PTR_WIDTH  256
+#define OUTPUT_PTR_WIDTH 256
 
 
 #define RGB 1
@@ -53,13 +57,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* Input image Dimensions */
 
-#define WIDTH 			675	// Maximum Input image width
-#define HEIGHT 			900   	// Maximum Input image height
+#define HEIGHT 2160
+#define WIDTH  3840
 
 /* Output image Dimensions */
 
-#define NEWWIDTH 		675  // Maximum output image width
-#define NEWHEIGHT 		900  // Maximum output image height
+#define NEWWIDTH 		1920  // Maximum output image width
+#define NEWHEIGHT 		1800  // Maximum output image height
 
 /* Interface types*/
 #if RO
@@ -75,8 +79,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 extern "C" {
-void rgb2gray_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out,int rows_in, int cols_in)
+void mirror_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out,int rows_in, int cols_in)
 {
+	
 #pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
 #pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
 #pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
@@ -91,22 +96,34 @@ void rgb2gray_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH>
 	const int pCOLS_OUT = NEWWIDTH;
 	const int pNPC = NPC_T;
 	
-	printf("cols dentro wrapper: %d\n", cols_in);
-	printf("rows dentro wrapper: %d\n", rows_in);
 
-	xf::Mat<XF_8UC3, HEIGHT, WIDTH, NPC_T> in_mat;
+	xf::Mat<TYPE, HEIGHT, WIDTH, NPC_T> in_mat;
 #pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC
 
-	xf::Mat<XF_8UC1,HEIGHT, WIDTH, NPC_T> out_mat;
+	xf::Mat<TYPE,HEIGHT, WIDTH, NPC_T> out_mat;
 #pragma HLS stream variable=out_mat.data depth=pCOLS_OUT/pNPC
 
 	in_mat.rows = rows_in;  in_mat.cols = cols_in;
 	out_mat.rows = rows_in;  out_mat.cols = cols_in;
+	
+	//xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
+	//unsigned int aux = in_mat.read(899*cols_in+674);
+	printf("\n dentro del kernel after: %d\n", rows_in);
 
 #pragma HLS DATAFLOW
-
-	xf::Array2xfMat<INPUT_PTR_WIDTH,XF_8UC3,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
-	xf::rgb2gray<XF_8UC3,XF_8UC1,HEIGHT,WIDTH,NPC_T> (in_mat, out_mat);
-	xf::xfMat2Array<OUTPUT_PTR_WIDTH,XF_8UC1,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
+	
+	xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
+	//unsigned int aux = in_mat.data[899*cols_in+674];
+	//printf("\n dentro del kernel after: %d\n", in_mat.data[0*cols_in+0]);
+	//printf("\n dentro del kernel after: %d\n", aux);
+	for(int i = 0; i<rows_in;i++){
+		for(int j = 0; j<cols_in;j++){
+			//unsigned int aux = in_mat.read(((rows_in - 1)-i)*cols_in +j);
+			//out_mat.write(i*cols_in +j,in_mat.data[((rows_in - 1)-i)*cols_in +j]);
+			out_mat.data[i*cols_in +j] = in_mat.data[i*cols_in + (cols_in - 1 -j)];
+			//printf("i: %d, j: %d, pos: %d, aux: %d\n", i, j, ((rows_in - 1)-i)*cols_in +j, aux);
+		}
+	}
+	xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
 }
 }

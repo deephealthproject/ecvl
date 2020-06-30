@@ -4,5 +4,7 @@ set(ECVL_KERNELS_SRC
 	"${CMAKE_CURRENT_SOURCE_DIR}/otsuThreshold_accel.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gaussian_accel.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/rgb2gray_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/flipvertical_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/mirror_accel.cpp"
 	PARENT_SCOPE
 )

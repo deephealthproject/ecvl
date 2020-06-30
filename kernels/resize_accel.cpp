@@ -42,7 +42,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OUTPUT_PTR_WIDTH 256
 
 //max down scale factor 2 for all 1-pixel modes, and for upscale in x direction
-#define MAXDOWNSCALE 2
+#define MAXDOWNSCALE 3
 
 #define RGB 1
 #define GRAY 0
@@ -55,8 +55,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* Input image Dimensions */
 
-#define WIDTH 			2048	// Maximum Input image width
-#define HEIGHT 			2048   	// Maximum Input image height
+#define WIDTH 			1920	// Maximum Input image width
+#define HEIGHT 			1800   	// Maximum Input image height
 
 /* Output image Dimensions */
 
