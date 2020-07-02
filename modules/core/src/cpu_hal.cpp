@@ -55,6 +55,7 @@ struct StructRearrangeImage
     static void _(const Image& src, Image& dst, const std::vector<int>& bindings)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;
+        using srctype = typename TypeInfo<SDT>::basetype;
         ConstView<SDT> vsrc(src);
         View<DDT> vdst(dst);
         auto id = vdst.Begin();
@@ -67,7 +68,7 @@ struct StructRearrangeImage
                 x %= dst.strides_[i];
             }
 
-            *id = static_cast<dsttype>(*(vsrc.data_ + src_pos));
+            *id = static_cast<dsttype>(*reinterpret_cast<srctype*>(vsrc.data_ + src_pos));
         }
     }
 };
