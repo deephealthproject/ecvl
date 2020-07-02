@@ -314,8 +314,9 @@ public:
                 p_ = p.vals_[0];
             }
         }
-        catch (std::runtime_error) {
-            ECVL_ERROR_WRONG_PARAMS("The first parameter in OneOfAugmentationContainer must be the probability p");
+        catch (std::runtime_error&) {
+            std::cout << ECVL_ERROR_MSG "The first parameter in OneOfAugmentationContainer must be the probability p"<< std::endl;
+            ECVL_ERROR_AUGMENTATION_FORMAT
         }
 
         while (true) {
@@ -752,7 +753,7 @@ public:
     }
     AugCoarseDropout(std::istream& is)
     {
-        auto m = param::read(is, "AugGammaContrast");
+        auto m = param::read(is, "AugCoarseDropout");
         param p;
 
         m.Get("p", param::type::range, true, p);
@@ -1158,6 +1159,135 @@ public:
         border_value_ = 0;
         m.Get("border_value", param::type::number, false, p);
         border_value_ = static_cast<int>(p.vals_[0]);
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::Salt.
+
+@anchor AugSalt
+*/
+class AugSalt : public Augmentation
+{
+    double per_channel_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        Salt(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+    }
+public:
+    /** @brief AugSalt constructor
+
+    @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to white.
+    @param[in] per_channel Probability of each image to use the same value for all channels of a pixel or not.
+    */
+    AugSalt(const std::array<double, 2>& p, const double& per_channel) : per_channel_(per_channel)
+    {
+        assert(per_channel >= 0 && per_channel <= 1);
+        params_["p"] = AugmentationParam(p[0], p[1]);
+        params_["per_channel"] = AugmentationParam(0, 1);
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+    }
+    AugSalt(std::istream& is)
+    {
+        auto m = param::read(is, "AugSalt");
+        param p;
+
+        // seed is managed by AugmentationParam
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+
+        m.Get("p", param::type::range, true, p);
+        params_["p"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        m.Get("per_channel", param::type::number, true, p);
+        params_["per_channel"] = AugmentationParam(0, 1);
+        per_channel_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::Pepper.
+
+@anchor AugPepper
+*/
+class AugPepper : public Augmentation
+{
+    double per_channel_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        Pepper(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+    }
+public:
+    /** @brief AugPepper constructor
+
+    @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to black.
+    @param[in] per_channel Probability of each image to use the same value for all channels of a pixel or not.
+    */
+    AugPepper(const std::array<double, 2>& p, const double& per_channel) : per_channel_(per_channel)
+    {
+        assert(per_channel >= 0 && per_channel <= 1);
+        params_["p"] = AugmentationParam(p[0], p[1]);
+        params_["per_channel"] = AugmentationParam(0, 1);
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+    }
+    AugPepper(std::istream& is)
+    {
+        auto m = param::read(is, "AugPepper");
+        param p;
+
+        // seed is managed by AugmentationParam
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+
+        m.Get("p", param::type::range, true, p);
+        params_["p"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        m.Get("per_channel", param::type::number, true, p);
+        params_["per_channel"] = AugmentationParam(0, 1);
+        per_channel_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::SaltAndPepper.
+
+@anchor AugSaltAndPepper
+*/
+class AugSaltAndPepper : public Augmentation
+{
+    double per_channel_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        SaltAndPepper(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+    }
+public:
+    /** @brief AugSaltAndPepper constructor
+
+    @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to white or black.
+    @param[in] per_channel Probability of each image to use the same value for all channels of a pixel or not.
+    */
+    AugSaltAndPepper(const std::array<double, 2>& p, const double& per_channel) : per_channel_(per_channel)
+    {
+        assert(per_channel >= 0 && per_channel <= 1);
+        params_["p"] = AugmentationParam(p[0], p[1]);
+        params_["per_channel"] = AugmentationParam(0, 1);
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+    }
+    AugSaltAndPepper(std::istream& is)
+    {
+        auto m = param::read(is, "AugSalt");
+        param p;
+
+        // seed is managed by AugmentationParam
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+
+        m.Get("p", param::type::range, true, p);
+        params_["p"] = AugmentationParam(p.vals_[0], p.vals_[1]);
+
+        m.Get("per_channel", param::type::number, true, p);
+        params_["per_channel"] = AugmentationParam(0, 1);
+        per_channel_ = p.vals_[0];
     }
 };
 } // namespace ecvl
