@@ -40,6 +40,7 @@ var searchData=
   ['contiguousviewxyc',['ContiguousViewXYC',['../classecvl_1_1_contiguous_view_x_y_c.html',1,'ecvl::ContiguousViewXYC&lt; DT &gt;'],['../classecvl_1_1_contiguous_view_x_y_c.html#a492a7b16b12388936464def929b6587f',1,'ecvl::ContiguousViewXYC::ContiguousViewXYC()']]],
   ['copy',['Copy',['../classecvl_1_1_shallow_cpu_hal.html#a3e893d70ab6810678b9ffa8745625018',1,'ecvl::ShallowCpuHal::Copy()'],['../classecvl_1_1_hardware_abstraction_layer.html#ab93cb24add03dc1f645d6c0f70c370eb',1,'ecvl::HardwareAbstractionLayer::Copy()']]],
   ['copyimage',['CopyImage',['../classecvl_1_1_cpu_hal.html#a011bbd207df8960fd07c8d6f09b94aa7',1,'ecvl::CpuHal::CopyImage()'],['../classecvl_1_1_hardware_abstraction_layer.html#a67d400505a2e394279e9592af107e1f2',1,'ecvl::HardwareAbstractionLayer::CopyImage()'],['../namespaceecvl.html#af9f141dad11461dfa9975dd176e8a913',1,'ecvl::CopyImage(const Image &amp;src, Image &amp;dst, DataType new_type=DataType::none)'],['../namespaceecvl.html#a94b055a6b66b58b02a3b0f1b794c56e7',1,'ecvl::CopyImage(const Image &amp;src, Image &amp;dst, DataType new_type, const std::string &amp;channels)']]],
+  ['copyimagecreatedst',['CopyImageCreateDst',['../namespaceecvl.html#a4c0c32493490db0b3fee14794be71396',1,'ecvl']]],
   ['core_2ecpp',['core.cpp',['../core_8cpp.html',1,'']]],
   ['core_2eh',['core.h',['../core_8h.html',1,'']]],
   ['cpu',['CPU',['../namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83a2b55387dd066c5bac646ac61543d152d',1,'ecvl']]],

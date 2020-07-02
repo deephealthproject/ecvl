@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['test',['test',['../namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569a098f6bcd4621d373cade4e832627b4f6',1,'ecvl']]],
-  ['training',['training',['../namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214',1,'ecvl']]]
+  ['salt',['Salt',['../namespaceecvl.html#a3d43c54ff7b0e1cb77b4737eedab9140aaf334c7b6ef89b42a94f7932a1ee9ffe',1,'ecvl']]],
+  ['saltandpepper',['SaltAndPepper',['../namespaceecvl.html#a3d43c54ff7b0e1cb77b4737eedab9140a7eb238ac0dbd9ba17e8675ec4e5e7398',1,'ecvl']]],
+  ['string',['string',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4ab45cffe084dd3d20d928bee85e7b0f21',1,'ecvl::param']]]
 ];

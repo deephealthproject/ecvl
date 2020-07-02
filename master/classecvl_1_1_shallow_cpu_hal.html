@@ -195,6 +195,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a493262c0ddb6b18d97d47386b736e722 inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8be0e6d090bef68f79af0da1dd086d5 inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#aa8be0e6d090bef68f79af0da1dd086d5">OpticalDistortion</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::array&lt; float, 2 &gt; &amp;distort_limit, const std::array&lt; float, 2 &gt; &amp;shift_limit, <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> interp, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type, const int &amp;border_value, const unsigned seed) override</td></tr>
 <tr class="separator:aa8be0e6d090bef68f79af0da1dd086d5 inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ce7be770d77cb52dbd87df31dabc47c inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a0ce7be770d77cb52dbd87df31dabc47c">Salt</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double p, bool per_channel, const unsigned seed) override</td></tr>
+<tr class="separator:a0ce7be770d77cb52dbd87df31dabc47c inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70253f7e7e023a33d2808e1e2b90a7ca inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a70253f7e7e023a33d2808e1e2b90a7ca">Pepper</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double p, bool per_channel, const unsigned seed) override</td></tr>
+<tr class="separator:a70253f7e7e023a33d2808e1e2b90a7ca inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac27536690701c816ac76036239c3d58f inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#ac27536690701c816ac76036239c3d58f">SaltAndPepper</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double p, bool per_channel, const unsigned seed) override</td></tr>
+<tr class="separator:ac27536690701c816ac76036239c3d58f inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79c25fad2d7043b4cd62a73b39703366 inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a79c25fad2d7043b4cd62a73b39703366">Neg</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, bool saturate) override</td></tr>
 <tr class="separator:a79c25fad2d7043b4cd62a73b39703366 inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ab333cefa66afbd3c50dfe2d5ccf35b inherit pub_methods_classecvl_1_1_cpu_hal"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_cpu_hal.html#a4ab333cefa66afbd3c50dfe2d5ccf35b">Add</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src1, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src2, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, bool saturate) override</td></tr>
@@ -357,7 +363,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00103">103</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00106">106</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3e893d70ab6810678b9ffa8745625018"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e893d70ab6810678b9ffa8745625018">&#9670;&nbsp;</a></span>Copy()</h2>
@@ -395,7 +401,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ab93cb24add03dc1f645d6c0f70c370eb">ecvl::HardwareAbstractionLayer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal_8cpp_source.html#l00081">81</a> of file <a class="el" href="cpu__hal_8cpp_source.html">cpu_hal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal_8cpp_source.html#l00082">82</a> of file <a class="el" href="cpu__hal_8cpp_source.html">cpu_hal.cpp</a>.</p>
 
 </div>
 </div>
@@ -422,7 +428,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal_8cpp_source.html#l00088">88</a> of file <a class="el" href="cpu__hal_8cpp_source.html">cpu_hal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal_8cpp_source.html#l00089">89</a> of file <a class="el" href="cpu__hal_8cpp_source.html">cpu_hal.cpp</a>.</p>
 
 </div>
 </div>
@@ -451,7 +457,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_hardware_abstraction_layer.html#ac0c7375cb0fd6f7d48e6c1e3576d5dc6">ecvl::HardwareAbstractionLayer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00114">114</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00117">117</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +487,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_cpu_hal.html#a9ea36fe7f217db1d2674d2352a6477f5">ecvl::CpuHal</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00106">106</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00109">109</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
 
 </div>
 </div>
@@ -511,7 +517,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classecvl_1_1_cpu_hal.html#a0c43553f03666c31af7539526887889a">ecvl::CpuHal</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00110">110</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal_8h_source.html#l00113">113</a> of file <a class="el" href="cpu__hal_8h_source.html">cpu_hal.h</a>.</p>
 
 </div>
 </div>

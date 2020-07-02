@@ -1,5 +1,8 @@
 var searchData=
 [
+  ['salt',['Salt',['../classecvl_1_1_cpu_hal.html#a0ce7be770d77cb52dbd87df31dabc47c',1,'ecvl::CpuHal::Salt()'],['../classecvl_1_1_hardware_abstraction_layer.html#a3f670cb09ea07f08f88a2f0c4a74b164',1,'ecvl::HardwareAbstractionLayer::Salt()'],['../namespaceecvl.html#a2479ccd7f563973a4d6e39016cc75fea',1,'ecvl::Salt(const Image &amp;src, Image &amp;dst, double p, bool per_channel=false, const unsigned seed=std::default_random_engine::default_seed)'],['../namespaceecvl.html#a3d43c54ff7b0e1cb77b4737eedab9140aaf334c7b6ef89b42a94f7932a1ee9ffe',1,'ecvl::Salt()']]],
+  ['saltandpepper',['SaltAndPepper',['../classecvl_1_1_cpu_hal.html#ac27536690701c816ac76036239c3d58f',1,'ecvl::CpuHal::SaltAndPepper()'],['../classecvl_1_1_hardware_abstraction_layer.html#a2b7ba069beeca26c5f8b87231703bdac',1,'ecvl::HardwareAbstractionLayer::SaltAndPepper()'],['../namespaceecvl.html#a7105a709b77f159fa91b7f09e2f449bf',1,'ecvl::SaltAndPepper(const Image &amp;src, Image &amp;dst, double p, bool per_channel=false, const unsigned seed=std::default_random_engine::default_seed)'],['../namespaceecvl.html#a3d43c54ff7b0e1cb77b4737eedab9140a7eb238ac0dbd9ba17e8675ec4e5e7398',1,'ecvl::SaltAndPepper()']]],
+  ['saltorpepper',['SaltOrPepper',['../namespaceecvl.html#ac4390541d2380c0c9e96f4ae26b73cd4',1,'ecvl']]],
   ['sample',['Sample',['../classecvl_1_1_sample.html',1,'ecvl']]],
   ['samples_5f',['samples_',['../classecvl_1_1_dataset.html#a7d4abab1f90aabf7f53ad0179a051365',1,'ecvl::Dataset']]],
   ['saturate_5fcast',['saturate_cast',['../namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10',1,'ecvl::saturate_cast(IDT v)'],['../namespaceecvl.html#a2079b9789abfbb37d389825269364c84',1,'ecvl::saturate_cast(const IDT &amp;v)']]],
