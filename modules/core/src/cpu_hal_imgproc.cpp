@@ -1667,4 +1667,108 @@ void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<fl
         ChangeColorSpace(dst, dst, src.colortype_);
     }
 }
+
+enum class NoiseType
+{
+    Salt,
+    Pepper,
+    SaltAndPepper,
+};
+
+void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed, NoiseType noise)
+{
+    std::default_random_engine re(std::random_device{}());
+    if (seed != re.default_seed) {
+        re.seed(seed);
+    }
+    discrete_distribution<> dist({ p, 1 - p });
+    uniform_int_distribution<> bool_dist(0, 1);
+
+    Image tmp = src;
+    size_t x_pos = tmp.channels_.find('x');
+    size_t y_pos = tmp.channels_.find('y');
+    size_t c_pos = tmp.channels_.find('c');
+
+    if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+        ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+    }
+
+    int src_width = src.Width();
+    int src_height = src.Height();
+    int src_channels = src.Channels();
+    int tmp_stride_x = tmp.strides_[x_pos];
+    int tmp_stride_y = tmp.strides_[y_pos];
+    int tmp_stride_c = tmp.strides_[c_pos];
+
+    vector<uint8_t*> tmp_vch(src_channels);
+
+    // Get the pointers to channels starting pixels
+    for (int i = 0; i < src_channels; ++i) {
+        tmp_vch[i] = tmp.data_ + i * tmp_stride_c;
+    }
+
+    // Check what type of noise is to avoid if statement in the loop.
+    auto color(std::function([]() { return 255; }));
+    if (noise == NoiseType::Pepper) {
+        color = []() { return 0; };
+    }
+    else if (noise == NoiseType::SaltAndPepper) {
+        color = [&]() { return bool_dist(re) * 255; };
+    }
+
+    if (per_channel) {
+        for (uint8_t* tmp_ptr = tmp.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_) {
+#define ECVL_TUPLE(type, ...) \
+            case DataType::type: \
+                if (dist(re) == 0) { \
+                    *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = static_cast<TypeInfo_t<DataType::type>>(color()); \
+                } \
+            break;
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+    else {
+        for (int r = 0; r < src_height; ++r) {
+            int row_pos = r * tmp_stride_y;
+            for (int c = 0; c < src_width; ++c) {
+                int pos = row_pos + tmp_stride_x * c;
+#define ECVL_TUPLE(type, ...) \
+            case DataType::type: \
+                if (dist(re) == 0) { \
+                    int col = color(); \
+                    for (int ch = 0; ch < src_channels; ++ch) { \
+                        *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + pos) = static_cast<TypeInfo_t<DataType::type>>(col); \
+                    } \
+                } \
+                break;
+
+                switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+                }
+
+#undef ECVL_TUPLE
+            }
+        }
+    }
+    dst = std::move(tmp);
+}
+
+void CpuHal::Salt(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
+{
+    SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::Salt);
+}
+
+void CpuHal::Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
+{
+    SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::Pepper);
+}
+
+void CpuHal::SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
+{
+    SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::SaltAndPepper);
+}
 } // namespace ecvl

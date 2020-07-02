@@ -500,4 +500,25 @@ void OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>&
 
     src.hal_->OpticalDistortion(src, dst, distort_limit, shift_limit, interp, border_type, border_value, seed);
 }
+
+void Salt(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->Salt(src, dst, p, per_channel, seed);
+}
+
+void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->Pepper(src, dst, p, per_channel, seed);
+}
+
+void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->SaltAndPepper(src, dst, p, per_channel, seed);
+}
 } // namespace ecvl
