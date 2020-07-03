@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -1708,7 +1708,7 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     }
 
     // Check what type of noise is to avoid if statement in the loop.
-    auto color(std::function([]() { return 255; }));
+    auto color(std::function<int()>([]() { return 255; }));
     if (noise == NoiseType::Pepper) {
         color = []() { return 0; };
     }
