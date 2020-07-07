@@ -45,7 +45,16 @@ jobs:
             - ubuntu-toolchain-r-test
           packages:
             - g++-9
-      env: MATRIX_EVAL="CC=gcc-9 CXX=g++-9"
+      env: MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+    - os: linux
+      dist: bionic
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10
+      env: MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
     - os: linux
       dist: bionic
       addons:
@@ -56,7 +65,7 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-5.0
-      env: MATRIX_EVAL="CC=clang-5.0 CXX=clang++-5.0"
+      env: MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
     - os: linux
       dist: bionic
       addons:
@@ -67,7 +76,7 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-6.0
-      env: MATRIX_EVAL="CC=clang-6.0 CXX=clang++-6.0"
+      env: MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
     - os: linux
       dist: bionic
       addons:
@@ -78,7 +87,7 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-7
-      env: MATRIX_EVAL="CC=clang-7 CXX=clang++-7"
+      env: MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
     - os: linux
       dist: bionic
       addons:
@@ -89,7 +98,7 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-8
-      env: MATRIX_EVAL="CC=clang-8 CXX=clang++-8"
+      env: MATRIX_EVAL="CC=clang-8 && CXX=clang++-8"
     - os: linux
       dist: bionic
       addons:
@@ -100,7 +109,7 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-9
-      env: MATRIX_EVAL="CC=clang-9 CXX=clang++-9"
+      env: MATRIX_EVAL="CC=clang-9 && CXX=clang++-9"
     - os: linux
       dist: bionic
       addons:
@@ -111,13 +120,14 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
           packages:
             - clang-10
-      env: MATRIX_EVAL="CC=clang-10 CXX=clang++-10"
+      env: MATRIX_EVAL="CC=clang-10 && CXX=clang++-10"
     - os: osx
       osx_image: xcode11.4
-      env: MATRIX_EVAL="CC=clang CXX=clang++"
+      env: MATRIX_EVAL="CC=clang && CXX=clang++"
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - g++ --version
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       export TRAVIS_OS=Linux
