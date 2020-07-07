@@ -52,7 +52,6 @@
 | Channel Shuffle | :x: | :x: | :x: |
 | Coarse Dropout | :heavy_check_mark: | :x: | :x: |
 | Connected Components Labeling | :heavy_check_mark: | :x: | :x: |
-| Dropout | :x: | :x: | :x: |
 | Elastic Transform | :heavy_check_mark: | :x: | :x: |
 | Filter2D | :heavy_check_mark: | :x: | :x: |
 | FindContours | :heavy_check_mark: | :x: | :x: |
