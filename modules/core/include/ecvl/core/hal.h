@@ -158,6 +158,9 @@ public:
     virtual void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Salt(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

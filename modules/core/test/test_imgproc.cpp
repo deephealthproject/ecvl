@@ -624,6 +624,53 @@ TEST_F(Imgproc, OpticalDistortionSameDst##type) \
     else { \
         EXPECT_THROW(OpticalDistortion(g1_##type, g1_##type), std::runtime_error); \
     } \
+}\
+TEST_F(Imgproc, Salt##type) \
+{ \
+    Salt(g1_##type, out, 0.5, false, 0); \
+    View<DataType::type> out_v(out); \
+    EXPECT_EQ(g1_##type.dims_, out_v.dims_); \
+    EXPECT_EQ(g1_##type.colortype_, out_v.colortype_); \
+    EXPECT_EQ(g1_##type.elemtype_, out_v.elemtype_); \
+    EXPECT_EQ(g1_##type.channels_, out_v.channels_); \
+    \
+    Salt(g2_##type, out, 0.5, false, 0); \
+    out_v = out; \
+    EXPECT_EQ(g2_##type.dims_, out_v.dims_); \
+    EXPECT_EQ(g2_##type.colortype_, out_v.colortype_); \
+    EXPECT_EQ(g2_##type.elemtype_, out_v.elemtype_); \
+    EXPECT_EQ(g2_##type.channels_, out_v.channels_); \
+    \
+    Salt(rgb2_##type, out, 0.5, false, 0); \
+    out_v = out; \
+    EXPECT_EQ(rgb2_##type.dims_, out_v.dims_); \
+    EXPECT_EQ(rgb2_##type.colortype_, out_v.colortype_); \
+    EXPECT_EQ(rgb2_##type.elemtype_, out_v.elemtype_); \
+    EXPECT_EQ(rgb2_##type.channels_, out_v.channels_); \
+} \
+\
+TEST_F(Imgproc, SaltSameDst##type) \
+{ \
+    Salt(g1_##type, g1_##type, 0.5, false, 0); \
+    View<DataType::type> out_v(g1_##type); \
+    EXPECT_EQ(g1_##type.dims_, out_v.dims_); \
+    EXPECT_EQ(g1_##type.colortype_, out_v.colortype_); \
+    EXPECT_EQ(g1_##type.elemtype_, out_v.elemtype_); \
+    EXPECT_EQ(g1_##type.channels_, out_v.channels_); \
+    \
+    Salt(g2_##type, g2_##type, 0.5, false, 0); \
+    out_v = g2_##type; \
+    EXPECT_EQ(g2_##type.dims_, out_v.dims_); \
+    EXPECT_EQ(g2_##type.colortype_, out_v.colortype_); \
+    EXPECT_EQ(g2_##type.elemtype_, out_v.elemtype_); \
+    EXPECT_EQ(g2_##type.channels_, out_v.channels_); \
+    \
+    Salt(rgb2_##type, rgb2_##type, 0.5, false, 0); \
+    out_v = rgb2_##type; \
+    EXPECT_EQ(rgb2_##type.dims_, out_v.dims_); \
+    EXPECT_EQ(rgb2_##type.colortype_, out_v.colortype_); \
+    EXPECT_EQ(rgb2_##type.elemtype_, out_v.elemtype_); \
+    EXPECT_EQ(rgb2_##type.channels_, out_v.channels_); \
 }
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"

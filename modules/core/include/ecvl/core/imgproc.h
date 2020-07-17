@@ -454,6 +454,36 @@ void OpticalDistortion(const Image& src, Image& dst,
     const unsigned seed = std::default_random_engine::default_seed
 );
 
+/** @brief Adds salt noise (white pixels) to an Image.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] p Probability of replacing a pixel with salt noise.
+@param[in] per_channel If true, noise is not considered pixel-wise but channel-wise.
+@param[in] seed Seed to use for this function's random number generator.
+*/
+void Salt(const Image& src, Image& dst, double p, bool per_channel = false, const unsigned seed = std::default_random_engine::default_seed);
+
+/** @brief Adds pepper noise (black pixels) to an Image.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] p Probability of replacing a pixel with pepper noise.
+@param[in] per_channel If true, noise is not considered pixel-wise but channel-wise.
+@param[in] seed Seed to use for this function's random number generator.
+*/
+void Pepper(const Image& src, Image& dst, double p, bool per_channel = false, const unsigned seed = std::default_random_engine::default_seed);
+
+/** @brief Adds salt and pepper noise (white and black pixels) to an Image. White and black pixels are equally likely.
+
+@param[in] src Input Image.
+@param[out] dst Output Image.
+@param[in] p Probability of replacing a pixel with salt and pepper noise.
+@param[in] per_channel If true, noise is not considered pixel-wise but channel-wise.
+@param[in] seed Seed to use for this function's random number generator.
+*/
+void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel = false, const unsigned seed = std::default_random_engine::default_seed);
+
 /** @example example_imgproc.cpp
  Imgproc example.
 */

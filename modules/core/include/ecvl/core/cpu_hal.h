@@ -76,6 +76,9 @@ public:
     void GridDistortion(const Image& src, Image& dst, int num_steps, const std::array<float, 2>& distort_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) override;
     void ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) override;
     void OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit, InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed) override;
+    void Salt(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
+    void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
+    void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

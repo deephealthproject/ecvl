@@ -52,7 +52,6 @@
 | Channel Shuffle | :x: | :x: | :x: |
 | Coarse Dropout | :heavy_check_mark: | :x: | :x: |
 | Connected Components Labeling | :heavy_check_mark: | :x: | :x: |
-| Dropout | :x: | :x: | :x: |
 | Elastic Transform | :heavy_check_mark: | :x: | :x: |
 | Filter2D | :heavy_check_mark: | :x: | :x: |
 | FindContours | :heavy_check_mark: | :x: | :x: |
@@ -65,8 +64,8 @@
 | Median Blur | :x: | :x: | :x: |
 | Non Maxima Suppression | :heavy_check_mark: | :x: | :x: |
 | OpticalDistortion | :heavy_check_mark: | :x: | :x: |
-| Pepper | :x: | :x: | :x: |
-| Salt | :x: | :x: | :x: |
-| Salt And Pepper | :x: | :x: | :x: |
+| Pepper | :heavy_check_mark: | :x: | :x: |
+| Salt | :heavy_check_mark: | :x: | :x: |
+| Salt And Pepper | :heavy_check_mark: | :x: | :x: |
 | SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
 | Threshold | :heavy_check_mark: | :x: | :x: |

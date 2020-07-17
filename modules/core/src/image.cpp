@@ -47,41 +47,17 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
     }
 }
 
-void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels, DataType new_type)
+void RearrangeBindings(const Image& src, const std::string& channels, std::vector<int>& bindings, std::vector<int>& new_dims, std::vector<float>& new_spacings)
 {
-    if (src.elemtype_ == DataType::none)
-        throw std::runtime_error("Why should you copy a Image with none DataType into another?");
-
-    if (&src == &dst) {
-        if (src.elemtype_ != new_type && new_type != DataType::none) {
-            throw std::runtime_error("src and dst cannot be the same image while changing the type");
-            return;
-        }
-        if (src.channels_ == channels) {
-            return;
-        }
-    }
-
     if (channels.size() != src.channels_.size()) {
         ECVL_ERROR_WRONG_PARAMS("channels.size() does not match src.channels_.size()")
     }
 
-    if (src.channels_ == channels) {
-        CopyImage(src, dst, new_type);
-        return;
-    }
-
-    if (src.elemtype_ == new_type) {
-        RearrangeChannels(src, dst, channels);
-        return;
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
     }
 
     // bindings[new_pos] = old_pos
-    std::vector<int> bindings(src.channels_.size());
-    std::vector<int> new_dims(src.dims_);
-    std::vector<float> new_spacings(src.spacings_.size());
-
-    // Check if rearranging is required
     for (size_t old_pos = 0; old_pos < src.channels_.size(); old_pos++) {
         char c = src.channels_[old_pos];
         size_t new_pos = channels.find(c);
@@ -96,20 +72,41 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
             }
         }
     }
+}
+
+void CopyImageCreateDst(const Image& src, Image& dst, DataType new_type, const std::vector<int>& dims = {}, const std::string& channels = "")
+{
+    // TODO consider spacings
+
+    if (src.elemtype_ == DataType::none)
+        throw std::runtime_error("Why should you copy a Image with none DataType into another?");
+
+    if (&src == &dst) {
+        if (src.elemtype_ != new_type && new_type != DataType::none) {
+            throw std::runtime_error("src and dst cannot be the same image while changing the type");
+        }
+        return;
+    }
+
+    std::vector<int> new_dims = dims.empty() ? src.dims_ : dims;
+    std::string new_channels = channels.empty() ? src.channels_ : channels;
 
     if (new_type == DataType::none) {
         // Get type from dst or src
         if (dst.IsEmpty()) {
-            RearrangeChannels(src, dst, channels);
-            return;
+            if (channels.empty()) {
+                dst = src;
+                return;
+            }
         }
-        if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemtype_ != dst.elemtype_) {
+        if (src.dims_ != dst.dims_ || new_channels != dst.channels_ || src.elemtype_ != dst.elemtype_) {
             // Destination needs to be resized
             if (!dst.IsOwner()) {
                 throw std::runtime_error("Trying to resize an Image which doesn't own data.");
             }
-            if (src.dims_ != dst.dims_ || dst.channels_ != channels || src.elemsize_ != dst.elemsize_) {
-                dst = Image(new_dims, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_, channels, src.colortype_);
+            if (src.dims_ != dst.dims_ || new_channels != dst.channels_ || src.elemsize_ != dst.elemsize_) {
+                dst = Image(new_dims, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_,
+                    new_channels, src.colortype_, src.spacings_, src.dev_);
             }
         }
         if (src.colortype_ != dst.colortype_) {
@@ -122,16 +119,16 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
     }
     else {
         if (dst.IsEmpty()) {
-            dst = Image(new_dims, new_type, channels, src.colortype_);
+            dst = Image(new_dims, new_type, new_channels, src.colortype_, src.spacings_, src.dev_);
         }
         else {
-            if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemtype_ != new_type) {
+            if (src.dims_ != dst.dims_ || new_channels != dst.channels_ || dst.elemtype_ != new_type) {
                 // Destination needs to be resized
                 if (!dst.IsOwner()) {
                     throw std::runtime_error("Trying to resize an Image which doesn't own data.");
                 }
-                if (src.dims_ != dst.dims_ || dst.channels_ != channels || dst.elemsize_ != DataTypeSize(new_type)) {
-                    dst = Image(new_dims, new_type, channels, src.colortype_);
+                if (src.dims_ != dst.dims_ || new_channels != dst.channels_ || dst.elemsize_ != DataTypeSize(new_type)) {
+                    dst = Image(new_dims, new_type, new_channels, src.colortype_, src.spacings_, src.dev_);
                 }
                 else {
                     dst.elemtype_ = new_type;
@@ -146,6 +143,28 @@ void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels,
             }
         }
     }
+}
+
+void RearrangeAndCopy(const Image& src, Image& dst, const std::string& channels, DataType new_type)
+{
+    // Check if rearranging is required
+    if (src.channels_ == channels) {
+        CopyImage(src, dst, new_type);
+        return;
+    }
+
+    // Check if copy is reqiured
+    if (src.elemtype_ == new_type) {
+        RearrangeChannels(src, dst, channels);
+        return;
+    }
+
+    std::vector<int> bindings(src.channels_.size());
+    std::vector<int> new_dims(src.dims_.size());
+    std::vector<float> new_spacings(src.spacings_.size());
+
+    RearrangeBindings(src, channels, bindings, new_dims, new_spacings);
+    CopyImageCreateDst(src, dst, new_type, new_dims, channels);
 
     dst.hal_->RearrangeChannels(src, dst, bindings);
 }
@@ -159,41 +178,19 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
         return;
     }
 
-    if (channels.size() != src.channels_.size()) {
-        ECVL_ERROR_WRONG_PARAMS("channels.size() does not match src.channels_.size()")
+    if (src.dev_ != dst.dev_ && dst.dev_ != Device::NONE) {
+        ECVL_ERROR_DIFFERENT_DEVICES
     }
-    // bindings[new_pos] = old_pos
+
     std::vector<int> bindings(src.channels_.size());
     std::vector<int> new_dims(src.dims_.size());
     std::vector<float> new_spacings(src.spacings_.size());
 
-    for (size_t old_pos = 0; old_pos < src.channels_.size(); old_pos++) {
-        char c = src.channels_[old_pos];
-        size_t new_pos = channels.find(c);
-        if (new_pos == std::string::npos) {
-            ECVL_ERROR_WRONG_PARAMS("channels contains wrong characters")
-        }
-        else {
-            bindings[new_pos] = static_cast<int>(old_pos);
-            new_dims[new_pos] = src.dims_[old_pos];
-            if (new_spacings.size() == new_dims.size()) {   // spacings is not a mandatory field
-                new_spacings[new_pos] = src.spacings_[old_pos];
-            }
-        }
-    }
+    RearrangeBindings(src, channels, bindings, new_dims, new_spacings);
 
-    Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings);
+    Image tmp(new_dims, src.elemtype_, channels, src.colortype_, new_spacings, src.dev_);
 
-    for (size_t tmp_pos = 0; tmp_pos < tmp.datasize_; tmp_pos += tmp.elemsize_) {
-        int x = static_cast<int>(tmp_pos);
-        int src_pos = 0;
-        for (int i = vsize(tmp.dims_) - 1; i >= 0; i--) {
-            src_pos += (x / tmp.strides_[i]) * src.strides_[bindings[i]];
-            x %= tmp.strides_[i];
-        }
-
-        tmp.hal_->MemCopy(tmp.data_ + tmp_pos, src.data_ + src_pos, tmp.elemsize_);
-    }
+    src.hal_->RearrangeChannels(src, tmp, bindings);
 
     // TODO consider spacings
     // Check if rearranging is possible, else throw
@@ -246,69 +243,7 @@ void RearrangeChannels(const Image& src, Image& dst, const std::string& channels
 
 void CopyImage(const Image& src, Image& dst, DataType new_type)
 {
-    // TODO consider spacings
-
-    if (src.elemtype_ == DataType::none)
-        throw std::runtime_error("Why should you copy a Image with none DataType into another?");
-
-    if (&src == &dst) {
-        if (src.elemtype_ != new_type && new_type != DataType::none) {
-            throw std::runtime_error("src and dst cannot be the same image while changing the type");
-        }
-        return;
-    }
-
-    if (new_type == DataType::none) {
-        // Get type from dst or src
-        if (dst.IsEmpty()) {
-            dst = src;
-            return;
-        }
-        if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemtype_ != dst.elemtype_) {
-            // Destination needs to be resized
-            if (!dst.IsOwner()) {
-                throw std::runtime_error("Trying to resize an Image which doesn't own data.");
-            }
-            if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || src.elemsize_ != dst.elemsize_) {
-                dst = Image(src.dims_, dst.elemtype_ == DataType::none ? src.elemtype_ : dst.elemtype_, 
-                    src.channels_, src.colortype_, src.spacings_, src.dev_);
-            }
-        }
-        if (src.colortype_ != dst.colortype_) {
-            // Destination needs to change its color space
-            if (!dst.IsOwner()) {
-                throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
-            }
-            dst.colortype_ = src.colortype_;
-        }
-    }
-    else {
-        if (dst.IsEmpty()) {
-            dst = Image(src.dims_, new_type, src.channels_, src.colortype_, src.spacings_, src.dev_);
-        }
-        else {
-            if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemtype_ != new_type) {
-                // Destination needs to be resized
-                if (!dst.IsOwner()) {
-                    throw std::runtime_error("Trying to resize an Image which doesn't own data.");
-                }
-                if (src.dims_ != dst.dims_ || src.channels_ != dst.channels_ || dst.elemsize_ != DataTypeSize(new_type)) {
-                    dst = Image(src.dims_, new_type, src.channels_, src.colortype_);
-                }
-                else {
-                    dst.elemtype_ = new_type;
-                }
-            }
-            if (src.colortype_ != dst.colortype_) {
-                // Destination needs to change its color space
-                if (!dst.IsOwner()) {
-                    throw std::runtime_error("Trying to change color space on an Image which doesn't own data.");
-                }
-                dst.colortype_ = src.colortype_;
-            }
-        }
-    }
-
+    CopyImageCreateDst(src, dst, new_type);
     dst.hal_->CopyImage(src, dst);
 }
 

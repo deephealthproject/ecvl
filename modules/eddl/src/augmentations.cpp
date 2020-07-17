@@ -50,6 +50,9 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugGridDistortion);
     AUG(AugElasticTransform);
     AUG(AugOpticalDistortion);
+    AUG(AugSalt);
+    AUG(AugPepper);
+    AUG(AugSaltAndPepper);
 
     return nullptr; // Maybe throw?
 }

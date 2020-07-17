@@ -15,6 +15,7 @@
 #define ECVL_DATATYPE_H_
 
 #include <cstdint>
+#include <cstddef>
 #include <limits>
 #include <array>
 
