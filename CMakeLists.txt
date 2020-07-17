@@ -221,6 +221,17 @@ target_compile_definitions(ECVL_CORE PRIVATE OpenCV_VERSION_MAJOR=${OpenCV_VERSI
 # END: OpenCV
 #--------------------------------------------------------------------------------------------------------
 
+# OpenMP
+    find_package(OpenMP)
+    if (OpenMP_FOUND)
+        target_link_libraries(ECVL_CORE PUBLIC OpenMP::OpenMP_CXX)
+        if (${OpenMP_CXX_VERSION_MAJOR})
+            set(OpenMP_VERSION_MAJOR ${OpenMP_CXX_VERSION_MAJOR} CACHE INTERNAL "" FORCE)
+        endif()
+        target_compile_definitions(ECVL_CORE PUBLIC OpenMP_VERSION_MAJOR=${OpenMP_VERSION_MAJOR})
+        set(OMP_CANCELLATION true)  # https://www.openmp.org/spec-html/5.0/openmpse59.html
+    endif()
+
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
