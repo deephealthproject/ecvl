@@ -103,7 +103,10 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     }
 
     int pivot = (src_height + 1) / 2;
-    for (int r = 0, r_end = src_height - 1; r < pivot; ++r, --r_end) {
+
+    int r_end = src_height - 1;
+#pragma omp parallel for
+    for (int r = 0; r < pivot; ++r) {
         // Get the address of next row
         int r1 = r * src_stride_y;
         int r2 = r_end * src_stride_y;
@@ -126,6 +129,7 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 
 #undef ECVL_TUPLE
         }
+        --r_end;
     }
     dst = std::move(tmp);
 }
@@ -157,6 +161,8 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
     }
 
     int pivot = (src_width + 1) / 2;
+
+#pragma omp parallel for
     for (int r = 0; r < src_height; ++r) {
         // Get the address of next row
         int pos = r * src_stride_y;

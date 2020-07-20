@@ -15,6 +15,7 @@ set(examples_sources
     example_image_view.cpp
     example_imgcodecs.cpp
     example_imgproc.cpp
+    example_performance.cpp
 )
 FOREACH(cur_file ${examples_sources})
     get_filename_component(exe_name ${cur_file} NAME_WE)
