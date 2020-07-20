@@ -9,7 +9,6 @@
 #include <iostream>
 #include "/home/izcagal/eddl/src/hardware/fpga/libs/xcl2.hpp"
 
-
 //#define DBG_FPGA
 
 cl::Context context;
