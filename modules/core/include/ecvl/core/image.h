@@ -27,9 +27,11 @@
 #include "datatype_matrix.h"
 #include "type_promotion.h"
 #include "standard_errors.h"
+#include <iostream>
 
 namespace ecvl
 {
+	using namespace std;
 template<typename T>
 int vsize(const std::vector<T>& v)
 {
@@ -386,6 +388,7 @@ public:
         colortype_ = rhs.colortype_;
         // Release any resource we are holding
         if (hal_) {
+			cout << "operator = en imagen h " << endl;
             hal_->MemDeallocate(data_);
         }
         data_ = rhs.data_;
@@ -443,6 +446,7 @@ public:
     ~Image()
     {
         if (hal_) {
+			cout << "create imgen vacia en imagen.h" << endl;
             hal_->MemDeallocate(data_);
         }
     }

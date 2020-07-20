@@ -16,27 +16,35 @@
 #include <cassert>
 
 #include "ecvl/core/cpu_hal.h"
+
+
+#if defined ECVL_WITH_FPGA
 #include "ecvl/core/fpga_hal.h"
+#endif // ECVL_WITH_FPGA
 
 #if defined ECVL_GPU
 #include "ecvl/core/cuda/gpu_hal.h"
 #endif // ECVL_GPU
 
 #include "ecvl/core/image.h"
+#include <iostream>
 
 namespace ecvl
 {
-
+using namespace std;
 HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool shallow)
 {
+	
     switch (dev) {
     case ecvl::Device::NONE:
         throw std::runtime_error("This is a big problem. You should never try to obtain a HAL from NONE device.");
     case ecvl::Device::CPU:
         if (shallow) {
+			cout << "retorna shallow hal" << endl;
             return ShallowCpuHal::GetInstance();
         }
         else {
+			cout << "retorna cpu hal" << endl;
             return CpuHal::GetInstance();
         }
     case ecvl::Device::GPU:
@@ -46,7 +54,12 @@ HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool sha
         ECVL_ERROR_DEVICE_UNAVAILABLE(GPU)
 #endif
     case ecvl::Device::FPGA:
+#if defined ECVL_WITH_FPGA
+		cout << "retorna fpga hal" << endl;
         return FpgaHal::GetInstance();
+#else
+	ECVL_ERROR_DEVICE_UNAVAILABLE(FPGA)
+#endif
     default:
         ECVL_ERROR_NOT_REACHABLE_CODE
     }
@@ -54,13 +67,22 @@ HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool sha
 
 void HardwareAbstractionLayer::Create(Image& img)
 {
+/* #if defined ECVL_WITH_FPGA
+	img.dev_= ecvl::Device::FPGA;
+	img.hal_= HardwareAbstractionLayer::Factory(ecvl::Device::FPGA);
+#endif */
+	//cout << "entra a crear imagen 11111" << endl;
     img.SetDefaultStrides();
+	//cout << "entra a crear imagen 22222" << endl;
     img.SetDefaultDatasize();
+	//cout << "entra a crear imagen 33333333" << endl;
     img.data_ = MemAllocate(img.datasize_);
+	cout << "entra a crear imagen 4444444" << endl;
 }
 
 void HardwareAbstractionLayer::Copy(const Image& src, Image& dst)
 {
+	cout << "entra a copiar imagen" << endl;
     assert(src.dev_ == dst.dev_);
     if (src.contiguous_) {
         dst.data_ = dst.hal_->MemAllocateAndCopy(src.datasize_, src.data_);

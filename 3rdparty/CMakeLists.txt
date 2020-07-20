@@ -250,4 +250,13 @@ if(ECVL_WITH_DICOM)
     target_sources(ECVL_CORE PRIVATE "../modules/core/include/ecvl/core/support_dcmtk.h" "../modules/core/src/support_dcmtk.cpp")
     message(STATUS "DCMTK libs: ${DCMTK_LIBS}")
     message(STATUS "DCMTK incldue dure: ${DCMTK_INCLUDE_DIRS}")
+	
+# --------------------
+# fpga
+# --------------------	
+	
+if(ECVL_WITH_FPGA)
+	ecvl_update_3rdparty(xfopencv)
+endif()
+
 endif()

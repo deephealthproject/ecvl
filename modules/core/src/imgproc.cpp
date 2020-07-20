@@ -14,6 +14,7 @@
 #include "ecvl/core/imgproc.h"
 
 #include <opencv2/imgproc.hpp>
+#include <iostream>
 
 namespace ecvl
 {
@@ -46,17 +47,19 @@ int GetOpenCVInterpolation(InterpolationType interp)
 
 void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
+	cout << "imgproc ResizeDiiiiiiiiiiiiiiim principiooooo" << endl;
     AlwaysCheck(src, dst);
-
     if (newdims.size() != 2) {
         ECVL_ERROR_WRONG_PARAMS("Number of dimensions specified doesn't match image dimensions")
     }
-
+	cout << "llama a capa FPGAAAA hal" << endl;
     src.hal_->ResizeDim(src, dst, newdims, interp);
+	cout << "imgproc ResizeDiiiiiiiiiiiiiiim finaaaaaaaal" << endl;
 }
 
 void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
-{
+{	
+	cout << "imgproc ResizeSCALEEEEEEEEEEEEEEEEE" << endl;
     AlwaysCheck(src, dst);
 
     if (scales.size() != 2) {
@@ -146,9 +149,9 @@ int OtsuThreshold(const Image& src)
         ECVL_ERROR_WRONG_PARAMS("The OtsuThreshold requires a grayscale Image")
     }
 
-    if (src.elemtype_ != DataType::uint8) {
+  /*   if (src.elemtype_ != DataType::uint8) {
         ECVL_ERROR_NOT_IMPLEMENTED
-    }
+    } */
 
     return src.hal_->OtsuThreshold(src);
 }

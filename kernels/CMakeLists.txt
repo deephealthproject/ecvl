@@ -1,0 +1,12 @@
+set(ECVL_KERNELS_SRC
+	"${CMAKE_CURRENT_SOURCE_DIR}/resize_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/threshold_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/otsuThreshold_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/gaussian_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rgb2gray_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/flipvertical_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/mirror_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/warpTransform_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/filter2d_accel.cpp"
+	PARENT_SCOPE
+)

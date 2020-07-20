@@ -228,6 +228,7 @@ set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
 set(ECVL_DATASET OFF CACHE BOOL "Whether to build yaml support or not")
 set(ECVL_WITH_OPENSLIDE OFF CACHE BOOL "Whether to build OpenSlide support or not")
+set(ECVL_WITH_FPGA OFF CACHE BOOL "Whether to build ECVL with FPGA support")
 find_package(Git QUIET)
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
@@ -306,6 +307,34 @@ if(ECVL_DATASET AND NOT eddl_FOUND)
     endif()
 endif()
 
+set(ECVL_KERNELS_MODE "sw_emu" CACHE STRING "Kernel build type (sw_emu, hw_emu, hw)")
+if(ECVL_WITH_FPGA)
+    set(ECVL_KERNELS_SRC)
+    add_subdirectory(kernels)
+
+    set(XOS)
+    foreach(KERNEL_SRC ${ECVL_KERNELS_SRC})
+        get_filename_component(KERNEL_NAME ${KERNEL_SRC} NAME_WLE)
+
+        set(XO "xclbin/${KERNEL_NAME}.xo")
+
+        add_custom_command(OUTPUT ${XO}
+            COMMAND v++
+            ARGS -c  --kernel ${KERNEL_NAME} -I${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/xfopencv/include --xp prop:kernel.resize_accel.kernel_flags="-std=c++0x"  -o xclbin/${KERNEL_NAME}.xo -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${KERNEL_SRC} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
+            COMMENT "Compiling ${KERNEL_NAME} kernel"
+            DEPENDS ${KERNEL_SRC})
+        list(APPEND XOS ${XO})
+    endforeach()
+
+    add_custom_command(OUTPUT xclbin/ecvl_kernels.xclbin
+        COMMAND v++
+        ARGS -l --xp vivado_prop:run.impl_1.strategy=Performance_Explore -o xclbin/ecvl_kernels.xclbin -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${XOS} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
+        COMMENT "Generating xclbin"
+        DEPENDS ${XOS})
+
+    add_custom_target(kernels DEPENDS xclbin/ecvl_kernels.xclbin SOURCES ${ECVL_KERNELS_SRC})
+endif()
+
 foreach(MODULE ${ECVL_MODULES})
     string(TOLOWER ${MODULE} LOWER_MODULE)
     set_target_properties(${MODULE} PROPERTIES
@@ -345,6 +374,24 @@ if(ECVL_WITH_OPENSLIDE)
         message(WARNING "Could NOT find OpenSlide")
     endif()
 endif()
+
+# uncomment this if host code needs access to Vivado HLS headers
+# (beware it will generate a conflict between the system-wide and vivado-provided OpenCV library)
+#set(VIVADO_DIR "/opt/Xilinx/Vivado/2019.1" CACHE PATH "Xilinx Vivado install directory (needed for FPGA support)")
+
+if(ECVL_WITH_FPGA)
+    FIND_PACKAGE(OpenCL REQUIRED)
+    target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_FPGA)
+    target_include_directories(ECVL_CORE PUBLIC ${OpenCL_INCLUDE_DIRS})
+    target_link_libraries(ECVL_CORE PUBLIC ${OpenCL_LIBRARY})
+    # include xcl2.{cpp,hpp}
+    target_sources(ECVL_CORE PRIVATE "../3rdparty/xfopencv/examples_sdaccel/resize/xcl2.cpp")
+    target_include_directories(ECVL_CORE PRIVATE "3rdparty/xfopencv/examples_sdaccel/resize")
+    # include Vivado HLS types
+    #target_include_directories(ECVL_CORE PRIVATE "${VIVADO_DIR}/include")
+    message(STATUS "OpenCL added FPGA")
+endif()
+
 #--------------------------------------------------------------------------------------------------------
 # END: 3rdparty
 #--------------------------------------------------------------------------------------------------------

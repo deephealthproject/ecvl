@@ -25,6 +25,13 @@ target_sources(ECVL_CORE
         support_nifti.cpp
 )
 
+if(ECVL_WITH_FPGA)
+	message(STATUS "Compile imgproc_fpga")
+    target_sources(ECVL_CORE
+		PRIVATE
+		imgproc_fpga.cpp
+    )
+endif()
 
 if(ECVL_GPU_AVAILABLE)
 

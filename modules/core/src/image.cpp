@@ -12,12 +12,14 @@
 */
 
 #include "ecvl/core/image.h"
+#include <iostream>
 #include "ecvl/core/datatype_matrix.h"
 
 #include "ecvl/core/standard_errors.h"
 
 namespace ecvl
 {
+	using namespace std;
 void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
     const std::vector<float>& spacings, Device dev)
 {
@@ -36,6 +38,7 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
         size_t new_datasize = GetDefaultDatasize();
 
         if (datasize_ != new_datasize) {
+			cout << "create imgen con nuevo datasize" << endl;
             datasize_ = new_datasize;
             hal_->MemDeallocate(data_);
             data_ = hal_->MemAllocate(new_datasize);

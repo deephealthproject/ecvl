@@ -23,6 +23,7 @@
 #include "ecvl/core/imgproc.h"
 #include "ecvl/core/arithmetic.h"
 #include "ecvl/core/support_opencv.h"
+#include <functional>
 
 using namespace std;
 
