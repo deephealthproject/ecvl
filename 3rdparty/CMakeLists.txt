@@ -251,12 +251,14 @@ if(ECVL_WITH_DICOM)
     message(STATUS "DCMTK libs: ${DCMTK_LIBS}")
     message(STATUS "DCMTK incldue dure: ${DCMTK_INCLUDE_DIRS}")
 	
+
+
+endif()
+
 # --------------------
 # fpga
 # --------------------	
 	
 if(ECVL_WITH_FPGA)
 	ecvl_update_3rdparty(xfopencv)
-endif()
-
 endif()
