@@ -25,7 +25,6 @@ struct Benchmark
 {
     int n_test_ = 1000;
     cv::TickMeter tm_;
-    vector<double> timings_;
 
     Benchmark() {}
     Benchmark(int n_test) : n_test_(n_test) {}
@@ -33,17 +32,28 @@ struct Benchmark
     template <class Functor, class... Args>
     double Run(int processor_count, Functor f, Args&&... args)
     {
+        vector<double> timings(n_test_);
         omp_set_num_threads(processor_count);
         for (int i = 0; i < n_test_; ++i) {
             tm_.reset();
             tm_.start();
             f(args...);
             tm_.stop();
-            timings_.push_back(tm_.getTimeMilli());
+            timings[i] = tm_.getTimeMilli();
         }
-        return std::accumulate(timings_.begin(), timings_.end(), 0.) / timings_.size();
+        return std::accumulate(timings.begin(), timings.end(), 0.) / timings.size();
     }
 };
+
+void print_p(int processor_count, double& timing)
+{
+    cout << "Elapsed parallel " << processor_count << " threads: " << timing  << endl;
+}
+
+void print_s(double& timing)
+{
+    cout << "Elapsed sequential: " << timing << endl;
+}
 
 int main()
 {
@@ -60,42 +70,55 @@ int main()
     cout << "CPU Cores: " << processor_count << endl << endl;
 
     cout << "Benchmarking Threshold" << endl;
-    auto time = b.Run(1, Threshold, in, out, 128, 255., ThresholdingType::BINARY);
-    cout << "Elapsed sequential: " << time << endl;
+    auto timing = b.Run(1, Threshold, in, out, 128, 255., ThresholdingType::BINARY);
+    print_s(timing);
+    timing = b.Run(processor_count, Threshold, in, out, 128, 255., ThresholdingType::BINARY);
+    print_p(processor_count, timing);
 
-    time = b.Run(processor_count, Threshold, in, out, 128, 255., ThresholdingType::BINARY);
-    cout << "Elapsed parallel: " << time << endl << endl;
+    cout << endl;
 
     cout << "Benchmarking Mirror2D" << endl;
-    time = b.Run(1, Mirror2D, in, out);
-    cout << "Elapsed sequential: " << time << endl;
+    timing = b.Run(1, Mirror2D, in, out);
+    print_s(timing);
+    timing = b.Run(processor_count, Mirror2D, in, out);
+    print_p(processor_count, timing);
 
-    time = b.Run(processor_count, Mirror2D, in, out);
-    cout << "Elapsed parallel: " << time << endl << endl;
+    cout << endl;
 
     cout << "Benchmarking Flip2D" << endl;
-    time = b.Run(1, Flip2D, in, out);
-    cout << "Elapsed sequential: " << time << endl;
+    timing = b.Run(1, Flip2D, in, out);
+    print_s(timing);
+    timing = b.Run(processor_count, Flip2D, in, out);
+    print_p(processor_count, timing);
 
-    time = b.Run(processor_count, Flip2D, in, out);
-    cout << "Elapsed parallel: " << time << endl << endl;
+    cout << endl;
 
-    //Image ccl_in;
-    //Threshold(in, ccl_in, 128, 255);
-    //cout << "Benchmarking ConnectedComponentsLabeling" << endl;
-    //time = b.Run(1, ConnectedComponentsLabeling, ccl_in, out);
-    //cout << "Elapsed sequential: " << time << endl;
+    Image ccl_in;
+    Threshold(in, ccl_in, 128, 255);
+    cout << "Benchmarking ConnectedComponentsLabeling" << endl;
+    timing = b.Run(1, ConnectedComponentsLabeling, ccl_in, out);
+    print_s(timing);
+    timing = b.Run(processor_count, ConnectedComponentsLabeling, ccl_in, out);
+    print_p(processor_count, timing);
 
-    //time = b.Run(processor_count, ConnectedComponentsLabeling, ccl_in, out);
-    //cout << "Elapsed parallel: " << time << endl << endl;
+    cout << endl;
 
-    //cout << "Benchmarking HConcat" << endl;
-    //vector images{ in,in };
-    //time = b.Run(1, HConcat, images, out);
-    //cout << "Elapsed sequential: " << time << endl;
+    cout << "Benchmarking HConcat" << endl;
+    vector images{ in,in };
+    timing = b.Run(1, HConcat, images, out);
+    print_s(timing);
+    timing = b.Run(processor_count, HConcat, images, out);
+    print_p(processor_count, timing);
 
-    //time = b.Run(processor_count, HConcat, images, out);
-    //cout << "Elapsed parallel: " << time << endl << endl;
+    cout << endl;
+
+    cout << "Benchmarking Stack" << endl;
+    timing = b.Run(1, Stack, images, out);
+    print_s(timing);
+    timing = b.Run(processor_count, Stack, images, out);
+    print_p(processor_count, timing);
+
+    cout << endl;
 
     return EXIT_SUCCESS;
 }

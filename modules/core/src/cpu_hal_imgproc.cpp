@@ -1003,6 +1003,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         }
 
         // Every other line but the last one if image has an odd number of rows
+#pragma omp parallel for
         for (int r = 2; r < e_rows; r += 2) {
             // Get rows pointer
             const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
@@ -1088,7 +1089,8 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
     // Second scan
     int r = 0;
-    for (; r < e_rows; r += 2) {
+#pragma omp parallel for
+    for (r = 0; r < e_rows; r += 2) {
         // Get rows pointer
         const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
         const unsigned char* const img_row_fol = img_row + src.strides_[1];
@@ -1259,6 +1261,7 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
         // 4x time faster than generic version below
         // Fill each tmp color plane by row
         for (int i = 0; i < src_0.Channels(); ++i) {
+#pragma omp parallel for
             for (int r = 0; r < src_0.dims_[1]; ++r) {
                 for (int c = 0; c < n_images; ++c) {
                     memcpy(tmp.data_ + cumul_strides[c] + r * tmp.strides_[1] + i * tmp.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
