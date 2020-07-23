@@ -385,22 +385,19 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
     T* src_data = reinterpret_cast<T*>(src.data_);
     T* tmp_data = reinterpret_cast<T*>(tmp.data_);
     auto elemsize = src.elemsize_;
+    auto limit = tmp.datasize_ / elemsize;
 
     switch (thresh_type) {
     case ecvl::ThresholdingType::BINARY:
 #pragma omp parallel for
-        for (int i = 0; i < tmp.datasize_; i += elemsize) {
-            *tmp_data = *src_data > thresh_t ? maxval_t : minval_t;
-            ++src_data;
-            ++tmp_data;
+        for (int i = 0; i < limit; ++i) {
+                tmp_data[i] = src_data[i] > thresh_t ? maxval_t : minval_t;
         }
         break;
     case ecvl::ThresholdingType::BINARY_INV:
 #pragma omp parallel for
-        for (int i = 0; i < tmp.datasize_; i += elemsize) {
-            *tmp_data = *src_data <= thresh_t ? maxval_t : minval_t;
-            ++src_data;
-            ++tmp_data;
+        for (int i = 0; i < limit; ++i) {
+            tmp_data[i] = src_data[i] <= thresh_t ? maxval_t : minval_t;
         }
         break;
     }
