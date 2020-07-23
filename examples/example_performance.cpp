@@ -20,7 +20,6 @@
 using namespace ecvl;
 using namespace std;
 
-
 struct Benchmark
 {
     int n_test_ = 1000;
@@ -45,14 +44,15 @@ struct Benchmark
     }
 };
 
-void print_p(int processor_count, double& timing)
+void print(double& timing, int processor_count = 1)
 {
-    cout << "Elapsed parallel " << processor_count << " threads: " << timing  << endl;
-}
-
-void print_s(double& timing)
-{
-    cout << "Elapsed sequential: " << timing << endl;
+    if (processor_count > 1) {
+        cout << "Elapsed parallel " << processor_count << " threads: ";
+    }
+    else {
+        cout << "Elapsed sequential: ";
+    }
+    cout << timing << " ms" << endl;
 }
 
 int main()
@@ -71,25 +71,25 @@ int main()
 
     cout << "Benchmarking Threshold" << endl;
     auto timing = b.Run(1, Threshold, in, out, 128, 255., ThresholdingType::BINARY);
-    print_s(timing);
+    print(timing);
     timing = b.Run(processor_count, Threshold, in, out, 128, 255., ThresholdingType::BINARY);
-    print_p(processor_count, timing);
+    print(timing, processor_count);
 
     cout << endl;
 
     cout << "Benchmarking Mirror2D" << endl;
     timing = b.Run(1, Mirror2D, in, out);
-    print_s(timing);
+    print(timing);
     timing = b.Run(processor_count, Mirror2D, in, out);
-    print_p(processor_count, timing);
+    print(timing, processor_count);
 
     cout << endl;
 
     cout << "Benchmarking Flip2D" << endl;
     timing = b.Run(1, Flip2D, in, out);
-    print_s(timing);
+    print(timing);
     timing = b.Run(processor_count, Flip2D, in, out);
-    print_p(processor_count, timing);
+    print(timing, processor_count);
 
     cout << endl;
 
@@ -97,28 +97,46 @@ int main()
     Threshold(in, ccl_in, 128, 255);
     cout << "Benchmarking ConnectedComponentsLabeling" << endl;
     timing = b.Run(1, ConnectedComponentsLabeling, ccl_in, out);
-    print_s(timing);
+    print(timing);
     timing = b.Run(processor_count, ConnectedComponentsLabeling, ccl_in, out);
-    print_p(processor_count, timing);
+    print(timing, processor_count);
 
     cout << endl;
 
     cout << "Benchmarking HConcat" << endl;
     vector images{ in,in };
     timing = b.Run(1, HConcat, images, out);
-    print_s(timing);
+    print(timing);
     timing = b.Run(processor_count, HConcat, images, out);
-    print_p(processor_count, timing);
+    print(timing, processor_count);
 
     cout << endl;
 
     cout << "Benchmarking Stack" << endl;
     timing = b.Run(1, Stack, images, out);
-    print_s(timing);
+    print(timing);
     timing = b.Run(processor_count, Stack, images, out);
-    print_p(processor_count, timing);
+    print(timing, processor_count);
 
     cout << endl;
+
+    cout << "Benchmarking SaltAndPepper" << endl;
+    timing = b.Run(1, SaltAndPepper, in, out, 0.5, false, 1U);
+    print(timing);
+    timing = b.Run(processor_count, SaltAndPepper, in, out, 0.5, false, 1U);
+    print(timing, processor_count);
+
+    cout << endl;
+
+   /* cout << "Benchmarking SeparableFilter2D" << endl;
+    vector<double> kernelX = { 1, 2, 1 };
+    vector<double> kernelY = { 1, 0, -1 };
+    timing = b.Run(1, SeparableFilter2D, in, out, kernelX, kernelY, DataType::none);
+    print(timing);
+    timing = b.Run(processor_count, SeparableFilter2D, in, out, kernelX, kernelY, DataType::none);
+    print(timing, processor_count);
+
+    cout << endl;*/
 
     return EXIT_SUCCESS;
 }

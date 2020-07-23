@@ -1728,21 +1728,26 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     }
 
     if (per_channel) {
-        for (uint8_t* tmp_ptr = tmp.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_) {
 #define ECVL_TUPLE(type, ...) \
-            case DataType::type: \
-                if (dist(re) == 0) { \
-                    *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = static_cast<TypeInfo_t<DataType::type>>(color()); \
+        case DataType::type: \
+            { \
+                TypeInfo_t<DataType::type>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp.data_); \
+                OMP_PAR_FOR \
+                for (int i = 0; i < tmp.datasize_ / tmp.elemsize_; ++i) { \
+                    if (dist(re) == 0) { \
+                        tmp_data[i] = static_cast<TypeInfo_t<DataType::type>>(color()); \
+                    } \
                 } \
+            } \
             break;
-            switch (src.elemtype_) {
+        switch (src.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
-            }
+        }
 
 #undef ECVL_TUPLE
-        }
     }
     else {
+#pragma omp parallel for
         for (int r = 0; r < src_height; ++r) {
             int row_pos = r * tmp_stride_y;
             for (int c = 0; c < src_width; ++c) {

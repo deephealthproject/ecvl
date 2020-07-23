@@ -671,8 +671,35 @@ TEST_F(Imgproc, SaltSameDst##type) \
     EXPECT_EQ(rgb2_##type.colortype_, out_v.colortype_); \
     EXPECT_EQ(rgb2_##type.elemtype_, out_v.elemtype_); \
     EXPECT_EQ(rgb2_##type.channels_, out_v.channels_); \
+} \
+\
+TEST_F(Imgproc, CCLSameDst##type) \
+{ \
+    if (DataType::type == DataType::uint8) { \
+        Threshold(g1_##type, g1_##type, 35, 255, ThresholdingType::BINARY); \
+        ConnectedComponentsLabeling(g1_##type, g1_##type); \
+        View<DataType::int32> out_v(g1_##type); /* CCL output image is fixed to int32 */ \
+        EXPECT_EQ(g1_##type.dims_, out_v.dims_); \
+        EXPECT_EQ(g1_##type.colortype_, out_v.colortype_); \
+        /*EXPECT_EQ(g1_##type.elemtype_, out_v.elemtype_);*/ \
+        EXPECT_EQ(g1_##type.channels_, out_v.channels_); \
+        EXPECT_TRUE(out_v({ 0,0,0 }) == 1); \
+        \
+        Threshold(g2_##type, g2_##type, 35, 255, ThresholdingType::BINARY); \
+        ConnectedComponentsLabeling(g2_##type, g2_##type); \
+        out_v = g2_##type; \
+        EXPECT_EQ(g2_##type.dims_, out_v.dims_); \
+        EXPECT_EQ(g2_##type.colortype_, out_v.colortype_); \
+        /*EXPECT_EQ(g2_##type.elemtype_, out_v.elemtype_);*/ \
+        EXPECT_EQ(g2_##type.channels_, out_v.channels_); \
+        EXPECT_TRUE(out_v({ 0,0,0 }) == 1); EXPECT_TRUE(out_v({ 1,0,0 }) == 0); \
+        EXPECT_TRUE(out_v({ 0,1,0 }) == 0); EXPECT_TRUE(out_v({ 1,1,0 }) == 1); \
+    } \
+    else { \
+        EXPECT_THROW(ConnectedComponentsLabeling(g1_##type, g1_##type), std::runtime_error); \
+    } \
 }
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-}
+} // namespace

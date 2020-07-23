@@ -18,6 +18,20 @@
 
 #include "hal.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#ifdef _MSC_VER
+     // For Microsoft compiler
+#define OMP_PAR_FOR __pragma(omp parallel for)
+#else  // assuming "__GNUC__" is defined
+     // For GCC compiler
+#define OMP_PAR_FOR _Pragma("omp parallel for")
+#endif
+#else
+#define OMP_PAR_FOR
+#endif
+
+
 namespace ecvl
 {
 /** @brief CPU specific Hardware Abstraction Layer
