@@ -47,14 +47,14 @@ int GetOpenCVInterpolation(InterpolationType interp)
 
 void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
-	cout << "imgproc ResizeDiiiiiiiiiiiiiiim principiooooo" << endl;
+	cout << "imgproc ResizeDim" << endl;
     AlwaysCheck(src, dst);
     if (newdims.size() != 2) {
         ECVL_ERROR_WRONG_PARAMS("Number of dimensions specified doesn't match image dimensions")
     }
-	cout << "llama a capa FPGAAAA hal" << endl;
+	cout << "llama a capa FPGA hal desde imgproc" << endl;
     src.hal_->ResizeDim(src, dst, newdims, interp);
-	cout << "imgproc ResizeDiiiiiiiiiiiiiiim finaaaaaaaal" << endl;
+	cout << "imgproc Resize dim final" << endl;
 }
 
 void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)

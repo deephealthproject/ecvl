@@ -160,22 +160,18 @@ void OpenCVAlwaysCheck2(const ecvl::Image& src)
 
 void FpgaHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
-	cout << "fpga haaaal Resize DIIM PRINCIPIOOO" << endl;
+	cout << "fpga hal Resize DIM PRINCIPIO" << endl;
 	OpenCVAlwaysCheck2(src);
-	//cout << "fpga haaaal Resize DIIM 2222222222" << endl;
-	//FromCpu(dst);
-	//cout << "fpga haaaal Resize DIIM 333333333" << endl;
 	//= cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(src_mat.channels()));
 	cv::Mat src_mat = ImageToMat(src);
 	cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(src_mat.channels()));
-	ResizeDim_FPGA(src_mat, m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
+	ResizeDim_FPGA(src, m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
 	dst = ecvl::MatToImage(m);
 
 	if(dst.IsEmpty()){
-		cout << "vaciaaaaaaa" << endl;
+		cout << "vacia" << endl;
 	}
-	//ToCpu(dst);
-	cout << "fpga haaaal Resize DIIM FINN" << endl;
+	cout << "fpga hal Resize DIM FIN" << endl;
 }
 
 void FpgaHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
@@ -187,7 +183,7 @@ void FpgaHal::ResizeScale(const Image& src, Image& dst, const std::vector<double
 
     cv::Mat src_mat = ImageToMat(src);
     cv::Mat m = cv::Mat::zeros(cv::Size(nw,nh), CV_8UC(src_mat.channels()));
-	ResizeDim_FPGA(src_mat, m, cv::Size(nw,nh), GetOpenCVInterpolation(interp));
+	ResizeDim_FPGA(src, m, cv::Size(nw,nh), GetOpenCVInterpolation(interp));
     dst = ecvl::MatToImage(m);
 }
 

@@ -2,10 +2,11 @@
 #define IMGPROC_FPGA_H_
 
 #include <opencv2/imgproc.hpp>
+#include "ecvl/core/image.h"
 
 namespace ecvl {
 
-void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp);
+void ResizeDim_FPGA(const ecvl::Image& src, cv::Mat& dst, cv::Size dsize, int interp);
 void Threshold_FPGA(const cv::Mat& src,  cv::Mat& dst, double thresh, double maxval);
 uint8_t OtsuThreshold_FPGA(const cv::Mat& src);
 void warpTransform_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Mat& rotMatrix);

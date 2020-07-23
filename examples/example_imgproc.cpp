@@ -13,30 +13,33 @@
 
 #include <iostream>
 #include "ecvl/core.h"
+#ifdef ECVL_WITH_FPGA
 #include "ecvl/core/fpga_hal.h"
+#endif
 using namespace ecvl;
 using namespace std;
 
 int main()
 {
     // Open an Image
-    Image img1, tmp;
+    Image img1, img2, tmp;
     if (!ImRead("/home/izcagal/ecvl/examples/data/test.jpg", img1)) {
 		 cout << "Error" << endl;
         return EXIT_FAILURE;
     }
 	cout << "empieza" << endl;
-	img1.dev_= ecvl::Device::CPU;
-	img1.hal_ = FpgaHal::GetInstance();
-	//img2.dev_= ecvl::Device::CPU;
-	//tmp.dev_= ecvl::Device::CPU;
-
+/* 	img1.dev_= ecvl::Device::FPGA;
+	img1.hal_ = FpgaHal::GetInstance(); */
+#ifdef ECVL_WITH_FPGA
+	img2.dev_= ecvl::Device::FPGA;
+	tmp.dev_= ecvl::Device::FPGA;
+#endif
     // Resize an Image to new_width, new_height (optional: InterpolationType)
-/*     int new_width = 225;
+    int new_width = 225;
     int new_height = 300;
     cout << "Executing ResizeDim" << endl;
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
-    ImWrite("img_resized.jpg", tmp); */
+    ImWrite("img_resized.jpg", tmp);
 
     // Resize an Image by scaling the dimensions to a given scale factor res_scale (optional: InterpolationType)
 /*     vector<double> res_scale = { 1,2 };
@@ -61,28 +64,28 @@ int main()
     ImWrite("img_rotated.jpg", tmp); */
 
     // Rotate an Image of a given angle; it is scaled during rotation with a rot_scale scaling factor. The output is resized accordingly.
- /*    double rot_scale = 1.5;
+/*     double rot_scale = 1.5;
     cout << "Executing RotateFullImage2D" << endl;
     RotateFullImage2D(img1, tmp, angle, rot_scale);
     ImWrite("img_rotated_full.jpg", tmp); */
 
     // Change the color space of an Image from BGR to GRAY
-    cout << "Executing ChangeColorSpace" << endl;
+/*     cout << "Executing ChangeColorSpace" << endl;
     ChangeColorSpace(img1, tmp, ColorType::GRAY);
-    ImWrite("img_gray.jpg", tmp);
+    ImWrite("img_gray.jpg", tmp); */
 
     // Calculate the Otsu thresholding value (the Image must be GRAY)
-    cout << "Executing OtsuThreshold" << endl;
+/*     cout << "Executing OtsuThreshold" << endl;
 	tmp.dev_= ecvl::Device::CPU;
 	tmp.hal_ = FpgaHal::GetInstance();
     double thresh = OtsuThreshold(tmp);
-	cout << thresh << endl;
+	cout << thresh << endl; */
 
     //Apply a fixed threshold to an input Image (optional: ThresholdingType)
-    double maxval = 255;
+/*     double maxval = 255;
     cout << "Executing Threshold" << endl;
     Threshold(tmp, tmp, thresh, maxval);
-    ImWrite("img_thresh.jpg", tmp);
+    ImWrite("img_thresh.jpg", tmp); */
 
     // Label connected components in a binary Image
 /*     Image labels;
@@ -99,8 +102,8 @@ int main()
     float c = 0.11f;
     for (; i != e; ++i) {
         *i = c;
-    } */
-
+    }
+ */
     // Convolves an Image with a kernel (optional: destination DataType)
 /*     cout << "Executing Filter2D" << endl;
     Filter2D(img1, tmp, kernel);
@@ -114,9 +117,9 @@ int main()
     ImWrite("img_separable_filter.jpg", tmp); */
 
     // Blur an Image using a Gaussian kernel (optional: standard deviation in Y direction)
-    cout << "Executing GaussianBlur" << endl;
+/*     cout << "Executing GaussianBlur" << endl;
     GaussianBlur(img1, tmp, 5, 5, 0.0);
-    ImWrite("img_gaussian_blur.jpg", tmp);
+    ImWrite("img_gaussian_blur.jpg", tmp); */
 
     // Add Laplace distributed noise to an Image
 /*     float stddev = 255 * 0.05;
@@ -128,16 +131,16 @@ int main()
 /*     int gamma = 3;
     cout << "Executing GammaContrast" << endl;
     GammaContrast(img1, tmp, gamma);
-    ImWrite("img_gammacontrast.jpg", tmp); */
-
+    ImWrite("img_gammacontrast.jpg", tmp);
+ */
     // Set rectangular areas within an Image to zero
 /*     float prob = 0.5;
     float drop_size = 0.1f;
     bool per_channel = true;
     cout << "Executing CoarseDropout" << endl;
     CoarseDropout(img1, tmp, prob, drop_size, per_channel);
-    ImWrite("img_coarsedropout.jpg", tmp);
- */
+    ImWrite("img_coarsedropout.jpg", tmp); */
+
     //Horizontal concatenation of images
 /*     vector<Image> images;
     if (!ImRead("../examples/data/img0003.png", img1)) {
@@ -166,7 +169,7 @@ int main()
 
     // Stack a sequence of Images along a new depth dimension (xyc -> xyzc)
     cout << "Executing Stack of images xyc creating a xyzc Image" << endl;
-    Stack(images, tmp); */
-
+    Stack(images, tmp);
+ */
     return EXIT_SUCCESS;
 }

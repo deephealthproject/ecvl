@@ -7,6 +7,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <iostream>
+#include "ecvl/core/image.h"
 #include "/home/izcagal/eddl/src/hardware/fpga/libs/xcl2.hpp"
 
 //#define DBG_FPGA
@@ -174,7 +175,7 @@ void Filter2d_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Mat& filter, int width,
   }
 
 
-void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp)
+void ResizeDim_FPGA(const ecvl::Image& src, cv::Mat& dst, cv::Size dsize, int interp)
 {
     /* The interp parameter is ignored at the moment.
      * The xfOpenCV generates an accelerator for the Area interpolator
@@ -197,16 +198,23 @@ void ResizeDim_FPGA(const cv::Mat& src, cv::Mat& dst, cv::Size dsize, int interp
     cl::Program program(context, devices, bins);
     cl::Kernel krnl(program,"resize_accel");
 
-    cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels()); // TODO check src datatype
+    //cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels()); // TODO check src datatype
     cl::Buffer imageFromDevice(context,CL_MEM_WRITE_ONLY, dst.rows * dst.cols * dst.channels());
-
-    /* Copy input vectors to memory */
-    q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols * src.channels(), src.data);
-
-    krnl.setArg(0, imageToDevice);
+	
+	//Cl buffer with the original imgdata
+	cl::Buffer *buffer_a = (cl::Buffer*) src.data_;
+	
+	
+    /* Copy input vectors to memory -> Now we create a cl buffer into the image, it is not necessary */
+    //q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols * src.channels(), src.data);
+	//cl::Event  event2;
+	//q.enqueueMigrateMemObjects( {src.data_}, 0 /*0 means from host*/, NULL, &event2);
+	
+	
+    krnl.setArg(0, *src.data_);
     krnl.setArg(1, imageFromDevice);
-    krnl.setArg(2, src.rows);
-    krnl.setArg(3, src.cols);
+    krnl.setArg(2, src.dims_[1]);
+    krnl.setArg(3, src.dims_[0]);
     krnl.setArg(4, dsize.height);
     krnl.setArg(5, dsize.width);
 
