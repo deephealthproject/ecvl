@@ -20,9 +20,19 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
 - [OpenCV](https://opencv.org) 3.0 or later (modules required: `core`, `imgproc`, `imgcodecs`, `photo`, [`calib3d` since OpenCV 4.0 only])
 
 ### Optional
+- [EDDL](https://github.com/deephealthproject/eddl), European Distributed Deep Learning Library (`ECVL_BUILD_EDDL` flag)
 - [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled
   - OpenGL 3.3 or later, required by the 3D viewer enabled by `ECVL_BUILD_GUI` flag
 - [OpenSlide](https://github.com/openslide/openslide), required with `ECVL_WITH_OPENSLIDE` flag
+
+#### EDDL Version Compatibility
+|   ECVL  |  EDDL  | 
+|:-------:|:------:|
+| 0.2.2 | 0.6.0 |
+| 0.2.1 | 0.4.3 |
+| 0.2.0 | 0.4.3 |
+| 0.1.1 | 0.4.2 |
+| 0.1.0 | 0.3.1 |
 
 ## Installation
 Clone and install ECVL with:
