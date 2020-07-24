@@ -14,6 +14,7 @@
 #include "ecvl/core/cpu_hal.h"
 
 #include <random>
+#include <functional>
 #include <opencv2/photo.hpp>
 
 #if OpenCV_VERSION_MAJOR >= 4
