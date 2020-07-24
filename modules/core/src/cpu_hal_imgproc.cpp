@@ -103,10 +103,14 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     }
 
     int pivot = (src_height + 1) / 2;
-
-    int r_end = src_height - 1;
-#pragma omp parallel for
+    bool setup = false;
+    int r_end;
+#pragma omp parallel for firstprivate(setup, r_end)
     for (int r = 0; r < pivot; ++r) {
+        if (!setup) {
+            r_end = src_height - 1 - r;
+            setup = true;
+        }
         // Get the address of next row
         int r1 = r * src_stride_y;
         int r2 = r_end * src_stride_y;
@@ -391,7 +395,7 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
     case ecvl::ThresholdingType::BINARY:
 #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
-                tmp_data[i] = src_data[i] > thresh_t ? maxval_t : minval_t;
+            tmp_data[i] = src_data[i] > thresh_t ? maxval_t : minval_t;
         }
         break;
     case ecvl::ThresholdingType::BINARY_INV:
@@ -1000,7 +1004,6 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         }
 
         // Every other line but the last one if image has an odd number of rows
-#pragma omp parallel for
         for (int r = 2; r < e_rows; r += 2) {
             // Get rows pointer
             const unsigned char* const img_row = src.Ptr({ 0, r, 0 });
@@ -1086,7 +1089,6 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
     // Second scan
     int r = 0;
-#pragma omp parallel for
     for (r = 0; r < e_rows; r += 2) {
         // Get rows pointer
         const unsigned char* const img_row = src.Ptr({ 0, r, 0 });

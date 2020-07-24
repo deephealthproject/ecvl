@@ -48,6 +48,11 @@ int main()
     Mirror2D(img1, tmp);
     ImWrite("img_mirrored.jpg", tmp);
 
+    // Transpose an Image
+    cout << "Executing Transpose" << endl;
+    Transpose(img1, tmp);
+    ImWrite("img_transpose.jpg", tmp);
+
     // Rotate an Image of a given angle (optional: coordinates of the rotation center, scaling factor and InterpolationType)
     int angle = 60;
     cout << "Executing Rotate2D" << endl;
@@ -73,12 +78,12 @@ int main()
     double maxval = 255;
     cout << "Executing Threshold" << endl;
     Threshold(tmp, tmp, thresh, maxval);
-    ImWrite("img_thresh.jpg", tmp);
+    ImWrite("img_thresh.png", tmp);
 
     // Label connected components in a binary Image
     Image labels;
     ConnectedComponentsLabeling(tmp, labels);
-    ImWrite("img_labels.jpg", labels);
+    ImWrite("img_labels.png", labels);
 
     // Find contours in a binary Image
     vector<vector<ecvl::Point2i>> contours;
@@ -158,6 +163,36 @@ int main()
     // Stack a sequence of Images along a new depth dimension (xyc -> xyzc)
     cout << "Executing Stack of images xyc creating a xyzc Image" << endl;
     Stack(images, tmp);
+
+    cout << "Executing Salt" << endl;
+    Salt(img1, tmp, 0.5, true);
+    ImWrite("img_salt_perchannel.png", tmp);
+    Salt(img1, tmp, 0.5, false);
+    ImWrite("img_salt.png", tmp);
+
+    cout << "Executing Pepper" << endl;
+    Pepper(img1, tmp, 0.5, true);
+    ImWrite("img_pepper_perchannel.png", tmp);
+    Pepper(img1, tmp, 0.5, false);
+    ImWrite("img_pepper.png", tmp);
+
+    cout << "Executing SaltAndPepper" << endl;
+    SaltAndPepper(img1, tmp, 0.5, true);
+    ImWrite("img_saltandpepper_perchannel.png", tmp);
+    SaltAndPepper(img1, tmp, 0.5, false);
+    ImWrite("img_saltandpepper.png", tmp);
+
+    cout << "Executing OpticalDistortion" << endl;
+    OpticalDistortion(img1, tmp);
+    ImWrite("img_opticaldistortion.png", tmp);
+
+    cout << "Executing GridDistortion" << endl;
+    GridDistortion(img1, tmp);
+    ImWrite("img_griddistortion.png", tmp);
+
+    cout << "Executing ElasticTransform" << endl;
+    ElasticTransform(img1, tmp);
+    ImWrite("img_elastictransform.png", tmp);
 
     return EXIT_SUCCESS;
 }
