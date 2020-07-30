@@ -27,7 +27,6 @@
 #ifdef ECVL_WITH_FPGA
 #include "ecvl/core/fpga_hal.h"
 #include <opencv2/imgproc.hpp>
-#include "xcl2.hpp"
 #endif
 
 
@@ -35,56 +34,24 @@ using namespace ecvl::filesystem;
 
 namespace ecvl
 {
-#ifdef ECVL_WITH_FPGA
-using namespace cv;
-#endif
 bool ImRead(const path& filename, Image& dst, ImReadMode flags)
 {
 	cv::Mat src = cv::imread(filename.string(), (int)flags);
-    dst = MatToImage(src);
+    dst = MatToImage(src, dst.dev_);
+	
 #ifdef ECVL_WITH_DICOM
     if (dst.IsEmpty()) {
         // DICOM
         DicomRead(filename, dst);
     }
 #endif
-#ifdef ECVL_WITH_FPGA
-	//create the context
-	std::vector<cl::Device> devices = xcl::get_xil_devices();
-    cl::Device device = devices[0];
-    cl::Context context(device);
 	
-	size_t size_a = src.rows * src.cols * src.channels() * sizeof(uint8_t);
-	//size_t size_a = 25 * 25 * sizeof(uint8_t); -> for a vector example of 25 integers
-	vector<uint8_t, aligned_allocator<uint8_t>> array(size_a, 0);
-	
-	//FOR LOADING IMG DATA:
-	if (src.isContinuous()) {
-	  array.assign((uint8_t*)src.data, (uint8_t*)src.data + src.total()*src.channels());
-	} else {
-	  for (int i = 0; i < src.rows; ++i) {
-		array.insert(array.end(), src.ptr<uint8_t>(i), src.ptr<uint8_t>(i)+src.cols*src.channels());
-	  }
-	}
-	
-	//FOR LOADING A VECTOR EXAMPLE OF 25 INTEGERS:
-/* 	for (int i = 0; i < 25; i++) {
-      for (int j = 0; j < 25; j++) {
-		int ind = i*25 + j;
-        array[ind] = 1;
-      }
-    } */
-	
-	//TO PRINT THE FIRST 20 MEMBERS:
-	for (int i = 0; i < 20; i++){
-		printf("%d\n", array[i]);
-	}
-	
-	//WE CREATE DE CL BUFFER
-	dst.data_ = (uint8_t *) new cl::Buffer(context, CL_MEM_READ_ONLY  | CL_MEM_USE_HOST_PTR , size_a, &array[0], nullptr);
-	dst.dev_ = ecvl::Device::FPGA;
-	dst.hal_ = FpgaHal::GetInstance();
-#endif
+/* 	if(dst.dev_ == ecvl::Device::FPGA){
+		//WE CREATE THE CL BUFFER
+		printf("entraaaaa if imgproc");
+		ReturnBuffer(src, dst);
+	} */
+
     if (dst.IsEmpty()) {
         // NIFTI
         NiftiRead(filename, dst);

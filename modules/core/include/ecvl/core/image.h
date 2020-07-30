@@ -29,6 +29,8 @@
 #include "standard_errors.h"
 #include <iostream>
 
+#include "/home/izcagal/eddl/src/hardware/fpga/libs/xcl2.hpp"
+
 namespace ecvl
 {
 	using namespace std;
@@ -173,7 +175,6 @@ public:
                                                          HardwareAbstractionLayer. */
     size_t                      datasize_;          /**< @brief Size of Image data in bytes. */
     bool                        contiguous_;        /**< @brief Whether the image is stored contiguously or not in memory. */
-
     MetaData* meta_;                                /**< @brief Pointer to Image MetaData. */
     HardwareAbstractionLayer*   hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
 
@@ -446,7 +447,7 @@ public:
     ~Image()
     {
         if (hal_) {
-			cout << "create imgen vacia en imagen.h" << endl;
+			cout << "create an empty image in image.h" << endl;
             hal_->MemDeallocate(data_);
         }
     }

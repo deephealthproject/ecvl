@@ -28,16 +28,32 @@
 #include "ecvl/core/support_opencv.h"
 #include <functional>
 
-
+#define CL_HPP_ENABLE_EXCEPTIONS
+#include "/home/izcagal/eddl/src/hardware/fpga/libs/xcl2.hpp"
 
 #include <stdexcept>
 #include <vector>
 
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/standard_errors.h"
 #include <iostream>
+
+cl::CommandQueue q;
+cl::Device device;
+cl::Context context;
+cl::Program::Binaries bins;
+cl::Program program;
+std::vector<cl::Device> devices;
+std::string device_name;
+std::string binaryFile;
+
+
+// kernels
+cl::Kernel kernel_resize, kernel_threshold, kernel_otsu_threshold, kernel_mirror2d, kernel_flip2d;
+cl::Kernel kernel_gaussian_blur, kernel_warp_transform, kernel_rgb_2_gray, kernel_filter2d;
 
 
 namespace ecvl
@@ -110,6 +126,98 @@ void FpgaHal::RearrangeChannels(const Image& src, Image& dst, const std::vector<
     table(src.elemtype_, dst.elemtype_)(src, dst, bindings);
 }
 
+void fpga_init(){
+	 
+	devices = xcl::get_xil_devices();
+    device = devices[0];
+	cl_int err;
+
+	OCL_CHECK(err, context = cl::Context(device, NULL, NULL, NULL, &err));
+	if (err != CL_SUCCESS) printf("Error creating context 1\n");
+	OCL_CHECK(err, q = cl::CommandQueue(context, device, CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
+	if (err != CL_SUCCESS) printf("Error creating command q 2\n");
+
+    device_name = device.getInfo<CL_DEVICE_NAME>();
+    binaryFile = xcl::find_binary_file(device_name,"ecvl_kernels");
+    
+	bins = xcl::import_binary_file(binaryFile);
+    devices.resize(1);
+
+	OCL_CHECK(err, program = cl::Program(context, devices, bins, NULL, &err));
+	if (err != CL_SUCCESS) printf("Error creating program 3\n");
+	
+	OCL_CHECK(err, kernel_filter2d = cl::Kernel(program,"filter2d_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_filter2d \n");
+	
+	OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_warp_transform 4\n");
+	
+	OCL_CHECK(err, kernel_resize = cl::Kernel(program,"resize_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_resize \n");
+	
+	OCL_CHECK(err, kernel_gaussian_blur = cl::Kernel(program,"gaussian_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_gaussian_blur \n");
+	
+	OCL_CHECK(err, kernel_rgb_2_gray = cl::Kernel(program,"rgb2gray_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_rgb_2_gray \n");
+	
+	OCL_CHECK(err, kernel_flip2d = cl::Kernel(program,"flipvertical_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_flip2d \n");
+	
+	OCL_CHECK(err, kernel_mirror2d = cl::Kernel(program,"mirror_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel 4\n");
+	
+	OCL_CHECK(err, kernel_threshold = cl::Kernel(program,"threshold_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_threshold\n");
+	
+	OCL_CHECK(err, kernel_otsu_threshold = cl::Kernel(program,"otsuThreshold_accel", &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel_otsu_threshold\n");
+	
+	cout << "END FPGA INIT" << endl;
+}
+
+void ReturnBuffer(cv::Mat& src, ecvl::Image& dst){
+	
+	cl::Buffer *imageToDevice;
+	cl_int err;
+	size_t size_a = src.rows * src.cols * src.channels();
+	//size_t size_a = 25 * 25 * sizeof(uint8_t); -> for a vector example of 25 integers
+	
+	size_t size_a_in_bytes = size_a * sizeof(uint8_t);
+	vector<uint8_t, aligned_allocator<uint8_t>> array(size_a, 0);
+	
+	//FOR LOADING IMG DATA:
+/* 	if (src.isContinuous()) {
+	  array.assign((uint8_t*)src.data, (uint8_t*)src.data + src.total()*src.channels());
+	} else {
+	  for (int i = 0; i < src.rows; ++i) {
+		array.insert(array.end(), src.ptr<uint8_t>(i), src.ptr<uint8_t>(i)+src.cols*src.channels());
+	  }
+	} */
+	
+	//FOR LOADING A VECTOR EXAMPLE OF 25 INTEGERS:
+	/* 	for (int i = 0; i < 25; i++) {
+      for (int j = 0; j < 25; j++) {
+		int ind = i*25 + j;
+        array[ind] = 1;
+      }
+    } */
+	
+	//TO PRINT THE FIRST 20 MEMBERS:
+/* 	for (int i = 0; i < 20; i++){
+		printf("%d\n", array[i]);
+	} */
+	
+	//WE CREATE DE CL BUFFER
+	//OCL_CHECK(err, imageToDevice = cl::Buffer(context, CL_MEM_READ_ONLY  | CL_MEM_USE_HOST_PTR , size_a_in_bytes, &array[0], &err));
+	//OCL_CHECK(err, imageToDevice = cl::Buffer(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels(), nullptr, &err));
+	//if (err != CL_SUCCESS) printf("Error creating kernel 5\n");
+	
+	cl::Buffer *buffer_a = (cl::Buffer*) dst.data_;
+	
+	q.enqueueWriteBuffer(*buffer_a, CL_TRUE, 0, src.rows * src.cols * src.channels() * sizeof(uint8_t), src.data);
+
+}
 
 void FpgaHal::FromCpu(Image& src)
 {
@@ -163,15 +271,15 @@ void FpgaHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vec
 	cout << "fpga hal Resize DIM PRINCIPIO" << endl;
 	OpenCVAlwaysCheck2(src);
 	//= cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(src_mat.channels()));
-	cv::Mat src_mat = ImageToMat(src);
-	cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(src_mat.channels()));
+	//cv::Mat src_mat = ImageToMat(src);
+	cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(3));
 	ResizeDim_FPGA(src, m, cv::Size(newdims[0], newdims[1]), GetOpenCVInterpolation(interp));
 	dst = ecvl::MatToImage(m);
 
 	if(dst.IsEmpty()){
 		cout << "vacia" << endl;
 	}
-	cout << "fpga hal Resize DIM FIN" << endl;
+	cout << "fpga hal Resize DIM END" << endl;
 }
 
 void FpgaHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)

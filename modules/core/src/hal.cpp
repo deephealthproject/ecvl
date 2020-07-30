@@ -67,17 +67,11 @@ HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool sha
 
 void HardwareAbstractionLayer::Create(Image& img)
 {
-/* #if defined ECVL_WITH_FPGA
-	img.dev_= ecvl::Device::FPGA;
-	img.hal_= HardwareAbstractionLayer::Factory(ecvl::Device::FPGA);
-#endif */
-	//cout << "entra a crear imagen 11111" << endl;
+
     img.SetDefaultStrides();
-	//cout << "entra a crear imagen 22222" << endl;
     img.SetDefaultDatasize();
-	//cout << "entra a crear imagen 33333333" << endl;
     img.data_ = MemAllocate(img.datasize_);
-	cout << "entra a crear imagen 4444444" << endl;
+	cout << "create image hal.cpp END" << endl;
 }
 
 void HardwareAbstractionLayer::Copy(const Image& src, Image& dst)

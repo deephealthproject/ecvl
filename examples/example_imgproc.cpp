@@ -21,25 +21,35 @@ using namespace std;
 
 int main()
 {
-    // Open an Image
-    Image img1, img2, tmp;
+	fpga_init();
+    // Open an Image, Problem: i cannot use other constructor because i dont know yet the DataType, channels, colortype...
+    Image img1, tmp;
+	img1.dev_= ecvl::Device::FPGA;
+	
+	// Problem: inside ImRead, there is a call to MatToImage, where an image it is created without device or hal (cpu by default), it is nedeed to put again dev and hal to fpga
+	//see support_opencv.cpp:85 -> solution: add another method MatToImage(src,dev)
     if (!ImRead("/home/izcagal/ecvl/examples/data/test.jpg", img1)) {
 		 cout << "Error" << endl;
         return EXIT_FAILURE;
     }
-	cout << "empieza" << endl;
-/* 	img1.dev_= ecvl::Device::FPGA;
-	img1.hal_ = FpgaHal::GetInstance(); */
-#ifdef ECVL_WITH_FPGA
-	img2.dev_= ecvl::Device::FPGA;
-	tmp.dev_= ecvl::Device::FPGA;
-#endif
+	
+	
+	cout << "Start" << endl;
     // Resize an Image to new_width, new_height (optional: InterpolationType)
     int new_width = 225;
     int new_height = 300;
     cout << "Executing ResizeDim" << endl;
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
     ImWrite("img_resized.jpg", tmp);
+
+
+/* 	
+	img1.hal_ = FpgaHal::GetInstance(); */
+/* #ifdef ECVL_WITH_FPGA
+	img2.dev_= ecvl::Device::FPGA;
+	tmp.dev_= ecvl::Device::FPGA;
+#endif */
+
 
     // Resize an Image by scaling the dimensions to a given scale factor res_scale (optional: InterpolationType)
 /*     vector<double> res_scale = { 1,2 };

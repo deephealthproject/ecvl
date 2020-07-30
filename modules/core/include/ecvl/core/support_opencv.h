@@ -26,6 +26,8 @@ namespace ecvl {
 */
 ecvl::Image MatToImage(const cv::Mat& m);
 
+ecvl::Image MatToImage(const cv::Mat& m, Device dev);
+
 /** @brief Convert a std::vector<cv::Mat> into an ecvl::Image.
 
 @param[in] v Input std::vector of OpenCV Mat.

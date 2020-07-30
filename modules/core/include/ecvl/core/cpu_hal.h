@@ -30,17 +30,17 @@ class CpuHal : public HardwareAbstractionLayer
 public:
     uint8_t* MemAllocate(size_t nbytes) override
     {
-		cout << "CPUUUUUUUUUU MemAllocate" << endl;
+		cout << "CPU MemAllocate" << endl;
         return new uint8_t[nbytes];
     }
     void MemDeallocate(uint8_t* data) override
     {
-		cout << "CPUUUUUUUUUU MemDeallocate" << endl;
+		cout << "CPU MemDeallocate" << endl;
         delete[] data;
     }
     uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
     {
-		cout << "CPUUUUUUUUUU MemCopy" << endl;
+		cout << "CPU MemCopy" << endl;
         return reinterpret_cast<uint8_t*>(std::memcpy(dst, src, nbytes));
     }
 

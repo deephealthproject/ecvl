@@ -16,6 +16,9 @@
 #include "ecvl/core/imgproc.h"
 #include "ecvl/core/standard_errors.h"
 
+//size_t offset;
+
+
 namespace ecvl
 {
 Image MatToImage(const cv::Mat& m)
@@ -102,6 +105,105 @@ Image MatToImage(const cv::Mat& m)
 
     return img;
 }
+
+
+Image MatToImage(const cv::Mat& m, Device dev)
+{
+    Image img;
+
+    if (m.empty())
+        return img;
+
+    // https://stackoverflow.com/questions/7701921/free-cvmat-without-releasing-memory
+    if (m.isContinuous()) {
+        // Dims
+        std::vector<int> dims(m.dims);
+        std::reverse_copy(m.size.p, m.size.p + m.dims, begin(dims)); // OpenCV dims are {[, PLANES (DEPTH)], ROWS (HEIGHT), COLS(WIDTH)}
+
+        // Type
+        DataType elemtype;
+        switch (m.depth()) {
+        case CV_8U:  elemtype = DataType::uint8; break;
+        case CV_8S:  elemtype = DataType::int8; break;
+        case CV_16U: elemtype = DataType::uint16; break;
+        case CV_16S: elemtype = DataType::int16; break;
+        case CV_32S: elemtype = DataType::int32; break;
+        case CV_32F: elemtype = DataType::float32; break;
+        case CV_64F: elemtype = DataType::float64; break;
+        default:
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DEPTH
+        }
+
+        // Channels and colors
+        std::string channels;
+        if (m.dims < 2) {
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
+        }
+        else if (m.dims == 2) {
+            channels = "xy";
+        }
+        else if (m.dims == 3) {
+            channels = "xyz";
+        }
+        else {
+            ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
+        }
+
+        ColorType colortype;
+        if (m.type() == CV_8UC1 || m.type() == CV_16UC1 || m.type() == CV_32FC1 || m.type() == CV_64FC1
+            || m.type() == CV_8SC1 || m.type() == CV_16SC1 || m.type() == CV_32SC1) { // Guess this is a gray level image
+            channels += "c";
+            dims.push_back(1); // Add another dim for color planes (but it is one dimensional)
+            colortype = ColorType::GRAY;
+        }
+        else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3
+            || m.type() == CV_8SC3 || m.type() == CV_16SC3 || m.type() == CV_32SC3) { // Guess this is a BGR image
+            channels += "c";
+            dims.push_back(3); // Add another dim for color planes
+            colortype = ColorType::BGR;
+        }
+        else if (m.channels() == 1) {
+            colortype = ColorType::none;
+        }
+        else {
+            channels += "o";
+            dims.push_back(m.channels()); // Add another dim for color planes
+            colortype = ColorType::none;
+        }
+
+		const std::vector<float>& spacings = std::vector<float>();
+        img.Create(dims, elemtype, channels, colortype, spacings, dev);
+		
+		if(dev == Device::FPGA){
+			printf("copy data");
+			img.hal_->MemCopy(img.data_, m.data, m.dataend - m.datastart);
+		}else{
+			// The following code copies the data twice. Should be improved!
+			std::vector<cv::Mat> ch;
+			cv::split(m, ch);
+			std::vector<int> coords(img.dims_.size(), 0);
+			int chsize = vsize(ch);
+			for (int i = 0; i < chsize; ++i) {
+				const cv::Mat& c = ch[i];
+				coords.back() = i;
+				//memcpy(img.data_ + (c.dataend - c.datastart) * i, c.data, c.dataend - c.datastart);
+	/* 			uint8_t* ptrdummy = img.Ptr(coords);
+				printf("ptrdummy %p data: %p\n ", ptrdummy, img.data_); */			
+	/* 			if(dev == Device::FPGA){
+					img.hal_->MemCopy(img.data_, c.data, c.dataend - c.datastart);
+					offset = c.dataend - c.datastart;
+				} */
+				memcpy(img.Ptr(coords), c.data, c.dataend - c.datastart);	
+			}
+		}
+    }
+    else {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    return img;
+}
+
 
 cv::Mat ImageToMat(const Image& img)
 {
