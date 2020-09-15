@@ -90,7 +90,7 @@ TEST_F(CoreImage, Copy##type) \
     EXPECT_TRUE(img_v({ 0,1,0 }) == 14); EXPECT_TRUE(img_v({ 1,1,0 }) == 60); \
 } \
 \
-TEST_F(CoreImage, CopyNonContiguous##type) \
+TEST_F(CoreImage, CopyNonContiguousXYZC##type) \
 { \
     Image src({ 2, 3, 3, 1 }, DataType::type, "xyzc", ColorType::GRAY); \
     View<DataType::type> src_v(src, { 0, 0, 0, 0 }, { 2, 2, 2, 1 }); \
@@ -106,7 +106,7 @@ TEST_F(CoreImage, CopyNonContiguous##type) \
     EXPECT_TRUE(dst_v({ 1,1,0,0 }) == 97); EXPECT_TRUE(dst_v({ 1,1,1,0 }) == 79); \
 } \
 \
-TEST_F(CoreImage, Rearrange##type) \
+TEST_F(CoreImage, RearrangeXYZC##type) \
 { \
     Image img({ 3, 4, 3, 2 }, DataType::type, "cxyz", ColorType::RGB); \
     View<DataType::type> view(img); \
@@ -123,6 +123,40 @@ TEST_F(CoreImage, Rearrange##type) \
     EXPECT_TRUE(view2({ 3, 1, 1, 2 }) == 59); \
     EXPECT_TRUE(view2({ 0, 2, 0, 1 }) == 25); \
     EXPECT_TRUE(view2({ 1, 2, 0, 1 }) == 28); \
+} \
+TEST_F(CoreImage, CopyNonContiguousXYO##type) \
+{ \
+    Image src({ 2, 3, 3 }, DataType::type, "xyo", ColorType::GRAY); \
+    View<DataType::type> src_v(src, { 0, 0, 0 }, { 2, 2, 2 }); \
+    src_v({ 0,0,0 }) = 50; src_v({ 0,0,1 }) = 32; \
+    src_v({ 0,1,0 }) = 14; src_v({ 0,1,1 }) = 60; \
+    src_v({ 1,0,0 }) = 54; src_v({ 1,0,1 }) = 41; \
+    src_v({ 1,1,0 }) = 97; src_v({ 1,1,1 }) = 79; \
+    Image dst(src_v); \
+    View<DataType::type> dst_v(dst); \
+    EXPECT_TRUE(dst_v({ 0,0,0 }) == 50); EXPECT_TRUE(dst_v({ 0,0,1 }) == 32); \
+    EXPECT_TRUE(dst_v({ 0,1,0 }) == 14); EXPECT_TRUE(dst_v({ 0,1,1 }) == 60); \
+    EXPECT_TRUE(dst_v({ 1,0,0 }) == 54); EXPECT_TRUE(dst_v({ 1,0,1 }) == 41); \
+    EXPECT_TRUE(dst_v({ 1,1,0 }) == 97); EXPECT_TRUE(dst_v({ 1,1,1 }) == 79); \
+} \
+\
+TEST_F(CoreImage, RearrangeXYO##type) \
+{ \
+    Image img({ 6, 4, 3 }, DataType::type, "oxy", ColorType::RGB); \
+    View<DataType::type> view(img); \
+    auto it = view.Begin(); \
+    for (uint8_t i = 0; i < 24 * 3; ++i) { \
+        *reinterpret_cast<TypeInfo_t<DataType::type>*>(it.ptr_) = i; \
+        ++it; \
+    } \
+    Image img2; \
+    RearrangeChannels(img, img2, "xyo"); \
+    View<DataType::type> view2(img2); \
+    \
+    EXPECT_TRUE(view2({ 3, 1, 0 }) == 42); \
+    EXPECT_TRUE(view2({ 1, 2, 5 }) == 59); \
+    EXPECT_TRUE(view2({ 0, 1, 1 }) == 25); \
+    EXPECT_TRUE(view2({ 0, 1, 4 }) == 28); \
 } \
 \
 TEST_F(CoreImage, ToFpga##type) \
