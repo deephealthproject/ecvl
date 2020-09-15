@@ -160,8 +160,8 @@ int main()
     ImWrite("img_vconcat.jpg", tmp);
     images.erase(images.begin() + 1);
 
-    // Stack a sequence of Images along a new depth dimension (xyc -> xyzc)
-    cout << "Executing Stack of images xyc creating a xyzc Image" << endl;
+    // Stack a sequence of Images along the channel dimension (xyc -> xyo)
+    cout << "Executing Stack of images xyc creating a xyo Image" << endl;
     Stack(images, tmp);
 
     cout << "Executing Salt" << endl;

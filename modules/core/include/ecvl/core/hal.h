@@ -161,6 +161,7 @@ public:
     virtual void Salt(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

@@ -521,4 +521,15 @@ void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, con
 
     src.hal_->SaltAndPepper(src, dst, p, per_channel, seed);
 }
+
+void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down)
+{
+    AlwaysCheck(src, dst);
+
+    if (src.channels_ != "xyzt") {
+        ECVL_ERROR_WRONG_PARAMS("src must have 'xyzt' channels")
+    }
+
+    src.hal_->SliceTimingCorrection(src, dst, odd, down);
+}
 } // namespace ecvl

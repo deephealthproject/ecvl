@@ -15,6 +15,7 @@ target_sources(ECVL_CORE
         cpu_hal.cpp
         cpu_hal_arithmetic.cpp
         cpu_hal_imgproc.cpp
+        cpu_hal_volproc.cpp
         datatype.cpp
         fpga_hal.cpp
         hal.cpp
