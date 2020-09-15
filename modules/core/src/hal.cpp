@@ -72,7 +72,7 @@ void HardwareAbstractionLayer::Copy(const Image& src, Image& dst)
 
         int ndims = vsize(src.dims_);
         int sncd;    // smallest non-contiguous dimension
-        for (sncd = 0; sncd < ndims && src.strides_[sncd] == dst.strides_[sncd]; ++sncd);
+        for (sncd = 0; sncd < (ndims - 1) && src.strides_[sncd] == dst.strides_[sncd]; ++sncd);
 
         std::vector<int> pos(ndims, 0);
         uint8_t* dst_data_ptr = dst.data_;
