@@ -14,6 +14,7 @@
 #include "ecvl/core/support_nifti.h"
 
 #include <fstream>
+#include <iostream>
 #include <string>
 
 #include "ecvl/core/filesystem.h"
@@ -171,7 +172,11 @@ bool NiftiRead(const path& filename, Image& dst)
         }
         else if (header.sizeof_hdr == 0x0000015C);
         else {
-            throw runtime_error("Wrong length of Nifti header file.");
+            if (filename.extension() == ".nii") {
+                std::cerr << ECVL_WARNING_MSG << "Wrong length of Nifti header file." << endl;
+            }
+            dst = Image();
+            return false;
         }
         EndianReader rd(is, swap_endianness);
 
@@ -214,19 +219,15 @@ bool NiftiRead(const path& filename, Image& dst)
             is.seekg(static_cast<size_t>(header.vox_offset));
         }
         else {
-            throw std::ifstream::failure("Wrong magic string for Nifti.");
+            if (filename.extension() == ".nii") {
+                std::cerr << ECVL_WARNING_MSG << "Wrong magic string for Nifti." << endl;
+            }
+            dst = Image();
+            return false;
         }
 
         // Create ecvl::Image and read data
-
-        // We only support images and volumes by now, not temporal series or other stuff
-        if ((header.dim[0] < 2) || (header.dim[0] > 3 && !((header.dim[0] == 4) && header.dim[4] == 1))) {
-            throw std::runtime_error("Unsupported number of dimensions.\n");
-        }
         int ndims = header.dim[0];
-        if (ndims == 4) {
-            ndims = 3;
-        }
 
         // Convert nifti_image into ecvl::Image
         std::vector<int> dims;
@@ -271,11 +272,15 @@ bool NiftiRead(const path& filename, Image& dst)
         }
 
         string channels;
-
-        switch (color_type) {
-        case ColorType::RGB:     dims.push_back(3);     channels += "xyzc";    break;
-        case ColorType::GRAY:    dims.push_back(1);     channels += "xyzc";    break;
-        default:                                                            break;
+        if (dims[ndims - 1] == 1 && ndims == 4) {
+            channels = "xyz";
+            dims.pop_back();
+        }
+        else if (ndims < 4) {
+            channels = "xyz";
+        }
+        else {
+            channels = "xyzt";
         }
 
         dst.Create(dims, data_type, channels, color_type, spacings);
@@ -379,14 +384,14 @@ bool NiftiWrite(const path& filename, const Image& src)
     if (tmp1.colortype_ == ColorType::GRAY); // nothing to do
     else if (tmp1.colortype_ == ColorType::RGB || tmp1.colortype_ == ColorType::RGBA) {
         if (tmp1.channels_.size() == 3) {
-            if (tmp1.channels_ != "cxy") {
-                RearrangeChannels(tmp1, tmp, "cxy");
+            if (tmp1.channels_ != "zxy") {
+                RearrangeChannels(tmp1, tmp, "zxy");
                 use_tmp2 = true;
             }
         }
         else if (tmp1.channels_.size() == 4) {
-            if (tmp1.channels_ != "cxyz") {
-                RearrangeChannels(tmp1, tmp, "cxyz");
+            if (tmp1.channels_ != "zxyt") {
+                RearrangeChannels(tmp1, tmp, "zxyt");
                 use_tmp2 = true;
             }
         }
@@ -470,7 +475,7 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr.Fill(sizeof(short)); // slice_start
 
-        wr(static_cast<float>(dims));
+        wr(static_cast<float>(dims)); //pixdim
         if (img.spacings_.size() != img.dims_.size()) {
             // Don't trust them
             for (int i = 0; i < dims; i++) {
@@ -485,7 +490,7 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr.Fill(sizeof(float) * (7 - dims));
 
-        wr(352.f);  // Only one .nii file with header and data. No header extension.
+        wr(352.f);  // vox_offset: Only one .nii file with header and data. No header extension.
 
         wr.Fill(232);   // I don't use those fields for now
 

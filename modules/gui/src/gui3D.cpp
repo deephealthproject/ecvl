@@ -30,15 +30,15 @@
 #include "ecvl/core/datatype_matrix.h"
 #include "ecvl/core/standard_errors.h"
 
-namespace ecvl {
+namespace ecvl
+{
 // settings
 
-
 template <DataType DT> // src type
-struct NormalizeToUint8Struct {
-
-    static void _(const Image& src, Image& dst) {
-
+struct NormalizeToUint8Struct
+{
+    static void _(const Image& src, Image& dst)
+    {
         dst.Create(src.dims_, DataType::uint8, src.channels_, src.colortype_, src.spacings_);
 
         ConstView<DT> src_v(src);
@@ -54,19 +54,14 @@ struct NormalizeToUint8Struct {
         for (; src_it != src_end; ++src_it, ++dst_it) {
             (*dst_it) = (((*src_it) - min) * 255) / (max - min);
         }
-
     }
-
 };
 
-void NormalizeToUint8(const Image& src, Image& dst) {
-
+void NormalizeToUint8(const Image& src, Image& dst)
+{
     Table1D<NormalizeToUint8Struct> table;
     table(src.elemtype_)(src, dst);
-
 }
-
-
 
 class BasicGLPane : public wxGLCanvas
 {
@@ -161,7 +156,8 @@ EVT_PAINT(BasicGLPane::Render)
 EVT_TIMER(wxID_ANY, BasicGLPane::OnTimer)
 END_EVENT_TABLE()
 
-class Show3DApp : public wxApp {
+class Show3DApp : public wxApp
+{
     const Image& img_;
 
     virtual bool OnInit();
@@ -170,7 +166,6 @@ class Show3DApp : public wxApp {
     BasicGLPane* glPane;
 public:
     Show3DApp(const Image& img) : img_{ img } {}
-
 };
 
 bool Show3DApp::OnInit()
@@ -191,8 +186,7 @@ bool Show3DApp::OnInit()
 
 void ImShow3D(const Image& img)
 {
-    if (img.channels_.find("xyz") == std::string::npos)
-    {
+    if (img.channels_.find("xyz") == std::string::npos) {
         std::cout << "Image must have channels xyz" << std::endl;
         return;
     }
@@ -233,13 +227,11 @@ void BasicGLPane::Render(wxPaintEvent& evt)
     trasla = glm::mat4(1.f);
 
     for (int i = 0; i < slices; i++) {
-
         float z = -radius + (radius / slices) + i * ((radius * 2) / slices); // Z-coordinate of the quad slice (and of the texture slice)
 
         ourShader.setFloat("zPos", z);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
     }
 
     SwapBuffers();
@@ -272,7 +264,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
          0.5f,  0.5f, /*0.0f,*/  +radius, -radius,  // top right
          0.5f, -0.5f, /*0.0f,*/  +radius, +radius,  // bottom right
         -0.5f, -0.5f, /*0.0f,*/  -radius, +radius,  // bottom left
-        -0.5f,  0.5f, /*0.0f,*/  -radius, -radius   // top left 
+        -0.5f,  0.5f, /*0.0f,*/  -radius, -radius   // top left
     };
     unsigned int indices3D[] = {
         0, 1, 2,
@@ -304,7 +296,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     float dh = 1.f;
     float dd = 1.f;
 
-    if (img.channels_.back() == 'c') {
+    if (!img.channels_.compare(0, 3, "xyz")) {
         width = img.dims_[0];
         height = img.dims_[1];
         depth = img.dims_[2];
@@ -314,7 +306,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
             dd = img.spacings_[2];
         }
     }
-    else if (img.channels_.front() == 'c') {
+    else if (!img.channels_.compare(1, 3, "xyz")) {
         width = img.dims_[1];
         height = img.dims_[2];
         depth = img.dims_[3];
@@ -327,7 +319,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     else {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
-    
+
     float scale_w = (1.f / width) / dw;
     float scale_h = (1.f / height) / dh;
     float scale_d = (1.f / depth) / dd;
@@ -359,11 +351,9 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     unsigned char alpha = 100;
     unsigned char* data;
 
-
     // !!! Only works with ColorType::GRAY !!!
-    if (img.colortype_ == ColorType::GRAY)
-    {
-        if (img.channels_ == "xyzc") {
+    if (img.colortype_ == ColorType::GRAY) {
+        if (!img.channels_.compare(0, 3, "xyz")) {
             data = new unsigned char[img.dims_[0] * img.dims_[1] * img.dims_[2] * 4];
             for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
                 data[i * 4] = img.data_[i];
@@ -380,9 +370,8 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
             ECVL_ERROR_NOT_IMPLEMENTED
         }
     }
-    else if (img.colortype_ == ColorType::RGB)
-    {
-        if (img.channels_ == "xyzc") {
+    else if (img.colortype_ == ColorType::RGB) {
+        if (!img.channels_.compare(0, 3, "xyz")) {
             data = new unsigned char[img.dims_[0] * img.dims_[1] * img.dims_[2] * 4];
             for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
                 //memcpy(data + i * 4, img.data_ + i * 3, 3);
@@ -402,9 +391,8 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
             ECVL_ERROR_NOT_IMPLEMENTED
         }
     }
-    else if (img.colortype_ == ColorType::BGR)
-    {
-        if (img.channels_ == "xyzc") {
+    else if (img.colortype_ == ColorType::BGR) {
+        if (!img.channels_.compare(0, 3, "xyz")) {
             data = new unsigned char[img.dims_[0] * img.dims_[1] * img.dims_[2] * 4];
             for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
                 //memcpy(data + i * 4, img.data_ + i * 3, 3);
@@ -420,7 +408,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
                 }
             }
         }
-        else if (img.channels_ == "cxyz") {
+        else if (!img.channels_.compare(1, 3, "xyz")) {
             data = new unsigned char[img.dims_[1] * img.dims_[2] * img.dims_[3] * 4];
             for (int i = 0; i < img.dims_[1] * img.dims_[2] * img.dims_[3]; i++) {
                 data[i * 4 + 0] = img.data_[i * 3 + 2];
@@ -495,15 +483,15 @@ void BasicGLPane::OnTimer(wxTimerEvent& event)
     Update();
 }
 
-void BasicGLPane::MouseWheelMoved(wxMouseEvent& evt) {
-
+void BasicGLPane::MouseWheelMoved(wxMouseEvent& evt)
+{
     int mouse_rotation = evt.GetWheelRotation();
     view = glm::translate(view, glm::vec3(0.0f, 0.0f, (float)mouse_rotation / 1000));
     ourShader.setMat4("view", view);
 }
 
-void BasicGLPane::KeyReleased(wxKeyEvent& evt) {
-
+void BasicGLPane::KeyReleased(wxKeyEvent& evt)
+{
     int key_code = evt.GetKeyCode();
     if (key_code == WXK_SPACE) {
         enable_rotation = !enable_rotation;
@@ -526,10 +514,10 @@ void BasicGLPane::KeyReleased(wxKeyEvent& evt) {
     }
 }
 
-void BasicGLPane::SetViewport() {
+void BasicGLPane::SetViewport()
+{
     wxSize s = GetSize();
     int min = std::min(s.x, s.y);
     glViewport((s.x - min) / 2, (s.y - min) / 2, min, min);
 }
-
 } // namespace ecvl
