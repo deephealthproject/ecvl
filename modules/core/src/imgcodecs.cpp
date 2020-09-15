@@ -13,6 +13,7 @@
 
 #include "ecvl/core/imgcodecs.h"
 
+#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 
@@ -30,18 +31,25 @@ namespace ecvl
 {
 bool ImRead(const path& filename, Image& dst, ImReadMode flags)
 {
-    dst = MatToImage(cv::imread(filename.string(), (int)flags));
+    if (exists(filename)) {
+        dst = MatToImage(cv::imread(filename.string(), (int)flags));
+        if (dst.IsEmpty()) {
+            // NIFTI
+            NiftiRead(filename, dst);
+        }
 #ifdef ECVL_WITH_DICOM
-    if (dst.IsEmpty()) {
-        // DICOM
-        DicomRead(filename, dst);
-    }
+        if (dst.IsEmpty()) {
+            // DICOM
+            DicomRead(filename, dst);
+        }
 #endif
-    if (dst.IsEmpty()) {
-        // NIFTI
-        NiftiRead(filename, dst);
+
+        return !dst.IsEmpty();
     }
-    return !dst.IsEmpty();
+    else {
+        std::cerr << ECVL_ERROR_MSG "File " << filename << " does not exist" << std::endl;
+        ECVL_ERROR_FILE_DOES_NOT_EXIST
+    }
 }
 
 bool ImReadMulti(const path& filename, Image& dst)
