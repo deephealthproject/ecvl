@@ -68,4 +68,5 @@
 | Salt | :heavy_check_mark: | :x: | :x: |
 | Salt And Pepper | :heavy_check_mark: | :x: | :x: |
 | SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
+| SliceTimingCorrection | :heavy_check_mark: | :x: | :x: |
 | Threshold | :heavy_check_mark: | :x: | :x: |
