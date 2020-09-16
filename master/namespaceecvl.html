@@ -635,6 +635,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7105a709b77f159fa91b7f09e2f449bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a7105a709b77f159fa91b7f09e2f449bf">SaltAndPepper</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double p, bool per_channel=false, const unsigned seed=std::default_random_engine::default_seed)</td></tr>
 <tr class="memdesc:a7105a709b77f159fa91b7f09e2f449bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds salt and pepper noise (white and black pixels) to an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. White and black pixels are equally likely.  <a href="#a7105a709b77f159fa91b7f09e2f449bf">More...</a><br /></td></tr>
 <tr class="separator:a7105a709b77f159fa91b7f09e2f449bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff2892ab98d988a39a2a7c984893d052"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aff2892ab98d988a39a2a7c984893d052">SliceTimingCorrection</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, bool odd=false, bool down=false)</td></tr>
+<tr class="memdesc:aff2892ab98d988a39a2a7c984893d052"><td class="mdescLeft">&#160;</td><td class="mdescRight">Corrects each voxel's time-series. Slice timing correction works by using (Hanning-windowed) sinc interpolation to shift each time-series by an appropriate fraction of a TR relative to the middle of the TR period. The default slice order acquisition is from the bottom of the brain to the top.  <a href="#aff2892ab98d988a39a2a7c984893d052">More...</a><br /></td></tr>
+<tr class="separator:aff2892ab98d988a39a2a7c984893d052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplParams" colspan="2">template&lt;DataType ODT, typename IDT &gt; </td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_type_info.html">TypeInfo</a>&lt; ODT &gt;::basetype&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10">saturate_cast</a> (IDT v)</td></tr>
 <tr class="memdesc:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saturate a value (of any type) to the specified type.  <a href="#afaa228c1d0b2e3eef2622ca7e4ffec10">More...</a><br /></td></tr>
@@ -697,6 +700,20 @@ Functions</h2></td></tr>
 <tr class="separator:a43ed196d5b735918c287436a02f275cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4390541d2380c0c9e96f4ae26b73cd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ac4390541d2380c0c9e96f4ae26b73cd4">SaltOrPepper</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double p, bool per_channel, const unsigned seed, <a class="el" href="namespaceecvl.html#a3d43c54ff7b0e1cb77b4737eedab9140">NoiseType</a> noise)</td></tr>
 <tr class="separator:ac4390541d2380c0c9e96f4ae26b73cd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9547cd6a7aa0f76d1b5fe07e9501ffdc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9547cd6a7aa0f76d1b5fe07e9501ffdc">SincNorm</a> (float x)</td></tr>
+<tr class="separator:a9547cd6a7aa0f76d1b5fe07e9501ffdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83fa8b2f7ed95fb83cb1269731158631"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a83fa8b2f7ed95fb83cb1269731158631">Hanning</a> (float x, int half_w)</td></tr>
+<tr class="separator:a83fa8b2f7ed95fb83cb1269731158631"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c1a526ffed1896f87118fdcb7d80261"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_image.html">Image</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9c1a526ffed1896f87118fdcb7d80261">SincKernel</a> (const string &amp;sincwindowtype, int w, int n)</td></tr>
+<tr class="separator:a9c1a526ffed1896f87118fdcb7d80261"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a302e6dd23da48d7c4d5080a3ea72b4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6a302e6dd23da48d7c4d5080a3ea72b4">KernelVal</a> (float x, int w, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;kernel)</td></tr>
+<tr class="separator:a6a302e6dd23da48d7c4d5080a3ea72b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79f8ab2f60b128a66797b1cd63c3a426"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a79f8ab2f60b128a66797b1cd63c3a426">InBounds</a> (const int n_volumes, int index)</td></tr>
+<tr class="separator:a79f8ab2f60b128a66797b1cd63c3a426"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a624a7023d4aed172b74c160b13aa8a48"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a624a7023d4aed172b74c160b13aa8a48">Extrapolate</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;data, const int index)</td></tr>
+<tr class="separator:a624a7023d4aed172b74c160b13aa8a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6d39f5625186cd1931f7be1687484cc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ae6d39f5625186cd1931f7be1687484cc">KernelInterpolation</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;data, float index, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;userkernel, int width)</td></tr>
+<tr class="separator:ae6d39f5625186cd1931f7be1687484cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d4d56605d136222d9e0e0194633ded8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9d4d56605d136222d9e0e0194633ded8">RearrangeBindings</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, const std::string &amp;channels, std::vector&lt; int &gt; &amp;bindings, std::vector&lt; int &gt; &amp;new_dims, std::vector&lt; float &gt; &amp;new_spacings)</td></tr>
 <tr class="separator:a9d4d56605d136222d9e0e0194633ded8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c0c32493490db0b3fee14794be71396"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a4c0c32493490db0b3fee14794be71396">CopyImageCreateDst</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> new_type, const std::vector&lt; int &gt; &amp;dims={}, const std::string &amp;channels=&quot;&quot;)</td></tr>
@@ -1285,7 +1302,7 @@ template&lt;ecvl::DataType DT&gt; </div>
 <tr><td class="fieldname"><a id="a3d43c54ff7b0e1cb77b4737eedab9140a7eb238ac0dbd9ba17e8675ec4e5e7398"></a>SaltAndPepper&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01672">1672</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01682">1682</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -1606,7 +1623,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a22">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a23">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00248">248</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -1767,7 +1784,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a9">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a8">example_image_view.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a11">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a5">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a9">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a8">example_image_view.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a12">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a5">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00101">101</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -1829,7 +1846,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a24">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a25">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00289">289</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -1870,7 +1887,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a15">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a16">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00335">335</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -2589,8 +2606,40 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a34">example_imgproc.cpp</a>.</dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00490">490</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a624a7023d4aed172b74c160b13aa8a48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a624a7023d4aed172b74c160b13aa8a48">&#9670;&nbsp;</a></span>Extrapolate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ecvl::Extrapolate </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00090">90</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -2632,7 +2681,7 @@ template&lt;typename ST1 &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01486">1486</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01496">1496</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -2684,7 +2733,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a19">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a20">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00156">156</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -2725,7 +2774,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a16">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a17">example_imgproc.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -2843,7 +2892,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a23">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a2">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a24">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a2">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00278">278</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -2912,7 +2961,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a21">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a22">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00195">195</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -3100,8 +3149,40 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a33">example_imgproc.cpp</a>.</dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00483">483</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a83fa8b2f7ed95fb83cb1269731158631"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83fa8b2f7ed95fb83cb1269731158631">&#9670;&nbsp;</a></span>Hanning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ecvl::Hanning </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>half_w</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00032">32</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -3139,7 +3220,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a25">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a26">example_imgproc.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -3376,7 +3457,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="imgcodecs_8cpp_source.html#l00031">31</a> of file <a class="el" href="imgcodecs_8cpp_source.html">imgcodecs.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgcodecs_8cpp_source.html#l00032">32</a> of file <a class="el" href="imgcodecs_8cpp_source.html">imgcodecs.cpp</a>.</p>
 
 </div>
 </div>
@@ -3454,7 +3535,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="imgcodecs_8cpp_source.html#l00047">47</a> of file <a class="el" href="imgcodecs_8cpp_source.html">imgcodecs.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgcodecs_8cpp_source.html#l00055">55</a> of file <a class="el" href="imgcodecs_8cpp_source.html">imgcodecs.cpp</a>.</p>
 
 </div>
 </div>
@@ -3544,7 +3625,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gui3_d_8cpp_source.html#l00192">192</a> of file <a class="el" href="gui3_d_8cpp_source.html">gui3D.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gui3_d_8cpp_source.html#l00187">187</a> of file <a class="el" href="gui3_d_8cpp_source.html">gui3D.cpp</a>.</p>
 
 </div>
 </div>
@@ -3574,7 +3655,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="imgcodecs_8cpp_source.html#l00056">56</a> of file <a class="el" href="imgcodecs_8cpp_source.html">imgcodecs.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgcodecs_8cpp_source.html#l00064">64</a> of file <a class="el" href="imgcodecs_8cpp_source.html">imgcodecs.cpp</a>.</p>
 
 </div>
 </div>
@@ -3615,6 +3696,44 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly written, false otherwise. </dd></dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a4">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a2">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a10">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a4">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a4">example_imgproc.cpp</a>, and <a class="el" href="example_openslide_8cpp-example.html#a3">example_openslide.cpp</a>.</dd>
 </dl>
+
+</div>
+</div>
+<a id="a79f8ab2f60b128a66797b1cd63c3a426"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79f8ab2f60b128a66797b1cd63c3a426">&#9670;&nbsp;</a></span>InBounds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ecvl::InBounds </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>n_volumes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00085">85</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -3721,6 +3840,84 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00300">300</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ae6d39f5625186cd1931f7be1687484cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6d39f5625186cd1931f7be1687484cc">&#9670;&nbsp;</a></span>KernelInterpolation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ecvl::KernelInterpolation </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>userkernel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00115">115</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6a302e6dd23da48d7c4d5080a3ea72b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a302e6dd23da48d7c4d5080a3ea72b4">&#9670;&nbsp;</a></span>KernelVal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ecvl::KernelVal </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>kernel</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00068">68</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -4282,7 +4479,7 @@ template&lt;typename ST1 &gt; </div>
 <p>&lt; 'name' or meaning of data.</p>
 <p>&lt; MUST be "ni1\0" or "n+1\0". </p>
 
-<p class="definition">Definition at line <a class="el" href="support__nifti_8cpp_source.html#l00095">95</a> of file <a class="el" href="support__nifti_8cpp_source.html">support_nifti.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__nifti_8cpp_source.html#l00096">96</a> of file <a class="el" href="support__nifti_8cpp_source.html">support_nifti.cpp</a>.</p>
 
 </div>
 </div>
@@ -4353,7 +4550,7 @@ template&lt;typename ST1 &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="support__nifti_8cpp_source.html#l00364">364</a> of file <a class="el" href="support__nifti_8cpp_source.html">support_nifti.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__nifti_8cpp_source.html#l00369">369</a> of file <a class="el" href="support__nifti_8cpp_source.html">support_nifti.cpp</a>.</p>
 
 </div>
 </div>
@@ -4422,7 +4619,7 @@ template&lt;typename ST1 &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="gui3_d_8cpp_source.html#l00062">62</a> of file <a class="el" href="gui3_d_8cpp_source.html">gui3D.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gui3_d_8cpp_source.html#l00060">60</a> of file <a class="el" href="gui3_d_8cpp_source.html">gui3D.cpp</a>.</p>
 
 </div>
 </div>
@@ -4837,6 +5034,8 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a32">example_imgproc.cpp</a>.</dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00497">497</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
 
@@ -4903,7 +5102,7 @@ template&lt;typename ST1 &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Otsu threshold value. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a13">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a7">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a14">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a7">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00139">139</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -5570,7 +5769,7 @@ template&lt;typename T , typename U &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a9">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a10">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00083">83</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -5633,7 +5832,7 @@ template&lt;typename T , typename U &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a10">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a11">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00094">94</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -5812,24 +6011,32 @@ template&lt;typename T , typename U &gt; </div>
 <p>&lt; int8_t</p>
 <p>&lt; int8_t</p>
 <p>&lt; int8_t</p>
+<p>&lt; int8_t</p>
+<p>&lt; int16_t</p>
 <p>&lt; int16_t</p>
 <p>&lt; int16_t</p>
 <p>&lt; int16_t</p>
 <p>&lt; int32_t</p>
 <p>&lt; int32_t</p>
 <p>&lt; int32_t</p>
+<p>&lt; int32_t</p>
+<p>&lt; int64_t</p>
 <p>&lt; int64_t</p>
 <p>&lt; int64_t</p>
 <p>&lt; int64_t</p>
 <p>&lt; float</p>
 <p>&lt; float</p>
 <p>&lt; float</p>
+<p>&lt; float</p>
+<p>&lt; double</p>
 <p>&lt; double</p>
 <p>&lt; double</p>
 <p>&lt; double</p>
 <p>&lt; uint8_t</p>
 <p>&lt; uint8_t</p>
 <p>&lt; uint8_t</p>
+<p>&lt; uint8_t</p>
+<p>&lt; uint16_t</p>
 <p>&lt; uint16_t</p>
 <p>&lt; uint16_t</p>
 <p>&lt; uint16_t</p>
@@ -5858,7 +6065,7 @@ template&lt;typename T , typename U &gt; </div>
 <p>&lt; uint16_t</p>
 <p>&lt; uint16_t </p>
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01679">1679</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l01689">1689</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -6029,8 +6236,117 @@ template&lt;typename ODT , typename IDT &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a20">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a21">example_imgproc.cpp</a>.</dd>
 </dl>
+
+</div>
+</div>
+<a id="a9c1a526ffed1896f87118fdcb7d80261"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c1a526ffed1896f87118fdcb7d80261">&#9670;&nbsp;</a></span>SincKernel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classecvl_1_1_image.html">Image</a> ecvl::SincKernel </td>
+          <td>(</td>
+          <td class="paramtype">const string &amp;&#160;</td>
+          <td class="paramname"><em>sincwindowtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>w</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00042">42</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a9547cd6a7aa0f76d1b5fe07e9501ffdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9547cd6a7aa0f76d1b5fe07e9501ffdc">&#9670;&nbsp;</a></span>SincNorm()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ecvl::SincNorm </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00023">23</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aff2892ab98d988a39a2a7c984893d052"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff2892ab98d988a39a2a7c984893d052">&#9670;&nbsp;</a></span>SliceTimingCorrection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::SliceTimingCorrection </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>odd</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>down</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Corrects each voxel's time-series. Slice timing correction works by using (Hanning-windowed) sinc interpolation to shift each time-series by an appropriate fraction of a TR relative to the middle of the TR period. The default slice order acquisition is from the bottom of the brain to the top. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It must be with channels "xyzt". </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">odd</td><td>Slices were acquired with interleaved order (0, 2, 4... 1, 3, 5...) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">down</td><td>Slices were acquired from the top of the brain to the bottom </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00525">525</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -6107,7 +6423,7 @@ template&lt;typename ODT , typename IDT &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a27">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a28">example_imgproc.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -6448,7 +6764,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a14">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a8">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a15">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a8">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00120">120</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -6501,7 +6817,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l00373">373</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cpu__hal__imgproc_8cpp_source.html#l00383">383</a> of file <a class="el" href="cpu__hal__imgproc_8cpp_source.html">cpu_hal_imgproc.cpp</a>.</p>
 
 </div>
 </div>
@@ -6538,6 +6854,8 @@ template&lt;typename T &gt; </div>
     <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output transposed <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
   </table>
   </dd>
+</dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a9">example_imgproc.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="imgproc_8cpp_source.html#l00476">476</a> of file <a class="el" href="imgproc_8cpp_source.html">imgproc.cpp</a>.</p>
@@ -6578,7 +6896,7 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a26">example_imgproc.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a27">example_imgproc.cpp</a>.</dd>
 </dl>
 
 </div>

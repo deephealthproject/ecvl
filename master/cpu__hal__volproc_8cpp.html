@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECVL: imgcodecs.cpp File Reference</title>
+<title>ECVL: cpu_hal_volproc.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -93,35 +93,62 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">imgcodecs.cpp File Reference</div>  </div>
+<div class="title">cpu_hal_volproc.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="imgcodecs_8h_source.html">ecvl/core/imgcodecs.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="cpu__hal_8h_source.html">ecvl/core/cpu_hal.h</a>&quot;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;opencv2/core.hpp&gt;</code><br />
-<code>#include &lt;opencv2/imgcodecs.hpp&gt;</code><br />
-<code>#include &quot;<a class="el" href="filesystem_8h_source.html">ecvl/core/filesystem.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="support__nifti_8h_source.html">ecvl/core/support_nifti.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="support__opencv_8h_source.html">ecvl/core/support_opencv.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="imgproc_8h_source.html">ecvl/core/imgproc.h</a>&quot;</code><br />
 </div>
-<p><a href="imgcodecs_8cpp_source.html">Go to the source code of this file.</a></p>
+<p><a href="cpu__hal__volproc_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceecvl"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html">ecvl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a525335710b53cb064ca56b936120431e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cpu__hal__volproc_8cpp.html#a525335710b53cb064ca56b936120431e">_USE_MATH_DEFINES</a></td></tr>
+<tr class="separator:a525335710b53cb064ca56b936120431e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af085e2119f6d4c5d9c440c302cedcd02"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af085e2119f6d4c5d9c440c302cedcd02">ecvl::ImRead</a> (const path &amp;filename, Image &amp;dst, ImReadMode flags)</td></tr>
-<tr class="separator:af085e2119f6d4c5d9c440c302cedcd02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d29aac673e6955293e53f292edbcd20"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a4d29aac673e6955293e53f292edbcd20">ecvl::ImReadMulti</a> (const path &amp;filename, Image &amp;dst)</td></tr>
-<tr class="separator:a4d29aac673e6955293e53f292edbcd20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab884f852af367458d5a6daf110ea03ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ab884f852af367458d5a6daf110ea03ea">ecvl::ImWrite</a> (const path &amp;filename, const Image &amp;src)</td></tr>
-<tr class="separator:ab884f852af367458d5a6daf110ea03ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9547cd6a7aa0f76d1b5fe07e9501ffdc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9547cd6a7aa0f76d1b5fe07e9501ffdc">ecvl::SincNorm</a> (float x)</td></tr>
+<tr class="separator:a9547cd6a7aa0f76d1b5fe07e9501ffdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83fa8b2f7ed95fb83cb1269731158631"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a83fa8b2f7ed95fb83cb1269731158631">ecvl::Hanning</a> (float x, int half_w)</td></tr>
+<tr class="separator:a83fa8b2f7ed95fb83cb1269731158631"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c1a526ffed1896f87118fdcb7d80261"><td class="memItemLeft" align="right" valign="top">Image&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9c1a526ffed1896f87118fdcb7d80261">ecvl::SincKernel</a> (const string &amp;sincwindowtype, int w, int n)</td></tr>
+<tr class="separator:a9c1a526ffed1896f87118fdcb7d80261"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a302e6dd23da48d7c4d5080a3ea72b4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6a302e6dd23da48d7c4d5080a3ea72b4">ecvl::KernelVal</a> (float x, int w, const Image &amp;kernel)</td></tr>
+<tr class="separator:a6a302e6dd23da48d7c4d5080a3ea72b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79f8ab2f60b128a66797b1cd63c3a426"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a79f8ab2f60b128a66797b1cd63c3a426">ecvl::InBounds</a> (const int n_volumes, int index)</td></tr>
+<tr class="separator:a79f8ab2f60b128a66797b1cd63c3a426"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a624a7023d4aed172b74c160b13aa8a48"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a624a7023d4aed172b74c160b13aa8a48">ecvl::Extrapolate</a> (const Image &amp;data, const int index)</td></tr>
+<tr class="separator:a624a7023d4aed172b74c160b13aa8a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6d39f5625186cd1931f7be1687484cc"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ae6d39f5625186cd1931f7be1687484cc">ecvl::KernelInterpolation</a> (const Image &amp;data, float index, const Image &amp;userkernel, int width)</td></tr>
+<tr class="separator:ae6d39f5625186cd1931f7be1687484cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a525335710b53cb064ca56b936120431e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a525335710b53cb064ca56b936120431e">&#9670;&nbsp;</a></span>_USE_MATH_DEFINES</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _USE_MATH_DEFINES</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="cpu__hal__volproc_8cpp_source.html#l00013">13</a> of file <a class="el" href="cpu__hal__volproc_8cpp_source.html">cpu_hal_volproc.cpp</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

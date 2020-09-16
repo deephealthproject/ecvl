@@ -1203,7 +1203,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">case</span> DataType::type: \</div><div class="line">                if (dist(re) == 0) { \</div><div class="line">                    *<span class="keyword">reinterpret_cast&lt;</span>TypeInfo_t&lt;DataType::type&gt;*<span class="keyword">&gt;</span>(tmp_ptr) = <span class="keyword">static_cast&lt;</span>TypeInfo_t&lt;DataType::type&gt;<span class="keyword">&gt;</span>(color()); \</div><div class="line">                } \</div><div class="line">            break;</div></div><!-- fragment -->
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">case</span> DataType::type: \</div><div class="line">            { \</div><div class="line">                TypeInfo_t&lt;DataType::type&gt;* tmp_data = <span class="keyword">reinterpret_cast&lt;</span>TypeInfo_t&lt;DataType::type&gt;*<span class="keyword">&gt;</span>(tmp.data_); \</div><div class="line">                OMP_PAR_FOR \</div><div class="line">                for (<span class="keywordtype">int</span> i = 0; i &lt; tmp.datasize_ / tmp.elemsize_; ++i) { \</div><div class="line">                    if (dist(re) == 0) { \</div><div class="line">                        tmp_data[i] = <span class="keyword">static_cast&lt;</span>TypeInfo_t&lt;DataType::type&gt;<span class="keyword">&gt;</span>(color()); \</div><div class="line">                    } \</div><div class="line">                } \</div><div class="line">            } \</div><div class="line">            break;</div></div><!-- fragment -->
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>

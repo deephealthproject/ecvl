@@ -48,6 +48,7 @@ var searchData=
   ['cpu_5fhal_2eh',['cpu_hal.h',['../cpu__hal_8h.html',1,'']]],
   ['cpu_5fhal_5farithmetic_2ecpp',['cpu_hal_arithmetic.cpp',['../cpu__hal__arithmetic_8cpp.html',1,'']]],
   ['cpu_5fhal_5fimgproc_2ecpp',['cpu_hal_imgproc.cpp',['../cpu__hal__imgproc_8cpp.html',1,'']]],
+  ['cpu_5fhal_5fvolproc_2ecpp',['cpu_hal_volproc.cpp',['../cpu__hal__volproc_8cpp.html',1,'']]],
   ['cpuhal',['CpuHal',['../classecvl_1_1_cpu_hal.html',1,'ecvl']]],
   ['create',['create',['../structecvl_1_1_augmentation_factory.html#a94a4bceb85c9e08c97eef7474d9c0aae',1,'ecvl::AugmentationFactory::create(std::istream &amp;is)'],['../structecvl_1_1_augmentation_factory.html#a454c7600ba4b329d078a4af160628bf0',1,'ecvl::AugmentationFactory::create(const std::string &amp;name, std::istream &amp;is)'],['../classecvl_1_1_hardware_abstraction_layer.html#a891ced44d3a4d5b2bcf94984898fe70b',1,'ecvl::HardwareAbstractionLayer::Create()'],['../classecvl_1_1_image.html#a07c762fff510ff3f7b3e267f72131ac3',1,'ecvl::Image::Create()'],['../classecvl_1_1_view.html#ac169d286325dc3718e8e59f1c2abcce3',1,'ecvl::View::Create()']]],
   ['ctype_5f',['ctype_',['../classecvl_1_1_d_l_dataset.html#a75feea2d9d8cf039cb2585a12137c549',1,'ecvl::DLDataset']]],

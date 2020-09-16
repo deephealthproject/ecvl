@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['omp_5fpar_5ffor',['OMP_PAR_FOR',['../cpu__hal_8h.html#a699a4933f3802ff493105a4775a2924a',1,'cpu_hal.h']]],
   ['oneofaugmentationcontainer',['OneOfAugmentationContainer',['../classecvl_1_1_one_of_augmentation_container.html',1,'ecvl::OneOfAugmentationContainer'],['../classecvl_1_1_one_of_augmentation_container.html#a119f163ac689039e0e05b875ffb65421',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(double p, Ts &amp;&amp;... t)'],['../classecvl_1_1_one_of_augmentation_container.html#a4a9d7748eedd003ada85110b7d21926e',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(double p, std::vector&lt; std::shared_ptr&lt; Augmentation &gt;&gt; augs)'],['../classecvl_1_1_one_of_augmentation_container.html#aad8cf3a57c98265de559555fc952c72e',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(std::istream &amp;is)']]],
   ['oninit',['OnInit',['../classecvl_1_1_show_app.html#a38c5fc930e4bc3dabee662af2c90bb26',1,'ecvl::ShowApp']]],
   ['onsize',['OnSize',['../classecvl_1_1wx_image_panel.html#a00a6fabd70d1969bc65c5101b0b14c4f',1,'ecvl::wxImagePanel']]],

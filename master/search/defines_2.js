@@ -1,20 +1,6 @@
 var searchData=
 [
-  ['condition_5fb',['CONDITION_B',['../cpu__hal__imgproc_8cpp.html#a5417d6273ee9c48e55beba8c2a897d35',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fc',['CONDITION_C',['../cpu__hal__imgproc_8cpp.html#acac2abdf9b0f8d1c4fab394e613ad271',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fd',['CONDITION_D',['../cpu__hal__imgproc_8cpp.html#a24f88026ff0c4ee9ede3fef8b5c14235',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fe',['CONDITION_E',['../cpu__hal__imgproc_8cpp.html#a2a66bb08f82c37a88670a39680336015',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fg',['CONDITION_G',['../cpu__hal__imgproc_8cpp.html#a504200cce85e9746313b499d24e03f14',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fh',['CONDITION_H',['../cpu__hal__imgproc_8cpp.html#ab8f6e10251c93e12e0ed3fd1b27a078e',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fi',['CONDITION_I',['../cpu__hal__imgproc_8cpp.html#a8a9757fab42ac9109366066ae46f1185',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fj',['CONDITION_J',['../cpu__hal__imgproc_8cpp.html#aecb9c2ec65f56a01eedcdf6d050ecf84',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fk',['CONDITION_K',['../cpu__hal__imgproc_8cpp.html#a00a13c7307438a9fc2432d14a1b81190',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fm',['CONDITION_M',['../cpu__hal__imgproc_8cpp.html#a325141dea3b6d0717ee7810dc561fc01',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fn',['CONDITION_N',['../cpu__hal__imgproc_8cpp.html#a8ee9abccfbc01a0193b04d12eaf7adb8',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fo',['CONDITION_O',['../cpu__hal__imgproc_8cpp.html#aa1f47da21c1ec236c24d0774302a284e',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fp',['CONDITION_P',['../cpu__hal__imgproc_8cpp.html#a4635c5c70bd2cb2eede7aa925e68ec2c',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fr',['CONDITION_R',['../cpu__hal__imgproc_8cpp.html#ad0ba3106ed36e2cf0562daadff998580',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5fs',['CONDITION_S',['../cpu__hal__imgproc_8cpp.html#a0b1913ffd3293b91890e929b20b9ca51',1,'cpu_hal_imgproc.cpp']]],
-  ['condition_5ft',['CONDITION_T',['../cpu__hal__imgproc_8cpp.html#a736b9adfdebf47c8b7731df6960430bc',1,'cpu_hal_imgproc.cpp']]],
-  ['const_5fderef',['CONST_DEREF',['../cpu__hal__imgproc_8cpp.html#a3c273aac68bfc7ce7f106f7cd3875f11',1,'cpu_hal_imgproc.cpp']]]
+  ['binary_5farithmetic_5foperation_5fimage_5fimage',['BINARY_ARITHMETIC_OPERATION_IMAGE_IMAGE',['../arithmetic_8h.html#a163aedc33aa459966c0723a2fd1c1056',1,'arithmetic.h']]],
+  ['binary_5farithmetic_5foperation_5fimage_5fscalar',['BINARY_ARITHMETIC_OPERATION_IMAGE_SCALAR',['../arithmetic_8h.html#a0339350d1d32f94c12f14a54473edabe',1,'arithmetic.h']]],
+  ['binary_5farithmetic_5foperation_5fscalar_5fimage',['BINARY_ARITHMETIC_OPERATION_SCALAR_IMAGE',['../arithmetic_8h.html#a176251edbc094c2f6ca9a2a6d93b41fe',1,'arithmetic.h']]]
 ];

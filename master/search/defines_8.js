@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['unsigned_5fenum_5fclass',['UNSIGNED_ENUM_CLASS',['../dataset__parser_8h.html#a7abd0c9096c474e1463ee8458447c34d',1,'dataset_parser.h']]]
+  ['promote_5foperation',['PROMOTE_OPERATION',['../type__promotion_8h.html#aefaf8768cf307c30202832763a4ee62e',1,'type_promotion.h']]]
 ];
