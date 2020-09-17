@@ -529,6 +529,9 @@ void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down)
     if (src.channels_ != "xyzt") {
         ECVL_ERROR_WRONG_PARAMS("src must have 'xyzt' channels")
     }
+    if (vsize(src.spacings_) != vsize(src.dims_)) {
+        ECVL_ERROR_WRONG_PARAMS("src must have spacings")
+    }
 
     src.hal_->SliceTimingCorrection(src, dst, odd, down);
 }
