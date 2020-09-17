@@ -6338,7 +6338,7 @@ template&lt;typename ODT , typename IDT &gt; </div>
 <p>Corrects each voxel's time-series. Slice timing correction works by using (Hanning-windowed) sinc interpolation to shift each time-series by an appropriate fraction of a TR relative to the middle of the TR period. The default slice order acquisition is from the bottom of the brain to the top. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It must be with channels "xyzt". </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It must be with channels "xyzt" and with spacings (distance between consecutive voxels on each dimensions). </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">odd</td><td>Slices were acquired with interleaved order (0, 2, 4... 1, 3, 5...) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">down</td><td>Slices were acquired from the top of the brain to the bottom </td></tr>
