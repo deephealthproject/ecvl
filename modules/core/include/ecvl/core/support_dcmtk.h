@@ -19,17 +19,6 @@
 
 namespace ecvl
 {
-class OverlayMetaData : public MetaData
-{
-    ecvl::Image overlay_;
-
-public:
-
-    OverlayMetaData(const ecvl::Image& overlay) : overlay_(overlay) {}
-    OverlayMetaData(ecvl::Image&& overlay) = delete;    // always copy, so that memory is contiguous
-    virtual bool Query(const std::string& name, std::string& value) const override;
-};
-
 /** @brief Loads an image from a DICOM file.
 
 Loads an image from the specified DICOM file. If the image cannot

@@ -46,6 +46,10 @@ void CpuHal::CopyImage(const Image& src, Image& dst)
 {
     static constexpr Table2D<StructCopyImage> table;
     table(src.elemtype_, dst.elemtype_)(src, dst);
+
+    if (!src.meta_.map_.empty()) {
+        dst.meta_ = src.meta_;
+    }
 }
 
 /** @brief Rearrange channels between Images of different DataTypes. */

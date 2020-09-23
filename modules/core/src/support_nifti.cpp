@@ -152,9 +152,9 @@ bool NiftiRead(const path& filename, Image& dst)
             float qoffset_y;    /*!< Quaternion y shift.   */
             float qoffset_z;    /*!< Quaternion z shift.   */
 
-            float srow_x[4];    /*!< 1st row affine transform.   */
-            float srow_y[4];    /*!< 2nd row affine transform.   */
-            float srow_z[4];    /*!< 3rd row affine transform.   */
+            array<float, 4> srow_x;    /*!< 1st row affine transform.   */
+            array<float, 4> srow_y;    /*!< 2nd row affine transform.   */
+            array<float, 4> srow_z;    /*!< 3rd row affine transform.   */
 
             char intent_name[16];/*!< 'name' or meaning of data.  */
 
@@ -181,8 +181,9 @@ bool NiftiRead(const path& filename, Image& dst)
         EndianReader rd(is, swap_endianness);
 
         // Skip unused fields
-        is.seekg(36u, ios::cur);
+        is.seekg(35u, ios::cur);
 
+        rd(reinterpret_cast<char*>(&header.dim_info), sizeof(char));
         rd(reinterpret_cast<char*>(header.dim), sizeof(short), 8);
 
         is.seekg(14u, ios::cur);
@@ -204,8 +205,25 @@ bool NiftiRead(const path& filename, Image& dst)
         rd(reinterpret_cast<char*>(&header.slice_code), sizeof(char));
         rd(reinterpret_cast<char*>(&header.xyzt_units), sizeof(char));
 
+        is.seekg(8u, ios::cur);
+        rd(reinterpret_cast<char*>(&header.slice_duration), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.toffset), sizeof(float));
+        is.seekg(112u, ios::cur);
+
+        rd(reinterpret_cast<char*>(&header.qform_code), sizeof(short));
+        rd(reinterpret_cast<char*>(&header.sform_code), sizeof(short));
+        rd(reinterpret_cast<char*>(&header.quatern_b), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.quatern_c), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.quatern_d), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.qoffset_x), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.qoffset_y), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.qoffset_z), sizeof(float));
+        rd(reinterpret_cast<char*>(&header.srow_x), sizeof(float), 4);
+        rd(reinterpret_cast<char*>(&header.srow_y), sizeof(float), 4);
+        rd(reinterpret_cast<char*>(&header.srow_z), sizeof(float), 4);
+
         // Skip some other data
-        is.seekg(220u, ios::cur);
+        is.seekg(16u, ios::cur);
 
         is.read(reinterpret_cast<char*>(header.magic), sizeof(char) * 4);
 
@@ -284,6 +302,21 @@ bool NiftiRead(const path& filename, Image& dst)
         }
 
         dst.Create(dims, data_type, channels, color_type, spacings);
+        dst.meta_.map_.insert({ "xyzt_units", make_shared<MetaSingle<char>>(header.xyzt_units) });
+        dst.meta_.map_.insert({ "dim_info", make_shared<MetaSingle<char>>(header.dim_info) });
+        dst.meta_.map_.insert({ "slice_duration", make_shared<MetaSingle<float>>(header.slice_duration) });
+        dst.meta_.map_.insert({ "toffset", make_shared<MetaSingle<float>>(header.toffset) });
+        dst.meta_.map_.insert({ "qform_code", make_shared<MetaSingle<short>>(header.qform_code) });
+        dst.meta_.map_.insert({ "sform_code", make_shared<MetaSingle<short>>(header.sform_code) });
+        dst.meta_.map_.insert({ "quatern_b", make_shared<MetaSingle<float>>(header.quatern_b) });
+        dst.meta_.map_.insert({ "quatern_c", make_shared<MetaSingle<float>>(header.quatern_c) });
+        dst.meta_.map_.insert({ "quatern_d", make_shared<MetaSingle<float>>(header.quatern_d) });
+        dst.meta_.map_.insert({ "qoffset_x", make_shared<MetaSingle<float>>(header.qoffset_x) });
+        dst.meta_.map_.insert({ "qoffset_y", make_shared<MetaSingle<float>>(header.qoffset_y) });
+        dst.meta_.map_.insert({ "qoffset_z", make_shared<MetaSingle<float>>(header.qoffset_z) });
+        dst.meta_.map_.insert({ "srow_x", make_shared<MetaSingle<array<float, 4>>>(header.srow_x) });
+        dst.meta_.map_.insert({ "srow_y", make_shared<MetaSingle<array<float, 4>>>(header.srow_y) });
+        dst.meta_.map_.insert({ "srow_z", make_shared<MetaSingle<array<float, 4>>>(header.srow_z) });
 
         // Read data
         char* data;
@@ -416,7 +449,9 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr(348);
 
-        wr.Fill(36);
+        wr.Fill(35);
+
+        wr(img.meta_.map_.at("dim_info")->Query<char>());
 
         short dims = static_cast<short>(img.dims_.size());
         if (img.channels_.find('c') != string::npos) {
@@ -492,7 +527,28 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr(352.f);  // vox_offset: Only one .nii file with header and data. No header extension.
 
-        wr.Fill(232);   // I don't use those fields for now
+        wr.Fill(11);
+
+        wr(img.meta_.map_.at("xyzt_units")->Query<char>());
+
+        wr.Fill(8);
+        wr(img.meta_.map_.at("slice_duration")->Query<float>());
+        wr(img.meta_.map_.at("toffset")->Query<float>());
+
+        wr.Fill(112);   // I don't use those fields for now
+        wr(img.meta_.map_.at("qform_code")->Query<short>());
+        wr(img.meta_.map_.at("sform_code")->Query<short>());
+        wr(img.meta_.map_.at("quatern_b")->Query<float>());
+        wr(img.meta_.map_.at("quatern_c")->Query<float>());
+        wr(img.meta_.map_.at("quatern_d")->Query<float>());
+        wr(img.meta_.map_.at("qoffset_x")->Query<float>());
+        wr(img.meta_.map_.at("qoffset_y")->Query<float>());
+        wr(img.meta_.map_.at("qoffset_z")->Query<float>());
+        wr(img.meta_.map_.at("srow_x")->Query<array<float, 4>>());
+        wr(img.meta_.map_.at("srow_y")->Query<array<float, 4>>());
+        wr(img.meta_.map_.at("srow_z")->Query<array<float, 4>>());
+
+        wr.Fill(16);
 
         const char magic[] = "n+1";
         os.write(magic, 4);

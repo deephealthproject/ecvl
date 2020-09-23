@@ -25,6 +25,7 @@
 #include "hal.h"
 #include "iterators.h"
 #include "datatype_matrix.h"
+#include "metadata.h"
 #include "type_promotion.h"
 #include "standard_errors.h"
 
@@ -35,13 +36,6 @@ int vsize(const std::vector<T>& v)
 {
     return static_cast<int>(v.size());
 }
-
-class MetaData
-{
-public:
-    virtual bool Query(const std::string& name, std::string& value) const = 0;
-    virtual ~MetaData() {}
-};
 
 /** @brief Enum class representing the ECVL supported color spaces.
 
@@ -172,7 +166,7 @@ public:
     size_t                      datasize_;          /**< @brief Size of Image data in bytes. */
     bool                        contiguous_;        /**< @brief Whether the image is stored contiguously or not in memory. */
 
-    MetaData* meta_;                                /**< @brief Pointer to Image MetaData. */
+    MetaData meta_;                                 /**< @brief Pointer to Image MetaData. */
     HardwareAbstractionLayer*   hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
 
                                                          It can be CpuHal or ShallowCpuHal. The
@@ -268,7 +262,7 @@ public:
         data_{ nullptr },
         datasize_{ 0 },
         contiguous_{ true },
-        meta_{ nullptr },
+        meta_{},
         hal_{ nullptr },
         dev_{ Device::NONE }
     {
@@ -290,7 +284,7 @@ public:
         data_{ nullptr },
         datasize_{ 0 },
         contiguous_{ true },
-        meta_{ nullptr },
+        meta_{},
         hal_{ HardwareAbstractionLayer::Factory(dev) },
         dev_{ dev }
     {

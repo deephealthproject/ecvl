@@ -31,23 +31,6 @@ using namespace std;
 
 namespace ecvl
 {
-bool OverlayMetaData::Query(const std::string& name, std::string& value) const
-{
-    if (name == "overlay") {
-        if (!overlay_.contiguous_) {
-            ECVL_ERROR_NOT_REACHABLE_CODE
-        }
-
-        value.resize(overlay_.datasize_);
-        memcpy(const_cast<char*>(value.data()), overlay_.data_, overlay_.datasize_);
-
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 bool DicomRead(const std::string& filename, Image& dst)
 {
     bool return_value = true;
@@ -317,9 +300,13 @@ bool DicomWrite(const std::string& filename, const Image& src)
     }
 
     // Insert overlay if present in Image MetaData, under the name "overlay"
-    string overlay_str;
-    if (src.meta_ != nullptr) {
-        if (src.meta_->Query("overlay", overlay_str)) {
+    if (!src.meta_.map_.empty()) {
+        try {
+            Image overlay = src.meta_.map_.at("overlay")->Query<Image>();
+            string overlay_str;
+            overlay_str.resize(overlay.datasize_);
+            memcpy(const_cast<char*>(overlay_str.data()), overlay.data_, overlay.datasize_);
+
             DcmTagKey tag_key(0x6000, 0x0010);
             dataset->putAndInsertUint16(tag_key, src.dims_[1]);         // overlay image must be "xyc"
 
@@ -342,6 +329,9 @@ bool DicomWrite(const std::string& filename, const Image& src)
             auto compressed_overlay = CompressOverlay(overlay_str.begin(), overlay_str.end(), overlay_str.length());
             tag_key.setElement(0x3000);
             dataset->putAndInsertUint8Array(tag_key, compressed_overlay.data(), static_cast<const unsigned long>(compressed_overlay.size()));
+        }
+        catch (std::exception) {
+            cerr << ECVL_ERROR_MSG "Overlay not present in source Image." << endl;
         }
     }
 
