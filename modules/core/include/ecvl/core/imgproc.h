@@ -489,7 +489,7 @@ void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel = fa
     TR relative to the middle of the TR period. The default slice order acquisition is from the bottom of the brain to the top.
 
 @param[in] src Input Image. It must be with channels "xyzt" and with spacings (distance between consecutive voxels on each dimensions).
-@param[out] dst Output Image.
+@param[out] dst Output Image. It will be with DataType::float32.
 @param[in] odd Slices were acquired with interleaved order (0, 2, 4... 1, 3, 5...)
 @param[in] down Slices were acquired from the top of the brain to the bottom
 */
