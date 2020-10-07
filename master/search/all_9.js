@@ -16,7 +16,7 @@ var searchData=
   ['imgfromwx',['ImgFromWx',['../namespaceecvl.html#ae10d61f0fedc5b094ae5c23ef1c0f65a',1,'ecvl']]],
   ['imgproc_2ecpp',['imgproc.cpp',['../imgproc_8cpp.html',1,'']]],
   ['imgproc_2eh',['imgproc.h',['../imgproc_8h.html',1,'']]],
-  ['imread',['ImRead',['../namespaceecvl.html#a60d66ac37fe87a275767d80b93aaa3f6',1,'ecvl::ImRead(const ecvl::filesystem::path &amp;filename, Image &amp;dst, ImReadMode flags=ImReadMode::COLOR)'],['../namespaceecvl.html#af085e2119f6d4c5d9c440c302cedcd02',1,'ecvl::ImRead(const path &amp;filename, Image &amp;dst, ImReadMode flags)']]],
+  ['imread',['ImRead',['../namespaceecvl.html#aec6358a43280d5c5352e9300fe1beddb',1,'ecvl::ImRead(const ecvl::filesystem::path &amp;filename, Image &amp;dst, ImReadMode flags=ImReadMode::ANYCOLOR)'],['../namespaceecvl.html#af085e2119f6d4c5d9c440c302cedcd02',1,'ecvl::ImRead(const path &amp;filename, Image &amp;dst, ImReadMode flags)']]],
   ['imreadmode',['ImReadMode',['../namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408',1,'ecvl']]],
   ['imreadmulti',['ImReadMulti',['../namespaceecvl.html#acba09d5e0c958dfee5093f60a89688ae',1,'ecvl::ImReadMulti(const ecvl::filesystem::path &amp;filename, Image &amp;dst)'],['../namespaceecvl.html#a4d29aac673e6955293e53f292edbcd20',1,'ecvl::ImReadMulti(const path &amp;filename, Image &amp;dst)']]],
   ['imshow',['ImShow',['../namespaceecvl.html#a32112a5d0852c6339501aba94dfd5b55',1,'ecvl']]],

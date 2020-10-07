@@ -21,6 +21,7 @@ var searchData=
   ['additivepoissonnoise',['AdditivePoissonNoise',['../classecvl_1_1_cpu_hal.html#a9e1bd9f9adac361c9d48f61004042a99',1,'ecvl::CpuHal::AdditivePoissonNoise()'],['../classecvl_1_1_hardware_abstraction_layer.html#ad068fae13171eda19d8d5382349863de',1,'ecvl::HardwareAbstractionLayer::AdditivePoissonNoise()'],['../namespaceecvl.html#aeda12761dec92bd6362480d15c173487',1,'ecvl::AdditivePoissonNoise()']]],
   ['alwayscheck',['AlwaysCheck',['../namespaceecvl.html#a596408fa8ed197a4131c325bac56bd3e',1,'ecvl']]],
   ['and',['And',['../namespaceecvl.html#ada60b8f5d3359b1e17fd4a140665fd20',1,'ecvl']]],
+  ['anycolor',['ANYCOLOR',['../namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a33013e2672ae997d28c8e5cc888e069e',1,'ecvl']]],
   ['apply',['Apply',['../classecvl_1_1_augmentation.html#a3b6e1ed0d34f12c7a4869a5f3e27b79a',1,'ecvl::Augmentation::Apply()'],['../classecvl_1_1_dataset_augmentations.html#a09a06812dce63f8edac6b9fe6f7d601b',1,'ecvl::DatasetAugmentations::Apply()']]],
   ['area',['area',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca4b82677b6c1408df4be21ada9a584fde',1,'ecvl']]],
   ['arithmetic_2ecpp',['arithmetic.cpp',['../arithmetic_8cpp.html',1,'']]],

@@ -4,7 +4,7 @@ var searchData=
   ['imagetomat',['ImageToMat',['../namespaceecvl.html#a1acfb7be8dd74703ac91f916339c464b',1,'ecvl']]],
   ['imagetotensor',['ImageToTensor',['../namespaceecvl.html#ae9ead57ce6321a4deb024008cb148004',1,'ecvl::ImageToTensor(const Image &amp;img, tensor &amp;t)'],['../namespaceecvl.html#adb951745793a024dd263bc779cb00c3e',1,'ecvl::ImageToTensor(const Image &amp;img, tensor &amp;t, const int &amp;offset)']]],
   ['imgfromwx',['ImgFromWx',['../namespaceecvl.html#ae10d61f0fedc5b094ae5c23ef1c0f65a',1,'ecvl']]],
-  ['imread',['ImRead',['../namespaceecvl.html#a60d66ac37fe87a275767d80b93aaa3f6',1,'ecvl::ImRead(const ecvl::filesystem::path &amp;filename, Image &amp;dst, ImReadMode flags=ImReadMode::COLOR)'],['../namespaceecvl.html#af085e2119f6d4c5d9c440c302cedcd02',1,'ecvl::ImRead(const path &amp;filename, Image &amp;dst, ImReadMode flags)']]],
+  ['imread',['ImRead',['../namespaceecvl.html#aec6358a43280d5c5352e9300fe1beddb',1,'ecvl::ImRead(const ecvl::filesystem::path &amp;filename, Image &amp;dst, ImReadMode flags=ImReadMode::ANYCOLOR)'],['../namespaceecvl.html#af085e2119f6d4c5d9c440c302cedcd02',1,'ecvl::ImRead(const path &amp;filename, Image &amp;dst, ImReadMode flags)']]],
   ['imreadmulti',['ImReadMulti',['../namespaceecvl.html#acba09d5e0c958dfee5093f60a89688ae',1,'ecvl::ImReadMulti(const ecvl::filesystem::path &amp;filename, Image &amp;dst)'],['../namespaceecvl.html#a4d29aac673e6955293e53f292edbcd20',1,'ecvl::ImReadMulti(const path &amp;filename, Image &amp;dst)']]],
   ['imshow',['ImShow',['../namespaceecvl.html#a32112a5d0852c6339501aba94dfd5b55',1,'ecvl']]],
   ['imshow3d',['ImShow3D',['../namespaceecvl.html#a0f26e7d375ae04b1fbc3e803b9f80f9f',1,'ecvl']]],
