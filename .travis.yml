@@ -5,8 +5,8 @@ env:
     - DEPS_BUILD_DIR="${HOME}/deps"
     - DEPS_INSTALL_DIR="${HOME}/install"
     - BUILD_TYPE=Release
-    - OPENCV_VERSION="3.4.10"
-    - EDDL_VERSION="0.6.0"
+    - OPENCV_VERSION="3.4.11"
+    - EDDL_VERSION="0.7.0"
 jobs:
   # fast_finish: true
   include:
