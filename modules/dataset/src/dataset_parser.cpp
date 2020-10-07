@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -77,12 +77,8 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_FILE_DOES_NOT_EXIST
         }
 
-        if (ctype == ColorType::GRAY) {
-            status = ImRead(location, img, ImReadMode::GRAYSCALE);
-        }
-        else {
-            status = ImRead(location, img);
-        }
+        // Read the image
+        status = ImRead(location, img);
 
         if (!status) {
             // Image not correctly loaded
@@ -90,7 +86,7 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_CANNOT_LOAD_IMAGE
         }
 
-        // TODO is this needed?
+        // ImRead always return BGR, so we have to change color space for other color type
         if (img.colortype_ != ctype) {
             ChangeColorSpace(img, img, ctype);
         }
