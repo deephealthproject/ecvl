@@ -143,7 +143,8 @@ Contributions of any kind are welcome!
 
 |   OS    |  Compiler  | OpenCV | EDDL |Infrastructure | Status | 
 |:-------:|:----------:|:------:|:------:|:------:|:------:|
-| MacOSX 10.15.4 | Apple Clang 11.0.3 | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/11?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
+| MacOSX 10.15.5 | Apple Clang 11.0.3 | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/12?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
+| MacOSX 10.15.7 | Apple Clang 11.0.3 | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/13?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
 
 ## <a name="CI">Continuous integration (GPU)</a> 
 
