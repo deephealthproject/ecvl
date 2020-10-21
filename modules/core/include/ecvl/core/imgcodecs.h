@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -27,11 +27,11 @@ namespace ecvl
  */
 enum class ImReadMode
 {
-//IMREAD_UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
+    //IMREAD_UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
     GRAYSCALE = 0,       //!< If set, always convert image to the single channel grayscale image (codec internal conversion).
     COLOR = 1,           //!< If set, always convert image to the 3 channel BGR color image.
     //IMREAD_ANYDEPTH = 2,  //!< If set, return 16-bit/32-bit image when the input has the corresponding depth, otherwise convert it to 8-bit.
-    //IMREAD_ANYCOLOR = 4,  //!< If set, the image is read in any possible color format.
+    ANYCOLOR = 4,  //!< If set, the image color format is deduced from file format.
 };
 
 /** @brief Loads an image from a file.
@@ -47,7 +47,7 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImRead(const ecvl::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
+bool ImRead(const ecvl::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::ANYCOLOR);
 
 /** @brief Loads a multi-page image from a file.
 
