@@ -37,7 +37,7 @@ namespace ecvl
 #define DT_RGB                   128     /* RGB triple (24 bits/voxel)   */
 #define DT_ALL                   255     /* not very useful (?)          */
 
-    /*----- another set of names for the same ---*/
+/*----- another set of names for the same ---*/
 #define DT_UINT8                   2
 #define DT_INT16                   4
 #define DT_INT32                   8
@@ -189,7 +189,7 @@ bool NiftiRead(const path& filename, Image& dst)
 
         rd(reinterpret_cast<char*>(&header.datatype), sizeof(short));
 
-        // Non dovrebbe servire? Controlliamo però che sia coerente con datatype.
+        // This should not be useful
         rd(reinterpret_cast<char*>(&header.bitpix), sizeof(short));
 
         rd(reinterpret_cast<char*>(&header.slice_start), sizeof(short));
@@ -220,7 +220,7 @@ bool NiftiRead(const path& filename, Image& dst)
         }
         else {
             if (filename.extension() == ".nii") {
-                std::cerr << ECVL_WARNING_MSG << "Wrong magic string for Nifti." << endl;
+                std::cerr << ECVL_WARNING_MSG << "Wrong magic string for NIfTI." << endl;
             }
             dst = Image();
             return false;
@@ -229,35 +229,29 @@ bool NiftiRead(const path& filename, Image& dst)
         // Create ecvl::Image and read data
         int ndims = header.dim[0];
 
-        // Convert nifti_image into ecvl::Image
-        std::vector<int> dims;
-        std::vector<float> spacings;
-        for (int i = 0; i < ndims; i++) {
-            dims.push_back(header.dim[i + 1]);
-            spacings.push_back(header.pixdim[i + 1]);
-        }
 
+        // Convert nifti_image into ecvl::Image
         DataType data_type;
         switch (header.datatype) {
-        case  DT_BINARY:           data_type = DataType::uint8;     break;               /* binary (1 bit/voxel)         */                      // qua bisogna leggere bit a bit D:
+        case  DT_BINARY:           data_type = DataType::uint8;     break;               /* binary (1 bit/voxel)         */                      // bit-per-bit reading, not implemented
         case  DT_UNSIGNED_CHAR:    data_type = DataType::uint8;     break;                      /* unsigned char (8 bits/voxel) */
         case  DT_SIGNED_SHORT:     data_type = DataType::int16;     break;                     /* signed short (16 bits/voxel) */
         case  DT_SIGNED_INT:       data_type = DataType::int32;     break;             /* signed int (32 bits/voxel)   */
         case  DT_FLOAT:            data_type = DataType::float32;   break;                /* float (32 bits/voxel)        */
         case  DT_DOUBLE:           data_type = DataType::float64;   break;                 /* double (64 bits/voxel)       */
-        case  DT_RGB:              data_type = DataType::uint8;     break;            /* RGB triple (24 bits/voxel)   */                          // attenzione perché sono 3 canali
+        case  DT_RGB:              data_type = DataType::uint8;     break;            /* RGB triple (24 bits/voxel)   */                          // warning: 3 channels
         case  DT_INT8:             data_type = DataType::int8;      break;            /* signed char (8 bits)         */
         case  DT_UINT16:           data_type = DataType::uint16;    break;                /* unsigned short (16 bits)     */
         //case  DT_UINT32:           data_type = DataType::uint32;    break;                /* unsigned int (32 bits)       */
         case  DT_INT64:            data_type = DataType::int64;     break;              /* long long (64 bits)          */
         //case  DT_UINT64:           data_type = DataType::uint64;    break;                /* unsigned long long (64 bits) */
-        case  DT_RGBA32:           data_type = DataType::uint8;     break;               /* 4 byte RGBA (32 bits/voxel)  */                       // attenzione perché sono 4 canali
-        //case  DT_COMPLEX256:       data_type = DataType::none;      break;                  /* long double pair (256 bits)  */                    // non supportato
-        //case  DT_COMPLEX128:       data_type = DataType::none;      break;                  /* double pair (128 bits)       */                    // non supportato
-        //case  DT_FLOAT128:         data_type = DataType::none;      break;                /* long double (128 bits)       */                      // non supportato
+        case  DT_RGBA32:           data_type = DataType::uint8;     break;               /* 4 byte RGBA (32 bits/voxel)  */                       // warning: 4 channels
+        //case  DT_COMPLEX256:       data_type = DataType::none;      break;                  /* long double pair (256 bits)  */                    // unsupported 
+        //case  DT_COMPLEX128:       data_type = DataType::none;      break;                  /* double pair (128 bits)       */                    // unsupported 
+        //case  DT_FLOAT128:         data_type = DataType::none;      break;                /* long double (128 bits)       */                      // unsupported 
         //case  DT_UNKNOWN:          data_type = DataType::none;      break;               /* what it says, dude           */
         //case  DT_ALL:              data_type = DataType::none;      break;           /* not very useful (?)          */
-        //case  DT_COMPLEX:          data_type = DataType::none;      break;               /* complex (64 bits/voxel)      */                       // non supportato
+        //case  DT_COMPLEX:          data_type = DataType::none;      break;               /* complex (64 bits/voxel)      */                       // unsupported
         default:                   throw runtime_error("Unsupported data type.\n");
         }
 
@@ -266,21 +260,43 @@ bool NiftiRead(const path& filename, Image& dst)
         if (data_type != DataType::none) {
             switch (header.datatype) {
             case DT_RGB:                    color_type = ColorType::RGB;    break;
-            case DT_RGBA32:                 color_type = ColorType::RGB;    break;      // This should be RGBA but we don't have it!
-            default:                        color_type = ColorType::GRAY;   break;
+            case DT_RGBA32:                 color_type = ColorType::RGBA;    break;      // This should be RGBA and we have it!
+            default:                        color_type = ColorType::none;   break;
             }
         }
 
-        string channels;
-        if (dims[ndims - 1] == 1 && ndims == 4) {
-            channels = "xyz";
+        std::vector<int> dims;
+        std::vector<float> spacings;
+
+        for (int i = 0; i < ndims; i++) {
+            dims.push_back(header.dim[i + 1]);
+            spacings.push_back(header.pixdim[i + 1]);
+        }
+
+        string possible_channels = "xyzt";
+        string channels = "";
+        for (int i = 0; i < ndims && i < 4; i++) {
+            channels += possible_channels[i];
+        }
+        for (int i = 4; i < ndims; i++) {
+            channels += "o";
+        }
+        if (dims[ndims - 1] == 1) {
             dims.pop_back();
+            channels.pop_back();
+            spacings.pop_back();
         }
-        else if (ndims < 4) {
-            channels = "xyz";
+
+        if (color_type == ColorType::RGB) {
+            dims.push_back(3);
+            spacings.push_back(1);
         }
-        else {
-            channels = "xyzt";
+        if (color_type == ColorType::RGBA) {
+            dims.push_back(4);
+            spacings.push_back(1);
+        }
+        if (color_type == ColorType::RGB || color_type == ColorType::RGBA) {
+            channels += "c";
         }
 
         dst.Create(dims, data_type, channels, color_type, spacings);
@@ -301,14 +317,13 @@ bool NiftiRead(const path& filename, Image& dst)
             is.read(data, total_number_bytes);
         }
 
-        // Copia i pixel
+        // Count pixels
         if (header.datatype == DT_BINARY) {
-            // leggi bit a bit
-            throw std::runtime_error("Not implemented.\n");
+            // Read bit per bit
+            throw std::runtime_error("Support for binary images is not implemented.\n");
         }
         else if (header.datatype == DT_RGB) {
-            // leggi un piano alla volta
-
+            // Read a plane at a time
             for (int color = 0; color < 3; color++) {
                 for (size_t i = 0; i < dst.datasize_ / 3; i++) {
                     dst.data_[color * (dst.datasize_ / 3) + i] = reinterpret_cast<uint8_t*>(data)[i * 3 + color];
@@ -316,10 +331,10 @@ bool NiftiRead(const path& filename, Image& dst)
             }
         }
         else if (header.datatype == DT_RGBA32) {
-            // leggi un piano alla volta, scartando alpha
-            for (int color = 0; color < 3; color++) {
-                for (size_t i = 0; i < dst.datasize_ / 3; i++) {
-                    dst.data_[color * (dst.datasize_ / 3) + i] = reinterpret_cast<uint8_t*>(data)[i * 4 + color];
+            // Read a plane at a time, do not discard alpha
+            for (int color = 0; color < 4; color++) {
+                for (size_t i = 0; i < dst.datasize_ / 4; i++) {
+                    dst.data_[color * (dst.datasize_ / 4) + i] = reinterpret_cast<uint8_t*>(data)[i * 4 + color];
                 }
             }
         }
@@ -377,31 +392,31 @@ bool NiftiWrite(const path& filename, const Image& src)
             use_tmp1 = true;
         }
     }
+    else if (src.colortype_ == ColorType::GRAY || src.colortype_ == ColorType::none); // do nothing
+    else {
+        std::cerr << ECVL_WARNING_MSG << "Supported color types for NIfTI write are RGB, RGBA, GRAY and none." << endl;
+        return false;
+    }
 
     const Image& tmp1 = use_tmp1 ? tmp : src;
     bool use_tmp2 = false;
 
-    if (tmp1.colortype_ == ColorType::GRAY); // nothing to do
-    else if (tmp1.colortype_ == ColorType::RGB || tmp1.colortype_ == ColorType::RGBA) {
-        if (tmp1.channels_.size() == 3) {
-            if (tmp1.channels_ != "zxy") {
-                RearrangeChannels(tmp1, tmp, "zxy");
-                use_tmp2 = true;
-            }
-        }
-        else if (tmp1.channels_.size() == 4) {
-            if (tmp1.channels_ != "zxyt") {
-                RearrangeChannels(tmp1, tmp, "zxyt");
-                use_tmp2 = true;
-            }
-        }
-        else {
-            ECVL_ERROR_NOT_IMPLEMENTED
-        }
+    string target_channel_model = "xyzt";
+    string target_channel = "";
+    size_t num_channels = tmp1.channels_.size();
+    size_t c_pos = tmp1.channels_.find('c');
+    if (c_pos != string::npos) {
+        target_channel = "c";
+        num_channels--;        
     }
-    else {
-        ECVL_ERROR_NOT_IMPLEMENTED
+    for (int i = 0; i < num_channels && i < 4; i++) {
+        target_channel += target_channel_model[i];
     }
+    for (int i = 4; i < num_channels; i++) {
+        target_channel += 'o';
+    }
+    RearrangeChannels(tmp1, tmp, target_channel);
+    use_tmp2 = true;
 
     const Image& img = use_tmp2 ? tmp : tmp1;
 
@@ -441,12 +456,12 @@ bool NiftiWrite(const path& filename, const Image& src)
         else if (img.colortype_ == ColorType::RGBA) {
             datatype = DT_RGBA32;
         }
-        else if (img.colortype_ == ColorType::GRAY) {
+        else if (img.colortype_ == ColorType::GRAY || img.colortype_ == ColorType::none) {
             switch (img.elemtype_) {
             case DataType::uint8:   datatype = DT_UINT8; break;
             case DataType::uint16:   datatype = DT_UINT16; break;
-            //case DataType::uint32:   datatype = DT_UINT32; break;
-            //case DataType::uint64:   datatype = DT_UINT64; break;
+                //case DataType::uint32:   datatype = DT_UINT32; break;
+                //case DataType::uint64:   datatype = DT_UINT64; break;
             case DataType::int8:   datatype = DT_INT8; break;
             case DataType::int16:   datatype = DT_INT16; break;
             case DataType::int32:   datatype = DT_INT32; break;
@@ -492,7 +507,7 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr(352.f);  // vox_offset: Only one .nii file with header and data. No header extension.
 
-        wr.Fill(232);   // I don't use those fields for now
+        wr.Fill(232);   // We don't use those fields for now
 
         const char magic[] = "n+1";
         os.write(magic, 4);
