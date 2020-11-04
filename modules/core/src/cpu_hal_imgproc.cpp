@@ -1216,14 +1216,18 @@ void CpuHal::Stack(const vector<Image>& src, Image& dst)
 {
     const int n_images = vsize(src);
     const auto& src_0 = src[0];
+    int total_channels = 0;
+    for (int i = 0; i < n_images; ++i) {
+        total_channels += src[i].Channels();
+    }
 
     // If src is a vector of xyc Image
     if (src_0.channels_ == "xyc") {
-        Image tmp({ src_0.dims_[0], src_0.dims_[1], n_images * src_0.dims_[2] }, src_0.elemtype_, "xyo", src_0.colortype_, src_0.spacings_, src_0.dev_);
+        Image tmp({ src_0.dims_[0], src_0.dims_[1], total_channels }, src_0.elemtype_, "xyo", ColorType::none, src_0.spacings_, src_0.dev_);
 
-        for (int i = 0; i < n_images; ++i) {
-            for (int j = 0; j < src[i].Channels(); ++j) {
-                memcpy(tmp.data_ + src[i].strides_[2] * (i + j * n_images), src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
+        for (int i = 0, n = 0; i < n_images; ++i) {
+            for (int j = 0; j < src[i].Channels(); ++j, ++n) {
+                memcpy(tmp.data_ + src[i].strides_[2] * n, src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
             }
         }
         dst = std::move(tmp);

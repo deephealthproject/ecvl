@@ -282,7 +282,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst);
 */
 void FindContours(const Image& src, std::vector<std::vector<Point2i>>& contours);
 
-/** @brief Stack a sequence of Images along a new depth dimension (images dimensions must match)
+/** @brief Stack a sequence of Images along the depth dimension (images width and height must match)
 
 @param[in] src vector of input Images. It must be with channels "xyc".
 @param[out] dst Output Image.
