@@ -88,7 +88,14 @@ bool DicomRead(const std::string& filename, Image& dst)
             }
 
             dst.Create({ x, y, planes }, dst_datatype, "xyc", color_type);
-            memcpy(dst.data_, dipixel_data, x * y * planes * DataTypeSize(dst_datatype));
+            if (planes == 1) {
+                memcpy(dst.data_, dipixel_data, x * y * DataTypeSize(dst_datatype));
+            }
+            else {
+                for (int i = 0; i < planes; i++) {
+                    memcpy(dst.data_ + x * y * DataTypeSize(dst_datatype) * i, reinterpret_cast<void * const *>(dipixel_data)[i], x * y * DataTypeSize(dst_datatype));
+                }
+            }
 
             // Read metadata, only of string type - not currently considered
             //DcmFileFormat fileformat;
