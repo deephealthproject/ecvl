@@ -431,7 +431,8 @@ public:
     @param[in] elemtype New Image DataType.
     @param[in] channels New Image channels.
     @param[in] colortype New Image colortype.
-    @param[in] spacings New Image spacings.
+    @param[in] spacings New Image spacings. Default is an empty vector.
+    @param[in] dev Device on which the Image is stored. Default is Device::CPU.
     */
     void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
         const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU);
