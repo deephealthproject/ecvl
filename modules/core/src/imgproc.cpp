@@ -535,4 +535,22 @@ void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down)
 
     src.hal_->SliceTimingCorrection(src, dst, odd, down);
 }
+
+void Moments(const Image& src, Image& moments, int order, DataType type)
+{
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
+    }
+
+    if (src.colortype_ != ColorType::GRAY && src.colortype_ != ColorType::none) {
+        ECVL_ERROR_UNSUPPORTED_SRC_COLORTYPE
+    }
+
+    if (src.dev_ != moments.dev_ && moments.dev_ != Device::NONE) {
+        ECVL_ERROR_DIFFERENT_DEVICES
+    }
+
+    src.hal_->Moments(src, moments, order, type);
+}
+
 } // namespace ecvl

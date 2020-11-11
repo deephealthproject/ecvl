@@ -1791,4 +1791,58 @@ void CpuHal::SaltAndPepper(const Image& src, Image& dst, double p, bool per_chan
 {
     SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::SaltAndPepper);
 }
+
+void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type) 
+{
+    // Drop color channel
+    auto color_channel_pos = src.channels_.find("c");
+    Image tmp;
+    tmp.elemtype_ = src.elemtype_;
+    tmp.elemsize_ = src.elemsize_;
+    if (color_channel_pos != std::string::npos) {
+        tmp.dims_ = src.dims_;
+        tmp.dims_.erase(tmp.dims_.begin() + color_channel_pos);
+
+        tmp.strides_ = src.strides_;
+        tmp.strides_.erase(tmp.strides_.begin() + color_channel_pos);
+        
+        tmp.channels_ = src.channels_;
+        tmp.channels_.erase(color_channel_pos, 1);
+
+        tmp.colortype_ = ColorType::none;
+
+        tmp.spacings_ = src.spacings_;
+        tmp.spacings_.erase(tmp.spacings_.begin() + color_channel_pos);
+    }
+    tmp.data_ = src.data_;
+    tmp.datasize_ = src.datasize_;
+    tmp.contiguous_ = src.contiguous_;
+    tmp.meta_ = src.meta_;
+    tmp.hal_ = src.hal_;
+    tmp.dev_ = src.dev_;
+
+    auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
+    Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
+
+    for (auto it = tmp.Begin<uint8_t>(), et = tmp.End<uint8_t>(); it != et; ++it) {
+        auto& voxel = *it;
+        for (auto io = out.Begin<uint8_t>(), eo = tmp.End<uint8_t>(); io != eo; ++io) {
+            auto& moment = *io;
+            for (int d = 0; d < vsize(tmp.dims_); ++d) {
+                /*moment += */
+            }
+        }
+    }
+//#define ECVL_TUPLE(type, ...) \
+//case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
+//
+//        switch (tmp.elemtype_) {
+//#include "ecvl/core/datatype_existing_tuples.inc.h"
+//        }
+//
+//#undef ECVL_TUPLE
+//    }
+    moments = std::move(out);
+}
+
 } // namespace ecvl

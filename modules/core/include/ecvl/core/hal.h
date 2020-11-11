@@ -162,7 +162,8 @@ public:
     virtual void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) { ECVL_ERROR_NOT_IMPLEMENTED }
-
+    virtual void Moments(const Image& src, Image& moments, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    
     virtual bool IsOwner() const { return true; };
 
     virtual void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }

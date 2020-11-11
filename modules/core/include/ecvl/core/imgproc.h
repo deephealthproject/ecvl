@@ -494,6 +494,28 @@ void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel = fa
 @param[in] down Slices were acquired from the top of the brain to the bottom
 */
 void SliceTimingCorrection(const Image& src, Image& dst, bool odd = false, bool down = false);
+
+/** @brief Calculate all raw image moments of the source Image up to the specified order.
+
+When working with a 2D Image, naming the pixel intensities as \f$I(x,y)\f$, raw image moments \f$M_{ij}\f$ are calculated with the following formula:
+
+\f$
+M_{ij} = \sum_x{\sum_y{x^iy^jI(x,y)}}
+\f$
+
+The following properties can be derived from raw image moments:
+- Area (for binary images) or sum of grey level (for grayscale images): \f$M_{00} \f$, accessible through moments(0,0);
+- Centroid: \f$\{\bar{x}, \bar{x}\} = \{\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}}\}\f$.
+
+The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>.
+
+@param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
+@param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
+@param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
+@param[in] type Specify the ecvl::DataType to be used for the moments Image. Default is DataType::float32.
+*/
+void Moments(const Image& src, Image& moments, int order = 3, DataType type = DataType::float32);
+
 /** @example example_imgproc.cpp
  Imgproc example.
 */
