@@ -41,6 +41,7 @@
 | Stack | :heavy_check_mark: | :x: | :x: |
 | Transpose | :heavy_check_mark: | :x: | :x: |
 | VConcat | :heavy_check_mark: | :x: | :x: |
+| SetTo | :heavy_check_mark: | :x: | :x: |
 
 ## Pre- Post-processing and Augmentation
 | Functionality | CPU | GPU | FPGA |

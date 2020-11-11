@@ -543,6 +543,13 @@ public:
         hal_->Div(*this, rhs, *this, elemtype_, saturate);
     }
 
+    /** @brief Set Image value to rhs. */
+    template<typename T>
+    void SetTo(T value)
+    {
+        hal_->SetTo(*this, value);
+    }
+
     Image operator-() const;
 
     Image& operator+=(const Image& rhs);

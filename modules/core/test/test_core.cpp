@@ -264,7 +264,17 @@ TEST_F(CoreArithmetics, DivImage##type) \
     g2_##type.Div(tmp); \
     EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
     EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
-}
+}\
+\
+TEST_F(CoreArithmetics, SetTo##type) \
+{ \
+    g2_##type.SetTo(0); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(0)); \
+    } \
+} \
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

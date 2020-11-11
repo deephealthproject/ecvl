@@ -115,6 +115,8 @@ public:
                                                                                                    \
     void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
     void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
+                                                                                                   \
+    void SetTo(Image& src, type value) override;                                               
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
