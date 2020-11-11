@@ -12,6 +12,7 @@
 target_sources(ECVL_TESTS PRIVATE
         test_core.cpp
         test_imgproc.cpp
+        test_volproc.cpp
 )
 
 if(ECVL_GPU_AVAILABLE)

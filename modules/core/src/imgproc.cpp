@@ -365,7 +365,7 @@ void Stack(const vector<Image>& src, Image& dst)
         if (src[i].IsEmpty()) {
             ECVL_ERROR_EMPTY_IMAGE
         }
-        if (src_0.dims_ != src[i].dims_) {
+        if (src_0.Width() != src[i].Width() || src_0.Height() != src[i].Height()) {
             ECVL_ERROR_WRONG_PARAMS("Cannot stack images with different dimensions.")
         }
         if (src_0.dev_ != src[i].dev_) {
