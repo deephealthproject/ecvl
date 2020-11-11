@@ -251,7 +251,7 @@ void Dataset::Dump(const path& file_path)
     os.close();
 }
 
-Dataset::Dataset(const path& filename, bool verify)
+Dataset::Dataset(const filesystem::path& filename, bool verify)
 {
     path abs_filename = absolute(filename);
 

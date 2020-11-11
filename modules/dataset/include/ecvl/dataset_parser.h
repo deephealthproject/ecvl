@@ -97,6 +97,7 @@ public:
 
     /**
     @param[in] filename Path to the Dataset file.
+    @param[in] verify When true, if dataset sample location doesn't exists the function will print a warning on standard error.
     */
     Dataset(const filesystem::path& filename, bool verify = false);
 
