@@ -11,9 +11,9 @@ var searchData=
   ['imwrite',['ImWrite',['../namespaceecvl.html#a11e25b58a987c02f5050d494f222b381',1,'ecvl::ImWrite(const ecvl::filesystem::path &amp;filename, const Image &amp;src)'],['../namespaceecvl.html#ab884f852af367458d5a6daf110ea03ea',1,'ecvl::ImWrite(const path &amp;filename, const Image &amp;src)']]],
   ['inbounds',['InBounds',['../namespaceecvl.html#a79f8ab2f60b128a66797b1cd63c3a426',1,'ecvl']]],
   ['init',['init',['../structecvl_1_1_shader.html#afa5b5c800e40b6197f20119896e0f424',1,'ecvl::Shader']]],
-  ['inpaint',['Inpaint',['../classecvl_1_1_cpu_hal.html#ade5146b50b47183bceab6a2944ea27b8',1,'ecvl::CpuHal::Inpaint()'],['../classecvl_1_1_hardware_abstraction_layer.html#acb849dc3455014a80b54d69337a521d3',1,'ecvl::HardwareAbstractionLayer::Inpaint()'],['../namespaceecvl.html#adecccefb7d437197c6bc805e86eb0811',1,'ecvl::Inpaint()']]],
-  ['integralimage',['IntegralImage',['../classecvl_1_1_cpu_hal.html#aa89ef138d04faf140e5cd9f563a10a9b',1,'ecvl::CpuHal::IntegralImage()'],['../classecvl_1_1_hardware_abstraction_layer.html#a3e4d710d83486e5c4f5970362e6c6683',1,'ecvl::HardwareAbstractionLayer::IntegralImage()'],['../namespaceecvl.html#abd1bed8d85c640bf76e16d28884b1715',1,'ecvl::IntegralImage()']]],
+  ['inpaint',['Inpaint',['../namespaceecvl.html#adecccefb7d437197c6bc805e86eb0811',1,'ecvl']]],
+  ['integralimage',['IntegralImage',['../namespaceecvl.html#abd1bed8d85c640bf76e16d28884b1715',1,'ecvl']]],
   ['isempty',['IsEmpty',['../classecvl_1_1_image.html#ab7dfe59beca83e189162378368dc4484',1,'ecvl::Image::IsEmpty()'],['../classecvl_1_1wx_image_panel.html#a158bf81bef69cd8ff59ff5e76d611d03',1,'ecvl::wxImagePanel::IsEmpty()']]],
-  ['isowner',['IsOwner',['../classecvl_1_1_shallow_cpu_hal.html#ab25e9b7ecdeb39d8ea94da5c2ed30048',1,'ecvl::ShallowCpuHal::IsOwner()'],['../classecvl_1_1_hardware_abstraction_layer.html#ac0c7375cb0fd6f7d48e6c1e3576d5dc6',1,'ecvl::HardwareAbstractionLayer::IsOwner()'],['../classecvl_1_1_image.html#ab66d2ad85e32f02cc05a8b6da12788cc',1,'ecvl::Image::IsOwner()']]],
+  ['isowner',['IsOwner',['../classecvl_1_1_shallow_cpu_hal.html#ab25e9b7ecdeb39d8ea94da5c2ed30048',1,'ecvl::ShallowCpuHal::IsOwner()'],['../classecvl_1_1_image.html#ab66d2ad85e32f02cc05a8b6da12788cc',1,'ecvl::Image::IsOwner()']]],
   ['iterator',['Iterator',['../structecvl_1_1_iterator.html#a683c73c3643799cbf29fef92fe810d82',1,'ecvl::Iterator']]]
 ];

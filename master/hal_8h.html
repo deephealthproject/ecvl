@@ -94,7 +94,6 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">hal.h File Reference</div>  </div>
@@ -104,7 +103,6 @@ $(function() {
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="datatype_8h_source.html">datatype.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="standard__errors_8h_source.html">standard_errors.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="datatype__existing__tuples_8inc_8h_source.html">datatype_existing_tuples.inc.h</a>&quot;</code><br />
 </div>
 <p><a href="hal_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -119,11 +117,6 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceecvl"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html">ecvl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a4dabd5c8d129f6329370bfd5104241eb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hal_8h.html#a4dabd5c8d129f6329370bfd5104241eb">ECVL_TUPLE</a>(name,  size,  type, ...)</td></tr>
-<tr class="separator:a4dabd5c8d129f6329370bfd5104241eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ad255aa13dc4912a4ef236f7a99ccab83"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">ecvl::Device</a> { <a class="el" href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83ab50339a10e1de285ac99d4c3990b8693">ecvl::Device::NONE</a>, 
@@ -134,55 +127,6 @@ Enumerations</h2></td></tr>
 <tr class="memdesc:ad255aa13dc4912a4ef236f7a99ccab83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum class representing the ECVL available devices.  <a href="namespaceecvl.html#ad255aa13dc4912a4ef236f7a99ccab83">More...</a><br /></td></tr>
 <tr class="separator:ad255aa13dc4912a4ef236f7a99ccab83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a4dabd5c8d129f6329370bfd5104241eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dabd5c8d129f6329370bfd5104241eb">&#9670;&nbsp;</a></span>ECVL_TUPLE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ECVL_TUPLE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">name, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">size, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">type, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#ab71c66befd58dc3a45874b771021893f">Add</a>(<span class="keyword">const</span> Image&amp; src1, type src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#ab71c66befd58dc3a45874b771021893f">Add</a>(type src1, <span class="keyword">const</span> Image&amp; src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">                                                                                                                               \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#ad73691e43244446abaa50b1b5cb8a2ba">Sub</a>(<span class="keyword">const</span> Image&amp; src1, type src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#ad73691e43244446abaa50b1b5cb8a2ba">Sub</a>(type src1, <span class="keyword">const</span> Image&amp; src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">                                                                                                                               \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#aefb3bf550679f0b94a93825ee6e7c21a">Mul</a>(<span class="keyword">const</span> Image&amp; src1, type src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#aefb3bf550679f0b94a93825ee6e7c21a">Mul</a>(type src1, <span class="keyword">const</span> Image&amp; src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">                                                                                                                               \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#a8c09fc3fc39394bcb58aef741e8e00e0">Div</a>(<span class="keyword">const</span> Image&amp; src1, type src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="line">    virtual <span class="keywordtype">void</span> <a class="code" href="namespaceecvl.html#a8c09fc3fc39394bcb58aef741e8e00e0">Div</a>(type src1, <span class="keyword">const</span> Image&amp; src2, Image&amp; dst, <a class="code" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> dst_type, <span class="keywordtype">bool</span> saturate) { <a class="code" href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a> } \</div><div class="ttc" id="namespaceecvl_html_aefb3bf550679f0b94a93825ee6e7c21a"><div class="ttname"><a href="namespaceecvl.html#aefb3bf550679f0b94a93825ee6e7c21a">ecvl::Mul</a></div><div class="ttdeci">void Mul(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)</div><div class="ttdef"><b>Definition:</b> <a href="arithmetic_8h_source.html#l00122">arithmetic.h:122</a></div></div>
-<div class="ttc" id="namespaceecvl_html_aaf30aceb57f44dc62f5f666f3955d857"><div class="ttname"><a href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">ecvl::DataType</a></div><div class="ttdeci">DataType</div><div class="ttdoc">DataType is an enum class which defines data types allowed for images.</div><div class="ttdef"><b>Definition:</b> <a href="datatype_8h_source.html#l00039">datatype.h:39</a></div></div>
-<div class="ttc" id="namespaceecvl_html_ab71c66befd58dc3a45874b771021893f"><div class="ttname"><a href="namespaceecvl.html#ab71c66befd58dc3a45874b771021893f">ecvl::Add</a></div><div class="ttdeci">void Add(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)</div><div class="ttdoc">Adds two source Images storing the result into a destination Image.</div><div class="ttdef"><b>Definition:</b> <a href="arithmetic_8h_source.html#l00069">arithmetic.h:69</a></div></div>
-<div class="ttc" id="namespaceecvl_html_ad73691e43244446abaa50b1b5cb8a2ba"><div class="ttname"><a href="namespaceecvl.html#ad73691e43244446abaa50b1b5cb8a2ba">ecvl::Sub</a></div><div class="ttdeci">void Sub(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)</div><div class="ttdef"><b>Definition:</b> <a href="arithmetic_8h_source.html#l00118">arithmetic.h:118</a></div></div>
-<div class="ttc" id="namespaceecvl_html_a8c09fc3fc39394bcb58aef741e8e00e0"><div class="ttname"><a href="namespaceecvl.html#a8c09fc3fc39394bcb58aef741e8e00e0">ecvl::Div</a></div><div class="ttdeci">void Div(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)</div><div class="ttdef"><b>Definition:</b> <a href="arithmetic_8h_source.html#l00126">arithmetic.h:126</a></div></div>
-<div class="ttc" id="standard__errors_8h_html_a589272c0c7f190ea470e5563f0bf6574"><div class="ttname"><a href="standard__errors_8h.html#a589272c0c7f190ea470e5563f0bf6574">ECVL_ERROR_NOT_IMPLEMENTED</a></div><div class="ttdeci">#define ECVL_ERROR_NOT_IMPLEMENTED</div><div class="ttdef"><b>Definition:</b> <a href="standard__errors_8h_source.html#l00022">standard_errors.h:22</a></div></div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="hal_8h_source.html#l00174">174</a> of file <a class="el" href="hal_8h_source.html">hal.h</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
