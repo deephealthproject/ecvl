@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -124,8 +124,8 @@ public:
     @param[out] dst The output rearranged Image. Can be the src Image.
     @param[in] bindings Desired order of Image channels.
     */
+    /** @cond HIDDEN_SECTION */
     virtual void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) { ECVL_ERROR_NOT_IMPLEMENTED }
-
     virtual void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Flip2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
@@ -187,6 +187,7 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
+/** @endcond */
 };
 } // namespace ecvl
 #endif // ECVL_HAL_H_

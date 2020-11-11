@@ -21,7 +21,7 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
 
 ### Optional
 - [EDDL](https://github.com/deephealthproject/eddl), European Distributed Deep Learning Library (`ECVL_BUILD_EDDL` flag)
-- [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled
+- [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled (wxWidgets build steps available [here](https://github.com/deephealthproject/ecvl-applications/blob/master/README.md))
   - OpenGL 3.3 or later, required by the 3D viewer enabled by `ECVL_BUILD_GUI` flag
 - [OpenSlide](https://github.com/openslide/openslide), required with `ECVL_WITH_OPENSLIDE` flag
 

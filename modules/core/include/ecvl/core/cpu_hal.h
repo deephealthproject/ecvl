@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -55,6 +55,7 @@ public:
 
     static CpuHal* GetInstance();
 
+    /** @cond HIDDEN_SECTION */
     void CopyImage(const Image& src, Image& dst) override;
     void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) override;
 
@@ -117,6 +118,7 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
+    /** @endcond */
 };
 
 class ShallowCpuHal : public CpuHal
