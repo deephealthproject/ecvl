@@ -264,15 +264,55 @@ TEST_F(CoreArithmetics, DivImage##type) \
     g2_##type.Div(tmp); \
     EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
     EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
-}\
+} \
 \
-TEST_F(CoreArithmetics, SetTo##type) \
+TEST_F(CoreArithmetics, SetTo0##type) \
 { \
     g2_##type.SetTo(0); \
     View<DataType::type> my_view(g2_##type); \
     auto i = my_view.Begin(), e = my_view.End(); \
     for (; i != e; ++i) { \
         EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(0)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10_##type) \
+{ \
+    g2_##type.SetTo(10.); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10.)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10_f##type) \
+{ \
+    g2_##type.SetTo(10.f); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10.f)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10l##type) \
+{ \
+    g2_##type.SetTo(10l); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10l)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10u##type) \
+{ \
+    g2_##type.SetTo(10u); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10u)); \
     } \
 } \
 
