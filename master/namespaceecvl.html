@@ -580,6 +580,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a1f9d22b5521082c3a334f6ef9d3a1d16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a1f9d22b5521082c3a334f6ef9d3a1d16">Moments</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;moments, int order=3, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> type=<a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857afb7fa22ede616c04c68a7663d0f81e92">DataType::float64</a>)</td></tr>
 <tr class="memdesc:a1f9d22b5521082c3a334f6ef9d3a1d16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate all raw image moments of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> up to the specified order.  <a href="#a1f9d22b5521082c3a334f6ef9d3a1d16">More...</a><br /></td></tr>
 <tr class="separator:a1f9d22b5521082c3a334f6ef9d3a1d16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bdfa9caf341b16323e61294a71bb968"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a0bdfa9caf341b16323e61294a71bb968">CentralMoments</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;moments, std::vector&lt; double &gt; center, int order=3, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> type=<a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857afb7fa22ede616c04c68a7663d0f81e92">DataType::float64</a>)</td></tr>
+<tr class="memdesc:a0bdfa9caf341b16323e61294a71bb968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate all central image moments of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> up to the specified order.  <a href="#a0bdfa9caf341b16323e61294a71bb968">More...</a><br /></td></tr>
+<tr class="separator:a0bdfa9caf341b16323e61294a71bb968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplParams" colspan="2">template&lt;DataType ODT, typename IDT &gt; </td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_type_info.html">TypeInfo</a>&lt; ODT &gt;::basetype&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10">saturate_cast</a> (IDT v)</td></tr>
 <tr class="memdesc:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saturate a value (of any type) to the specified type.  <a href="#afaa228c1d0b2e3eef2622ca7e4ffec10">More...</a><br /></td></tr>
@@ -1461,6 +1464,94 @@ template&lt;typename ST1 &gt; </div>
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">lambda</td><td>Lambda parameter of the Poisson distribution. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0bdfa9caf341b16323e61294a71bb968"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bdfa9caf341b16323e61294a71bb968">&#9670;&nbsp;</a></span>CentralMoments()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::CentralMoments </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>moments</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; double &gt;&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>order</em> = <code>3</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a>&#160;</td>
+          <td class="paramname"><em>type</em> = <code><a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857afb7fa22ede616c04c68a7663d0f81e92">DataType::float64</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculate all central image moments of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> up to the specified order. </p>
+<p>When working with a 2D image, naming \(\bar{x} = \frac{M_{10}}{M_{00}}\) and \(\bar{y} = \frac{M_{01}}{M_{00}}\) the components of the centroid (see documentation of <a class="el" href="namespaceecvl.html#a1f9d22b5521082c3a334f6ef9d3a1d16" title="Calculate all raw image moments of the source Image up to the specified order.">Moments()</a> for more details) and \(I(x,y)\) the pixel intensities, the central moments are calculated with the following formula:</p>
+<p>\( \mu_{ij} = \sum_x{\sum_y{(x-\bar{x})^i(y-\bar{y})^jI(x,y)}} \)</p>
+<p>The central moments up to order 3 are then:</p>
+<p>\(\mu_{00} = M_{00}\),<br />
+ \(\mu_{01} = 0\),<br />
+ \(\mu_{10} = 0\),<br />
+ \(\mu_{11} = M_{11} - \bar{x}M_{01} = M_{11} - \bar{y}M_{10}\),<br />
+ \(\mu_{20} = M_{20} - \bar{x}M_{10}\),<br />
+ \(\mu_{02} = M_{02} - \bar{y}M_{01}\),<br />
+ \(\mu_{21} = M_{21} - 2\bar{x}M_{11} - \bar{y}M_{20} + 2\bar{x}^2M_{01}\),<br />
+ \(\mu_{12} = M_{12} - 2\bar{y}M_{11} - \bar{x}M_{02} + 2\bar{y}^2M_{10}\),<br />
+ \(\mu_{30} = M_{30} - 3\bar{x}M_{20} + 2\bar{x}^2M_{10}\),<br />
+ \(\mu_{03} = M_{03} - 3\bar{y}M_{02} + 2\bar{y}^2M_{01}\)<br />
+</p>
+<p>The formula above can be accordingly extended when working with higher dimensions. <b>Note that central moments are translational invariant</b>. Moments are stored in the output moments <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in the same order as for source channels. The output moments <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> will be on the same device of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.</p>
+<p>Information about image orientation can be derived from the covariance matrix of the image \(I(x,y)\), constructed with the second order central moments:</p>
+<p>\(cov[I(x,y)] = \begin{bmatrix}\mu_{20}&#39; &amp; \mu_{11}&#39;\\ \mu_{11}&#39; &amp; \mu_{02}&#39;\end{bmatrix}\)</p>
+<p>where</p>
+<p>\(\mu_{20}&#39; = \frac{\mu_{20}}{\mu_{00}} = \frac{M_{20}}{M_{00}} − \bar{x}^2\)<br />
+ \(\mu_{02}&#39; = \frac{\mu_{02}}{\mu_{00}} = \frac{M_{02}}{M_{00}} − \bar{y}^2\)<br />
+ \(\mu_{11}&#39; = \frac{\mu_{11}}{\mu_{00}} = \frac{M_{11}}{M_{00}} − \bar{x}\bar{y}\)<br />
+</p>
+<p>The <b>eigenvectors</b> of the \(cov[I(x,y)]\) matrix correspond to the major and minor axes of the image intensity. The orientation can be extracted as:</p>
+<p>\(\theta = \frac{1}{2}arctan(\frac{2\mu_{11}&#39;}{\mu_{20}&#39; - \mu_{02}&#39;})\)</p>
+<p>On the other hand, the <b>eigenvalues</b> of the \(cov[I(x,y)]\) matrix are given by:</p>
+<p>\(\lambda_i = \frac{\mu_{20}&#39; + \mu_{02}&#39;}{2} \pm \frac{\sqrt{4\mu_{11}&#39;^2 + (\mu_{20}&#39; - \mu_{02}&#39;)^2}}{2} \)</p>
+<p>Eigenvalues are proportional to the square length of the eigenvector axes. The half-axes of the ellipse generated by the eigenvectors are given by \(\frac{d}{\sqrt{\lambda_1}}\) and \(\frac{d}{\sqrt{\lambda_2}}\) where \(d\) is the proportional factor. Considering that the moment \(\mu_{00} = M_{00}\) is the area (when the image is binary) of the image objects we can easily calculate \(d\) using the following equation:</p>
+<p>\(\mu_{00} = \pi \frac{d^2}{\sqrt{\lambda_1 \lambda_2}}\)</p>
+<p>Additionally, the eccentricity of the image can be calculates as:</p>
+<p>\(e = \sqrt{1 - \frac{\lambda_2}{\lambda_1}}\)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which calculating row moments up to the specified order. It must be a grayscale (<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>) or a data (<a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a334c4a4c42fdb79d7ebc3e73b517e6f8">ColorType::none</a>) <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">moments</td><td>Output data (ColorType:none) <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> will be (order + 1, order + 1) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">center</td><td>Vector (std::vector&lt;double&gt;) representing the center coordinates: they can be calculated from raw moments. As an example, for a 2d image center coordinates are given by \((\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\). See <a class="el" href="namespaceecvl.html#a1f9d22b5521082c3a334f6ef9d3a1d16" title="Calculate all raw image moments of the source Image up to the specified order.">Moments()</a> documentation for more details. center.size() and src.dims_ must match in size (except for the 'c' channel). The source axes order must be the same used to specify center coordinates. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">order</td><td>Raw image moments will be calculated up to the specified order. Default is 3. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>Specify the <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857" title="DataType is an enum class which defines data types allowed for images.">ecvl::DataType</a> to be used for the moments <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It could be either <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857ad33ec2b0bbea6d471a4706cea030e1e3">DataType::float32</a> or <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857afb7fa22ede616c04c68a7663d0f81e92">DataType::float64</a>. Default is <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857afb7fa22ede616c04c68a7663d0f81e92">DataType::float64</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -3197,14 +3288,13 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
 </div><div class="memdoc">
 
 <p>Calculate all raw image moments of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> up to the specified order. </p>
-<p>When working with a 2D <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>, naming the pixel intensities as \(I(x,y)\), raw image moments \(M_{ij}\) are calculated with the following formula:</p>
+<p>When working with a 2D image, naming the pixel intensities as \(I(x,y)\), raw image moments \(M_{ij}\) are calculated with the following formula:</p>
 <p>\( M_{ij} = \sum_x{\sum_y{x^iy^jI(x,y)}} \)</p>
 <p>The following properties can be derived from raw image moments:</p><ul>
 <li>Area (for binary images) or sum of grey level (for grayscale images): \(M_{00} \), accessible through moments(0,0) <em>i.e.</em> moments(x,y);</li>
 <li>Centroid: \(\{\bar{x}, \bar{y}\} = \{\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}}\}\).</li>
 </ul>
-<p>The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>. Moments are stored in the output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in the same order as for source channels.</p>
-<p>The output moments <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> will be on the same device of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.</p>
+<p>The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>. Moments are stored in the output moments <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in the same order as for source channels. The output moments <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> will be on the same device of the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which calculating row moments up to the specified order. It must be a grayscale (<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>) or a data (<a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a334c4a4c42fdb79d7ebc3e73b517e6f8">ColorType::none</a>) <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>

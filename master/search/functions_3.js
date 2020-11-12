@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['centralmoments',['CentralMoments',['../namespaceecvl.html#a0bdfa9caf341b16323e61294a71bb968',1,'ecvl']]],
   ['changecolorspace',['ChangeColorSpace',['../namespaceecvl.html#a93b998f334d8d58ade52f8c2f7655609',1,'ecvl']]],
   ['channels',['Channels',['../classecvl_1_1_image.html#a7b6db514661e150f16a534abe577c859',1,'ecvl::Image::Channels()'],['../classecvl_1_1_contiguous_view_x_y_c.html#aac51b44acd3759ed20f1e34c38a890ee',1,'ecvl::ContiguousViewXYC::channels()'],['../classecvl_1_1_const_contiguous_view_x_y_c.html#a7b3c28d286696d931d024b94c677b629',1,'ecvl::ConstContiguousViewXYC::channels()']]],
   ['coarsedropout',['CoarseDropout',['../namespaceecvl.html#abf7537b0520ba88dd624839bc7a951dd',1,'ecvl']]],
