@@ -252,6 +252,27 @@ void CopyImage(const Image& src, Image& dst, DataType new_type, const std::strin
     RearrangeAndCopy(src, dst, channels, new_type);
 }
 
+void ShallowCopyImage(const Image& src, Image& dst)
+{
+    if (&src == &dst) {
+        ECVL_ERROR_WRONG_PARAMS("src and dst cannot be the same Image.")
+    }
+
+    dst.elemtype_   = src.elemtype_;
+    dst.elemsize_   = src.elemsize_;
+    dst.dims_       = src.dims_;
+    dst.spacings_   = src.spacings_;
+    dst.strides_    = src.strides_;
+    dst.channels_   = src.channels_;
+    dst.colortype_  = src.colortype_;
+    dst.data_       = src.data_;
+    dst.datasize_   = src.datasize_;
+    dst.contiguous_ = src.contiguous_;
+    dst.meta_       = src.meta_;
+    dst.hal_        = HardwareAbstractionLayer::Factory(src.dev_, true);
+    dst.dev_        = src.dev_;
+}
+
 Image& Image::operator+=(const Image& rhs)
 {
     Add(rhs);
