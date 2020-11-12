@@ -1807,8 +1807,67 @@ void DropColorChannel(Image& src)
     }
 }
 
+//template<typename SDT, typename MDT>
+//void MomentsImpl(const Image& src, Image& out, int order)
+//{
+//    for (auto it = src.Begin<SDT>(), et = src.End<SDT>(); it != et; ++it) {
+//        auto& voxel_val = *it;
+//        auto& voxel_pos = it.pos_;
+//        for (auto io = out.Begin<MDT>(), eo = out.End<MDT>(); io != eo; ++io) {
+//            auto& moment_val = *io;
+//            auto& moment_pos = io.pos_;
+//            double powers = 1;
+//            for (int d = 0; d < vsize(src.dims_); ++d) {
+//                powers *= pow(voxel_pos[d], moment_pos[d]);
+//            }
+//            moment_val += static_cast<MDT>(powers * voxel_val);
+//        }
+//    }
+//}
+//
+//void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
+//{
+//    // Let's drop color channel from a shallow copy of the source ...
+//    Image tmp;
+//    ShallowCopyImage(src, tmp);
+//    DropColorChannel(tmp);
+//
+//    // and prepare the output data matrix that will be on the same device as the source
+//    auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
+//    Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
+//    out.SetTo(0);
+//
+//    // Disable contiguousness in order to force the update of the position indexes
+//    // when using iterators
+//    tmp.contiguous_ = false;
+//    out.contiguous_ = false;
+//
+//    switch (type) {
+//    case DataType::float32:
+//#define ECVL_TUPLE(type, ...) \
+//        case DataType::type: MomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, order); break;
+//        switch (tmp.elemtype_) {
+//#include "ecvl/core/datatype_existing_tuples.inc.h"
+//        }
+//#undef ECVL_TUPLE
+//        break;
+//    case DataType::float64:
+//        // Implementation (output float64)
+//#define ECVL_TUPLE(type, ...) \
+//        case DataType::type: MomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, order); break;
+//        switch (tmp.elemtype_) {
+//#include "ecvl/core/datatype_existing_tuples.inc.h"
+//        }
+//#undef ECVL_TUPLE
+//        break;
+//    }
+//
+//    out.contiguous_ = true; // Restore contiguousness
+//    moments = std::move(out);
+//}
+
 template<typename SDT, typename MDT>
-void MomentImpl(const Image& src, Image& out, int order)
+void CentralMomentsImpl(const Image& src, Image& out, std::vector<double> center, int order)
 {
     for (auto it = src.Begin<SDT>(), et = src.End<SDT>(); it != et; ++it) {
         auto& voxel_val = *it;
@@ -1818,14 +1877,14 @@ void MomentImpl(const Image& src, Image& out, int order)
             auto& moment_pos = io.pos_;
             double powers = 1;
             for (int d = 0; d < vsize(src.dims_); ++d) {
-                powers *= pow(voxel_pos[d], moment_pos[d]);
+                powers *= pow(voxel_pos[d] - center[d], moment_pos[d]);
             }
             moment_val += static_cast<MDT>(powers * voxel_val);
         }
     }
 }
 
-void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
+void CpuHal::CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type)
 {
     // Let's drop color channel from a shallow copy of the source ...
     Image tmp;
@@ -1845,7 +1904,7 @@ void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
     switch (type) {
     case DataType::float32:
 #define ECVL_TUPLE(type, ...) \
-        case DataType::type: MomentImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, order); break;
+        case DataType::type: CentralMomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, center, order); break;
         switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
@@ -1854,7 +1913,7 @@ void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
     case DataType::float64:
         // Implementation (output float64)
 #define ECVL_TUPLE(type, ...) \
-        case DataType::type: MomentImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, order); break;
+        case DataType::type: CentralMomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, center, order); break;
         switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
         }

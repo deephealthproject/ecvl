@@ -554,7 +554,40 @@ void Moments(const Image& src, Image& moments, int order, DataType type)
         ECVL_ERROR_DIFFERENT_DEVICES
     }
 
-    src.hal_->Moments(src, moments, order, type);
+    int src_dims = src.channels_.find("c") != std::string::npos ? vsize(src.dims_) - 1 : vsize(src.dims_);
+    vector<double> center(src_dims, 0.);
+
+    src.hal_->CentralMoments(src, moments, center, order, type);
+}
+
+void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type)
+{
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
+    }
+
+    if (src.colortype_ != ColorType::GRAY && src.colortype_ != ColorType::none) {
+        ECVL_ERROR_UNSUPPORTED_SRC_COLORTYPE
+    }
+
+    if (type != DataType::float32 && type != DataType::float64) {
+        ECVL_ERROR_WRONG_PARAMS("the specified type is not supported.")
+    }
+
+    if (center[0] < 0 || center[1] < 0) {
+        ECVL_ERROR_WRONG_PARAMS("center cannot have negative coordinates.")
+    }
+
+    int src_dims = src.channels_.find("c") != std::string::npos ? vsize(src.dims_) - 1 : vsize(src.dims_);
+    if (center.size() != src_dims) {
+        ECVL_ERROR_WRONG_PARAMS("center and src.dims_ must match in size (except for the 'c' channel).")
+    }
+
+    if (src.dev_ != moments.dev_ && moments.dev_ != Device::NONE) {
+        ECVL_ERROR_DIFFERENT_DEVICES
+    }
+
+    src.hal_->CentralMoments(src, moments, center, order, type);
 }
 
 } // namespace ecvl

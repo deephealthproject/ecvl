@@ -540,7 +540,6 @@ The central moments up to order 3 are then:
 \f$\mu_{30} = M_{30} - 3\bar{x}M_{20} + 2\bar{x}^2M_{10}\f$,<br/>
 \f$\mu_{03} = M_{03} - 3\bar{y}M_{02} + 2\bar{y}^2M_{01}\f$<br/>
 
-
 The formula above can be accordingly extended when working with higher dimensions. <b>Note that central moments are translational invariant</b>.
 Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image.
 
@@ -576,11 +575,17 @@ Additionally, the eccentricity of the image can be calculates as:
 
 @param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
 @param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
-@param[in] center Center coordinate. They can be calculated from raw moments as \f$(\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\f$. See Moments() documentation for more details.
+@param[in] center Vector (std::vector<double>) representing the center coordinates: they can be calculated from raw moments. As an example, for a 2d image center 
+            coordinates are given by \f$(\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\f$. See Moments() documentation for more details. center.size() and src.dims_ 
+            must match in size (except for the 'c' channel). The source axes order must be the same used to specify center coordinates.
 @param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
 @param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
 */
-void CentralMoments(const Image& src, Image& moments, Point2d center, int order = 3, DataType type = DataType::float64);
+void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order = 3, DataType type = DataType::float64);
+
+/** @example example_moments.cpp
+This is an example application of the raw and central moments.
+*/
 
 /** @example example_imgproc.cpp
  Imgproc example.
