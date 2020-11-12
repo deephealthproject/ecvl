@@ -1792,37 +1792,47 @@ void CpuHal::SaltAndPepper(const Image& src, Image& dst, double p, bool per_chan
     SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::SaltAndPepper);
 }
 
-void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type) 
+// Drop color channel if present
+void DropColorChannel(Image& src)
 {
-    // Drop color channel
-    auto color_channel_pos = src.channels_.find("c");
-    Image tmp;
-    tmp.elemtype_ = src.elemtype_;
-    tmp.elemsize_ = src.elemsize_;
-    if (color_channel_pos != std::string::npos) {
-        tmp.dims_ = src.dims_;
-        tmp.dims_.erase(tmp.dims_.begin() + color_channel_pos);
-
-        tmp.strides_ = src.strides_;
-        tmp.strides_.erase(tmp.strides_.begin() + color_channel_pos);
-        
-        tmp.channels_ = src.channels_;
-        tmp.channels_.erase(color_channel_pos, 1);
-
-        tmp.colortype_ = ColorType::none;
-
-        tmp.spacings_ = src.spacings_;
-        if (tmp.spacings_.size() != 0) {
-            tmp.spacings_.erase(tmp.spacings_.begin() + color_channel_pos);
+    auto channel_pos = src.channels_.find("c");
+    if (channel_pos != std::string::npos) {
+        src.dims_.erase(src.dims_.begin() + channel_pos);
+        src.strides_.erase(src.strides_.begin() + channel_pos);
+        src.channels_.erase(channel_pos, 1);
+        src.colortype_ = ColorType::none;
+        if (src.spacings_.size() != 0) {
+            src.spacings_.erase(src.spacings_.begin() + channel_pos);
         }
     }
-    tmp.data_ = src.data_;
-    tmp.datasize_ = src.datasize_;
-    tmp.contiguous_ = src.contiguous_;
-    tmp.meta_ = src.meta_;
-    tmp.hal_ = HardwareAbstractionLayer::Factory(src.dev_, true);
-    tmp.dev_ = src.dev_;
+}
 
+template<typename SDT, typename MDT>
+void MomentImpl(const Image& src, Image& out, int order)
+{
+    for (auto it = src.Begin<SDT>(), et = src.End<SDT>(); it != et; ++it) {
+        auto& voxel_val = *it;
+        auto& voxel_pos = it.pos_;
+        for (auto io = out.Begin<MDT>(), eo = out.End<MDT>(); io != eo; ++io) {
+            auto& moment_val = *io;
+            auto& moment_pos = io.pos_;
+            double powers = 1;
+            for (int d = 0; d < vsize(src.dims_); ++d) {
+                powers *= pow(voxel_pos[d], moment_pos[d]);
+            }
+            moment_val += static_cast<MDT>(powers * voxel_val);
+        }
+    }
+}
+
+void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
+{
+    // Let's drop color channel from a shallow copy of the source ...
+    Image tmp;
+    ShallowCopyImage(src, tmp);
+    DropColorChannel(tmp);
+
+    // and prepare the output data matrix that will be on the same device as the source
     auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
     Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
     out.SetTo(0);
@@ -1832,31 +1842,27 @@ void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
     tmp.contiguous_ = false;
     out.contiguous_ = false;
 
-    for (auto it = tmp.Begin<uint8_t>(), et = tmp.End<uint8_t>(); it != et; ++it) {
-        auto& voxel_val = *it;
-        auto& voxel_pos = it.pos_;
-        for (auto io = out.Begin<double>(), eo = out.End<double>(); io != eo; ++io) {
-            auto& moment_val = *io;
-            auto& moment_pos = io.pos_;
-            double powers = 1;
-            for (int d = 0; d < vsize(tmp.dims_); ++d) {
-               powers *= pow(voxel_pos[d], moment_pos[d]);
-            }
-            moment_val += static_cast<TypeInfo_t<DataType::float64>>(powers * voxel_val);
+    switch (type) {
+    case DataType::float32:
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: MomentImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, order); break;
+        switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
         }
+#undef ECVL_TUPLE
+        break;
+    case DataType::float64:
+        // Implementation (output float64)
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: MomentImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, order); break;
+        switch (tmp.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+        }
+#undef ECVL_TUPLE
+        break;
     }
 
     out.contiguous_ = true; // Restore contiguousness
-
-//#define ECVL_TUPLE(type, ...) \
-//case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
-//
-//        switch (tmp.elemtype_) {
-//#include "ecvl/core/datatype_existing_tuples.inc.h"
-//        }
-//
-//#undef ECVL_TUPLE
-//    }
     moments = std::move(out);
 }
 

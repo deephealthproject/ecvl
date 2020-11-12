@@ -546,6 +546,10 @@ void Moments(const Image& src, Image& moments, int order, DataType type)
         ECVL_ERROR_UNSUPPORTED_SRC_COLORTYPE
     }
 
+    if (type != DataType::float32 && type != DataType::float64) {
+        ECVL_ERROR_WRONG_PARAMS("the specified type is not supported.")
+    }
+
     if (src.dev_ != moments.dev_ && moments.dev_ != Device::NONE) {
         ECVL_ERROR_DIFFERENT_DEVICES
     }

@@ -510,10 +510,12 @@ The following properties can be derived from raw image moments:
 The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>.
 Moments are stored in the output Image in the same order as for source channels.
 
+The output moments Image will be on the same device of the source Image. 
+
 @param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
 @param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
 @param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
-@param[in] type Specify the ecvl::DataType to be used for the moments Image. Default is DataType::float64.
+@param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
 */
 void Moments(const Image& src, Image& moments, int order = 3, DataType type = DataType::float64);
 
