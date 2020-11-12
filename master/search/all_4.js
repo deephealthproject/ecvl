@@ -35,6 +35,7 @@ var searchData=
   ['dims_5f',['dims_',['../classecvl_1_1_image.html#af26f5a4e644cef20597bd084bcddf1d0',1,'ecvl::Image']]],
   ['div',['Div',['../classecvl_1_1_image.html#a5544bb3d5832a16484b5f7089f2dc1ea',1,'ecvl::Image::Div()'],['../namespaceecvl.html#a8c09fc3fc39394bcb58aef741e8e00e0',1,'ecvl::Div(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a1a6fe418821045fd2ffbd5eeca5a1c14',1,'ecvl::Div(const Image &amp;src1, const ST2 &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a989916c6663dba724713dbc73ffc1fcf',1,'ecvl::Div(const ST1 &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)']]],
   ['dldataset',['DLDataset',['../classecvl_1_1_d_l_dataset.html',1,'ecvl::DLDataset'],['../classecvl_1_1_d_l_dataset.html#ae0c3fed2cde721a4b26e86b12720905c',1,'ecvl::DLDataset::DLDataset()']]],
+  ['dropcolorchannel',['DropColorChannel',['../namespaceecvl.html#a49f122a730aee0ec33a0e28287142ede',1,'ecvl']]],
   ['dt_5fall',['DT_ALL',['../support__nifti_8cpp.html#a94368001ccef9e223a21ce3bf47d0b0c',1,'support_nifti.cpp']]],
   ['dt_5fbinary',['DT_BINARY',['../support__nifti_8cpp.html#afc5bd5db86a512757d9b93621af9550d',1,'support_nifti.cpp']]],
   ['dt_5fcomplex',['DT_COMPLEX',['../support__nifti_8cpp.html#aa24b32539ee3fb1d92d74c05df496998',1,'support_nifti.cpp']]],

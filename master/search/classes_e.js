@@ -19,6 +19,7 @@ var searchData=
   ['structmulis',['StructMulIS',['../structecvl_1_1_struct_mul_i_s.html',1,'ecvl']]],
   ['structnegii',['StructNegII',['../structecvl_1_1_struct_neg_i_i.html',1,'ecvl']]],
   ['structrearrangeimage',['StructRearrangeImage',['../structecvl_1_1_struct_rearrange_image.html',1,'ecvl']]],
+  ['structsetto',['StructSetTo',['../structecvl_1_1_struct_set_to.html',1,'ecvl']]],
   ['structsubii',['StructSubII',['../structecvl_1_1_struct_sub_i_i.html',1,'ecvl']]],
   ['structsubis',['StructSubIS',['../structecvl_1_1_struct_sub_i_s.html',1,'ecvl']]],
   ['structsubsi',['StructSubSI',['../structecvl_1_1_struct_sub_s_i.html',1,'ecvl']]]

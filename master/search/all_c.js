@@ -14,6 +14,8 @@ var searchData=
   ['metadata',['MetaData',['../classecvl_1_1_meta_data.html',1,'ecvl']]],
   ['min_5f',['min_',['../classecvl_1_1_augmentation_param.html#a99591f2dfb088b638ca041b700e6b889',1,'ecvl::AugmentationParam']]],
   ['mirror2d',['Mirror2D',['../namespaceecvl.html#a616ea6f429139cd593198b7804a2a5fd',1,'ecvl']]],
+  ['momentimpl',['MomentImpl',['../namespaceecvl.html#afb560ed3d7da5a9b95fee6a7f1d3a6fc',1,'ecvl']]],
+  ['moments',['Moments',['../namespaceecvl.html#a1f9d22b5521082c3a334f6ef9d3a1d16',1,'ecvl']]],
   ['morph_5fblackhat',['MORPH_BLACKHAT',['../namespaceecvl.html#a4696838ef2eb912185348d2585a3ce36abab238f32734ecfb0155ddec17535fd7',1,'ecvl']]],
   ['morph_5fclose',['MORPH_CLOSE',['../namespaceecvl.html#a4696838ef2eb912185348d2585a3ce36aa7ad5a9770353c4a4b36e2466b81c106',1,'ecvl']]],
   ['morph_5fdilate',['MORPH_DILATE',['../namespaceecvl.html#a4696838ef2eb912185348d2585a3ce36a9961add5b8a78b651403a6df3d810d1c',1,'ecvl']]],

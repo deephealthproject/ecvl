@@ -230,6 +230,10 @@ Macros</h2></td></tr>
 <tr class="separator:a0dabe70466fa7d09f0bdbff571844826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dabe70466fa7d09f0bdbff571844826"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cpu__hal__imgproc_8cpp.html#a0dabe70466fa7d09f0bdbff571844826">ECVL_TUPLE</a>(type, ...)</td></tr>
 <tr class="separator:a0dabe70466fa7d09f0bdbff571844826"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dabe70466fa7d09f0bdbff571844826"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cpu__hal__imgproc_8cpp.html#a0dabe70466fa7d09f0bdbff571844826">ECVL_TUPLE</a>(type, ...)&#160;&#160;&#160;case DataType::type: MomentImpl&lt;TypeInfo_t&lt;DataType::type&gt;, TypeInfo_t&lt;DataType::float32&gt;&gt;(tmp, out, order); break;</td></tr>
+<tr class="separator:a0dabe70466fa7d09f0bdbff571844826"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dabe70466fa7d09f0bdbff571844826"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cpu__hal__imgproc_8cpp.html#a0dabe70466fa7d09f0bdbff571844826">ECVL_TUPLE</a>(type, ...)&#160;&#160;&#160;case DataType::type: MomentImpl&lt;TypeInfo_t&lt;DataType::type&gt;, TypeInfo_t&lt;DataType::float64&gt;&gt;(tmp, out, order); break;</td></tr>
+<tr class="separator:a0dabe70466fa7d09f0bdbff571844826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -252,6 +256,11 @@ Functions</h2></td></tr>
 <tr class="separator:a43ed196d5b735918c287436a02f275cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4390541d2380c0c9e96f4ae26b73cd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ac4390541d2380c0c9e96f4ae26b73cd4">ecvl::SaltOrPepper</a> (const Image &amp;src, Image &amp;dst, double p, bool per_channel, const unsigned seed, NoiseType noise)</td></tr>
 <tr class="separator:ac4390541d2380c0c9e96f4ae26b73cd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49f122a730aee0ec33a0e28287142ede"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a49f122a730aee0ec33a0e28287142ede">ecvl::DropColorChannel</a> (Image &amp;src)</td></tr>
+<tr class="separator:a49f122a730aee0ec33a0e28287142ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb560ed3d7da5a9b95fee6a7f1d3a6fc"><td class="memTemplParams" colspan="2">template&lt;typename SDT , typename MDT &gt; </td></tr>
+<tr class="memitem:afb560ed3d7da5a9b95fee6a7f1d3a6fc"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afb560ed3d7da5a9b95fee6a7f1d3a6fc">ecvl::MomentImpl</a> (const Image &amp;src, Image &amp;out, int order)</td></tr>
+<tr class="separator:afb560ed3d7da5a9b95fee6a7f1d3a6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a13293e0d7fb768b312a45acaa0163738"></a>
@@ -759,7 +768,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[1/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[1/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -787,7 +796,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[2/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[2/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -815,7 +824,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[3/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[3/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -843,7 +852,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[4/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[4/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -871,7 +880,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[5/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[5/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -899,7 +908,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[6/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[6/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -927,7 +936,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[7/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[7/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -955,7 +964,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[8/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[8/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -983,7 +992,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[9/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[9/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1011,7 +1020,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[10/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[10/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1039,7 +1048,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[11/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[11/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1067,7 +1076,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[12/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[12/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1095,7 +1104,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[13/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[13/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1123,7 +1132,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[14/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[14/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1151,7 +1160,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[15/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[15/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1179,7 +1188,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[16/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[16/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1207,7 +1216,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0dabe70466fa7d09f0bdbff571844826"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[17/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[17/19]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1232,6 +1241,62 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">case</span> DataType::type: \</div><div class="line">                if (dist(re) == 0) { \</div><div class="line">                    int col = color(); \</div><div class="line">                    for (<span class="keywordtype">int</span> ch = 0; ch &lt; src_channels; ++ch) { \</div><div class="line">                        *<span class="keyword">reinterpret_cast&lt;</span>TypeInfo_t&lt;DataType::type&gt;*<span class="keyword">&gt;</span>(tmp_vch[ch] + pos) = <span class="keyword">static_cast&lt;</span>TypeInfo_t&lt;DataType::type&gt;<span class="keyword">&gt;</span>(col); \</div><div class="line">                    } \</div><div class="line">                } \</div><div class="line">                break;</div></div><!-- fragment -->
+</div>
+</div>
+<a id="a0dabe70466fa7d09f0bdbff571844826"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[18/19]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ECVL_TUPLE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">type, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;case DataType::type: MomentImpl&lt;TypeInfo_t&lt;DataType::type&gt;, TypeInfo_t&lt;DataType::float32&gt;&gt;(tmp, out, order); break;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0dabe70466fa7d09f0bdbff571844826"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dabe70466fa7d09f0bdbff571844826">&#9670;&nbsp;</a></span>ECVL_TUPLE <span class="overload">[19/19]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ECVL_TUPLE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">type, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;case DataType::type: MomentImpl&lt;TypeInfo_t&lt;DataType::type&gt;, TypeInfo_t&lt;DataType::float64&gt;&gt;(tmp, out, order); break;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 </div><!-- contents -->
