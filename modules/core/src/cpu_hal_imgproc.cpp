@@ -1812,27 +1812,42 @@ void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
         tmp.colortype_ = ColorType::none;
 
         tmp.spacings_ = src.spacings_;
-        tmp.spacings_.erase(tmp.spacings_.begin() + color_channel_pos);
+        if (tmp.spacings_.size() != 0) {
+            tmp.spacings_.erase(tmp.spacings_.begin() + color_channel_pos);
+        }
     }
     tmp.data_ = src.data_;
     tmp.datasize_ = src.datasize_;
     tmp.contiguous_ = src.contiguous_;
     tmp.meta_ = src.meta_;
-    tmp.hal_ = src.hal_;
+    tmp.hal_ = HardwareAbstractionLayer::Factory(src.dev_, true);
     tmp.dev_ = src.dev_;
 
     auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
     Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
+    out.SetTo(0);
+
+    // Disable contiguousness in order to force the update of the position indexes
+    // when using iterators
+    tmp.contiguous_ = false;
+    out.contiguous_ = false;
 
     for (auto it = tmp.Begin<uint8_t>(), et = tmp.End<uint8_t>(); it != et; ++it) {
-        auto& voxel = *it;
-        for (auto io = out.Begin<uint8_t>(), eo = tmp.End<uint8_t>(); io != eo; ++io) {
-            auto& moment = *io;
+        auto& voxel_val = *it;
+        auto& voxel_pos = it.pos_;
+        for (auto io = out.Begin<double>(), eo = out.End<double>(); io != eo; ++io) {
+            auto& moment_val = *io;
+            auto& moment_pos = io.pos_;
+            double powers = 1;
             for (int d = 0; d < vsize(tmp.dims_); ++d) {
-                /*moment += */
+               powers *= pow(voxel_pos[d], moment_pos[d]);
             }
+            moment_val += static_cast<TypeInfo_t<DataType::float64>>(powers * voxel_val);
         }
     }
+
+    out.contiguous_ = true; // Restore contiguousness
+
 //#define ECVL_TUPLE(type, ...) \
 //case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
 //

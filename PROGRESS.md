@@ -71,3 +71,9 @@
 | SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
 | SliceTimingCorrection | :heavy_check_mark: | :x: | :x: |
 | Threshold | :heavy_check_mark: | :x: | :x: |
+
+## Property Calculation 
+| Functionality | CPU | GPU | FPGA |
+|--|--|--|--|
+| Moments | :heavy_check_mark: | :x: | :x: |
+| CentralMoments | :heavy_check_mark: | :x: | :x: |
