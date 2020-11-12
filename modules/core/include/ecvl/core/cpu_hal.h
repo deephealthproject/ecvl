@@ -55,7 +55,6 @@ public:
 
     static CpuHal* GetInstance();
 
-    /** @cond HIDDEN_SECTION */
     void CopyImage(const Image& src, Image& dst) override;
     void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) override;
 
@@ -120,7 +119,6 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-    /** @endcond */
 };
 
 class ShallowCpuHal : public CpuHal
