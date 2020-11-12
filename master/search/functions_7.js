@@ -9,13 +9,9 @@ var searchData=
   ['get',['Get',['../classecvl_1_1param__list.html#a9d0f475c949b13e0df1080160c1e7c0c',1,'ecvl::param_list']]],
   ['getdataset',['GetDataset',['../classecvl_1_1_generate_dataset.html#a91fc4a9c068f1ae4b028b9e675b974dc',1,'ecvl::GenerateDataset']]],
   ['getdefaultdatasize',['GetDefaultDatasize',['../classecvl_1_1_image.html#a1309dfa3c18326d69b2820c71a798997',1,'ecvl::Image']]],
-  ['getecvlimage',['GetECVLImage',['../classecvl_1_1wx_image_panel.html#a9a281a230d668acf01bb5044c82b6892',1,'ecvl::wxImagePanel']]],
-  ['getheight',['getHeight',['../classecvl_1_1_basic_g_l_pane.html#a0680edf76b735710ea3fdef867bee58e',1,'ecvl::BasicGLPane']]],
-  ['getinstance',['GetInstance',['../classecvl_1_1_cpu_hal.html#ad1926d4161d63b612009ee44b005a846',1,'ecvl::CpuHal::GetInstance()'],['../classecvl_1_1_shallow_cpu_hal.html#a044519325820b4691e1efff0f89e623b',1,'ecvl::ShallowCpuHal::GetInstance()'],['../classecvl_1_1_gpu_hal.html#aef67faa966fe12c57ff463cb9f405314',1,'ecvl::GpuHal::GetInstance()'],['../classecvl_1_1_fpga_hal.html#af805ef8d757c9af627549eb22ca53f92',1,'ecvl::FpgaHal::GetInstance()']]],
-  ['getmaxn',['GetMaxN',['../namespaceecvl.html#a00244523d7d67f01f86034f9358db690',1,'ecvl']]],
+  ['getinstance',['GetInstance',['../classecvl_1_1_gpu_hal.html#a870213efea8ffad51ff2edb9746cad32',1,'ecvl::GpuHal::GetInstance()'],['../classecvl_1_1_fpga_hal.html#a0560e90da5f3d188de2d2e74db4b722d',1,'ecvl::FpgaHal::GetInstance()']]],
+  ['getmaxn',['GetMaxN',['../namespaceecvl.html#a675c1e6bcbbbf03aa112e087289159ee',1,'ecvl']]],
   ['getopencvinterpolation',['GetOpenCVInterpolation',['../namespaceecvl.html#a0f9583965531c991ddc9e1375ba3be93',1,'ecvl']]],
-  ['getsplit',['GetSplit',['../classecvl_1_1_d_l_dataset.html#a4cc9a0a5a6730e3cc768db7c49fdd3f9',1,'ecvl::DLDataset::GetSplit()'],['../classecvl_1_1_d_l_dataset.html#a7aa15fd307fa65525c95a980bc1dc9e9',1,'ecvl::DLDataset::GetSplit(const SplitType &amp;split)']]],
-  ['getwidth',['getWidth',['../classecvl_1_1_basic_g_l_pane.html#a9dce80bbed9d27f1087f63b3c53dd4ca',1,'ecvl::BasicGLPane']]],
-  ['getwximage',['GetWXImage',['../classecvl_1_1wx_image_panel.html#a9102278d6b9d32e586d641ed4c22285f',1,'ecvl::wxImagePanel']]],
+  ['getsplit',['GetSplit',['../classecvl_1_1_d_l_dataset.html#aef0c11df78645ad0c94240c5377a528f',1,'ecvl::DLDataset::GetSplit()'],['../classecvl_1_1_d_l_dataset.html#a1dc82a514656b40e6c11d700fc668684',1,'ecvl::DLDataset::GetSplit(const SplitType &amp;split)']]],
   ['griddistortion',['GridDistortion',['../namespaceecvl.html#a1448dd4601763e88cdeba26c6c1ef310',1,'ecvl']]]
 ];

@@ -1,17 +1,7 @@
 var searchData=
 [
-  ['mattoimage',['MatToImage',['../namespaceecvl.html#a8316acc95f4f4127a702c643eff92b51',1,'ecvl']]],
-  ['matvectoimage',['MatVecToImage',['../namespaceecvl.html#a9420e2555fead8a272fbcb800f22f873',1,'ecvl']]],
-  ['meanstddev',['MeanStdDev',['../namespaceecvl.html#a73979fb8877322e81048522db568a82d',1,'ecvl']]],
-  ['memallocate',['MemAllocate',['../classecvl_1_1_cpu_hal.html#a9ea36fe7f217db1d2674d2352a6477f5',1,'ecvl::CpuHal::MemAllocate()'],['../classecvl_1_1_shallow_cpu_hal.html#af821e921e907648b1242ff98ee1736a3',1,'ecvl::ShallowCpuHal::MemAllocate()'],['../classecvl_1_1_gpu_hal.html#a85003b78f436fc3b112ea752123d607a',1,'ecvl::GpuHal::MemAllocate()'],['../classecvl_1_1_fpga_hal.html#ab8531ca1e0cd1c857f62cd599d9fe67a',1,'ecvl::FpgaHal::MemAllocate()'],['../classecvl_1_1_hardware_abstraction_layer.html#ae99899e9e22574ab2fea027cde3fed2d',1,'ecvl::HardwareAbstractionLayer::MemAllocate()']]],
-  ['memallocateandcopy',['MemAllocateAndCopy',['../classecvl_1_1_hardware_abstraction_layer.html#a6ef22f142c84c278faf58bcf2881dff1',1,'ecvl::HardwareAbstractionLayer']]],
-  ['memcopy',['MemCopy',['../classecvl_1_1_cpu_hal.html#a1a15a526cf09b90aafde38587659b87d',1,'ecvl::CpuHal::MemCopy()'],['../classecvl_1_1_gpu_hal.html#ad3fe7cd4fbe4036970cd3743a8013a5c',1,'ecvl::GpuHal::MemCopy()'],['../classecvl_1_1_fpga_hal.html#a11a1e0076a7c5a173edf1ec9cb55bb8f',1,'ecvl::FpgaHal::MemCopy()'],['../classecvl_1_1_hardware_abstraction_layer.html#aeb1ae9664e6ebd25fcc3bc472184fd4b',1,'ecvl::HardwareAbstractionLayer::MemCopy()']]],
-  ['memdeallocate',['MemDeallocate',['../classecvl_1_1_cpu_hal.html#a0c43553f03666c31af7539526887889a',1,'ecvl::CpuHal::MemDeallocate()'],['../classecvl_1_1_shallow_cpu_hal.html#a6a4ec7ee3be9225f085e4692e962538f',1,'ecvl::ShallowCpuHal::MemDeallocate()'],['../classecvl_1_1_gpu_hal.html#a292386c85db7fc2cd7928e74f59295c1',1,'ecvl::GpuHal::MemDeallocate()'],['../classecvl_1_1_fpga_hal.html#a5fe7e3594bf673603c98e9085097d08c',1,'ecvl::FpgaHal::MemDeallocate()'],['../classecvl_1_1_hardware_abstraction_layer.html#a0cddb29d72230bc0aa485c32a4380822',1,'ecvl::HardwareAbstractionLayer::MemDeallocate()']]],
-  ['merge',['Merge',['../structecvl_1_1_u_f_p_c.html#aa0664e3a00e0c760aba5600f321aeab8',1,'ecvl::UFPC']]],
-  ['mirror2d',['Mirror2D',['../namespaceecvl.html#a616ea6f429139cd593198b7804a2a5fd',1,'ecvl']]],
-  ['momentimpl',['MomentImpl',['../namespaceecvl.html#afb560ed3d7da5a9b95fee6a7f1d3a6fc',1,'ecvl']]],
-  ['moments',['Moments',['../namespaceecvl.html#a1f9d22b5521082c3a334f6ef9d3a1d16',1,'ecvl']]],
-  ['morphology',['Morphology',['../namespaceecvl.html#a09f0ab2d8976efcb4c383b711d3082c3',1,'ecvl']]],
-  ['mousewheelmoved',['MouseWheelMoved',['../classecvl_1_1_basic_g_l_pane.html#abe5e049dc7ce9014c8f14fe646151986',1,'ecvl::BasicGLPane']]],
-  ['mul',['Mul',['../classecvl_1_1_image.html#a89de053110d52a4dfe2004a99e02665b',1,'ecvl::Image::Mul()'],['../namespaceecvl.html#aefb3bf550679f0b94a93825ee6e7c21a',1,'ecvl::Mul(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a35c905269cf9cf1766cd0036d0f38438',1,'ecvl::Mul(const Image &amp;src1, const ST2 &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a47d848d2a7171b4cb8a1a01b4d6fd984',1,'ecvl::Mul(const ST1 &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)']]]
+  ['neg',['Neg',['../classecvl_1_1_image.html#ab93a90b216f1d43673c5839f9f05d32d',1,'ecvl::Image::Neg()'],['../namespaceecvl.html#a26fb2cc30e6cf9e551798456f71133b3',1,'ecvl::Neg()']]],
+  ['niftiread',['NiftiRead',['../namespaceecvl.html#aa97c8b6896da19f4ecd6a90b8d3fef0c',1,'ecvl']]],
+  ['niftiwrite',['NiftiWrite',['../namespaceecvl.html#a4a591dcd099666b3326c48d8651c9ea2',1,'ecvl']]],
+  ['nonmaximasuppression',['NonMaximaSuppression',['../namespaceecvl.html#ab74faee8c2b550b7bee1fe07e0791c80',1,'ecvl']]]
 ];
