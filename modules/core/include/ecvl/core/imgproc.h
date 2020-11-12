@@ -1,7 +1,7 @@
-/*
+﻿/*
 * ECVL - European Computer Vision Library
 * Version: 0.2.1
-* copyright (c) 2020, Universit� degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -497,7 +497,7 @@ void SliceTimingCorrection(const Image& src, Image& dst, bool odd = false, bool 
 
 /** @brief Calculate all raw image moments of the source Image up to the specified order.
 
-When working with a 2D Image, naming the pixel intensities as \f$I(x,y)\f$, raw image moments \f$M_{ij}\f$ are calculated with the following formula:
+When working with a 2D image, naming the pixel intensities as \f$I(x,y)\f$, raw image moments \f$M_{ij}\f$ are calculated with the following formula:
 
 \f$
 M_{ij} = \sum_x{\sum_y{x^iy^jI(x,y)}}
@@ -508,9 +508,7 @@ The following properties can be derived from raw image moments:
 - Centroid: \f$\{\bar{x}, \bar{y}\} = \{\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}}\}\f$.
 
 The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>.
-Moments are stored in the output Image in the same order as for source channels.
-
-The output moments Image will be on the same device of the source Image. 
+Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image. 
 
 @param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
 @param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
@@ -518,6 +516,71 @@ The output moments Image will be on the same device of the source Image.
 @param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
 */
 void Moments(const Image& src, Image& moments, int order = 3, DataType type = DataType::float64);
+
+/** @brief Calculate all central image moments of the source Image up to the specified order.
+
+When working with a 2D image, naming \f$\bar{x} = \frac{M_{10}}{M_{00}}\f$ and \f$\bar{y} = \frac{M_{01}}{M_{00}}\f$ 
+the components of the centroid (see documentation of Moments() for more details) and \f$I(x,y)\f$ the pixel intensities,
+the central moments are calculated with the following formula: 
+
+\f$
+\mu_{ij} = \sum_x{\sum_y{(x-\bar{x})^i(y-\bar{y})^jI(x,y)}}
+\f$
+
+The central moments up to order 3 are then: 
+
+\f$\mu_{00} = M_{00}\f$,<br/>
+\f$\mu_{01} = 0\f$,<br/>
+\f$\mu_{10} = 0\f$,<br/>
+\f$\mu_{11} = M_{11} - \bar{x}M_{01} = M_{11} - \bar{y}M_{10}\f$,<br/>
+\f$\mu_{20} = M_{20} - \bar{x}M_{10}\f$,<br/>
+\f$\mu_{02} = M_{02} - \bar{y}M_{01}\f$,<br/>
+\f$\mu_{21} = M_{21} - 2\bar{x}M_{11} - \bar{y}M_{20} + 2\bar{x}^2M_{01}\f$,<br/>
+\f$\mu_{12} = M_{12} - 2\bar{y}M_{11} - \bar{x}M_{02} + 2\bar{y}^2M_{10}\f$,<br/>
+\f$\mu_{30} = M_{30} - 3\bar{x}M_{20} + 2\bar{x}^2M_{10}\f$,<br/>
+\f$\mu_{03} = M_{03} - 3\bar{y}M_{02} + 2\bar{y}^2M_{01}\f$<br/>
+
+
+The formula above can be accordingly extended when working with higher dimensions. <b>Note that central moments are translational invariant</b>.
+Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image.
+
+Information about image orientation can be derived from the covariance matrix of the image \f$I(x,y)\f$, constructed with the second order central moments:
+
+\f$cov[I(x,y)] = \begin{bmatrix}\mu_{20}' & \mu_{11}'\\ \mu_{11}' & \mu_{02}'\end{bmatrix}\f$
+
+where
+
+\f$\mu_{20}' = \frac{\mu_{20}}{\mu_{00}} = \frac{M_{20}}{M_{00}} − \bar{x}^2\f$<br/>
+\f$\mu_{02}' = \frac{\mu_{02}}{\mu_{00}} = \frac{M_{02}}{M_{00}} − \bar{y}^2\f$<br/>
+\f$\mu_{11}' = \frac{\mu_{11}}{\mu_{00}} = \frac{M_{11}}{M_{00}} − \bar{x}\bar{y}\f$<br/>
+
+The <b>eigenvectors</b> of the \f$cov[I(x,y)]\f$ matrix correspond to the major and minor axes of the image intensity.
+The orientation can be extracted as:
+
+\f$\theta = \frac{1}{2}arctan(\frac{2\mu_{11}'}{\mu_{20}' - \mu_{02}'})\f$
+
+On the other hand, the <b>eigenvalues</b> of the \f$cov[I(x,y)]\f$ matrix are given by: 
+
+\f$\lambda_i = \frac{\mu_{20}' + \mu_{02}'}{2} \pm \frac{\sqrt{4\mu_{11}'^2 + (\mu_{20}' - \mu_{02}')^2}}{2} \f$
+
+Eigenvalues are proportional to the square length of the eigenvector axes. The half-axes of the ellipse generated 
+by the eigenvectors are given by \f$\frac{d}{\sqrt{\lambda_1}}\f$  and \f$\frac{d}{\sqrt{\lambda_2}}\f$ where \f$d\f$ is
+the proportional factor. Considering that the moment \f$\mu_{00} = M_{00}\f$ is the area (when the image is binary) of
+the image objects we can easily calculate \f$d\f$ using the following equation: 
+
+\f$\mu_{00} = \pi \frac{d^2}{\sqrt{\lambda_1 \lambda_2}}\f$
+
+Additionally, the eccentricity of the image can be calculates as: 
+
+\f$e = \sqrt{1 - \frac{\lambda_2}{\lambda_1}}\f$
+
+@param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
+@param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
+@param[in] center Center coordinate. They can be calculated from raw moments as \f$(\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\f$. See Moments() documentation for more details.
+@param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
+@param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
+*/
+void CentralMoments(const Image& src, Image& moments, Point2d center, int order = 3, DataType type = DataType::float64);
 
 /** @example example_imgproc.cpp
  Imgproc example.
