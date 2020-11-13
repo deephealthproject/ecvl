@@ -268,7 +268,10 @@ void NonMaximaSuppression(const Image& src, Image& dst);
 */
 std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 
-/** @brief Labels connected components in an binary Image
+/** @brief Labels connected components in a binary Image
+
+The ConnectedComponentsLabeling() procedure implement the Spaghetti algorithm described in \cite Spaghetti, an extremely 
+efficient algorithm to label connected components inside binary images using 8-way connectivity.
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
 @param[out] dst Output Image.
