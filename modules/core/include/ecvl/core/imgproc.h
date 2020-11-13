@@ -586,14 +586,24 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
 
 /** @brief Draw an ellipse over the specified Image.
 
-@param[in/out] src Image on which draw the ellipse.
+@param[inout] src Image on which draw the ellipse.
 @param[in] center Center of the ellipse to be drawn.
+@param[in] axes Half of the size of the ellipse axes. 
 @param[in] angle Ellipse rotation angle. It must be in degrees.
 @param[in] color Ellipse color. It can be either a number (e.g. {255}) or an RGB value (e.g. {40, 40, 40})
 @param[in] thickness Thickness of the ellipse border. If negative all the pixell of the ellipse will be filled with the specified color value.
                         Default is 1.
 */
 void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness = 1);
+
+/** @brief Remove color channel from the input Image. 
+
+The DropColorChannel() procedure remove the color channel ("c") from the specified input Image, modifying all the other attribute accordingly. 
+This function can be only applied on Images with ColorType::GRAY, <em>i.e.</em> images having the color channel dimension equal to 1.
+
+@param[inout] src Image from which to drop the color channel.
+*/
+void DropColorChannel(Image& src);
 
 /** @example example_moments.cpp
 This is an example application of the raw and central moments.

@@ -596,7 +596,7 @@ void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double ang
     }
 
     if (vsize(color) < 1) {
-        ECVL_ERROR_WRONG_PARAMS("color must contains at least one value. ")
+        ECVL_ERROR_WRONG_PARAMS("color must contains at least one value.")
     }
 
     Scalar real_color;
@@ -610,6 +610,24 @@ void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double ang
     }
 
     src.hal_->DrawEllipse(src, center, axes, angle, color, thickness);
+}
+
+void DropColorChannel(Image& src)
+{
+    if (src.colortype_ != ColorType::GRAY){
+        ECVL_ERROR_WRONG_PARAMS("cannot drop color channel when the colortype_ is different from ColorType::GRAY.")
+    }
+
+    auto channel_pos = src.channels_.find("c");
+    if (channel_pos != std::string::npos) {
+        src.dims_.erase(src.dims_.begin() + channel_pos);
+        src.strides_.erase(src.strides_.begin() + channel_pos);
+        src.channels_.erase(channel_pos, 1);
+        src.colortype_ = ColorType::none;
+        if (src.spacings_.size() != 0) {
+            src.spacings_.erase(src.spacings_.begin() + channel_pos);
+        }
+    }
 }
 
 

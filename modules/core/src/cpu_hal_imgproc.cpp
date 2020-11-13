@@ -1792,21 +1792,6 @@ void CpuHal::SaltAndPepper(const Image& src, Image& dst, double p, bool per_chan
     SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::SaltAndPepper);
 }
 
-// Drop color channel if present
-void DropColorChannel(Image& src)
-{
-    auto channel_pos = src.channels_.find("c");
-    if (channel_pos != std::string::npos) {
-        src.dims_.erase(src.dims_.begin() + channel_pos);
-        src.strides_.erase(src.strides_.begin() + channel_pos);
-        src.channels_.erase(channel_pos, 1);
-        src.colortype_ = ColorType::none;
-        if (src.spacings_.size() != 0) {
-            src.spacings_.erase(src.spacings_.begin() + channel_pos);
-        }
-    }
-}
-
 //template<typename SDT, typename MDT>
 //void MomentsImpl(const Image& src, Image& out, int order)
 //{
