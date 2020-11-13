@@ -592,6 +592,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a8afc71baadb6e9e0f1f3605c909a42db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a8afc71baadb6e9e0f1f3605c909a42db">DrawEllipse</a> (<a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="namespaceecvl.html#ac60a2f087e03fdac8ad7969eaf351616">ecvl::Point2i</a> center, <a class="el" href="namespaceecvl.html#a0f0e49de5db4641babfd40ec4750f5e3">ecvl::Size2i</a> axes, double angle, const <a class="el" href="namespaceecvl.html#a95a1d037461340fa937aeb2560f7b99c">ecvl::Scalar</a> &amp;color, int thickness=1)</td></tr>
 <tr class="memdesc:a8afc71baadb6e9e0f1f3605c909a42db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw an ellipse over the specified <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a8afc71baadb6e9e0f1f3605c909a42db">More...</a><br /></td></tr>
 <tr class="separator:a8afc71baadb6e9e0f1f3605c909a42db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49f122a730aee0ec33a0e28287142ede"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a49f122a730aee0ec33a0e28287142ede">DropColorChannel</a> (<a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
+<tr class="memdesc:a49f122a730aee0ec33a0e28287142ede"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove color channel from the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a49f122a730aee0ec33a0e28287142ede">More...</a><br /></td></tr>
+<tr class="separator:a49f122a730aee0ec33a0e28287142ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplParams" colspan="2">template&lt;DataType ODT, typename IDT &gt; </td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_type_info.html">TypeInfo</a>&lt; ODT &gt;::basetype&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10">saturate_cast</a> (IDT v)</td></tr>
 <tr class="memdesc:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saturate a value (of any type) to the specified type.  <a href="#afaa228c1d0b2e3eef2622ca7e4ffec10">More...</a><br /></td></tr>
@@ -2278,8 +2281,9 @@ template&lt;typename ST1 &gt; </div>
 <p>Draw an ellipse over the specified <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">[in/out]</td><td>src <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which draw the ellipse. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">src</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which draw the ellipse. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">center</td><td>Center of the ellipse to be drawn. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">axes</td><td>Half of the size of the ellipse axes. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">angle</td><td>Ellipse rotation angle. It must be in degrees. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">color</td><td>Ellipse color. It can be either a number (e.g. {255}) or an RGB value (e.g. {40, 40, 40}) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">thickness</td><td>Thickness of the ellipse border. If negative all the pixell of the ellipse will be filled with the specified color value. Default is 1. </td></tr>
@@ -2287,6 +2291,33 @@ template&lt;typename ST1 &gt; </div>
   </dd>
 </dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_moments_8cpp-example.html#a9">example_moments.cpp</a>.</dd>
+</dl>
+
+</div>
+</div>
+<a id="a49f122a730aee0ec33a0e28287142ede"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49f122a730aee0ec33a0e28287142ede">&#9670;&nbsp;</a></span>DropColorChannel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::DropColorChannel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remove color channel from the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
+<p>The <a class="el" href="namespaceecvl.html#a49f122a730aee0ec33a0e28287142ede" title="Remove color channel from the input Image.">DropColorChannel()</a> procedure remove the color channel ("c") from the specified input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>, modifying all the other attribute accordingly. This function can be only applied on Images with <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>, <em>i.e.</em> images having the color channel dimension equal to 1.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">src</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> from which to drop the color channel. </td></tr>
+  </table>
+  </dd>
 </dl>
 
 </div>
