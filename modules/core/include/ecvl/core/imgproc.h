@@ -641,7 +641,11 @@ This is an example application of the raw and central moments.
 */
 
 /** @example example_imgproc.cpp
- Imgproc example.
+ Image processing examples.
+*/
+
+/** @example example_threshold.cpp
+This is an Otsu (single an multi-threshold) usage example.
 */
 } // namespace ecvl
 
