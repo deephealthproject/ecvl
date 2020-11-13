@@ -96,6 +96,7 @@ public:
     void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) override;
     // void Moments(const Image& src, Image& moments, int order, DataType type) override;
     void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) override;
+    void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

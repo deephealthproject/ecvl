@@ -590,4 +590,27 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
     src.hal_->CentralMoments(src, moments, center, order, type);
 }
 
+void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) {
+    if (src.colortype_ == ColorType::none) {
+        ECVL_ERROR_WRONG_PARAMS("cannot draw on data Image.")
+    }
+
+    if (vsize(color) < 1) {
+        ECVL_ERROR_WRONG_PARAMS("color must contains at least one value. ")
+    }
+
+    Scalar real_color;
+    if (src.colortype_ == ColorType::GRAY && vsize(color) != 1) {
+        // I'll take just the first one!
+        real_color = Scalar(1, color[0]);
+    }
+    if (src.colortype_ != ColorType::GRAY && vsize(color) != 3) {
+        // I'll replicate the single value
+        real_color = Scalar(3, color[0]);
+    }
+
+    src.hal_->DrawEllipse(src, center, axes, angle, color, thickness);
+}
+
+
 } // namespace ecvl

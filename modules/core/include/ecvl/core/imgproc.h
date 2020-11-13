@@ -583,6 +583,18 @@ Additionally, the eccentricity of the image can be calculates as:
 */
 void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order = 3, DataType type = DataType::float64);
 
+
+/** @brief Draw an ellipse over the specified Image.
+
+@param[in/out] src Image on which draw the ellipse.
+@param[in] center Center of the ellipse to be drawn.
+@param[in] angle Ellipse rotation angle. It must be in degrees.
+@param[in] color Ellipse color. It can be either a number (e.g. {255}) or an RGB value (e.g. {40, 40, 40})
+@param[in] thickness Thickness of the ellipse border. If negative all the pixell of the ellipse will be filled with the specified color value.
+                        Default is 1.
+*/
+void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness = 1);
+
 /** @example example_moments.cpp
 This is an example application of the raw and central moments.
 */

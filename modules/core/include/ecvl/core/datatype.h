@@ -18,11 +18,15 @@
 #include <cstddef>
 #include <limits>
 #include <array>
+#include <vector>
 
 namespace ecvl {
 
 typedef std::array<int, 2> Point2i;
 typedef std::array<double, 2> Point2d;
+typedef std::array<int, 2> Size2i;
+typedef std::array<double, 2> Size2d;
+typedef std::vector<double> Scalar;
 
 /** @brief Calculate the distance squared between two ecvl::Point2i.
 

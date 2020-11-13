@@ -1925,4 +1925,14 @@ void CpuHal::CentralMoments(const Image& src, Image& moments, std::vector<double
     moments = std::move(out);
 }
 
+void CpuHal::DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness)
+{
+    OpenCVAlwaysCheck(src);
+
+    cv::Mat m = ImageToMat(src);
+    cv::Scalar opencv_color = vsize(color) == 1 ? cv::Scalar(color[0]) : cv::Scalar(color[0], color[1], color[2]);
+    cv::ellipse(m, cv::Point2i{ center[0], center[1] }, cv::Size{ axes[0], axes[1] }, angle, 0, 360, opencv_color, thickness);
+    src = ecvl::MatToImage(m);
+}
+
 } // namespace ecvl

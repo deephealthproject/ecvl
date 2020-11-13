@@ -163,6 +163,7 @@ public:
     virtual void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) { ECVL_ERROR_NOT_IMPLEMENTED }
     // virtual void Moments(const Image& src, Image& moments, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void DrawEllipse(Image& src, Point2i center, Size2i axes, double angle, const Scalar& color, int thickness) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 
