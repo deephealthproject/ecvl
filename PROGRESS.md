@@ -42,6 +42,7 @@
 | Transpose | :heavy_check_mark: | :x: | :x: |
 | VConcat | :heavy_check_mark: | :x: | :x: |
 | SetTo | :heavy_check_mark: | :x: | :x: |
+| DropColorChannel | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Pre- Post-processing and Augmentation
 | Functionality | CPU | GPU | FPGA |
