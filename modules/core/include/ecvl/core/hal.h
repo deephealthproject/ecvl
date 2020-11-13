@@ -164,6 +164,8 @@ public:
     // virtual void Moments(const Image& src, Image& moments, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void DrawEllipse(Image& src, Point2i center, Size2i axes, double angle, const Scalar& color, int thickness) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

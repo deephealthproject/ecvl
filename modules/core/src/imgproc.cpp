@@ -124,6 +124,13 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     src.hal_->Threshold(src, dst, thresh, maxval, thresh_type);
 }
 
+void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->MultiThreshold(src, dst, thresholds, minval, maxval);
+}
+
 std::vector<double> Histogram(const Image& src)
 {
     if (src.IsEmpty()) {
@@ -591,6 +598,10 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
 }
 
 void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) {
+    if (src.dev_ == Device::NONE) {
+        ECVL_ERROR_WRONG_PARAMS("src Image must have a device.")
+    }
+    
     if (src.colortype_ == ColorType::none) {
         ECVL_ERROR_WRONG_PARAMS("cannot draw on data Image.")
     }
@@ -630,5 +641,25 @@ void DropColorChannel(Image& src)
     }
 }
 
+std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds)
+{
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
+    }
+
+    if (src.colortype_ != ColorType::GRAY) { // What if the Image has ColorType::none?
+        ECVL_ERROR_WRONG_PARAMS("The OtsuMultiThreshold requires a grayscale Image.")
+    }
+
+    if (src.dev_ == Device::NONE) {
+        ECVL_ERROR_WRONG_PARAMS("src Image must have a device.")
+    }
+
+    if (src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    return src.hal_->OtsuMultiThreshold(src, n_thresholds);
+}
 
 } // namespace ecvl

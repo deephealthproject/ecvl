@@ -97,6 +97,8 @@ public:
     // void Moments(const Image& src, Image& moments, int order, DataType type) override;
     void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) override;
     void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) override;
+    std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) override;
+    void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

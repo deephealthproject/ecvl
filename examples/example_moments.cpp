@@ -22,7 +22,7 @@ int main()
 {
     // Loads an existing image
     Image img;
-    if (!ImRead("example_ISIC_01.jpg", img, ImReadMode::COLOR)) {
+    if (!ImRead("../examples/data/example_ISIC_01.jpg", img, ImReadMode::COLOR)) {
         return EXIT_FAILURE;
     }
     Image origin(img);

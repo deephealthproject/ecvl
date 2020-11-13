@@ -149,7 +149,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type);
 
 /** @brief Applies a fixed threshold to an input Image.
 
-The Threshold function applies a fixed thresholding to an input Image. The function is useful to get a binary
+The Threshold() function applies a fixed thresholding to an input Image. The function is useful to get a binary
 image out of a grayscale (ColorType::GRAY) Image or to remove noise filtering out pixels with too small or too
 large values. Anyway, the function can be applied to any input Image. The pixels up to "thresh" value will be
 set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type" is ThresholdingType::BINARY
@@ -164,15 +164,43 @@ set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type"
 */
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type = ThresholdingType::BINARY);
 
+/** @brief Applies multiple thresholds to the input Image.
+
+The Threshold() function applies multiple thresholding to the input Image. The resulting Image is quantized based on the provided
+thresholds values. Output values will range uniformly from minval to maxval.
+
+@param[in] src Input Image on which to apply the threshold.
+@param[out] dst The output thresholded Image.
+@param[in] thresholds Threshold values.
+@param[in] minval The minimum value in the output Image. Default is 0.
+@param[in] maxval The maximum value in the output Image. Default is 255.
+*/
+void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval = 0, int maxval = 255);
+
 /** @brief Calculates the Otsu thresholding value.
 
-The OtsuThreshold function calculates the Otsu threshold value over a given input Image. the Image must by ColorType::GRAY.
+The OtsuThreshold() function calculates the Otsu threshold value over a given input Image. The Image must be of ColorType::GRAY.
+This function implements the algorithm described in \cite Otsu1979.
 
 @param[in] src Input Image on which to calculate the Otsu threshold value.
 
 @return Otsu threshold value.
 */
 int OtsuThreshold(const Image& src);
+
+/** @brief Calculates the Otsu thresholding values.
+
+The OtsuThreshold() function calculates the Otsu threshold values over a given input Image. 
+The source Image must be of ColorType::GRAY. The number of thresholds to be found is
+defined by the n_thresholds parameter (default is 2). This function implement the algorithm
+described in \cite Liao2001.
+
+@param[in] src Input Image on which to calculate the Otsu threshold value.
+@param[in] n_thresholds Number of thresholds to be found using the Otsu multi threshold algorithm variation.
+
+@return Otsu thresholds value in a vector of ints.
+*/
+std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds = 2);
 
 /** @brief Convolves an Image with a kernel
 
@@ -270,7 +298,7 @@ std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 
 /** @brief Labels connected components in a binary Image
 
-The ConnectedComponentsLabeling() procedure implement the Spaghetti algorithm described in \cite Spaghetti, an extremely 
+The ConnectedComponentsLabeling() procedure implement the Spaghetti algorithm described in \cite Bolelli2019, an extremely 
 efficient algorithm to label connected components inside binary images using 8-way connectivity.
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.

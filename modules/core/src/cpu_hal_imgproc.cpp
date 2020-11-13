@@ -384,6 +384,7 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
 {
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
+    // This implementation assumes that the Image is contiguous. TODO implement the non contiguous version.
     auto thresh_t = saturate_cast<T>(thresh);
     auto maxval_t = saturate_cast<T>(maxval);
     auto minval_t = static_cast<T>(0);
@@ -464,6 +465,109 @@ int CpuHal::OtsuThreshold(const Image& src)
     }
 
     return threshold;
+}
+
+std::vector<int> CpuHal::OtsuMultiThreshold(const Image& src, int n_thresholds)
+{
+    std::vector<double> hist = Histogram(src);
+
+    static double P[256];
+    static double S[256];
+    static double H[256][256];
+    P[0] = hist[0];
+    S[0] = 0;
+    for (int v = 1; v < 256; ++v) {
+        P[v] = P[v - 1] + hist[v];
+        S[v] = S[v - 1] + v * hist[v];
+        H[0][v] = S[v] * S[v] / P[v];
+    }
+    for (int u = 1; u < 256; ++u) {
+        double Pu = P[u - 1];
+        double Su = S[u - 1];
+        for (int v = u; v < 256; ++v) {
+            double Puv = P[v] - Pu;
+            double Suv = S[v] - Su;
+            H[u][v] = Puv ? Suv * Suv / Puv : 0;
+        }
+    }
+    vector<int> thresholds(n_thresholds);
+    iota(thresholds.begin(), thresholds.end(), 1);
+    double max_sigma = 0;
+    vector<int> max_thresholds;
+    bool finish = false;
+    while (!finish) {
+        double sigma = H[0][thresholds[0]];
+        for (size_t i = 1, end = thresholds.size(); i < end; ++i) {
+            sigma += H[thresholds[i - 1]][thresholds[i]];
+        }
+        sigma += H[thresholds.back()][255];
+        if (max_sigma < sigma) {
+            max_sigma = sigma;
+            max_thresholds = thresholds;
+        }
+        finish = true;
+        for (size_t end = thresholds.size(), i = end - 1; i < end; --i) {
+            uint8_t limit = uint8_t(255 - end + i);
+            if (thresholds[i] < limit) {
+                ++thresholds[i];
+                for (size_t j = i + 1; j < end; ++j) {
+                    thresholds[j] = thresholds[j - 1] + 1;
+                }
+                finish = false;
+                break;
+            }
+        }
+    }
+    return max_thresholds;
+}
+
+template <typename T>
+void MultiThresholdImpl(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
+{
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+    std::vector<T> vals(thresholds.size() + 1);
+    for (int i = 0, end = vsize(vals); i < end; ++i) {
+        vals[i] = static_cast<T>(i * (maxval - minval) / (end - 1) + minval);
+    }
+
+    if (src.contiguous_) {
+        T* src_data = reinterpret_cast<T*>(src.data_);
+        T* tmp_data = reinterpret_cast<T*>(tmp.data_);
+        auto elemsize = src.elemsize_;
+        auto limit = tmp.datasize_ / elemsize;
+
+#pragma omp parallel for
+        for (int i = 0; i < limit; ++i) {
+            auto p = src_data[i];
+            int k = 0, e = vsize(thresholds);
+            for (; k < e && p > thresholds[k]; ++k) {}
+            tmp_data[i] = vals[k];
+        }
+    }
+    else {
+        auto out = dst.Begin<T>();
+        for (auto it = src.Begin<T>(), end = src.End<T>(); it != end; ++it, ++out) {
+            auto p = *it;
+            int i = 0, e = vsize(thresholds);
+            for (; i < e && p > thresholds[i]; ++i) {}
+            *out = static_cast<T>(vals[i]);
+        }
+    }
+
+    dst = std::move(tmp);
+}
+
+void CpuHal::MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
+{
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: MultiThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresholds, minval, maxval); break;
+
+    switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+    }
+
+#undef ECVL_TUPLE
 }
 
 void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)

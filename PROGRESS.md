@@ -72,9 +72,12 @@
 | SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
 | SliceTimingCorrection | :heavy_check_mark: | :x: | :x: |
 | Threshold | :heavy_check_mark: | :x: | :x: |
+| MultiThreshold | :heavy_check_mark: | :x: | :x: |
 
 ## Property Calculation 
 | Functionality | CPU | GPU | FPGA |
 |--|--|--|--|
+| Otsu | :heavy_check_mark: | :x: | :x: |
+| Otsu Multi Threshold | :heavy_check_mark: | :x: | :x: |
 | Moments | :heavy_check_mark: | :x: | :x: |
 | CentralMoments | :heavy_check_mark: | :x: | :x: |

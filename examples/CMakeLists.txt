@@ -17,6 +17,7 @@ set(examples_sources
     example_imgproc.cpp
     example_moments.cpp
     example_performance.cpp
+	example_threshold.cpp
 )
 FOREACH(cur_file ${examples_sources})
     get_filename_component(exe_name ${cur_file} NAME_WE)
