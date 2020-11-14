@@ -1,16 +1,16 @@
 #!/bin/bash
 
 if [ -d "${DEPS_INSTALL_DIR}/opencv" ]; then
-    echo -e "OpenCV already installed"
+    echo "OpenCV already installed"
 else
-    mkdir -p ${DEPS_BUILD_DIR} && cd ${DEPS_BUILD_DIR}
-    wget --no-check-certificate https://github.com/opencv/opencv/archive/$OPENCV_VERSION.tar.gz
+    cd ${DEPS_BUILD_DIR}
+    wget -nv --no-check-certificate https://github.com/opencv/opencv/archive/$OPENCV_VERSION.tar.gz
     tar -xzf $OPENCV_VERSION.tar.gz
     mv opencv-$OPENCV_VERSION opencv
     cd opencv
     mkdir build && cd build
 
-    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+    cmake -G "${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
         -DCMAKE_INSTALL_PREFIX=${DEPS_INSTALL_DIR}/opencv \
         -DBUILD_LIST=core,imgproc,imgcodecs,photo,calib3d -DBUILD_opencv_apps=OFF \
         -DBUILD_opencv_java_bindings_generator=OFF -DBUILD_opencv_python3=OFF \
@@ -29,7 +29,7 @@ else
     cmake --build . --config $BUILD_TYPE --target install
 fi
 
-export OpenCV_DIR=${DEPS_INSTALL_DIR}/opencv
+export OpenCV_DIR=${OpenCV_DIR}
 
 # don't forget to switch back to the main build directory once you are done
 cd ${TRAVIS_BUILD_DIR}
