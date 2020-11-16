@@ -1760,7 +1760,7 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Labels connected components in a binary <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
-<p>The <a class="el" href="namespaceecvl.html#aed7ae9e9c78f257354b6c638521cc1ab" title="Labels connected components in a binary Image.">ConnectedComponentsLabeling()</a> procedure implement the Spaghetti algorithm described in <b>[Bolelli2019]</b>, an extremely efficient algorithm to label connected components inside binary images using 8-way connectivity.</p>
+<p>The <a class="el" href="namespaceecvl.html#aed7ae9e9c78f257354b6c638521cc1ab" title="Labels connected components in a binary Image.">ConnectedComponentsLabeling()</a> procedure implement the Spaghetti algorithm described in <a class="el" href="citelist.html#CITEREF_Bolelli2019">[1]</a>, an extremely efficient algorithm to label connected components inside binary images using 8-way connectivity.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It must be with channels "xyc", only one color channel and <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a5f423e669d0a8f4ab7c4c3e6da27161a">DataType::uint8</a>. </td></tr>
@@ -4183,7 +4183,7 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Calculates the Otsu thresholding values. </p>
-<p>The <a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9" title="Calculates the Otsu thresholding value.">OtsuThreshold()</a> function calculates the Otsu threshold values over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must be of <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>. The number of thresholds to be found is defined by the n_thresholds parameter (default is 2). This function implement the algorithm described in <b>[Liao2001]</b>.</p>
+<p>The <a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9" title="Calculates the Otsu thresholding value.">OtsuThreshold()</a> function calculates the Otsu threshold values over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must be of <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>. The number of thresholds to be found is defined by the n_thresholds parameter (default is 2). This function implement the algorithm described in <a class="el" href="citelist.html#CITEREF_Liao2001">[2]</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which to calculate the Otsu threshold value. </td></tr>
@@ -4214,7 +4214,7 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Calculates the Otsu thresholding value. </p>
-<p>The <a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9" title="Calculates the Otsu thresholding value.">OtsuThreshold()</a> function calculates the Otsu threshold value over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must be of <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>. This function implements the algorithm described in <b>[Otsu1979]</b>.</p>
+<p>The <a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9" title="Calculates the Otsu thresholding value.">OtsuThreshold()</a> function calculates the Otsu threshold value over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must be of <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>. This function implements the algorithm described in <a class="el" href="citelist.html#CITEREF_Otsu1979">[3]</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which to calculate the Otsu threshold value.</td></tr>
