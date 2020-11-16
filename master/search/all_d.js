@@ -21,6 +21,7 @@ var searchData=
   ['opticaldistortion',['OpticalDistortion',['../namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b',1,'ecvl']]],
   ['optional',['optional',['../namespaceecvl.html#a526e1a5708238efff7d1b578fb59d692',1,'ecvl']]],
   ['optional_2eh',['optional.h',['../optional_8h.html',1,'']]],
+  ['otsumultithreshold',['OtsuMultiThreshold',['../namespaceecvl.html#af4781680fe96bf1231e6dd2a667bf459',1,'ecvl']]],
   ['otsuthreshold',['OtsuThreshold',['../namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9',1,'ecvl']]],
   ['overlaymetadata',['OverlayMetaData',['../classecvl_1_1_overlay_meta_data.html',1,'ecvl::OverlayMetaData'],['../classecvl_1_1_overlay_meta_data.html#aed676647a833c7e5eed537f2e62d5af1',1,'ecvl::OverlayMetaData::OverlayMetaData(const ecvl::Image &amp;overlay)'],['../classecvl_1_1_overlay_meta_data.html#ad8eb0957db60ed1525db801f32e1e1cd',1,'ecvl::OverlayMetaData::OverlayMetaData(ecvl::Image &amp;&amp;overlay)=delete']]]
 ];

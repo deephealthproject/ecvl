@@ -18,6 +18,7 @@ var searchData=
   ['operator_3d_3d',['operator==',['../structecvl_1_1_iterator.html#a5aa2c448351f64307e55baa68a876567',1,'ecvl::Iterator::operator==()'],['../structecvl_1_1_const_iterator.html#a283705d66ff14db3fa8f3a657132bc51',1,'ecvl::ConstIterator::operator==()'],['../structecvl_1_1_contiguous_iterator.html#afc908a637b6dca94fc5516aa5867ddbe',1,'ecvl::ContiguousIterator::operator==()'],['../structecvl_1_1_const_contiguous_iterator.html#a8b687e8a2a32aca7f0d59c56d2c62ae0',1,'ecvl::ConstContiguousIterator::operator==()']]],
   ['operator_5b_5d',['operator[]',['../classecvl_1_1param__list.html#a27b976dcf79658e370c311f71b97d6c6',1,'ecvl::param_list']]],
   ['opticaldistortion',['OpticalDistortion',['../namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b',1,'ecvl']]],
+  ['otsumultithreshold',['OtsuMultiThreshold',['../namespaceecvl.html#af4781680fe96bf1231e6dd2a667bf459',1,'ecvl']]],
   ['otsuthreshold',['OtsuThreshold',['../namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9',1,'ecvl']]],
   ['overlaymetadata',['OverlayMetaData',['../classecvl_1_1_overlay_meta_data.html#aed676647a833c7e5eed537f2e62d5af1',1,'ecvl::OverlayMetaData::OverlayMetaData(const ecvl::Image &amp;overlay)'],['../classecvl_1_1_overlay_meta_data.html#ad8eb0957db60ed1525db801f32e1e1cd',1,'ecvl::OverlayMetaData::OverlayMetaData(ecvl::Image &amp;&amp;overlay)=delete']]]
 ];

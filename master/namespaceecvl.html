@@ -500,9 +500,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a41dc0a70968cd6341a85615737ba87a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a41dc0a70968cd6341a85615737ba87a1">Threshold</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, double thresh, double maxval, <a class="el" href="namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92e">ThresholdingType</a> thresh_type=<a class="el" href="namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92ea98ad0e8750ae10ad556ed7a62affb452">ThresholdingType::BINARY</a>)</td></tr>
 <tr class="memdesc:a41dc0a70968cd6341a85615737ba87a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies a fixed threshold to an input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a41dc0a70968cd6341a85615737ba87a1">More...</a><br /></td></tr>
 <tr class="separator:a41dc0a70968cd6341a85615737ba87a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3052b3748c8ce86579b4d65b832da743"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a3052b3748c8ce86579b4d65b832da743">MultiThreshold</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::vector&lt; int &gt; &amp;thresholds, int minval=0, int maxval=255)</td></tr>
+<tr class="memdesc:a3052b3748c8ce86579b4d65b832da743"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies multiple thresholds to the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a3052b3748c8ce86579b4d65b832da743">More...</a><br /></td></tr>
+<tr class="separator:a3052b3748c8ce86579b4d65b832da743"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae40603a556ee0f3dca6b1c32a9e4eae9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9">OtsuThreshold</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src)</td></tr>
 <tr class="memdesc:ae40603a556ee0f3dca6b1c32a9e4eae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the Otsu thresholding value.  <a href="#ae40603a556ee0f3dca6b1c32a9e4eae9">More...</a><br /></td></tr>
 <tr class="separator:ae40603a556ee0f3dca6b1c32a9e4eae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4781680fe96bf1231e6dd2a667bf459"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#af4781680fe96bf1231e6dd2a667bf459">OtsuMultiThreshold</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, int n_thresholds=2)</td></tr>
+<tr class="memdesc:af4781680fe96bf1231e6dd2a667bf459"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the Otsu thresholding values.  <a href="#af4781680fe96bf1231e6dd2a667bf459">More...</a><br /></td></tr>
+<tr class="separator:af4781680fe96bf1231e6dd2a667bf459"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a409958191f9b8fd26b570fef59c7ef72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a409958191f9b8fd26b570fef59c7ef72">Filter2D</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;ker, <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857">DataType</a> type=<a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a334c4a4c42fdb79d7ebc3e73b517e6f8">DataType::none</a>)</td></tr>
 <tr class="memdesc:a409958191f9b8fd26b570fef59c7ef72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convolves an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> with a kernel.  <a href="#a409958191f9b8fd26b570fef59c7ef72">More...</a><br /></td></tr>
 <tr class="separator:a409958191f9b8fd26b570fef59c7ef72"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -909,7 +915,7 @@ template&lt;ecvl::DataType DT&gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="imgproc_8h_source.html#l00334">334</a> of file <a class="el" href="imgproc_8h_source.html">imgproc.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgproc_8h_source.html#l00362">362</a> of file <a class="el" href="imgproc_8h_source.html">imgproc.h</a>.</p>
 
 </div>
 </div>
@@ -1068,7 +1074,7 @@ template&lt;ecvl::DataType DT&gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="imgproc_8h_source.html#l00366">366</a> of file <a class="el" href="imgproc_8h_source.html">imgproc.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgproc_8h_source.html#l00394">394</a> of file <a class="el" href="imgproc_8h_source.html">imgproc.h</a>.</p>
 
 </div>
 </div>
@@ -1160,7 +1166,7 @@ template&lt;ecvl::DataType DT&gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="imgproc_8h_source.html#l00313">313</a> of file <a class="el" href="imgproc_8h_source.html">imgproc.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="imgproc_8h_source.html#l00341">341</a> of file <a class="el" href="imgproc_8h_source.html">imgproc.h</a>.</p>
 
 </div>
 </div>
@@ -1662,7 +1668,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a9">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a8">example_image_view.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a12">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a3">example_moments.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a5">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a9">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a8">example_image_view.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a12">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a3">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a5">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a2">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -1754,7 +1760,7 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Labels connected components in a binary <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
-<p>The <a class="el" href="namespaceecvl.html#aed7ae9e9c78f257354b6c638521cc1ab" title="Labels connected components in a binary Image.">ConnectedComponentsLabeling()</a> procedure implement the Spaghetti algorithm described in <b>[Spaghetti]</b>, an extremely efficient algorithm to label connected components inside binary images using 8-way connectivity.</p>
+<p>The <a class="el" href="namespaceecvl.html#aed7ae9e9c78f257354b6c638521cc1ab" title="Labels connected components in a binary Image.">ConnectedComponentsLabeling()</a> procedure implement the Spaghetti algorithm described in <b>[Bolelli2019]</b>, an extremely efficient algorithm to label connected components inside binary images using 8-way connectivity.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It must be with channels "xyc", only one color channel and <a class="el" href="namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a5f423e669d0a8f4ab7c4c3e6da27161a">DataType::uint8</a>. </td></tr>
@@ -3053,7 +3059,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly read, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a1">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a1">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a1">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a7">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a5">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a1">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a1">example_moments.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a10">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a1">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a1">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a1">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a7">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a5">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a1">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a1">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a10">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a1">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -3703,6 +3709,67 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
+<a id="a3052b3748c8ce86579b4d65b832da743"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3052b3748c8ce86579b4d65b832da743">&#9670;&nbsp;</a></span>MultiThreshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::MultiThreshold </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>thresholds</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>minval</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>maxval</em> = <code>255</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Applies multiple thresholds to the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
+<p>The <a class="el" href="namespaceecvl.html#a41dc0a70968cd6341a85615737ba87a1" title="Applies a fixed threshold to an input Image.">Threshold()</a> function applies multiple thresholding to the input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The resulting <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is quantized based on the provided thresholds values. Output values will range uniformly from minval to maxval.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which to apply the threshold. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>The output thresholded <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">thresholds</td><td>Threshold values. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">minval</td><td>The minimum value in the output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. Default is 0. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">maxval</td><td>The maximum value in the output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. Default is 255. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_threshold_8cpp-example.html#a7">example_threshold.cpp</a>.</dd>
+</dl>
+
+</div>
+</div>
 <a id="a26fb2cc30e6cf9e551798456f71133b3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26fb2cc30e6cf9e551798456f71133b3">&#9670;&nbsp;</a></span>Neg()</h2>
 
@@ -4089,6 +4156,47 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
+<a id="af4781680fe96bf1231e6dd2a667bf459"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4781680fe96bf1231e6dd2a667bf459">&#9670;&nbsp;</a></span>OtsuMultiThreshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; ecvl::OtsuMultiThreshold </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n_thresholds</em> = <code>2</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculates the Otsu thresholding values. </p>
+<p>The <a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9" title="Calculates the Otsu thresholding value.">OtsuThreshold()</a> function calculates the Otsu threshold values over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must be of <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>. The number of thresholds to be found is defined by the n_thresholds parameter (default is 2). This function implement the algorithm described in <b>[Liao2001]</b>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which to calculate the Otsu threshold value. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">n_thresholds</td><td>Number of thresholds to be found using the Otsu multi threshold algorithm variation.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Otsu thresholds value in a vector of ints. </dd></dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_threshold_8cpp-example.html#a6">example_threshold.cpp</a>.</dd>
+</dl>
+
+</div>
+</div>
 <a id="ae40603a556ee0f3dca6b1c32a9e4eae9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae40603a556ee0f3dca6b1c32a9e4eae9">&#9670;&nbsp;</a></span>OtsuThreshold()</h2>
 
@@ -4106,7 +4214,7 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Calculates the Otsu thresholding value. </p>
-<p>The OtsuThreshold function calculates the Otsu threshold value over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must by <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>.</p>
+<p>The <a class="el" href="namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9" title="Calculates the Otsu thresholding value.">OtsuThreshold()</a> function calculates the Otsu threshold value over a given input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> must be of <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>. This function implements the algorithm described in <b>[Otsu1979]</b>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which to calculate the Otsu threshold value.</td></tr>
@@ -4114,7 +4222,7 @@ template&lt;typename ST1 &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Otsu threshold value. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a14">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a7">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a14">example_imgproc.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a7">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a4">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -5344,7 +5452,7 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Applies a fixed threshold to an input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
-<p>The Threshold function applies a fixed thresholding to an input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The function is useful to get a binary image out of a grayscale (<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>) <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> or to remove noise filtering out pixels with too small or too large values. Anyway, the function can be applied to any input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The pixels up to "thresh" value will be set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type" is <a class="el" href="namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92ea98ad0e8750ae10ad556ed7a62affb452">ThresholdingType::BINARY</a> (default). The opposite will happen if "thresh_type" is <a class="el" href="namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92ea603de175b826a787a2d96b421089e16e">ThresholdingType::BINARY_INV</a>.</p>
+<p>The <a class="el" href="namespaceecvl.html#a41dc0a70968cd6341a85615737ba87a1" title="Applies a fixed threshold to an input Image.">Threshold()</a> function applies a fixed thresholding to an input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The function is useful to get a binary image out of a grayscale (<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>) <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> or to remove noise filtering out pixels with too small or too large values. Anyway, the function can be applied to any input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The pixels up to "thresh" value will be set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type" is <a class="el" href="namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92ea98ad0e8750ae10ad556ed7a62affb452">ThresholdingType::BINARY</a> (default). The opposite will happen if "thresh_type" is <a class="el" href="namespaceecvl.html#a94d1bc1bcbe04e147ab0c95c3cfaa92ea603de175b826a787a2d96b421089e16e">ThresholdingType::BINARY_INV</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>Input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> on which to apply the threshold. </td></tr>
@@ -5355,7 +5463,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a15">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a5">example_moments.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a8">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a15">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a5">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a8">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a5">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>

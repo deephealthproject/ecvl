@@ -24,5 +24,6 @@ var searchData=
   ['morphology',['Morphology',['../namespaceecvl.html#a09f0ab2d8976efcb4c383b711d3082c3',1,'ecvl']]],
   ['morphtype',['MorphType',['../namespaceecvl.html#a4696838ef2eb912185348d2585a3ce36',1,'ecvl']]],
   ['mul',['Mul',['../classecvl_1_1_image.html#a89de053110d52a4dfe2004a99e02665b',1,'ecvl::Image::Mul()'],['../namespaceecvl.html#aefb3bf550679f0b94a93825ee6e7c21a',1,'ecvl::Mul(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a35c905269cf9cf1766cd0036d0f38438',1,'ecvl::Mul(const Image &amp;src1, const ST2 &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a47d848d2a7171b4cb8a1a01b4d6fd984',1,'ecvl::Mul(const ST1 &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)']]],
+  ['multithreshold',['MultiThreshold',['../namespaceecvl.html#a3052b3748c8ce86579b4d65b832da743',1,'ecvl']]],
   ['mutex_5fcurrent_5fbatch_5f',['mutex_current_batch_',['../classecvl_1_1_d_l_dataset.html#a13f7c815daf802af4d3e4aa19e4ca831',1,'ecvl::DLDataset']]]
 ];
