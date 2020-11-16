@@ -26,8 +26,8 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
 - [OpenSlide](https://github.com/openslide/openslide), required with `ECVL_WITH_OPENSLIDE` flag
 
 #### EDDL Version Compatibility
-|   ECVL  |  EDDL  | 
-|:-------:|:------:|
+| ECVL  | EDDL  | 
+|:-----:|:-----:|
 | 0.2.3 | 0.6.0 |
 | 0.2.2 | 0.6.0 |
 | 0.2.1 | 0.4.3 |
@@ -41,15 +41,15 @@ Clone and install ECVL with:
 git clone https://github.com/deephealthproject/ecvl.git
 mkdir build && cd build
 cmake ..
-make -j$(nproc)
-make install
+cmake --build . --config Release --parallel 4
+cmake --build . --config Release --target install
 ```
 
 CMake flags and options:
 - `-DECVL_TESTS` (default `ON`): Compiles tests
 - `-DECVL_BUILD_EXAMPLES` (default `OFF`): Compiles examples and downloads examples data 
 - `-DECVL_DATASET` (default `OFF`): Compiles dataset module
-- `-DECVL_BUILD_EDDL` (default `ON`): Compiles eddl integration module (it automatically enables `ECVL_DATASET` option)
+- `-DECVL_BUILD_EDDL` (default `ON`): Compiles EDDL integration module (it automatically enables `ECVL_DATASET` option)
 - `-DECVL_BUILD_GUI` (default `OFF`): Compiles GUI module
 - `-DECVL_WITH_OPENGL` (default `OFF`): Enables 3D GUI functionalities
 - `-DECVL_WITH_DICOM` (default `OFF`): Enables DICOM format support
@@ -74,8 +74,8 @@ cmake \
   -DOPENSLIDE_INCLUDE_DIRECTORIES=/home/<user>/openslide_src/include/openslide \
   -DOPENSLIDE_LIBRARIES=/home/<user>/openslide_src/lib/libopenslide.so \
   -DwxWidgets_CONFIG_EXECUTABLE=/home/<user>/wxWidgets/build/install/bin/wx-config ..
-make -j$(nproc)
-make install
+cmake --build . --config Release --parallel 4
+cmake --build . --config Release --target install
 ```
 
 ## ImageWatch plugin for Microsoft Visual Studio
@@ -120,31 +120,35 @@ Contributions of any kind are welcome!
 
 |   OS    |  Compiler  | OpenCV | EDDL | Infrastructure | Status | 
 |:-------:|:----------:|:------:|:------:|:------:|:------:|
-| Windows 10 1903 | VS 15.9.11 | 3.4.11 | 0.7.0 | Jenkins |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/windows_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
+| Windows 10 1903 | VS 2017 15.9.11 | 3.4.11 | 0.7.0 | Jenkins |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/windows_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
+| Windows 10 1809 | VS 2017 15.9.18 | 3.4.12 | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/14?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Windows 10 1809 | VS 2019 16.8.1 | 3.4.12 | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/15?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+
 
 ### Linux
 
 |   OS    |  Compiler  | OpenCV | EDDL |Infrastructure | Status | 
 |:-------:|:----------:|:------:|:------:|:------:|:------:|
 | Ubuntu 18.04.3  | GCC 8.4.0  | 3.4.6  | 0.6.0 | Jenkins |[![Build Status](https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/linux_end?)](https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master/)        |
-| Ubuntu 18.04.4  | GCC 6.5.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/1?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | GCC 7.5.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/2?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | GCC 8.4.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/3?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | GCC 9.3.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/4?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | GCC 10.1.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/5?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | Clang 5.0.2  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/6?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | Clang 6.0.1  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/7?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | Clang 7.1.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/8?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | Clang 8.0.1  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/9?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | Clang 9.0.0  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/10?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
-| Ubuntu 18.04.4  | Clang 10.0.1  | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/11?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
+| Ubuntu 18.04.4  | GCC 6.5.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/1?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | GCC 7.5.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/2?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | GCC 8.4.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/3?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | GCC 9.3.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/4?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | GCC 10.1.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/5?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | Clang 5.0.2  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/6?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | Clang 6.0.1  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/7?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | Clang 7.1.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/8?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | Clang 8.0.1  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/9?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | Clang 9.0.0  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/10?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)        |
+| Ubuntu 18.04.4  | Clang 10.0.1  | 3.4.12  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/11?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
 
 ### MacOS
 
 |   OS    |  Compiler  | OpenCV | EDDL |Infrastructure | Status | 
 |:-------:|:----------:|:------:|:------:|:------:|:------:|
-| MacOSX 10.15.5 | Apple Clang 11.0.3 | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/12?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
-| MacOSX 10.15.7 | Apple Clang 11.0.3 | 3.4.11  | 0.7.0 | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/13?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
+| MacOSX 10.15.5 | Apple Clang 11.0.3 | 4.5.0 | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/12?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
+| MacOSX 10.15.7 | Apple Clang 12.0.0 | 4.5.0  | v0.8a | Travis CI |[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/deephealthproject/ecvl/branches/master/13?use_travis_com=true)](https://travis-ci.com/github/deephealthproject/ecvl)       |
+
 
 ## <a name="CI">Continuous integration (GPU)</a> 
 
