@@ -3,10 +3,13 @@ env:
   global:
     - PROC=2
     - DEPS_BUILD_DIR="${HOME}/deps"
-    - DEPS_INSTALL_DIR="${HOME}/install"
+    - DEPS_INSTALL_DIR="${HOME}/cache"
     - BUILD_TYPE=Release
-    - OPENCV_VERSION="3.4.11"
-    - EDDL_VERSION="0.7.0"
+    - CMAKE_GENERATOR="Unix Makefiles"
+    - OpenCV_DIR=${DEPS_INSTALL_DIR}/opencv
+    - CMAKE_VERSION="3.13.5"
+    - OPENCV_VERSION="3.4.12"
+    - EDDL_VERSION="v0.8a"
 jobs:
   # fast_finish: true
   include:
@@ -123,14 +126,29 @@ jobs:
       env: MATRIX_EVAL="CC=clang-10 && CXX=clang++-10"
     - os: osx
       osx_image: xcode11.6
-      env: MATRIX_EVAL="CC=clang && CXX=clang++"
+      env: 
+        - CMAKE_VERSION="3.18.4"
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+        - CMAKE_GENERATOR="Xcode"
     - os: osx
       osx_image: xcode12.2
-      env: MATRIX_EVAL="CC=clang && CXX=clang++"
-
+      env: 
+        - CMAKE_VERSION="3.18.4"
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+        - CMAKE_GENERATOR="Xcode"
+    - os: windows
+      env: 
+        - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+        - OpenCV_DIR=${DEPS_INSTALL_DIR}/opencv/x64/vc15/staticlib
+    - os: windows
+      env:
+        - CMAKE_VERSION="3.14.7"
+        - CMAKE_GENERATOR="Visual Studio 16 2019"
+        - OpenCV_DIR=${DEPS_INSTALL_DIR}/opencv/x64/vc16/staticlib
+        - MATRIX_EVAL="choco install visualstudio2019buildtools --package-parameters \"--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64\""
+        
 before_install:
-  - eval "${MATRIX_EVAL}"
-  - g++ --version
+  - mkdir -p ${DEPS_BUILD_DIR} && mkdir -p ${DEPS_INSTALL_DIR}
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       export TRAVIS_OS=Linux
@@ -139,31 +157,55 @@ before_install:
     elif [[ "${TRAVIS_OS_NAME}" == "windows" ]]; then
       export TRAVIS_OS=Windows
     fi
+  - eval "${MATRIX_EVAL}"
+  - |
+    if [ "$TRAVIS_OS" != "Windows" ]; then
+      g++ --version
+    fi
+  - echo CMAKE_GENERATOR=${CMAKE_GENERATOR}
 
 install:
-  - chmod ugo+x ci/travis/cmake.sh
-  - chmod ugo+x ci/travis/opencv.sh
-  - chmod ugo+x ci/travis/eddl.sh
-
+  - |
+    chmod ugo+x ci/travis/cmake.sh
+    chmod ugo+x ci/travis/opencv.sh
+    chmod ugo+x ci/travis/eddl.sh
   - |
     if [[ "$TRAVIS_OS" == "Linux" ]]; then
-      sudo apt-get install -y openslide-tools
+      sudo apt-get install -y libopenslide-dev
     elif [[ "$TRAVIS_OS" == "Darwin" ]]; then
       brew install openslide
     fi
-  - source ci/travis/cmake.sh
+  - |
+    if [ "$TRAVIS_OS" != "Windows" ]; then
+      source ci/travis/cmake.sh
+    else 
+      choco install cmake --version=$CMAKE_VERSION --force --allow-downgrade
+    fi
   - cmake --version
   - source ci/travis/opencv.sh
   - source ci/travis/eddl.sh
 
 before_script:
   - mkdir build && cd build
-  - cmake -DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON ..
+  - |
+    if [ "$TRAVIS_OS" != "Darwin" ]; then
+      cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DECVL_GPU=OFF \
+        -DProtobuf_INCLUDE_DIR=${Protobuf_INCLUDE_DIR} -DProtobuf_LIBRARY_RELEASE=${Protobuf_LIBRARY_RELEASE} \
+        -DProtobuf_LIBRARY_DEBUG=${Protobuf_LIBRARY_DEBUG} -DProtobuf_PROTOC_EXECUTABLE=${Protobuf_PROTOC_EXECUTABLE} \
+        ..
+    else
+      cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DECVL_GPU=OFF \
+        ..
+    fi
 
 script:
   - cmake --build . --config ${BUILD_TYPE} --parallel ${PROC}
-  - bin/ECVL_TESTS
+  - ctest -C ${BUILD_TYPE} -VV
+
+before_cache:
+  - if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then brew cleanup; fi
 
 cache:
   directories:
     - ${DEPS_INSTALL_DIR}
+    - $HOME/Library/Caches/Homebrew

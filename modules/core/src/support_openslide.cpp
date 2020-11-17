@@ -38,7 +38,7 @@ bool OpenSlideGetLevels(const path& filename, vector<array<int, 2>>& levels)
     int64_t w, h;
     for (int i = 0; i < n_levels; ++i) {
         openslide_get_level_dimensions(osr, i, &w, &h);
-        levels[i] = array{ static_cast<int>(w), static_cast<int>(h) };
+        levels[i] = array<int, 2>{ static_cast<int>(w), static_cast<int>(h) };
     }
 
     openslide_close(osr);
