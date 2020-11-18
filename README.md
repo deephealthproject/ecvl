@@ -47,10 +47,11 @@ cmake --build . --config Release --target install
 
 CMake flags and options:
 - `-DECVL_TESTS` (default `ON`): Compiles tests
-- `-DECVL_BUILD_EXAMPLES` (default `OFF`): Compiles examples and downloads examples data 
-- `-DECVL_DATASET` (default `OFF`): Compiles dataset module
 - `-DECVL_BUILD_EDDL` (default `ON`): Compiles EDDL integration module (it automatically enables `ECVL_DATASET` option)
+- `-DECVL_BUILD_DEPS` (default `ON`): Whether to build 3rdparty dependencies or looks for them on the system
+- `-DECVL_BUILD_EXAMPLES` (default `OFF`): Compiles examples and downloads examples data 
 - `-DECVL_BUILD_GUI` (default `OFF`): Compiles GUI module
+- `-DECVL_DATASET` (default `OFF`): Compiles dataset module
 - `-DECVL_WITH_OPENGL` (default `OFF`): Enables 3D GUI functionalities
 - `-DECVL_WITH_DICOM` (default `OFF`): Enables DICOM format support
 - `-DECVL_WITH_OPENSLIDE` (default `OFF`): Enables OpenSlide whole-slide image support
