@@ -137,8 +137,8 @@ if(ECVL_DATASET)
     endif()
 
     # Suppress yaml-cpp iterator warnings
-    target_compile_definitions(yaml-cpp PUBLIC _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
-    target_compile_options(yaml-cpp PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/wd4275 /wd4251>) # Suppress yaml-cpp warnings
+    target_compile_definitions(yaml-cpp INTERFACE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+    target_compile_options(yaml-cpp INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/wd4275 /wd4251>) # Suppress yaml-cpp warnings
     target_link_libraries(ECVL_CORE PUBLIC yaml-cpp)
 endif()
 
