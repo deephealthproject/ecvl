@@ -16,6 +16,9 @@ project (ecvl CXX)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
+# Add Find*.cmake in Modules dir
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON) # To always generate position independent code
@@ -235,6 +238,7 @@ target_compile_definitions(ECVL_CORE PRIVATE OpenCV_VERSION_MAJOR=${OpenCV_VERSI
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
+set(ECVL_BUILD_DEPS ON CACHE BOOL "Whether to build 3rdparty dependencies or looks for them on the system")
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
 set(ECVL_DATASET OFF CACHE BOOL "Whether to build yaml support or not")
