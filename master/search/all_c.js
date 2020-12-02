@@ -9,6 +9,7 @@ var searchData=
   ['niftiwrite',['NiftiWrite',['../namespaceecvl.html#a4a591dcd099666b3326c48d8651c9ea2',1,'ecvl']]],
   ['none',['none',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a334c4a4c42fdb79d7ebc3e73b517e6f8',1,'ecvl::none()'],['../namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a334c4a4c42fdb79d7ebc3e73b517e6f8',1,'ecvl::none()']]],
   ['nonmaximasuppression',['NonMaximaSuppression',['../namespaceecvl.html#ab74faee8c2b550b7bee1fe07e0791c80',1,'ecvl']]],
+  ['normalize',['Normalize',['../namespaceecvl.html#aabacccc60bc05ce9dd9ddb350f055be9',1,'ecvl']]],
   ['num_5fsamples_5f',['num_samples_',['../classecvl_1_1_generate_dataset.html#ae0b9aad46da54a92124c577a0fe7877d',1,'ecvl::GenerateDataset']]],
   ['number',['number',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4ab1bc248a7ff2b2e95569f56de68615df',1,'ecvl::param']]]
 ];

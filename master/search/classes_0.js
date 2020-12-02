@@ -14,6 +14,7 @@ var searchData=
   ['augmentationfactory',['AugmentationFactory',['../structecvl_1_1_augmentation_factory.html',1,'ecvl']]],
   ['augmentationparam',['AugmentationParam',['../classecvl_1_1_augmentation_param.html',1,'ecvl']]],
   ['augmirror',['AugMirror',['../classecvl_1_1_aug_mirror.html',1,'ecvl']]],
+  ['augnormalize',['AugNormalize',['../classecvl_1_1_aug_normalize.html',1,'ecvl']]],
   ['augopticaldistortion',['AugOpticalDistortion',['../classecvl_1_1_aug_optical_distortion.html',1,'ecvl']]],
   ['augpepper',['AugPepper',['../classecvl_1_1_aug_pepper.html',1,'ecvl']]],
   ['augresizedim',['AugResizeDim',['../classecvl_1_1_aug_resize_dim.html',1,'ecvl']]],
