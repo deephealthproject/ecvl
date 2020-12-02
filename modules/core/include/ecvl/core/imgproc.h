@@ -190,7 +190,7 @@ int OtsuThreshold(const Image& src);
 
 /** @brief Calculates the Otsu thresholding values.
 
-The OtsuThreshold() function calculates the Otsu threshold values over a given input Image. 
+The OtsuThreshold() function calculates the Otsu threshold values over a given input Image.
 The source Image must be of ColorType::GRAY. The number of thresholds to be found is
 defined by the n_thresholds parameter (default is 2). This function implement the algorithm
 described in \cite Liao2001.
@@ -298,7 +298,7 @@ std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 
 /** @brief Labels connected components in a binary Image
 
-The ConnectedComponentsLabeling() procedure implement the Spaghetti algorithm described in \cite Bolelli2019, an extremely 
+The ConnectedComponentsLabeling() procedure implement the Spaghetti algorithm described in \cite Bolelli2019, an extremely
 efficient algorithm to label connected components inside binary images using 8-way connectivity.
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
@@ -455,7 +455,7 @@ Based on https://github.com/albumentations-team/albumentations/blob/master/album
 @param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT.
 @param[in] seed Seed to use for this function's random number generator.
 */
-void ElasticTransform(const Image& src, Image& dst, 
+void ElasticTransform(const Image& src, Image& dst,
     double alpha = 34.,
     double sigma = 4.,
     InterpolationType interp = InterpolationType::linear,
@@ -539,7 +539,7 @@ The following properties can be derived from raw image moments:
 - Centroid: \f$\{\bar{x}, \bar{y}\} = \{\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}}\}\f$.
 
 The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>.
-Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image. 
+Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image.
 
 @param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
 @param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
@@ -550,15 +550,15 @@ void Moments(const Image& src, Image& moments, int order = 3, DataType type = Da
 
 /** @brief Calculate all central image moments of the source Image up to the specified order.
 
-When working with a 2D image, naming \f$\bar{x} = \frac{M_{10}}{M_{00}}\f$ and \f$\bar{y} = \frac{M_{01}}{M_{00}}\f$ 
+When working with a 2D image, naming \f$\bar{x} = \frac{M_{10}}{M_{00}}\f$ and \f$\bar{y} = \frac{M_{01}}{M_{00}}\f$
 the components of the centroid (see documentation of Moments() for more details) and \f$I(x,y)\f$ the pixel intensities,
-the central moments are calculated with the following formula: 
+the central moments are calculated with the following formula:
 
 \f$
 \mu_{ij} = \sum_x{\sum_y{(x-\bar{x})^i(y-\bar{y})^jI(x,y)}}
 \f$
 
-The central moments up to order 3 are then: 
+The central moments up to order 3 are then:
 
 \f$\mu_{00} = M_{00}\f$,<br/>
 \f$\mu_{01} = 0\f$,<br/>
@@ -589,25 +589,25 @@ The orientation can be extracted as:
 
 \f$\theta = \frac{1}{2}arctan(\frac{2\mu_{11}'}{\mu_{20}' - \mu_{02}'})\f$
 
-On the other hand, the <b>eigenvalues</b> of the \f$cov[I(x,y)]\f$ matrix are given by: 
+On the other hand, the <b>eigenvalues</b> of the \f$cov[I(x,y)]\f$ matrix are given by:
 
 \f$\lambda_i = \frac{\mu_{20}' + \mu_{02}'}{2} \pm \frac{\sqrt{4\mu_{11}'^2 + (\mu_{20}' - \mu_{02}')^2}}{2} \f$
 
-Eigenvalues are proportional to the square length of the eigenvector axes. The half-axes of the ellipse generated 
+Eigenvalues are proportional to the square length of the eigenvector axes. The half-axes of the ellipse generated
 by the eigenvectors are given by \f$\frac{d}{\sqrt{\lambda_1}}\f$  and \f$\frac{d}{\sqrt{\lambda_2}}\f$ where \f$d\f$ is
 the proportional factor. Considering that the moment \f$\mu_{00} = M_{00}\f$ is the area (when the image is binary) of
-the image objects we can easily calculate \f$d\f$ using the following equation: 
+the image objects we can easily calculate \f$d\f$ using the following equation:
 
 \f$\mu_{00} = \pi \frac{d^2}{\sqrt{\lambda_1 \lambda_2}}\f$
 
-Additionally, the eccentricity of the image can be calculates as: 
+Additionally, the eccentricity of the image can be calculates as:
 
 \f$e = \sqrt{1 - \frac{\lambda_2}{\lambda_1}}\f$
 
 @param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
 @param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
-@param[in] center Vector (std::vector<double>) representing the center coordinates: they can be calculated from raw moments. As an example, for a 2d image center 
-            coordinates are given by \f$(\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\f$. See Moments() documentation for more details. center.size() and src.dims_ 
+@param[in] center Vector (std::vector<double>) representing the center coordinates: they can be calculated from raw moments. As an example, for a 2d image center
+            coordinates are given by \f$(\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\f$. See Moments() documentation for more details. center.size() and src.dims_
             must match in size (except for the 'c' channel). The source axes order must be the same used to specify center coordinates.
 @param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
 @param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
@@ -619,7 +619,7 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
 
 @param[inout] src Image on which draw the ellipse.
 @param[in] center Center of the ellipse to be drawn.
-@param[in] axes Half of the size of the ellipse axes. 
+@param[in] axes Half of the size of the ellipse axes.
 @param[in] angle Ellipse rotation angle. It must be in degrees.
 @param[in] color Ellipse color. It can be either a number (e.g. {255}) or an RGB value (e.g. {40, 40, 40})
 @param[in] thickness Thickness of the ellipse border. If negative all the pixell of the ellipse will be filled with the specified color value.
@@ -627,14 +627,28 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
 */
 void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness = 1);
 
-/** @brief Remove color channel from the input Image. 
+/** @brief Remove color channel from the input Image.
 
-The DropColorChannel() procedure remove the color channel ("c") from the specified input Image, modifying all the other attribute accordingly. 
+The DropColorChannel() procedure remove the color channel ("c") from the specified input Image, modifying all the other attribute accordingly.
 This function can be only applied on Images with ColorType::GRAY, <em>i.e.</em> images having the color channel dimension equal to 1.
 
 @param[inout] src Image from which to drop the color channel.
 */
 void DropColorChannel(Image& src);
+
+/** @brief Normalize Image image with mean and standard deviation.
+
+The Normalize creates an Image in which each pixel of the Image is subtracted by mean and divide by std.
+Useful for normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.
+
+@param[in] src Image to normalize.
+@param[out] dst Output normalized Image.
+@param[in] mean Mean to use for normalization.
+@param[in] std Standard deviation to use for normalization.
+*/
+void Normalize(const Image& src, Image& dst, const double& mean, const double& std);
+//void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std);
+
 
 /** @example example_moments.cpp
 This is an example application of the raw and central moments.

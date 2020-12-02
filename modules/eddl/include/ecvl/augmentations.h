@@ -236,11 +236,11 @@ This class represents a container for multiple augmentations which will be seque
 */
 class SequentialAugmentationContainer : public Augmentation
 {
-/** @brief Call the specialized augmentation functions.
+    /** @brief Call the specialized augmentation functions.
 
-@param[in] img Image on which apply the augmentations.
-@param[in] gt Ground truth image on which apply the augmentations.
-*/
+    @param[in] img Image on which apply the augmentations.
+    @param[in] gt Ground truth image on which apply the augmentations.
+    */
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         for (auto& x : augs_) {
@@ -279,11 +279,11 @@ The chosen augmentation will be applied with a probability that must be specifie
 */
 class OneOfAugmentationContainer : public Augmentation
 {
-/** @brief Call the specialized augmentation functions.
+    /** @brief Call the specialized augmentation functions.
 
-@param[in] img Image on which apply the augmentations.
-@param[in] gt Ground truth image on which apply the augmentations.
-*/
+    @param[in] img Image on which apply the augmentations.
+    @param[in] gt Ground truth image on which apply the augmentations.
+    */
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         int index = std::uniform_int_distribution<>(0, vsize(augs_) - 1)(AugmentationParam::re_);
@@ -315,7 +315,7 @@ public:
             }
         }
         catch (std::runtime_error&) {
-            std::cout << ECVL_ERROR_MSG "The first parameter in OneOfAugmentationContainer must be the probability p"<< std::endl;
+            std::cout << ECVL_ERROR_MSG "The first parameter in OneOfAugmentationContainer must be the probability p" << std::endl;
             ECVL_ERROR_AUGMENTATION_FORMAT
         }
 
@@ -1288,6 +1288,39 @@ public:
         m.Get("per_channel", param::type::number, true, p);
         params_["per_channel"] = AugmentationParam(0, 1);
         per_channel_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::Normalize.
+
+@anchor AugNormalize
+*/
+class AugNormalize : public Augmentation
+{
+    double mean_, std_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        Normalize(img, img, mean_, std_);
+    }
+public:
+    /** @brief AugNormalize constructor
+
+    @param[in] mean Mean to substract from all pixel.
+    @param[in] std Standard deviation to use for normalization.
+    */
+    AugNormalize(const double& mean, const double& std) : mean_(mean), std_(std) {}
+
+    AugNormalize(std::istream& is)
+    {
+        auto m = param::read(is, "AugNormalize");
+        param p;
+
+        m.Get("mean", param::type::number, true, p);
+        mean_ = p.vals_[0];
+
+        m.Get("std", param::type::number, true, p);
+        std_ = p.vals_[0];
     }
 };
 } // namespace ecvl

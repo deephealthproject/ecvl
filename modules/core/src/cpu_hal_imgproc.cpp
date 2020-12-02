@@ -40,7 +40,7 @@ inline void RGB2GRAYGeneric(const uint8_t* r, const uint8_t* g, const uint8_t* b
 case DataType::type: DEREF(dst, type) = saturate_cast<DataType::type>(0.299 * CONST_DEREF(r, type) + 0.587 * CONST_DEREF(g, type) + 0.114 * CONST_DEREF(b, type));  break;
 
     switch (dt) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -120,7 +120,7 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
             int p1 = r1 + src_stride_x * c;
             int p2 = r2 + src_stride_x * c;
 
-#define ECVL_TUPLE(type, ...) \
+        #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             for (int ch = 0; ch < src_channels; ++ch) { \
                 *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
@@ -129,10 +129,10 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
             break;
 
             switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+            #include "ecvl/core/datatype_existing_tuples.inc.h"
             }
 
-#undef ECVL_TUPLE
+        #undef ECVL_TUPLE
         }
         --r_end;
     }
@@ -176,7 +176,7 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
             int p1 = pos + src_stride_x * c;
             int p2 = pos + src_stride_x * c_end;
 
-#define ECVL_TUPLE(type, ...) \
+        #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             for (int ch = 0; ch < src_channels; ++ch) { \
                 *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
@@ -185,10 +185,10 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
             break;
 
             switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+            #include "ecvl/core/datatype_existing_tuples.inc.h"
             }
 
-#undef ECVL_TUPLE
+        #undef ECVL_TUPLE
         }
     }
     dst = std::move(tmp);
@@ -395,13 +395,13 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
 
     switch (thresh_type) {
     case ecvl::ThresholdingType::BINARY:
-#pragma omp parallel for
+    #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             tmp_data[i] = src_data[i] > thresh_t ? maxval_t : minval_t;
         }
         break;
     case ecvl::ThresholdingType::BINARY_INV:
-#pragma omp parallel for
+    #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             tmp_data[i] = src_data[i] <= thresh_t ? maxval_t : minval_t;
         }
@@ -416,7 +416,7 @@ void CpuHal::Threshold(const Image& src, Image& dst, double thresh, double maxva
 case DataType::type: ThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresh, maxval, thresh_type); break;
 
     switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -537,7 +537,7 @@ void MultiThresholdImpl(const Image& src, Image& dst, const std::vector<int>& th
         auto elemsize = src.elemsize_;
         auto limit = tmp.datasize_ / elemsize;
 
-#pragma omp parallel for
+    #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             auto p = src_data[i];
             int k = 0, e = vsize(thresholds);
@@ -564,7 +564,7 @@ void CpuHal::MultiThreshold(const Image& src, Image& dst, const std::vector<int>
 case DataType::type: MultiThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresholds, minval, maxval); break;
 
     switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -604,14 +604,14 @@ void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType t
                     }
                 }
 
-#define ECVL_TUPLE(type, ...) \
+            #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
 
                 switch (type) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                #include "ecvl/core/datatype_existing_tuples.inc.h"
                 }
 
-#undef ECVL_TUPLE
+            #undef ECVL_TUPLE
 
                 tmp_ptr += tmp.elemsize_;
             }
@@ -654,7 +654,7 @@ case DataType::type: \
     break;
 
     switch (type) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -674,14 +674,14 @@ case DataType::type: \
                     acc += kerY[rk] * tmp1_data[c + y * tmp1.strides_[1] / sizeof(*tmp1_data)];
                 }
 
-#define ECVL_TUPLE(type, ...) \
+            #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
 
                 switch (type) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                #include "ecvl/core/datatype_existing_tuples.inc.h"
                 }
 
-#undef ECVL_TUPLE
+            #undef ECVL_TUPLE
 
                 tmp2_ptr += tmp2.elemsize_;
             }
@@ -735,14 +735,14 @@ void CpuHal::AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)
 
         double noise = exp1 - exp2;
 
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
 
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     dst = std::move(tmp);
 }
@@ -758,14 +758,14 @@ void CpuHal::AdditivePoissonNoise(const Image& src, Image& dst, double lambda)
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
         double noise = dist(gen);
 
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
 
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     dst = std::move(tmp);
 }
@@ -775,14 +775,14 @@ void CpuHal::GammaContrast(const Image& src, Image& dst, double gamma)
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
 
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     dst = std::move(tmp);
 }
@@ -814,14 +814,14 @@ void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_s
                     if (dist(gen) == 0) {
                         for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
                             for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
-#define ECVL_TUPLE(type, ...) \
+                            #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
                                 switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                                #include "ecvl/core/datatype_existing_tuples.inc.h"
                                 }
 
-#undef ECVL_TUPLE
+                            #undef ECVL_TUPLE
                             }
                         }
                     }
@@ -841,14 +841,14 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rd
                     for (int ch = 0; ch < src.dims_[2]; ch++) {
                         for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
                             for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
-#define ECVL_TUPLE(type, ...) \
+                            #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
                                 switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                                #include "ecvl/core/datatype_existing_tuples.inc.h"
                                 }
 
-#undef ECVL_TUPLE
+                            #undef ECVL_TUPLE
                             }
                         }
                     }
@@ -1031,58 +1031,58 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
 // Define Conditions and Actions
     {
-#define CONDITION_B img_row_prev_prev[c-1]>0
-#define CONDITION_C img_row_prev_prev[c]>0
-#define CONDITION_D img_row_prev_prev[c+1]>0
-#define CONDITION_E img_row_prev_prev[c+2]>0
+    #define CONDITION_B img_row_prev_prev[c-1]>0
+    #define CONDITION_C img_row_prev_prev[c]>0
+    #define CONDITION_D img_row_prev_prev[c+1]>0
+    #define CONDITION_E img_row_prev_prev[c+2]>0
 
-#define CONDITION_G img_row_prev[c-2]>0
-#define CONDITION_H img_row_prev[c-1]>0
-#define CONDITION_I img_row_prev[c]>0
-#define CONDITION_J img_row_prev[c+1]>0
-#define CONDITION_K img_row_prev[c+2]>0
+    #define CONDITION_G img_row_prev[c-2]>0
+    #define CONDITION_H img_row_prev[c-1]>0
+    #define CONDITION_I img_row_prev[c]>0
+    #define CONDITION_J img_row_prev[c+1]>0
+    #define CONDITION_K img_row_prev[c+2]>0
 
-#define CONDITION_M img_row[c-2]>0
-#define CONDITION_N img_row[c-1]>0
-#define CONDITION_O img_row[c]>0
-#define CONDITION_P img_row[c+1]>0
+    #define CONDITION_M img_row[c-2]>0
+    #define CONDITION_N img_row[c-1]>0
+    #define CONDITION_O img_row[c]>0
+    #define CONDITION_P img_row[c+1]>0
 
-#define CONDITION_R img_row_fol[c-1]>0
-#define CONDITION_S img_row_fol[c]>0
-#define CONDITION_T img_row_fol[c+1]>0
+    #define CONDITION_R img_row_fol[c-1]>0
+    #define CONDITION_S img_row_fol[c]>0
+    #define CONDITION_T img_row_fol[c+1]>0
 
         // Action 1: No action
-#define ACTION_1 img_labels_row[c] = 0;
-                               // Action 2: New label (the block has foreground pixels and is not connected to anything else)
-#define ACTION_2 img_labels_row[c] = ufpc.NewLabel();
-                               //Action 3: Assign label of block P
-#define ACTION_3 img_labels_row[c] = img_labels_row_prev_prev[c - 2];
-                               // Action 4: Assign label of block Q
-#define ACTION_4 img_labels_row[c] = img_labels_row_prev_prev[c];
-                               // Action 5: Assign label of block R
-#define ACTION_5 img_labels_row[c] = img_labels_row_prev_prev[c + 2];
-                               // Action 6: Assign label of block S
-#define ACTION_6 img_labels_row[c] = img_labels_row[c - 2];
-                               // Action 7: Merge labels of block P and Q
-#define ACTION_7 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]);
-                               //Action 8: Merge labels of block P and R
-#define ACTION_8 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]);
-                               // Action 9 Merge labels of block P and S
-#define ACTION_9 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row[c - 2]);
-                               // Action 10 Merge labels of block Q and R
-#define ACTION_10 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]);
-                               // Action 11: Merge labels of block Q and S
-#define ACTION_11 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row[c - 2]);
-                               // Action 12: Merge labels of block R and S
-#define ACTION_12 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c + 2], img_labels_row[c - 2]);
-                               // Action 13: Merge labels of block P, Q and R
-#define ACTION_13 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row_prev_prev[c + 2]);
-                               // Action 14: Merge labels of block P, Q and S
-#define ACTION_14 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row[c - 2]);
-                               //Action 15: Merge labels of block P, R and S
-#define ACTION_15 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
-                               //Action 16: labels of block Q, R and S
-#define ACTION_16 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
+    #define ACTION_1 img_labels_row[c] = 0;
+                                   // Action 2: New label (the block has foreground pixels and is not connected to anything else)
+    #define ACTION_2 img_labels_row[c] = ufpc.NewLabel();
+                                   //Action 3: Assign label of block P
+    #define ACTION_3 img_labels_row[c] = img_labels_row_prev_prev[c - 2];
+                                   // Action 4: Assign label of block Q
+    #define ACTION_4 img_labels_row[c] = img_labels_row_prev_prev[c];
+                                   // Action 5: Assign label of block R
+    #define ACTION_5 img_labels_row[c] = img_labels_row_prev_prev[c + 2];
+                                   // Action 6: Assign label of block S
+    #define ACTION_6 img_labels_row[c] = img_labels_row[c - 2];
+                                   // Action 7: Merge labels of block P and Q
+    #define ACTION_7 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]);
+                                   //Action 8: Merge labels of block P and R
+    #define ACTION_8 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]);
+                                   // Action 9 Merge labels of block P and S
+    #define ACTION_9 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row[c - 2]);
+                                   // Action 10 Merge labels of block Q and R
+    #define ACTION_10 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]);
+                                   // Action 11: Merge labels of block Q and S
+    #define ACTION_11 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row[c - 2]);
+                                   // Action 12: Merge labels of block R and S
+    #define ACTION_12 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c + 2], img_labels_row[c - 2]);
+                                   // Action 13: Merge labels of block P, Q and R
+    #define ACTION_13 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row_prev_prev[c + 2]);
+                                   // Action 14: Merge labels of block P, Q and S
+    #define ACTION_14 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row[c - 2]);
+                                   //Action 15: Merge labels of block P, R and S
+    #define ACTION_15 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
+                                   //Action 16: labels of block Q, R and S
+    #define ACTION_16 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
     }
 
     if (h == 1) {
@@ -1091,7 +1091,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         const unsigned char* const img_row = src.Ptr({ 0, 0, 0 });
         unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, 0, 0 }));
         int c = -2;
-#include "labeling_bolelli_2019_forest_singleline.inc"
+    #include "labeling_bolelli_2019_forest_singleline.inc"
     }
     else {
         // More than one line
@@ -1105,7 +1105,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
             int c = -2;
 
-#include "labeling_bolelli_2019_forest_firstline.inc"
+        #include "labeling_bolelli_2019_forest_firstline.inc"
         }
 
         // Every other line but the last one if image has an odd number of rows
@@ -1121,7 +1121,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
             int c = -2;
             goto tree_0;
 
-#include "labeling_bolelli_2019_forest.inc"
+        #include "labeling_bolelli_2019_forest.inc"
         }
 
         // Last line (in case the rows are odd)
@@ -1134,48 +1134,48 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
             unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * tmp.strides_[1]));
 
             int c = -2;
-#include "labeling_bolelli_2019_forest_lastline.inc"
+        #include "labeling_bolelli_2019_forest_lastline.inc"
         }
     }
 
     // Undef Conditions and Actions
     {
-#undef ACTION_1
-#undef ACTION_2
-#undef ACTION_3
-#undef ACTION_4
-#undef ACTION_5
-#undef ACTION_6
-#undef ACTION_7
-#undef ACTION_8
-#undef ACTION_9
-#undef ACTION_10
-#undef ACTION_11
-#undef ACTION_12
-#undef ACTION_13
-#undef ACTION_14
-#undef ACTION_15
-#undef ACTION_16
+    #undef ACTION_1
+    #undef ACTION_2
+    #undef ACTION_3
+    #undef ACTION_4
+    #undef ACTION_5
+    #undef ACTION_6
+    #undef ACTION_7
+    #undef ACTION_8
+    #undef ACTION_9
+    #undef ACTION_10
+    #undef ACTION_11
+    #undef ACTION_12
+    #undef ACTION_13
+    #undef ACTION_14
+    #undef ACTION_15
+    #undef ACTION_16
 
-#undef CONDITION_B
-#undef CONDITION_C
-#undef CONDITION_D
-#undef CONDITION_E
+    #undef CONDITION_B
+    #undef CONDITION_C
+    #undef CONDITION_D
+    #undef CONDITION_E
 
-#undef CONDITION_G
-#undef CONDITION_H
-#undef CONDITION_I
-#undef CONDITION_J
-#undef CONDITION_K
+    #undef CONDITION_G
+    #undef CONDITION_H
+    #undef CONDITION_I
+    #undef CONDITION_J
+    #undef CONDITION_K
 
-#undef CONDITION_M
-#undef CONDITION_N
-#undef CONDITION_O
-#undef CONDITION_P
+    #undef CONDITION_M
+    #undef CONDITION_N
+    #undef CONDITION_O
+    #undef CONDITION_P
 
-#undef CONDITION_R
-#undef CONDITION_S
-#undef CONDITION_T
+    #undef CONDITION_R
+    #undef CONDITION_S
+    #undef CONDITION_T
     }
 
     // Flatten
@@ -1369,7 +1369,7 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
         // 4x time faster than generic version below
         // Fill each tmp color plane by row
         for (int i = 0; i < src_0.Channels(); ++i) {
-#pragma omp parallel for
+        #pragma omp parallel for
             for (int r = 0; r < src_0.dims_[1]; ++r) {
                 for (int c = 0; c < n_images; ++c) {
                     memcpy(tmp.data_ + cumul_strides[c] + r * tmp.strides_[1] + i * tmp.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
@@ -1400,7 +1400,7 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
                 for (int c_i = 0; c_i < src[i].Width(); ++c_i) {
                     int p_tmp = tmp_pos + src_stride_x * counter++;
                     int p_src = src_pos + src_stride_x * c_i;
-#define ECVL_TUPLE(type, ...) \
+                #define ECVL_TUPLE(type, ...) \
                 case DataType::type: \
                     for (int ch = 0; ch < src_channels; ++ch) { \
                         *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
@@ -1408,10 +1408,10 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
                     break;
 
                     switch (src_0.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                    #include "ecvl/core/datatype_existing_tuples.inc.h"
                     }
 
-#undef ECVL_TUPLE
+                #undef ECVL_TUPLE
                 }
             }
         }
@@ -1473,7 +1473,7 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
                 for (int c = 0; c < src_width; ++c) {
                     int p_tmp = tmp_pos + src_stride_x * c;
                     int p_src = src_pos + src_stride_x * c;
-#define ECVL_TUPLE(type, ...) \
+                #define ECVL_TUPLE(type, ...) \
                 case DataType::type: \
                     for (int ch = 0; ch < src_channels; ++ch) { \
                         *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
@@ -1481,10 +1481,10 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
                     break;
 
                     switch (src_0.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                    #include "ecvl/core/datatype_existing_tuples.inc.h"
                     }
 
-#undef ECVL_TUPLE
+                #undef ECVL_TUPLE
                 }
             }
         }
@@ -1583,7 +1583,7 @@ void CpuHal::Transpose(const Image& src, Image& dst)
             int p1 = pos + r * src_stride_y;
             int p2 = pos_dst + r * tmp_stride_x;
 
-#define ECVL_TUPLE(type, ...) \
+        #define ECVL_TUPLE(type, ...) \
             case DataType::type: \
                 for (int ch = 0; ch < src_channels; ++ch) { \
                     *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
@@ -1591,10 +1591,10 @@ void CpuHal::Transpose(const Image& src, Image& dst)
                 break;
 
             switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+            #include "ecvl/core/datatype_existing_tuples.inc.h"
             }
 
-#undef ECVL_TUPLE
+        #undef ECVL_TUPLE
         }
     }
 
@@ -1836,7 +1836,7 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     }
 
     if (per_channel) {
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             { \
                 TypeInfo_t<DataType::type>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp.data_); \
@@ -1849,18 +1849,18 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
             } \
             break;
         switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     else {
-#pragma omp parallel for
+    #pragma omp parallel for
         for (int r = 0; r < src_height; ++r) {
             int row_pos = r * tmp_stride_y;
             for (int c = 0; c < src_width; ++c) {
                 int pos = row_pos + tmp_stride_x * c;
-#define ECVL_TUPLE(type, ...) \
+            #define ECVL_TUPLE(type, ...) \
             case DataType::type: \
                 if (dist(re) == 0) { \
                     int col = color(); \
@@ -1871,10 +1871,10 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
                 break;
 
                 switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                #include "ecvl/core/datatype_existing_tuples.inc.h"
                 }
 
-#undef ECVL_TUPLE
+            #undef ECVL_TUPLE
             }
         }
     }
@@ -1992,21 +1992,21 @@ void CpuHal::CentralMoments(const Image& src, Image& moments, std::vector<double
 
     switch (type) {
     case DataType::float32:
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
         case DataType::type: CentralMomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, center, order); break;
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
         break;
     case DataType::float64:
         // Implementation (output float64)
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
         case DataType::type: CentralMomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, center, order); break;
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
         break;
     }
 
@@ -2024,4 +2024,29 @@ void CpuHal::DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, do
     src = ecvl::MatToImage(m);
 }
 
+template <DataType SDT>
+struct NormalizeStruct
+{
+    static void _(const Image& src, Image& dst, const double& mean, const double& std)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(tmp);
+
+        auto tmp_it = dst_v.Begin();
+        auto src_it = src_v.Begin();
+        auto src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++tmp_it) {
+            *tmp_it = saturate_cast<srctype>((*src_it - mean) / std);
+        }
+        dst = std::move(tmp);
+    }
+};
+
+void CpuHal::Normalize(const Image& src, Image& dst, const double& mean, const double& std)
+{
+    Table1D<NormalizeStruct> table;
+    table(src.elemtype_)(src, dst, mean, std);
+}
 } // namespace ecvl

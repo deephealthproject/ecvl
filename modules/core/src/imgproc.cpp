@@ -597,11 +597,12 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
     src.hal_->CentralMoments(src, moments, center, order, type);
 }
 
-void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) {
+void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness)
+{
     if (src.dev_ == Device::NONE) {
         ECVL_ERROR_WRONG_PARAMS("src Image must have a device.")
     }
-    
+
     if (src.colortype_ == ColorType::none) {
         ECVL_ERROR_WRONG_PARAMS("cannot draw on data Image.")
     }
@@ -625,7 +626,7 @@ void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double ang
 
 void DropColorChannel(Image& src)
 {
-    if (src.colortype_ != ColorType::GRAY){
+    if (src.colortype_ != ColorType::GRAY) {
         ECVL_ERROR_WRONG_PARAMS("cannot drop color channel when the colortype_ is different from ColorType::GRAY.")
     }
 
@@ -662,4 +663,14 @@ std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds)
     return src.hal_->OtsuMultiThreshold(src, n_thresholds);
 }
 
+void Normalize(const Image& src, Image& dst, const double& mean, const double& std)
+{
+    AlwaysCheck(src, dst);
+
+    if (std == 0.) {
+        ECVL_ERROR_WRONG_PARAMS("std cannot be zero.")
+    }
+
+    return src.hal_->Normalize(src, dst, mean, std);
+}
 } // namespace ecvl

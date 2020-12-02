@@ -99,6 +99,7 @@ public:
     void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) override;
     std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) override;
     void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) override;
+    void Normalize(const Image& src, Image& dst, const double& mean, const double& std) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
@@ -119,7 +120,7 @@ public:
     void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
     void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
                                                                                                    \
-    void SetTo(Image& src, type value) override;                                               
+    void SetTo(Image& src, type value) override;
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

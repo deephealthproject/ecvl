@@ -166,9 +166,9 @@ public:
     virtual void DrawEllipse(Image& src, Point2i center, Size2i axes, double angle, const Scalar& color, int thickness) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Normalize(const Image& src, Image& dst, const double& mean, const double& std) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
-
 
     virtual void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
@@ -189,7 +189,7 @@ public:
     virtual void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
     virtual void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
                                                                                                                                 \
-    virtual void SetTo(Image& src, type value) { ECVL_ERROR_NOT_IMPLEMENTED }                                               
+    virtual void SetTo(Image& src, type value) { ECVL_ERROR_NOT_IMPLEMENTED }
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
