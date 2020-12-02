@@ -30,6 +30,28 @@ void AlwaysCheck(const ecvl::Image& src, const ecvl::Image& dst)
     }
 }
 
+bool ChannelsCheck(const Image& src, Image& tmp)
+{
+    if (src.channels_.size() != 3) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+     // check if channels_ starts with "xy"
+    if (src.channels_.rfind("xy", 0) != string::npos) {
+        return true; // don't need to rearrange
+    }
+
+    string ch = "czo";
+    for (auto c : ch) {
+        if (src.channels_.find(c) != string::npos) {
+            RearrangeChannels(src, tmp, "xy" + string(1, c));
+            return false; // need to rearrange
+        }
+    }
+
+    ECVL_ERROR_NOT_IMPLEMENTED
+}
+
 int GetOpenCVInterpolation(InterpolationType interp)
 {
     switch (interp) {
@@ -184,7 +206,7 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
 {
     AlwaysCheck(src, dst);
 
-    if (src.channels_ != "xyc" || !src.contiguous_) {
+    if (!src.contiguous_) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
@@ -196,16 +218,18 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
         type = src.elemtype_;
     }
 
-    src.hal_->SeparableFilter2D(src, dst, kerX, kerY, type);
+    Image tmp;
+    if (ChannelsCheck(src, tmp)) {
+        src.hal_->SeparableFilter2D(src, dst, kerX, kerY, type);
+    }
+    else {
+        tmp.hal_->SeparableFilter2D(tmp, dst, kerX, kerY, type);
+    }
 }
 
 void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
     AlwaysCheck(src, dst);
-
-    if (src.channels_ != "xyc") {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
 
     if (sizeX < 0 || (sizeX % 2 != 1)) {
         ECVL_ERROR_WRONG_PARAMS("sizeX must either be positive and odd or zero")
@@ -297,11 +321,13 @@ void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, boo
 {
     AlwaysCheck(src, dst);
 
-    if (src.channels_ != "xyc") {
-        ECVL_ERROR_NOT_IMPLEMENTED
+    Image tmp;
+    if (ChannelsCheck(src, tmp)) {
+        src.hal_->CoarseDropout(src, dst, p, drop_size, per_channel);
     }
-
-    src.hal_->CoarseDropout(src, dst, p, drop_size, per_channel);
+    else {
+        tmp.hal_->CoarseDropout(tmp, dst, p, drop_size, per_channel);
+    }
 }
 
 void IntegralImage(const Image& src, Image& dst, DataType dst_type)
@@ -597,11 +623,12 @@ void CentralMoments(const Image& src, Image& moments, std::vector<double> center
     src.hal_->CentralMoments(src, moments, center, order, type);
 }
 
-void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) {
+void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness)
+{
     if (src.dev_ == Device::NONE) {
         ECVL_ERROR_WRONG_PARAMS("src Image must have a device.")
     }
-    
+
     if (src.colortype_ == ColorType::none) {
         ECVL_ERROR_WRONG_PARAMS("cannot draw on data Image.")
     }
@@ -625,7 +652,7 @@ void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double ang
 
 void DropColorChannel(Image& src)
 {
-    if (src.colortype_ != ColorType::GRAY){
+    if (src.colortype_ != ColorType::GRAY) {
         ECVL_ERROR_WRONG_PARAMS("cannot drop color channel when the colortype_ is different from ColorType::GRAY.")
     }
 
@@ -661,5 +688,4 @@ std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds)
 
     return src.hal_->OtsuMultiThreshold(src, n_thresholds);
 }
-
 } // namespace ecvl

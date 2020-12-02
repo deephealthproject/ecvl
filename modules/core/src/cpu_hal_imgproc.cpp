@@ -79,6 +79,12 @@ void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>
 void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     size_t c_pos = src.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
     size_t x_pos = src.channels_.find('x');
     size_t y_pos = src.channels_.find('y');
 
@@ -142,6 +148,12 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     size_t c_pos = src.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
     size_t x_pos = src.channels_.find('x');
     size_t y_pos = src.channels_.find('y');
 
@@ -626,6 +638,15 @@ void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double
 {
     Image tmp1(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
     Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+    int tmp1_stride_c = tmp1.strides_[2];
+    int tmp1_stride_y = tmp1.strides_[1];
+    int src_stride_y = src.strides_[1];
+
+    int width = tmp1.Width();
+    int height = tmp1.Height();
+    int channels = tmp1.Channels();
+
     int hlf_width = vsize(kerX) / 2;
     int hlf_height = vsize(kerY) / 2;
 
@@ -635,19 +656,19 @@ void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double
 case DataType::type: \
     { \
         TypeInfo_t<DataType::type>* src_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(src.data_); \
-        for (int chan = 0; chan < tmp1.dims_[2]; chan++) { \
-            for (int r = 0; r < tmp1.dims_[1]; r++) { \
-                for (int c = 0; c < tmp1.dims_[0]; c++) { \
+        for (int chan = 0; chan < channels; chan++) { \
+            for (int r = 0; r < height; r++) { \
+                for (int c = 0; c < width; c++) { \
                     double acc = 0; \
                     for (unsigned int ck = 0; ck < kerX.size(); ck++) { \
                         int x = c + ck - hlf_width; \
-                        if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1; \
+                        if (x < 0) x = 0; else if (x >= width) x = width - 1; \
                         acc += kerX[ck] * src_data[x]; \
                     } \
                 *tmp1_it = acc; \
                 ++tmp1_it; \
                 } \
-                src_data += src.strides_[1] / sizeof(*src_data); \
+                src_data += src_stride_y / sizeof(*src_data); \
             } \
         } \
     } \
@@ -663,15 +684,15 @@ case DataType::type: \
 
     // Y direction
     TypeInfo_t<DataType::float64>* tmp1_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(tmp1.data_);
-    for (int chan = 0; chan < tmp2.dims_[2]; chan++) {
-        for (int r = 0; r < tmp2.dims_[1]; r++) {
-            for (int c = 0; c < tmp2.dims_[0]; c++) {
+    for (int chan = 0; chan < channels; chan++) {
+        for (int r = 0; r < height; r++) {
+            for (int c = 0; c < width; c++) {
                 double acc = 0;
                 for (unsigned int rk = 0; rk < kerY.size(); rk++) {
                     int y = r + rk - hlf_height;
-                    if (y < 0) y = 0; else if (y >= tmp2.dims_[1]) y = tmp2.dims_[1] - 1;
+                    if (y < 0) y = 0; else if (y >= height) y = height - 1;
 
-                    acc += kerY[rk] * tmp1_data[c + y * tmp1.strides_[1] / sizeof(*tmp1_data)];
+                    acc += kerY[rk] * tmp1_data[c + y * tmp1_stride_y / sizeof(*tmp1_data)];
                 }
 
 #define ECVL_TUPLE(type, ...) \
@@ -687,7 +708,7 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = 
             }
         }
 
-        tmp1_data += tmp1.strides_[2] / sizeof(*tmp1_data);
+        tmp1_data += tmp1_stride_c / sizeof(*tmp1_data);
     }
     dst = std::move(tmp2);
 }
@@ -789,10 +810,17 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
 void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel)
 {
+    int width = src.Width();
+    int height = src.Height();
+    int channels = src.Channels();
+
     Image tmp = src;
 
-    int rectX = static_cast<int>(src.dims_[0] * drop_size);
-    int rectY = static_cast<int>(src.dims_[1] * drop_size);
+    int stride_x = tmp.strides_[0];
+    int stride_y = tmp.strides_[1];
+
+    int rectX = static_cast<int>(width * drop_size);
+    int rectY = static_cast<int>(height * drop_size);
 
     if (rectX == 0) {
         ++rectX;
@@ -806,16 +834,16 @@ void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_s
     discrete_distribution<> dist({ p, 1 - p });
 
     if (per_channel) {
-        for (int ch = 0; ch < src.dims_[2]; ch++) {
+        for (int ch = 0; ch < channels; ch++) {
             uint8_t* tmp_ptr = tmp.Ptr({ 0, 0, ch });
 
-            for (int r = 0; r < src.dims_[1]; r += rectY) {
-                for (int c = 0; c < src.dims_[0]; c += rectX) {
+            for (int r = 0; r < height; r += rectY) {
+                for (int c = 0; c < width; c += rectX) {
                     if (dist(gen) == 0) {
-                        for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
-                            for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
+                        for (int rdrop = r; rdrop < r + rectY && rdrop < height; rdrop++) {
+                            for (int cdrop = c; cdrop < c + rectX && cdrop < width; cdrop++) {
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * stride_y + cdrop * stride_x) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
                                 switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
@@ -831,18 +859,18 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rd
     }
     else {
         vector<uint8_t*> channel_ptrs;
-        for (int ch = 0; ch < tmp.dims_[2]; ch++) {
+        for (int ch = 0; ch < channels; ch++) {
             channel_ptrs.push_back(tmp.Ptr({ 0, 0, ch }));
         }
 
-        for (int r = 0; r < src.dims_[1]; r += rectY) {
-            for (int c = 0; c < src.dims_[0]; c += rectX) {
+        for (int r = 0; r < height; r += rectY) {
+            for (int c = 0; c < width; c += rectX) {
                 if (dist(gen) == 0) {
-                    for (int ch = 0; ch < src.dims_[2]; ch++) {
-                        for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
-                            for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
+                    for (int ch = 0; ch < channels; ch++) {
+                        for (int rdrop = r; rdrop < r + rectY && rdrop < height; rdrop++) {
+                            for (int cdrop = c; cdrop < c + rectX && cdrop < width; cdrop++) {
 #define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * stride_y + cdrop * stride_x) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
                                 switch (tmp.elemtype_) {
 #include "ecvl/core/datatype_existing_tuples.inc.h"
@@ -1543,6 +1571,12 @@ void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector
 void CpuHal::Transpose(const Image& src, Image& dst)
 {
     size_t c_pos = src.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
     size_t x_pos = src.channels_.find('x');
     size_t y_pos = src.channels_.find('y');
 
@@ -1807,6 +1841,12 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     size_t x_pos = tmp.channels_.find('x');
     size_t y_pos = tmp.channels_.find('y');
     size_t c_pos = tmp.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = tmp.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
 
     if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
         ECVL_ERROR_WRONG_PARAMS("Malformed src image")
