@@ -1,0 +1,67 @@
+name: linux
+
+on: [push, pull_request]
+
+env:
+  BUILD_TYPE: "Release"
+  OPENCV_VERSION: "3.4.13"
+  EDDL_VERSION: "v0.8.3a"
+  PROC: 2
+
+jobs:
+  build:
+    runs-on: ${{ matrix.cfg.os }}
+    strategy:
+      matrix:
+        cfg:
+          - { os: ubuntu-18.04, c-version: gcc-6, cxx-version: g++-6, generator: "Unix Makefiles" }
+          - { os: ubuntu-18.04, c-version: gcc-10, cxx-version: g++-10, generator: "Unix Makefiles" }
+          - { os: ubuntu-18.04, c-version: clang-5.0, cxx-version: clang++-5.0, generator: "Unix Makefiles" }
+          - { os: ubuntu-18.04, c-version: clang-10, cxx-version: clang++-10, generator: "Unix Makefiles" }
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Install compiler
+        run: |
+          sudo apt-get install -y -qq make build-essential software-properties-common
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          echo "Installing ${{ matrix.cfg.c-version }} ${{ matrix.cfg.cxx-version }}"
+          sudo apt install -y ${{ matrix.cfg.c-version }} ${{ matrix.cfg.cxx-version }}
+          echo "CC=${{ matrix.cfg.c-version }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.cfg.cxx-version }}" >> $GITHUB_ENV
+
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.workspace }}/deps_install
+          key: ${{ runner.os }}-${{ matrix.cfg.c-version }}-${{ env.EDDL_VERSION }}-${{ env.OPENCV_VERSION }}-cache-deps
+
+      - name: Install dependencies
+        env:
+          CACHE: "${{ steps.cache-deps.outputs.cache-hit }}"
+          CMAKE_GENERATOR: ${{ matrix.cfg.generator }}
+          DEPS_INSTALL_PATH: ${{ runner.workspace }}/deps_install
+          DEPS_PATH: ${{ runner.workspace }}/deps
+          OS: ${{ runner.os }}
+        run: |
+          sudo apt-get install -y -qq --no-install-recommends git wget curl libopenslide-dev
+          chmod +x ci/deps.sh
+          ci/deps.sh
+
+      - name: Configure and build
+        env:
+          CMAKE_GENERATOR: ${{ matrix.cfg.generator }}
+          DEPS_INSTALL_PATH: ${{ runner.workspace }}/deps_install
+        run: |
+          OpenCV_DIR=${DEPS_INSTALL_PATH}/opencv/share/OpenCV
+          mkdir -p build && cd build
+          cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECVL_SHARED=OFF -DOpenCV_DIR=${OpenCV_DIR} -Deddl_DIR=${DEPS_INSTALL_PATH}/eddl-${EDDL_VERSION}/build/install/lib/cmake/eddl -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_INCLUDE_DIRECTORIES=${OPENSLIDE_INCLUDE_DIRECTORIES} -DOPENSLIDE_LIBRARIES=${OPENSLIDE_LIBRARIES} -DECVL_GPU=OFF ..
+          cmake --build . --config ${BUILD_TYPE} --parallel ${PROC}
+
+      - name: Test
+        run: |
+          cd build
+          ctest -C ${BUILD_TYPE} -VV
