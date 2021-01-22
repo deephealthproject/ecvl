@@ -14,6 +14,8 @@
 #include "ecvl/core.h"
 #include "ecvl/gui.h"
 
+#include <iostream>
+
 using namespace ecvl;
 using namespace std;
 
@@ -54,6 +56,17 @@ int main()
     cout << "Executing ChangeColorSpace" << endl;
     ChangeColorSpace(img, img, ColorType::BGR);
     ImWrite("img_from_wx.jpg", img);
+
+#ifdef ECVL_WITH_OPENGL
+
+    Image nifti_image;
+    cout << "Reading a nifti Image" << endl;
+    if (!NiftiRead("../examples/data/nifti/LR_nifti.nii", nifti_image)) {
+        return EXIT_FAILURE;
+    }
+    ImShow3D(nifti_image);
+
+#endif // ECVL_WITH_OPENGL
 
     return EXIT_SUCCESS;
 }
