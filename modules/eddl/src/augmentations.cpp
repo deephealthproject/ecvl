@@ -28,6 +28,28 @@ param_list param::read(std::istream& is, std::string fn_name_)
     return m;
 }
 
+InterpolationType StrToInterpolationType(const std::string& interp, const std::string& aug_name)
+{
+    if (interp == "linear") {
+        return InterpolationType::linear;
+    }
+    else if (interp == "area") {
+        return InterpolationType::area;
+    }
+    else if (interp == "cubic") {
+        return InterpolationType::cubic;
+    }
+    else if (interp == "lanczos4") {
+        return InterpolationType::lanczos4;
+    }
+    else if (interp == "nearest") {
+        return InterpolationType::nearest;
+    }
+    else {
+        throw std::runtime_error(aug_name + ": invalid interpolation type");
+    }
+}
+
 // This factory must be manually populated! Don't forget to do it, otherwise no creation from streams
 
 #define AUG(x) if (name == #x) return std::make_shared<x>(is)
