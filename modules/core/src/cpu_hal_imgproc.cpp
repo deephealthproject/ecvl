@@ -834,6 +834,7 @@ void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_s
     discrete_distribution<> dist({ p, 1 - p });
 
     if (per_channel) {
+        dist = discrete_distribution<>({ p / channels, 1 - p / channels });
         for (int ch = 0; ch < channels; ch++) {
             uint8_t* tmp_ptr = tmp.Ptr({ 0, 0, ch });
 
