@@ -58,6 +58,7 @@ endif()
 
 if(ECVL_GPU_AVAILABLE)
     enable_language(CUDA)
+    find_dependency(CUDAToolkit)
 endif()
 
 include("@ECVL_CONFIG_INSTALL_PATH@/ecvlTargets.cmake")

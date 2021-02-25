@@ -76,8 +76,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(CMAKE_CUDA_STANDARD 14)
-set(CMAKE_CUDA_STANDARD_REQUIRED TRUE)
 
 #--------------------------------------------------------------------------------------------------------
 # END: Check for c++17 support
@@ -88,15 +86,25 @@ set(CMAKE_CUDA_STANDARD_REQUIRED TRUE)
 # BEGIN: Check for CUDA support
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_GPU_AVAILABLE OFF) # ON if GPU support is chosen AND actually available
-option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON)
+option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" OFF)
 if(ECVL_GPU)
-    include(CheckLanguage)
-    check_language(CUDA)
-    message(STATUS "CMAKE_CUDA_COMPILER: ${CMAKE_CUDA_COMPILER}")
-    if(CMAKE_CUDA_COMPILER)
-        enable_language(CUDA)
-        set(ECVL_GPU_AVAILABLE ON)
-        add_compile_definitions(ECVL_GPU)
+    if(${CMAKE_VERSION} VERSION_LESS "3.17.0")
+        message(WARNING "Build for GPU hardware is only supported with CMake 3.17 or later.")
+    else()
+        include(CheckLanguage)
+        check_language(CUDA)
+        if(CMAKE_CUDA_COMPILER)
+            enable_language(CUDA)
+            find_package(CUDAToolkit)
+            if(CUDAToolkit_FOUND)
+                set(ECVL_GPU_AVAILABLE ON)
+                add_compile_definitions(ECVL_GPU)
+            else()
+                message(WARNING "The CUDA toolkit was not found, GPU support has been disabled.")
+            endif()
+        else()
+            message(WARNING "No CUDA compiler was found, GPU support has been disabled.")
+        endif()
     endif()
 endif()
 #--------------------------------------------------------------------------------------------------------
@@ -175,15 +183,14 @@ set(ECVL_MODULES ECVL_CORE)
 set(ECVL_MODULES_DIRS core)
 
 if(ECVL_GPU_AVAILABLE)
-    target_include_directories(ECVL_CORE PUBLIC ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
-
     if(ECVL_SHARED)
-        target_link_libraries(ECVL_CORE PUBLIC cudart)
+        target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart)
     else()
-        target_link_libraries(ECVL_CORE PUBLIC cudart_static)
+        target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart_static)
     endif()
-
-    # Target properties
+    # Enable cuda14 features
+    target_compile_features(ECVL_CORE PUBLIC cuda_std_14)
+    
     set_target_properties(ECVL_CORE PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
