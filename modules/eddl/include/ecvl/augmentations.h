@@ -1249,6 +1249,40 @@ public:
         std_ = p.vals_[0];
     }
 };
+
+/** @brief Augmentation CenterCrop wrapper for ecvl::CenterCrop.
+
+@anchor AugCenterCrop
+*/
+class AugCenterCrop : public Augmentation
+{
+    std::vector<int> size_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        CenterCrop(img, img, size_);
+        if (!gt.IsEmpty()) {
+            CenterCrop(gt, const_cast<Image&>(gt), size_);
+        }
+    }
+public:
+    /** @brief AugCenterCrop constructor
+
+    @param[in] size std::vector<int> that specifies the new size of each dimension [w,h].
+    */
+    AugCenterCrop(const std::vector<int>& size) : size_{ size } {}
+
+    AugCenterCrop(std::istream& is)
+    {
+        auto m = param::read(is, "AugCenterCrop");
+        param p;
+
+        m.Get("size", param::type::vector, true, p);
+        for (const auto& x : p.vals_) {
+            size_.emplace_back(static_cast<int>(x));
+        }
+    }
+};
 } // namespace ecvl
 
 #endif // AUGMENTATIONS_H_

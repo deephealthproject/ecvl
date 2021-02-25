@@ -76,6 +76,7 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugPepper);
     AUG(AugSaltAndPepper);
     AUG(AugNormalize);
+    AUG(AugCenterCrop);
 
     return nullptr; // Maybe throw?
 }

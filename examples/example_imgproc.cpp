@@ -194,5 +194,10 @@ int main()
     ElasticTransform(img1, tmp);
     ImWrite("img_elastictransform.png", tmp);
 
+    cout << "Executing CenterCrop" << endl;
+    CenterCrop(img1, tmp, { 225, 300 });
+    ImWrite("img_centercrop.png", tmp);
+
+
     return EXIT_SUCCESS;
 }
