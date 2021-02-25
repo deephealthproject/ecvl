@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -193,6 +193,11 @@ int main()
     cout << "Executing ElasticTransform" << endl;
     ElasticTransform(img1, tmp);
     ImWrite("img_elastictransform.png", tmp);
+
+    cout << "Executing CenterCrop" << endl;
+    CenterCrop(img1, tmp, { 225, 300 });
+    ImWrite("img_centercrop.png", tmp);
+
 
     return EXIT_SUCCESS;
 }

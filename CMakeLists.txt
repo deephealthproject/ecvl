@@ -1,6 +1,6 @@
 # ECVL - European Computer Vision Library
 # Version: 0.3.1
-# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
@@ -74,6 +74,9 @@ endif()
 
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 #--------------------------------------------------------------------------------------------------------
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
@@ -83,7 +86,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # BEGIN: Check for CUDA support
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_GPU_AVAILABLE OFF) # ON if GPU support is chosen AND actually available
-option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON)
+option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" OFF)
 if(ECVL_GPU)
     if(${CMAKE_VERSION} VERSION_LESS "3.17.0")
         message(WARNING "Build for GPU hardware is only supported with CMake 3.17 or later.")
@@ -187,10 +190,12 @@ if(ECVL_GPU_AVAILABLE)
     endif()
     # Enable cuda14 features
     target_compile_features(ECVL_CORE PUBLIC cuda_std_14)
+    
+    set_target_properties(ECVL_CORE PROPERTIES
+        CUDA_SEPARABLE_COMPILATION ON
+        CUDA_RESOLVE_DEVICE_SYMBOLS ON
+    )
 endif()
-
-# Enable c++17 features
-target_compile_features(ECVL_CORE PUBLIC cxx_std_17)
 
 # Enable link of stdc++fs library
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" AND NOT APPLE)
@@ -255,10 +260,12 @@ set(ECVL_BUILD_EXAMPLES OFF CACHE BOOL "Whether to build ECVL examples or not")
 set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
 set(ECVL_BUILD_EDDL ON CACHE BOOL "Whether to build ECVL_EDDL or not (requires eddl)")
 
+set(ECVL_BUILD_GUI_AVAILABLE OFF)
 if(ECVL_BUILD_GUI)
     if(ECVL_BUILD_CORE)
         find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
         if(wxWidgets_FOUND)
+            set(ECVL_BUILD_GUI_AVAILABLE ON)
             include(${wxWidgets_USE_FILE})
             add_library(ECVL_GUI ${ecvl-type} "")
             add_subdirectory("modules/gui")
@@ -293,10 +300,12 @@ macro(F_BUILD_DATASET)
     list(APPEND ECVL_MODULES_DIRS "dataset")
 endmacro()
 
+set(ECVL_BUILD_EDDL_AVAILABLE OFF)
 if(ECVL_BUILD_EDDL)
     if(ECVL_BUILD_CORE)
         find_package(eddl NAMES eddl EDDL)
         if(eddl_FOUND)
+            set(ECVL_BUILD_EDDL_AVAILABLE ON)
             set(ECVL_DATASET ON CACHE BOOL "Whether to build ECVL_DATASET or not" FORCE)
             F_BUILD_DATASET()
             add_library(ECVL_EDDL ${ecvl-type} "")

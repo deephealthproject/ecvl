@@ -2,7 +2,7 @@ import argparse
 import os
 import pathlib
 
-exts = ('.cpp', '.h', '.cu', '.txt')
+exts = ('.cpp', '.h', '.cu', '.txt', '.in')
 exclude = ('3rdparty', 'doc', '.git', '.vs', 'build_win')
 
 

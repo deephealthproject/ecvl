@@ -1,6 +1,6 @@
 # ECVL - European Computer Vision Library
-# Version: 0.2.1
-# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# Version: 0.3.1
+# copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
@@ -13,19 +13,17 @@ include(CMakeFindDependencyMacro)
 
 SET(ECVL_WITH_DICOM @ECVL_WITH_DICOM@)
 SET(ECVL_WITH_OPENGL @ECVL_WITH_OPENGL@)
-SET(ECVL_BUILD_EDDL @ECVL_BUILD_EDDL@)
-SET(ECVL_BUILD_GUI @ECVL_BUILD_GUI@)
+SET(ECVL_BUILD_EDDL_AVAILABLE @ECVL_BUILD_EDDL_AVAILABLE@)
+SET(ECVL_BUILD_GUI_AVAILABLE @ECVL_BUILD_GUI_AVAILABLE@)
 SET(ECVL_DATASET @ECVL_DATASET@)
 SET(ECVL_GPU_AVAILABLE @ECVL_GPU_AVAILABLE@)
 
 set(OpenCV_DIR "@OpenCV_DIR@")
 
 find_dependency(OpenCV)
+find_dependency(OpenMP)
 
-#set(NIFTI_DIR "@ECVL_CONFIG_INSTALL_PATH@")
-#find_dependency(NIFTI)
-
-if(${ECVL_WITH_DICOM})
+if(ECVL_WITH_DICOM)
     if(WIN32 AND NOT CYGWIN)
         set(DCMTK_DIR "@ECVL_CONFIG_INSTALL_PATH@/CMake")
     else()
@@ -34,12 +32,12 @@ if(${ECVL_WITH_DICOM})
     find_dependency(DCMTK)
 endif()
 
-if (${ECVL_BUILD_EDDL})
+if (ECVL_BUILD_EDDL_AVAILABLE)
     set(EDDL_DIR "@eddl_DIR@")
     find_dependency(EDDL)
 endif()
 
-if (${ECVL_BUILD_GUI})
+if (ECVL_BUILD_GUI_AVAILABLE)
     set(wxWidgets_ROOT_DIR "@wxWidgets_ROOT_DIR@")
     find_dependency(wxWidgets)
     if (${ECVL_WITH_OPENGL})
@@ -49,7 +47,7 @@ if (${ECVL_BUILD_GUI})
     endif()
 endif()
 
-if (${ECVL_DATASET})
+if (ECVL_DATASET)
     if(WIN32 AND NOT CYGWIN)
         set(yaml-cpp_DIR "@ECVL_CONFIG_INSTALL_PATH@/CMake")
     else()

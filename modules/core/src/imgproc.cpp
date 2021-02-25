@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -697,5 +697,16 @@ void Normalize(const Image& src, Image& dst, const double& mean, const double& s
     }
 
     return src.hal_->Normalize(src, dst, mean, std);
+}
+
+void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size)
+{
+    AlwaysCheck(src, dst);
+
+    if (size.size() != 2) {
+        ECVL_ERROR_WRONG_PARAMS("Number of dimensions specified doesn't match image dimensions")
+    }
+
+    return src.hal_->CenterCrop(src, dst, size);
 }
 } // namespace ecvl

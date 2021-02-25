@@ -15,7 +15,7 @@ pipeline {
                             steps {
                                 timeout(60) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DECVL_GPU=OFF', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
                                         [args: '--parallel 4', withCmake: true]
                                     ]
                                 }

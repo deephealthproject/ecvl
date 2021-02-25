@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -100,6 +100,7 @@ public:
     std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) override;
     void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) override;
     void Normalize(const Image& src, Image& dst, const double& mean, const double& std) override;
+    void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

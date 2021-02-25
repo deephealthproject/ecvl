@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -313,8 +313,7 @@ public:
             if (m.Get("p", param::type::number, true, p)) {
                 p_ = p.vals_[0];
             }
-        }
-        catch (std::runtime_error&) {
+        } catch (std::runtime_error&) {
             std::cout << ECVL_ERROR_MSG "The first parameter in OneOfAugmentationContainer must be the probability p" << std::endl;
             ECVL_ERROR_AUGMENTATION_FORMAT
         }
@@ -332,6 +331,9 @@ public:
         }
     }
 };
+
+InterpolationType StrToInterpolationType(const std::string& interp, const std::string& aug_name);
+
 ///////////////////////////////////////////////////////////////////////////////////
 // Augmentations
 ///////////////////////////////////////////////////////////////////////////////////
@@ -344,7 +346,7 @@ class AugRotate : public Augmentation
 {
     std::vector<double> center_;
     double scale_;
-    InterpolationType interp_;
+    InterpolationType interp_, gt_interp_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
@@ -361,11 +363,14 @@ public:
                       If empty, the center of the image is used.
     @param[in] scale Optional scaling factor.
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] gt_interp InterpolationType to be used for ground truth. Default is InterpolationType::nearest.
     */
     AugRotate(const std::array<double, 2>& angle,
         const std::vector<double>& center = {},
         const double& scale = 1.,
-        const InterpolationType& interp = InterpolationType::linear) : center_(center), scale_(scale), interp_(interp)
+        const InterpolationType& interp = InterpolationType::linear,
+        const InterpolationType& gt_interp = InterpolationType::nearest)
+        : center_(center), scale_(scale), interp_(interp), gt_interp_(gt_interp)
     {
         params_["angle"] = AugmentationParam(angle[0], angle[1]);
     }
@@ -388,25 +393,13 @@ public:
         }
 
         interp_ = InterpolationType::linear;
+        gt_interp_ = InterpolationType::nearest;
+
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugRotate: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugRotate");
+        }
+        if (m.Get("gt_interp", param::type::string, false, p)) {
+            gt_interp_ = StrToInterpolationType(p.str_, "AugRotate");
         }
     }
 };
@@ -418,13 +411,13 @@ public:
 class AugResizeDim : public Augmentation
 {
     std::vector<int> dims_;
-    InterpolationType interp_;
+    InterpolationType interp_, gt_interp_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         ResizeDim(img, img, dims_, interp_);
         if (!gt.IsEmpty()) {
-            ResizeDim(gt, const_cast<Image&>(gt), dims_, interp_);
+            ResizeDim(gt, const_cast<Image&>(gt), dims_, gt_interp_);
         }
     }
 public:
@@ -432,8 +425,12 @@ public:
 
     @param[in] dims std::vector<int> that specifies the new size of each dimension.
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] gt_interp InterpolationType to be used for ground truth. Default is InterpolationType::nearest.
     */
-    AugResizeDim(const std::vector<int>& dims, const InterpolationType& interp = InterpolationType::linear) : dims_{ dims }, interp_(interp) {}
+    AugResizeDim(const std::vector<int>& dims,
+        const InterpolationType& interp = InterpolationType::linear,
+        const InterpolationType& gt_interp = InterpolationType::nearest)
+        : dims_{ dims }, interp_(interp), gt_interp_(gt_interp) {}
 
     AugResizeDim(std::istream& is)
     {
@@ -446,25 +443,13 @@ public:
         }
 
         interp_ = InterpolationType::linear;
+        gt_interp_ = InterpolationType::nearest;
+
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugRotate: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "");
+        }
+        if (m.Get("gt_interp", param::type::string, false, p)) {
+            gt_interp_ = StrToInterpolationType(p.str_, "AugResizeDim");
         }
     }
 };
@@ -476,7 +461,7 @@ public:
 class AugResizeScale : public Augmentation
 {
     std::vector<double> scale_;
-    InterpolationType interp_;
+    InterpolationType interp_, gt_interp_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
@@ -490,8 +475,12 @@ public:
 
     @param[in] scale std::vector<double> that specifies the scale to apply to each dimension.
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] gt_interp InterpolationType to be used for ground truth. Default is InterpolationType::nearest.
     */
-    AugResizeScale(const std::vector<double>& scale, const InterpolationType& interp = InterpolationType::linear) : scale_{ scale }, interp_(interp) {}
+    AugResizeScale(const std::vector<double>& scale,
+        const InterpolationType& interp = InterpolationType::linear,
+        const InterpolationType& gt_interp = InterpolationType::nearest
+    ) : scale_{ scale }, interp_(interp), gt_interp_(gt_interp){}
 
     AugResizeScale(std::istream& is)
     {
@@ -502,25 +491,13 @@ public:
         scale_ = p.vals_;
 
         interp_ = InterpolationType::linear;
+        gt_interp_ = InterpolationType::nearest;
+
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugRotate: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugResizeScale");
+        }
+        if (m.Get("gt_interp", param::type::string, false, p)) {
+            gt_interp_ = StrToInterpolationType(p.str_, "AugResizeScale");
         }
     }
 };
@@ -895,24 +872,7 @@ public:
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugGridDistortion");
         }
 
         border_type_ = BorderType::BORDER_REFLECT_101;
@@ -1003,24 +963,7 @@ public:
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugElasticTransform");
         }
 
         border_type_ = BorderType::BORDER_REFLECT_101;
@@ -1111,24 +1054,7 @@ public:
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugOpticalDistortion");
         }
 
         border_type_ = BorderType::BORDER_REFLECT_101;
@@ -1321,6 +1247,40 @@ public:
 
         m.Get("std", param::type::number, true, p);
         std_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation CenterCrop wrapper for ecvl::CenterCrop.
+
+@anchor AugCenterCrop
+*/
+class AugCenterCrop : public Augmentation
+{
+    std::vector<int> size_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        CenterCrop(img, img, size_);
+        if (!gt.IsEmpty()) {
+            CenterCrop(gt, const_cast<Image&>(gt), size_);
+        }
+    }
+public:
+    /** @brief AugCenterCrop constructor
+
+    @param[in] size std::vector<int> that specifies the new size of each dimension [w,h].
+    */
+    AugCenterCrop(const std::vector<int>& size) : size_{ size } {}
+
+    AugCenterCrop(std::istream& is)
+    {
+        auto m = param::read(is, "AugCenterCrop");
+        param p;
+
+        m.Get("size", param::type::vector, true, p);
+        for (const auto& x : p.vals_) {
+            size_.emplace_back(static_cast<int>(x));
+        }
     }
 };
 } // namespace ecvl
