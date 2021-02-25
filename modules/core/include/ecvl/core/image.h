@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -434,7 +434,8 @@ public:
     @param[in] elemtype New Image DataType.
     @param[in] channels New Image channels.
     @param[in] colortype New Image colortype.
-    @param[in] spacings New Image spacings.
+    @param[in] spacings New Image spacings. Default is an empty vector.
+    @param[in] dev Device on which the Image is stored. Default is Device::CPU.
     */
     void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
         const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU);
@@ -543,6 +544,13 @@ public:
     void Div(const T& rhs, bool saturate = true)
     {
         hal_->Div(*this, rhs, *this, elemtype_, saturate);
+    }
+
+    /** @brief Set Image value to rhs. */
+    template<typename T>
+    void SetTo(T value)
+    {
+        hal_->SetTo(*this, value);
     }
 
     Image operator-() const;
@@ -912,6 +920,21 @@ void CopyImage(const Image& src, Image& dst, DataType new_type = DataType::none)
 @param[in] channels Desired order of Image channels.
 */
 void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels);
+
+/** @brief Performs a shallow copy of the source Image into the destination.
+
+The ShallowCopyImage() procedure takes an Image and copies the fields values into destination Image. 
+This means that source and destination Image(s) will point to the same Image data in memory. The data ownership 
+of the source Image will be preserved, <em>i.e.</em> the result of the IsOwner() method on the source Image
+will be the same before and after the execution of the ShallowCopyImage(). Destination Image will never 
+be the owner of the data. Source and destination Image(s) cannot be the same. 
+
+@param[in] src Source Image to be shallow copied into destination Image.
+@param[out] dst Destination Image that will hold a copy of the source Image field value. Cannot be the source Image.
+
+@anchor ShallowCopyImage
+*/
+void ShallowCopyImage(const Image& src, Image& dst);
 
 /** @example example_image_view.cpp
  Example of basic Image and View functions.

@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -264,7 +264,47 @@ TEST_F(CoreArithmetics, DivImage##type) \
     g2_##type.Div(tmp); \
     EXPECT_TRUE(g2_##type##_v({ 0,0,0 }) == 25); EXPECT_TRUE(g2_##type##_v({ 1,0,0 }) == 16); \
     EXPECT_TRUE(g2_##type##_v({ 0,1,0 }) == 7); EXPECT_TRUE(g2_##type##_v({ 1,1,0 }) == 30); \
-}
+} \
+\
+TEST_F(CoreArithmetics, SetTo0##type) \
+{ \
+    g2_##type.SetTo(0); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(0)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10_##type) \
+{ \
+    g2_##type.SetTo(10.); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10.)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10_f##type) \
+{ \
+    g2_##type.SetTo(10.f); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10.f)); \
+    } \
+} \
+\
+TEST_F(CoreArithmetics, SetTo10##type) \
+{ \
+    g2_##type.SetTo(10); \
+    View<DataType::type> my_view(g2_##type); \
+    auto i = my_view.Begin(), e = my_view.End(); \
+    for (; i != e; ++i) { \
+        EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10)); \
+    } \
+} \
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

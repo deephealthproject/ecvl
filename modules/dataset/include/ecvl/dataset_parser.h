@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 0.3.1
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -97,6 +97,7 @@ public:
 
     /**
     @param[in] filename Path to the Dataset file.
+    @param[in] verify Whether to log the non-existence of a dataset sample location or not.
     */
     Dataset(const filesystem::path& filename, bool verify = false);
 
@@ -119,7 +120,7 @@ private:
 };
 } // namespace ecvl
 
-/** @cond HIDDEN_SECTIONS */
+/** @cond HIDDEN_SECTION */
 namespace YAML
 {
 /**

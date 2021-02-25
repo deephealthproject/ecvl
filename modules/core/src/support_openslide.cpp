@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -38,7 +38,7 @@ bool OpenSlideGetLevels(const path& filename, vector<array<int, 2>>& levels)
     int64_t w, h;
     for (int i = 0; i < n_levels; ++i) {
         openslide_get_level_dimensions(osr, i, &w, &h);
-        levels[i] = array{ static_cast<int>(w), static_cast<int>(h) };
+        levels[i] = array<int, 2>{ static_cast<int>(w), static_cast<int>(h) };
     }
 
     openslide_close(osr);

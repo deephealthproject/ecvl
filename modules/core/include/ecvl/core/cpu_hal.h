@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 0.3.1
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -94,6 +94,12 @@ public:
     void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
     void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
     void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) override;
+    // void Moments(const Image& src, Image& moments, int order, DataType type) override;
+    void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) override;
+    void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) override;
+    std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) override;
+    void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) override;
+    void Normalize(const Image& src, Image& dst, const double& mean, const double& std) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;
@@ -113,6 +119,8 @@ public:
                                                                                                    \
     void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) override; \
     void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override; \
+                                                                                                   \
+    void SetTo(Image& src, type value) override;
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

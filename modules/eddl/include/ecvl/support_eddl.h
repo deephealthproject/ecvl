@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -72,7 +72,7 @@ public:
     ColorType ctype_; /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_; /**< @brief ecvl::ColorType of the Dataset ground truth images. */
     DatasetAugmentations augs_; /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
-    std::mutex  mutex_current_batch_; /**< @breif std::mutex to add exclusive access to attribute current_batch_. */
+    std::mutex  mutex_current_batch_; /**< @brief std::mutex to add exclusive access to attribute current_batch_. */
 
     /**
     @param[in] filename Path to the Dataset file.

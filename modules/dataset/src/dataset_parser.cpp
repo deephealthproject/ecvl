@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -251,7 +251,7 @@ void Dataset::Dump(const path& file_path)
     os.close();
 }
 
-Dataset::Dataset(const path& filename, bool verify)
+Dataset::Dataset(const filesystem::path& filename, bool verify)
 {
     path abs_filename = absolute(filename);
 

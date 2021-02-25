@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -75,43 +75,45 @@ class BasicGLPane : public wxGLCanvas
     glm::mat4 orientation;
     glm::mat4 ruota;
     bool enable_rotation;
-    float fps = 30;
+    const float fps = 100;
     float period = 5;
+    int slices = 500;
 
     std::string vertex_shader =
         "#version 330 core\n"
         "layout(location = 0) in vec2 xyPos;\n"
-        "layout(location = 1) in vec3 aTexCoord;\n"
+        "layout(location = 1) in vec2 aTexCoord;\n"
 
-        "uniform float zPos;\n"
         "uniform mat4 model;\n"
-        "uniform mat4 projection;\n"
         "uniform mat4 view;\n"
+        "uniform mat4 projection;\n"
 
-        "out vec2 TexCoord;\n"
+        "uniform float radius;\n"
+        "uniform int slices;\n"
+
+        "uniform mat3 ruota;\n"
+        "uniform mat3 orientation;\n"
+        "uniform mat3 scala;\n"
+
+        "out vec3 TexCoord;\n"
 
         "void main()\n"
         "{"
+        "    float zPos = -radius + (radius / slices) + gl_InstanceID * ((radius * 2) / slices);\n"  
         "    gl_Position = projection * view * vec4(xyPos, zPos, 1.0);"
-        "    TexCoord = aTexCoord.xy;"
+        "    TexCoord = scala * orientation * ruota * vec3(aTexCoord, zPos) + vec3(0.5f, 0.5f, 0.5f);\n"    
         "}";
 
     std::string fragment_shader =
         "#version 330 core\n"
         "out vec4 FragColor;\n"
-
-        "in vec2 TexCoord;\n"
+        "in vec3 TexCoord;\n"
 
         "uniform sampler3D ourTexture;\n"
-        "uniform float zPos;\n"
-        "uniform mat4 orientation;\n"
-        "uniform mat4 ruota;\n"
-        "uniform float radius;\n"
-        "uniform mat4 scala;\n"
 
         "void main()"
         "{"
-        "    FragColor = texture(ourTexture, (scala * orientation * ruota * vec4(vec3(TexCoord, zPos), 1)).xyz + vec3(0.5f, 0.5f, 0.5f));"
+        "    FragColor = texture(ourTexture, TexCoord);\n"
         "}";
 
 public:
@@ -208,9 +210,7 @@ void BasicGLPane::Render(wxPaintEvent& evt)
     if (enable_rotation) {
         ruota = glm::rotate(ruota, glm::radians(360.f / (period * fps)), glm::vec3(0.0f, 1.0f, 0.0f));
     }
-    ourShader.setMat4("ruota", ruota);
-
-    glm::mat4 trasla = glm::mat4(1.0f);
+    ourShader.setMat3("ruota", glm::mat3(ruota));
 
     // render
     // ------
@@ -219,20 +219,9 @@ void BasicGLPane::Render(wxPaintEvent& evt)
 
     glBindVertexArray(VAO3D);
 
-    glEnable(GL_TEXTURE_3D);
-    glBindTexture(GL_TEXTURE_3D, texture3D);
+    glBindTexture(GL_TEXTURE_3D, texture3D);    
 
-    const int slices = 200;
-
-    trasla = glm::mat4(1.f);
-
-    for (int i = 0; i < slices; i++) {
-        float z = -radius + (radius / slices) + i * ((radius * 2) / slices); // Z-coordinate of the quad slice (and of the texture slice)
-
-        ourShader.setFloat("zPos", z);
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    }
+    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) (sizeof(unsigned int) * 0), slices);
 
     SwapBuffers();
 }
@@ -260,11 +249,11 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices3D[] = {
-        // positions         // texture coords
-         0.5f,  0.5f, /*0.0f,*/  +radius, -radius,  // top right
-         0.5f, -0.5f, /*0.0f,*/  +radius, +radius,  // bottom right
-        -0.5f, -0.5f, /*0.0f,*/  -radius, +radius,  // bottom left
-        -0.5f,  0.5f, /*0.0f,*/  -radius, -radius   // top left
+        // positions   // texture coords
+         0.5f,  0.5f,  +radius, -radius,  // top right
+         0.5f, -0.5f,  +radius, +radius,  // bottom right
+        -0.5f, -0.5f,  -radius, +radius,  // bottom left
+        -0.5f,  0.5f,  -radius, -radius   // top left
     };
     unsigned int indices3D[] = {
         0, 1, 2,
@@ -284,7 +273,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // texture coord attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices3D), indices3D, GL_STATIC_DRAW);
@@ -330,9 +319,11 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     scale_h *= coeff;
     scale_d *= coeff;
 
-    glm::mat4 scala = glm::scale(glm::mat4(1.f), glm::vec3(scale_w, scale_h, scale_d));
+    const glm::mat4 scala = glm::scale(glm::mat4(1.f), glm::vec3(scale_w, scale_h, scale_d));
 
     // Going 3D
+    glEnable(GL_TEXTURE_3D);
+
     glGenTextures(1, &texture3D);
     glBindTexture(GL_TEXTURE_3D, texture3D);
 
@@ -351,8 +342,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     unsigned char alpha = 100;
     unsigned char* data;
 
-    // !!! Only works with ColorType::GRAY !!!
-    if (img.colortype_ == ColorType::GRAY) {
+    if (img.colortype_ == ColorType::GRAY || img.colortype_ == ColorType::none) {
         if (!img.channels_.compare(0, 3, "xyz")) {
             data = new unsigned char[img.dims_[0] * img.dims_[1] * img.dims_[2] * 4];
             for (int i = 0; i < img.dims_[0] * img.dims_[1] * img.dims_[2]; i++) {
@@ -444,8 +434,11 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     ourShader.init(vertex_shader, fragment_shader);
     ourShader.use();
 
+    ourShader.setFloat("radius", radius);
+    ourShader.setInt("slices", slices);
+
     orientation = glm::mat4(1.f);
-    ourShader.setMat4("orientation", orientation);
+    ourShader.setMat3("orientation", glm::mat3(orientation));
 
     ruota = glm::mat4(1.f);
     enable_rotation = true;
@@ -460,8 +453,7 @@ BasicGLPane::BasicGLPane(wxFrame* parent, int* args, const Image& src_img) :
     //projection = glm::ortho(-1.f, 1.f, -1.f, 1.f);                                                          // orthographic
     ourShader.setMat4("projection", projection);
 
-    ourShader.setFloat("radius", radius);
-    ourShader.setMat4("scala", scala);
+    ourShader.setMat3("scala", glm::mat3(scala));
 
     // To avoid flashing on MSW
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
@@ -486,31 +478,38 @@ void BasicGLPane::OnTimer(wxTimerEvent& event)
 void BasicGLPane::MouseWheelMoved(wxMouseEvent& evt)
 {
     int mouse_rotation = evt.GetWheelRotation();
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, (float)mouse_rotation / 1000));
-    ourShader.setMat4("view", view);
+    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, (float)mouse_rotation / 1000));
+    //ourShader.setMat4("view", view);
+    slices += mouse_rotation / 10;
+    if (slices <= 1)
+        slices = 1;
+    ourShader.setInt("slices", slices);
 }
 
 void BasicGLPane::KeyReleased(wxKeyEvent& evt)
 {
     int key_code = evt.GetKeyCode();
-    if (key_code == WXK_SPACE) {
+    if (key_code == WXK_ESCAPE) {
+        // Close window
+    }
+    else if (key_code == WXK_SPACE) {
         enable_rotation = !enable_rotation;
     }
     else if (key_code == WXK_UP) {
         orientation = glm::rotate(orientation, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-        ourShader.setMat4("orientation", orientation);
+        ourShader.setMat3("orientation", glm::mat3(orientation));
     }
     else if (key_code == WXK_DOWN) {
         orientation = glm::rotate(orientation, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
-        ourShader.setMat4("orientation", orientation);
+        ourShader.setMat3("orientation", glm::mat3(orientation));
     }
     else if (key_code == WXK_RIGHT) {
         orientation = glm::rotate(orientation, glm::radians(90.f), glm::vec3(0.f, 0.f, 1.f));
-        ourShader.setMat4("orientation", orientation);
+        ourShader.setMat3("orientation", glm::mat3(orientation));
     }
     else if (key_code == WXK_LEFT) {
         orientation = glm::rotate(orientation, glm::radians(-90.f), glm::vec3(0.f, 0.f, 1.f));
-        ourShader.setMat4("orientation", orientation);
+        ourShader.setMat3("orientation", glm::mat3(orientation));
     }
 }
 

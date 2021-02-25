@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 0.3.1
+* copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -125,7 +125,6 @@ public:
     @param[in] bindings Desired order of Image channels.
     */
     virtual void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) { ECVL_ERROR_NOT_IMPLEMENTED }
-
     virtual void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Flip2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
@@ -162,6 +161,12 @@ public:
     virtual void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) { ECVL_ERROR_NOT_IMPLEMENTED }
+    // virtual void Moments(const Image& src, Image& moments, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void DrawEllipse(Image& src, Point2i center, Size2i axes, double angle, const Scalar& color, int thickness) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Normalize(const Image& src, Image& dst, const double& mean, const double& std) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 
@@ -174,15 +179,17 @@ public:
 #define ECVL_TUPLE(name, size, type, ...) \
     virtual void Add(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
     virtual void Add(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
-                                                                                                                               \
+                                                                                                                                \
     virtual void Sub(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
     virtual void Sub(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
-                                                                                                                               \
+                                                                                                                                \
     virtual void Mul(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
     virtual void Mul(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
-                                                                                                                               \
+                                                                                                                                \
     virtual void Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
     virtual void Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED } \
+                                                                                                                                \
+    virtual void SetTo(Image& src, type value) { ECVL_ERROR_NOT_IMPLEMENTED }
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

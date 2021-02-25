@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -28,6 +28,28 @@ void AlwaysCheck(const ecvl::Image& src, const ecvl::Image& dst)
     if (src.dev_ != dst.dev_ && dst.dev_ != Device::NONE) {
         ECVL_ERROR_DIFFERENT_DEVICES
     }
+}
+
+bool ChannelsCheck(const Image& src, Image& tmp)
+{
+    if (src.channels_.size() != 3) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+     // check if channels_ starts with "xy"
+    if (src.channels_.rfind("xy", 0) != string::npos) {
+        return true; // don't need to rearrange
+    }
+
+    string ch = "czo";
+    for (auto c : ch) {
+        if (src.channels_.find(c) != string::npos) {
+            RearrangeChannels(src, tmp, "xy" + string(1, c));
+            return false; // need to rearrange
+        }
+    }
+
+    ECVL_ERROR_NOT_IMPLEMENTED
 }
 
 int GetOpenCVInterpolation(InterpolationType interp)
@@ -124,6 +146,13 @@ void Threshold(const Image& src, Image& dst, double thresh, double maxval, Thres
     src.hal_->Threshold(src, dst, thresh, maxval, thresh_type);
 }
 
+void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
+{
+    AlwaysCheck(src, dst);
+
+    src.hal_->MultiThreshold(src, dst, thresholds, minval, maxval);
+}
+
 std::vector<double> Histogram(const Image& src)
 {
     if (src.IsEmpty()) {
@@ -177,7 +206,7 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
 {
     AlwaysCheck(src, dst);
 
-    if (src.channels_ != "xyc" || !src.contiguous_) {
+    if (!src.contiguous_) {
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
@@ -189,16 +218,18 @@ void SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX,
         type = src.elemtype_;
     }
 
-    src.hal_->SeparableFilter2D(src, dst, kerX, kerY, type);
+    Image tmp;
+    if (ChannelsCheck(src, tmp)) {
+        src.hal_->SeparableFilter2D(src, dst, kerX, kerY, type);
+    }
+    else {
+        tmp.hal_->SeparableFilter2D(tmp, dst, kerX, kerY, type);
+    }
 }
 
 void GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
     AlwaysCheck(src, dst);
-
-    if (src.channels_ != "xyc") {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
 
     if (sizeX < 0 || (sizeX % 2 != 1)) {
         ECVL_ERROR_WRONG_PARAMS("sizeX must either be positive and odd or zero")
@@ -290,11 +321,13 @@ void CoarseDropout(const Image& src, Image& dst, double p, double drop_size, boo
 {
     AlwaysCheck(src, dst);
 
-    if (src.channels_ != "xyc") {
-        ECVL_ERROR_NOT_IMPLEMENTED
+    Image tmp;
+    if (ChannelsCheck(src, tmp)) {
+        src.hal_->CoarseDropout(src, dst, p, drop_size, per_channel);
     }
-
-    src.hal_->CoarseDropout(src, dst, p, drop_size, per_channel);
+    else {
+        tmp.hal_->CoarseDropout(tmp, dst, p, drop_size, per_channel);
+    }
 }
 
 void IntegralImage(const Image& src, Image& dst, DataType dst_type)
@@ -534,5 +567,135 @@ void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down)
     }
 
     src.hal_->SliceTimingCorrection(src, dst, odd, down);
+}
+
+void Moments(const Image& src, Image& moments, int order, DataType type)
+{
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
+    }
+
+    if (src.colortype_ != ColorType::GRAY && src.colortype_ != ColorType::none) {
+        ECVL_ERROR_UNSUPPORTED_SRC_COLORTYPE
+    }
+
+    if (type != DataType::float32 && type != DataType::float64) {
+        ECVL_ERROR_WRONG_PARAMS("the specified type is not supported.")
+    }
+
+    if (src.dev_ != moments.dev_ && moments.dev_ != Device::NONE) {
+        ECVL_ERROR_DIFFERENT_DEVICES
+    }
+
+    int src_dims = src.channels_.find("c") != std::string::npos ? vsize(src.dims_) - 1 : vsize(src.dims_);
+    vector<double> center(src_dims, 0.);
+
+    src.hal_->CentralMoments(src, moments, center, order, type);
+}
+
+void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type)
+{
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
+    }
+
+    if (src.colortype_ != ColorType::GRAY && src.colortype_ != ColorType::none) {
+        ECVL_ERROR_UNSUPPORTED_SRC_COLORTYPE
+    }
+
+    if (type != DataType::float32 && type != DataType::float64) {
+        ECVL_ERROR_WRONG_PARAMS("the specified type is not supported.")
+    }
+
+    if (center[0] < 0 || center[1] < 0) {
+        ECVL_ERROR_WRONG_PARAMS("center cannot have negative coordinates.")
+    }
+
+    int src_dims = src.channels_.find("c") != std::string::npos ? vsize(src.dims_) - 1 : vsize(src.dims_);
+    if (center.size() != src_dims) {
+        ECVL_ERROR_WRONG_PARAMS("center and src.dims_ must match in size (except for the 'c' channel).")
+    }
+
+    if (src.dev_ != moments.dev_ && moments.dev_ != Device::NONE) {
+        ECVL_ERROR_DIFFERENT_DEVICES
+    }
+
+    src.hal_->CentralMoments(src, moments, center, order, type);
+}
+
+void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness)
+{
+    if (src.dev_ == Device::NONE) {
+        ECVL_ERROR_WRONG_PARAMS("src Image must have a device.")
+    }
+
+    if (src.colortype_ == ColorType::none) {
+        ECVL_ERROR_WRONG_PARAMS("cannot draw on data Image.")
+    }
+
+    if (vsize(color) < 1) {
+        ECVL_ERROR_WRONG_PARAMS("color must contains at least one value.")
+    }
+
+    Scalar real_color;
+    if (src.colortype_ == ColorType::GRAY && vsize(color) != 1) {
+        // I'll take just the first one!
+        real_color = Scalar(1, color[0]);
+    }
+    if (src.colortype_ != ColorType::GRAY && vsize(color) != 3) {
+        // I'll replicate the single value
+        real_color = Scalar(3, color[0]);
+    }
+
+    src.hal_->DrawEllipse(src, center, axes, angle, color, thickness);
+}
+
+void DropColorChannel(Image& src)
+{
+    if (src.colortype_ != ColorType::GRAY) {
+        ECVL_ERROR_WRONG_PARAMS("cannot drop color channel when the colortype_ is different from ColorType::GRAY.")
+    }
+
+    auto channel_pos = src.channels_.find("c");
+    if (channel_pos != std::string::npos) {
+        src.dims_.erase(src.dims_.begin() + channel_pos);
+        src.strides_.erase(src.strides_.begin() + channel_pos);
+        src.channels_.erase(channel_pos, 1);
+        src.colortype_ = ColorType::none;
+        if (src.spacings_.size() != 0) {
+            src.spacings_.erase(src.spacings_.begin() + channel_pos);
+        }
+    }
+}
+
+std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds)
+{
+    if (src.IsEmpty()) {
+        ECVL_ERROR_EMPTY_IMAGE
+    }
+
+    if (src.colortype_ != ColorType::GRAY) { // What if the Image has ColorType::none?
+        ECVL_ERROR_WRONG_PARAMS("The OtsuMultiThreshold requires a grayscale Image.")
+    }
+
+    if (src.dev_ == Device::NONE) {
+        ECVL_ERROR_WRONG_PARAMS("src Image must have a device.")
+    }
+
+    if (src.elemtype_ != DataType::uint8) {
+        ECVL_ERROR_NOT_IMPLEMENTED
+    }
+
+    return src.hal_->OtsuMultiThreshold(src, n_thresholds);
+}
+void Normalize(const Image& src, Image& dst, const double& mean, const double& std)
+{
+    AlwaysCheck(src, dst);
+
+    if (std == 0.) {
+        ECVL_ERROR_WRONG_PARAMS("std cannot be zero.")
+    }
+
+    return src.hal_->Normalize(src, dst, mean, std);
 }
 } // namespace ecvl

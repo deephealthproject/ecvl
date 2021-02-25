@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
+* Version: 0.3.1
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -40,7 +40,7 @@ protected:
     {
         out = Image();
 
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
         g1_##type##_v = g1_##type; \
         g1_##type##_v({ 0,0,0 }) = 50; \
         \
@@ -56,8 +56,8 @@ protected:
         rgb2_##type##_v({ 0,0,2 }) = 50; rgb2_##type##_v({ 1,0,2 }) = 32; \
         rgb2_##type##_v({ 0,1,2 }) = 14; rgb2_##type##_v({ 1,1,2 }) = 60; \
 
-#include "ecvl/core/datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
+    #undef ECVL_TUPLE
     }
 };
 
@@ -698,8 +698,40 @@ TEST_F(Imgproc, CCLSameDst##type) \
     else { \
         EXPECT_THROW(ConnectedComponentsLabeling(g1_##type, g1_##type), std::runtime_error); \
     } \
+} \
+\
+TEST_F(Imgproc, Normalize##type) \
+{ \
+    const double mean = 39; \
+    const double std = 17.5783958312469; \
+    Normalize(g1_##type, out, mean, std); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g1_##type##_v({ 0,0,0 }) - mean) / std)); \
+    \
+    Normalize(g2_##type, out, mean, std); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,1,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,1,0 }) - mean) / std)); \
+    \
+    Normalize(rgb2_##type, out, mean, std); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,2 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,2 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean) / std)); \
 }
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
+
 } // namespace

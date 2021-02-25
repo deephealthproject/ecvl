@@ -1,0 +1,61 @@
+name: windows
+
+on: [push, pull_request]
+
+env:
+  BUILD_TYPE: "Release"
+  OPENCV_VERSION: "3.4.13"
+  EDDL_VERSION: "v0.8.3a"
+  PROC: 2
+
+jobs:
+  build:
+    runs-on: ${{ matrix.cfg.os }}
+    strategy:
+      matrix:
+        cfg:
+          - { os: windows-2016, c-version: vc15, cxx-version: vc15, generator: "Visual Studio 15 2017 Win64" }
+          - { os: windows-2019, c-version: vc16, cxx-version: vc16, generator: "Visual Studio 16 2019" }
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.workspace }}/deps_install
+          key: ${{ runner.os }}-${{ matrix.cfg.c-version }}-${{ env.EDDL_VERSION }}-${{ env.OPENCV_VERSION }}-cache-deps
+
+      - name: Install dependencies
+        env:
+          CACHE: "${{ steps.cache-deps.outputs.cache-hit }}"
+          CMAKE_GENERATOR: ${{ matrix.cfg.generator }}
+          DEPS_INSTALL_PATH: ${{ runner.workspace }}/deps_install
+          DEPS_PATH: ${{ runner.workspace }}/deps
+          OS: ${{ runner.os }}
+        run: |
+          choco install curl wget
+          chmod +x ci/deps.sh
+          ci/deps.sh
+        shell: bash
+
+      - name: Configure and build
+        env:
+          CMAKE_GENERATOR: ${{ matrix.cfg.generator }}
+          DEPS_INSTALL_PATH: ${{ runner.workspace }}/deps_install
+        run: |
+          mkdir -p build && cd build
+          OpenCV_DIR=${DEPS_INSTALL_PATH}/opencv/x64/${{ matrix.cfg.c-version }}/staticlib
+          OPENSLIDE_INCLUDE_DIRECTORIES="$DEPS_INSTALL_PATH/openslide/include/openslide"
+          OPENSLIDE_LIBRARIES="$DEPS_INSTALL_PATH/openslide/lib/libopenslide.lib"
+          cmake -G"${CMAKE_GENERATOR}" -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DECVL_SHARED=OFF -DOpenCV_DIR=${OpenCV_DIR} -Deddl_DIR=${DEPS_INSTALL_PATH}/eddl-${EDDL_VERSION}/build/install/lib/cmake/eddl -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_INCLUDE_DIRECTORIES=${OPENSLIDE_INCLUDE_DIRECTORIES} -DOPENSLIDE_LIBRARIES=${OPENSLIDE_LIBRARIES} -DECVL_GPU=OFF ..
+          cmake --build . --config ${BUILD_TYPE} --parallel ${PROC}
+        shell: bash
+
+      - name: Test
+        run: |
+          cd build
+          ctest -C ${BUILD_TYPE} -VV
+        shell: bash

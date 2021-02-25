@@ -1,5 +1,5 @@
 # ECVL - European Computer Vision Library
-# Version: 0.2.1
+# Version: 0.3.1
 # copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
@@ -15,7 +15,9 @@ set(examples_sources
     example_image_view.cpp
     example_imgcodecs.cpp
     example_imgproc.cpp
+    example_moments.cpp
     example_performance.cpp
+	example_threshold.cpp
 )
 FOREACH(cur_file ${examples_sources})
     get_filename_component(exe_name ${cur_file} NAME_WE)
