@@ -152,10 +152,13 @@ public:
                                                          in other libraries such as OpenCV. */
     ColorType                   colortype_;         /**< @brief Image ColorType.
 
-                                                         If this is different from ColorType::none
+                                                         If this is different from ColorType::none,
                                                          the channels_ string must contain a 'c' and the
                                                          corresponding dimension must have the appropriate
-                                                         value. See @ref ColorType for the possible values. */
+                                                         value. See @ref ColorType for the possible values. 
+														 
+														 If colortype_ is ColorType::none, then the image 
+														 should not have a 'c' in the channels_ string. */
 
     std::vector<float>          spacings_;          /**< @brief Space between pixels/voxels. */
                                                     /**< Vector with the same size as @ref dims_, storing the
