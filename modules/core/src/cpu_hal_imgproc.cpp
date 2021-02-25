@@ -2090,4 +2090,55 @@ void CpuHal::Normalize(const Image& src, Image& dst, const double& mean, const d
     Table1D<NormalizeStruct> table;
     table(src.elemtype_)(src, dst, mean, std);
 }
+
+template <DataType SDT>
+struct CenterCropStruct
+{
+    static void _(const Image& src, Image& dst, const std::vector<int>& size)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+
+        const int src_height = src.Height();
+        const int src_width = src.Width();
+        const int channels = src.Channels();
+
+        const int new_width = size[0];
+        const int new_height = size[1];
+        const int offset_w = (src_width - new_width) / 2;
+        const int offset_h = (src_height - new_height) / 2;
+
+        size_t c_pos = src.channels_.find('c');
+        if (c_pos == string::npos) {
+            c_pos = src.channels_.find('z');
+        }
+        if (c_pos == string::npos) {
+            c_pos = src.channels_.find('o');
+        }
+        size_t x_pos = src.channels_.find('x');
+        size_t y_pos = src.channels_.find('y');
+
+        if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+            ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+        }
+
+        vector<int> v_start(channels, 0);
+        v_start[x_pos] = offset_w;
+        v_start[y_pos] = offset_h;
+
+        vector<int> v_size(channels, -1);
+        v_size[x_pos] = new_width;
+        v_size[y_pos] = new_height;
+        v_size[c_pos] = channels;
+
+        Image tmp(v_size, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        View<SDT> src_v(const_cast<Image&>(src), v_start, v_size);
+        dst = src_v;
+    }
+};
+
+void CpuHal::CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size)
+{
+    Table1D<CenterCropStruct> table;
+    table(src.elemtype_)(src, dst, size);
+}
 } // namespace ecvl

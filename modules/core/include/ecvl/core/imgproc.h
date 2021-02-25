@@ -650,6 +650,16 @@ void Normalize(const Image& src, Image& dst, const double& mean, const double& s
 //void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std);
 
 
+/** @brief Crops the given image at the center.
+
+The function crops Image src at the center and outputs the result in dst.
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] size std::vector<int> specifies the desired output size of the crop. Must be in the order [w,h].
+*/
+void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size);
+
 /** @example example_moments.cpp
 This is an example application of the raw and central moments.
 */
