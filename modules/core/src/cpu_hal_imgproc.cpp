@@ -2121,11 +2121,11 @@ struct CenterCropStruct
             ECVL_ERROR_WRONG_PARAMS("Malformed src image")
         }
 
-        vector<int> v_start(channels, 0);
+        vector<int> v_start(src.dims_.size(), 0);
         v_start[x_pos] = offset_w;
         v_start[y_pos] = offset_h;
 
-        vector<int> v_size(channels, -1);
+        vector<int> v_size(src.dims_.size(), -1);
         v_size[x_pos] = new_width;
         v_size[y_pos] = new_height;
         v_size[c_pos] = channels;

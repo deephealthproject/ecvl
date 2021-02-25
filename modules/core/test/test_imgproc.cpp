@@ -11,6 +11,8 @@
 * All rights reserved.
 */
 
+#include <vector>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -729,7 +731,28 @@ TEST_F(Imgproc, Normalize##type) \
     EXPECT_TRUE(out_v({ 1,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,2 }) - mean) / std)); \
     EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean) / std)); \
     EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean) / std)); \
-}
+} \
+\
+TEST_F(Imgproc, CenterCrop##type) \
+{ \
+    std::vector<int> size { 1,1 }; \
+    CenterCrop(g1_##type, out, size); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 1)); \
+    \
+    CenterCrop(g2_##type, out, size); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 1)); \
+    \
+    CenterCrop(rgb2_##type, out, size); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == 50); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 3)); \
+} 
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
