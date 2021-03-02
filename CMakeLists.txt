@@ -73,10 +73,6 @@ if(NOT COMPILER_SUPPORTS_CXX17)
 endif()
 
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-
 #--------------------------------------------------------------------------------------------------------
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
@@ -188,14 +184,18 @@ if(ECVL_GPU_AVAILABLE)
     else()
         target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart_static)
     endif()
+
     # Enable cuda14 features
     target_compile_features(ECVL_CORE PUBLIC cuda_std_14)
-    
+
     set_target_properties(ECVL_CORE PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
     )
 endif()
+
+# Enable c++17 features
+target_compile_features(ECVL_CORE PUBLIC cxx_std_17)
 
 # Enable link of stdc++fs library
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" AND NOT APPLE)
