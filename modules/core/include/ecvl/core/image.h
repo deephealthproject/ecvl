@@ -572,6 +572,56 @@ public:
     friend Image operator/(Image lhs, const Image& rhs);
 };
 
+
+template <typename ViewType>
+static void CropViewInternal(ViewType& view, const std::vector<int>& start, const std::vector<int>& size) {
+
+    std::vector<int> new_dims;
+    int ssize = vsize(size);
+    for (int i = 0; i < ssize; ++i) {
+        if (start[i] < 0 || start[i] >= view.dims_[i])
+            throw std::runtime_error("Start of crop outside image limits");
+        new_dims.push_back(view.dims_[i] - start[i]);
+        if (size[i] > new_dims[i]) {
+            throw std::runtime_error("Crop outside image limits");
+        }
+        if (size[i] >= 0) {
+            new_dims[i] = size[i];
+        }
+    }
+
+    // Check if image has a color dimension
+    auto cpos = view.channels_.find('c');
+    if (cpos != std::string::npos) {
+        // If we are cropping the color channel, we fix the color information
+        if (new_dims[cpos] != view.dims_[cpos]) {
+            if (new_dims[cpos] == 1) {
+                view.colortype_ = ColorType::GRAY;
+            }
+            else {
+                view.channels_[cpos] = 'o';
+                view.colortype_ = ColorType::none;
+            }
+        }
+    }
+
+    view.data_ = view.Ptr(start);
+    view.datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
+
+    // TODO decomment the following lines and calculate new datasize
+    //if (view.contiguous_) {
+    //    for (int i = 0; i < view.dims_.size() - 1; ++i) {
+    //        if (new_dims[i] != view.dims_[i]) {
+    //            view.contiguous_ = false;
+    //        }
+    //    }
+    //}
+
+    view.contiguous_ = false;
+    view.dims_ = std::move(new_dims);
+
+}
+
 #include "iterators_impl.inc.h"
 template <DataType DT>
 class View : public Image
@@ -602,38 +652,7 @@ public:
 
     View(Image& img, const std::vector<int>& start, const std::vector<int>& size) : View(img)
     {
-        dims_.clear();
-        int ssize = vsize(size);
-        for (int i = 0; i < ssize; ++i) {
-            if (start[i] < 0 || start[i] >= img.dims_[i])
-                throw std::runtime_error("Start of crop outside image limits");
-            dims_.push_back(img.dims_[i] - start[i]);
-            if (size[i] > dims_[i]) {
-                throw std::runtime_error("Crop outside image limits");
-            }
-            if (size[i] >= 0) {
-                dims_[i] = size[i];
-            }
-        }
-
-        // Check if image has a color dimension
-        auto cpos = channels_.find('c');
-        if (cpos != std::string::npos) {
-            // If we are cropping the color channel, we fix the color information
-            if (dims_[cpos] != img.dims_[cpos]) {
-                if (dims_[cpos] == 1) {
-                    colortype_ = ColorType::GRAY;
-                }
-                else {
-                    channels_[cpos] = 'o';
-                    colortype_ = ColorType::none;
-                }
-            }
-        }
-
-        data_ = img.Ptr(start);
-        datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
-        contiguous_ = false;
+        CropViewInternal(*this, start, size);
     }
 
     basetype& operator()(const std::vector<int>& coords)
@@ -664,6 +683,7 @@ public:
     Iterator<basetype> End() { return Iterator<basetype>(*this, dims_); }
 };
 
+
 template <DataType DT>
 class ConstView : public Image
 {
@@ -687,6 +707,11 @@ public:
         meta_ = img.meta_;
         hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
         dev_ = img.dev_;
+    }
+
+    ConstView(const Image& img, const std::vector<int>& start, const std::vector<int>& size) : ConstView(img)
+    {
+        CropViewInternal(*this, start, size);
     }
 
     const basetype& operator()(const std::vector<int>& coords)
