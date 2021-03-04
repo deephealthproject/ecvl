@@ -639,7 +639,7 @@ void DropColorChannel(Image& src);
 /** @brief Normalize Image image with mean and standard deviation.
 
 The Normalize creates an Image in which each pixel of the Image is subtracted by mean and divide by std.
-Useful for normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.
+Useful to normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.
 
 @param[in] src Image to normalize.
 @param[out] dst Output normalized Image.
@@ -647,8 +647,18 @@ Useful for normalize a dataset, in fact normalization helps to get the data with
 @param[in] std Standard deviation to use for normalization.
 */
 void Normalize(const Image& src, Image& dst, const double& mean, const double& std);
-//void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std);
 
+/** @brief Normalize xyc Image image with separate mean and standard deviation for each color channel.
+
+The Normalize creates an Image in which each pixel of the input xyc Image is subtracted by the mean and divide by the std for its channel.
+Useful to normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.
+
+@param[in] src Image to normalize.
+@param[out] dst Output normalized Image.
+@param[in] mean Vector of means to use for normalization.
+@param[in] std Vector of standard deviations to use for normalization.
+*/
+void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std);
 
 /** @brief Crops the given image at the center.
 

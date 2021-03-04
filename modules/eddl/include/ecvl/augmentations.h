@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <iterator>
 #include <unordered_map>
+#include <vector>
 
 namespace ecvl
 {
@@ -143,6 +144,20 @@ public:
             if (p.type_ != type) {
                 throw std::runtime_error(fn_name_ + ": " + name + " parameter must be a " + param::to_string(type));
             }
+            value = p;
+            return true;
+        }
+        if (required) {
+            throw std::runtime_error(fn_name_ + ": " + name + " is a required parameter");
+        }
+        return false;
+    }
+
+    bool GenericGet(const std::string& name, bool required, param& value)
+    {
+        auto it = m_.find(name);
+        if (it != end(m_)) {
+            auto& p = it->second;
             value = p;
             return true;
         }
@@ -1223,11 +1238,21 @@ public:
 */
 class AugNormalize : public Augmentation
 {
-    double mean_, std_;
+    double mean_ = 0., std_ = 1.;
+
+    std::vector<double> ch_mean_;
+    std::vector<double> ch_std_;
+
+    bool per_channel_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        Normalize(img, img, mean_, std_);
+        if (per_channel_) {
+            Normalize(img, img, ch_mean_, ch_std_);
+        }
+        else {
+            Normalize(img, img, mean_, std_);
+        }
     }
 public:
     /** @brief AugNormalize constructor
@@ -1235,18 +1260,42 @@ public:
     @param[in] mean Mean to substract from all pixel.
     @param[in] std Standard deviation to use for normalization.
     */
-    AugNormalize(const double& mean, const double& std) : mean_(mean), std_(std) {}
+    AugNormalize(const double& mean, const double& std) : mean_(mean), std_(std), per_channel_(false) {}
+
+    /** @brief AugNormalize constructor with separate statistics for each channel
+
+    @param[in] mean Per channel mean to substract from all pixel.
+    @param[in] std Per channel standard deviation to use for normalization.
+    */
+    AugNormalize(const std::vector<double>& mean, const std::vector<double>& std) : ch_mean_(mean), ch_std_(std), per_channel_(true) {}
 
     AugNormalize(std::istream& is)
     {
         auto m = param::read(is, "AugNormalize");
         param p;
 
-        m.Get("mean", param::type::number, true, p);
-        mean_ = p.vals_[0];
+        m.GenericGet("mean", true, p);
+        if (p.type_ == param::type::number) {
+            mean_ = p.vals_[0];
+            per_channel_ = false;
+        }
+        else if (p.type_ == param::type::vector) {
+            ch_mean_ = p.vals_;
+            per_channel_ = true;
+        }
+        else {
+            throw std::runtime_error("AugNormalize: invalid mean type");
+        }
 
-        m.Get("std", param::type::number, true, p);
-        std_ = p.vals_[0];
+        if (per_channel_ == false) {
+            m.Get("std", param::type::number, true, p);
+            std_ = p.vals_[0];
+        }
+        else {
+            m.Get("std", param::type::vector, true, p);
+            ch_std_ = p.vals_;
+        }
+
     }
 };
 

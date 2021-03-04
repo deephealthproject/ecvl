@@ -167,6 +167,7 @@ public:
     virtual std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Normalize(const Image& src, Image& dst, const double& mean, const double& std) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };

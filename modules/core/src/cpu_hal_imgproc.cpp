@@ -2085,11 +2085,48 @@ struct NormalizeStruct
     }
 };
 
+// Only works for channels xyc
+template <DataType SDT>
+struct NormalizeChannelsStruct
+{
+    static void _(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        
+        for (int c = 0; c < src.channels_.size(); ++c) {
+            ConstView<SDT> src_v(src, { 0, 0, c }, {src.dims_[0], src.dims_[1], 1});
+            View<SDT> dst_v(tmp, { 0, 0, c }, { src.dims_[0], src.dims_[1], 1 });
+
+            auto tmp_it = dst_v.Begin();
+            auto src_it = src_v.Begin();
+            auto src_end = src_v.End();
+            for (; src_it != src_end; ++src_it, ++tmp_it) {
+                *tmp_it = saturate_cast<srctype>((*src_it - mean[c]) / std[c]);
+            }
+        }
+
+        dst = std::move(tmp);
+    }
+};
+
 void CpuHal::Normalize(const Image& src, Image& dst, const double& mean, const double& std)
 {
     Table1D<NormalizeStruct> table;
     table(src.elemtype_)(src, dst, mean, std);
 }
+
+void CpuHal::Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std)
+{
+   
+    if (src.channels_ != "xyc") {
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("CpuHal::Normalize with multiple means and stds require xyc channels\n")
+    }
+
+    Table1D<NormalizeChannelsStruct> table;
+    table(src.elemtype_)(src, dst, mean, std);
+}
+
 
 template <DataType SDT>
 struct CenterCropStruct

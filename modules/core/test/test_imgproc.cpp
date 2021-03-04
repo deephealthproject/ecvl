@@ -704,8 +704,8 @@ TEST_F(Imgproc, CCLSameDst##type) \
 \
 TEST_F(Imgproc, Normalize##type) \
 { \
-    const double mean = 39; \
-    const double std = 17.5783958312469; \
+    constexpr double mean = 39.0; \
+    constexpr double std = 17.5783958312469; \
     Normalize(g1_##type, out, mean, std); \
     View<DataType::type> out_v(out); \
     EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g1_##type##_v({ 0,0,0 }) - mean) / std)); \
@@ -732,6 +732,25 @@ TEST_F(Imgproc, Normalize##type) \
     EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean) / std)); \
     EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean) / std)); \
 } \
+TEST_F(Imgproc, NormalizeChannels##type) \
+{ \
+    const std::vector<double> mean = { 39.0, 38.0, 33.0 }; \
+    const std::vector<double> std = { 17.5783958312469, 14.5783958312469, 23.5783958312469 }; \
+    Normalize(rgb2_##type, out, mean, std); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 1,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 1,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,2 }) - mean[2]) / std[2])); \
+    EXPECT_TRUE(out_v({ 1,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,2 }) - mean[2]) / std[2])); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean[2]) / std[2])); \
+    EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean[2]) / std[2])); \
+} \
 \
 TEST_F(Imgproc, CenterCrop##type) \
 { \
@@ -752,7 +771,7 @@ TEST_F(Imgproc, CenterCrop##type) \
     EXPECT_TRUE(out_v({ 0,0,1 }) == 50); \
     EXPECT_TRUE(out_v({ 0,0,2 }) == 50); \
     EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 3)); \
-} 
+}
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

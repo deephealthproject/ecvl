@@ -698,6 +698,16 @@ void Normalize(const Image& src, Image& dst, const double& mean, const double& s
 
     return src.hal_->Normalize(src, dst, mean, std);
 }
+void Normalize(const Image& src, Image& dst, const vector<double>& mean, const vector<double>& std)
+{
+    AlwaysCheck(src, dst);
+
+    if (src.dims_.size() != mean.size() || src.dims_.size() != std.size()) {
+        ECVL_ERROR_WRONG_PARAMS("mean and std have different sizes from src.dims_")
+    }
+
+    return src.hal_->Normalize(src, dst, mean, std);
+}
 
 void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size)
 {
