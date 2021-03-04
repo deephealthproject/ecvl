@@ -155,17 +155,17 @@ public:
                                                          If this is different from ColorType::none,
                                                          the channels_ string must contain a 'c' and the
                                                          corresponding dimension must have the appropriate
-                                                         value. See @ref ColorType for the possible values. 
-														 
-														 If colortype_ is ColorType::none, then the image 
-														 should not have a 'c' in the channels_ string. */
+                                                         value. See @ref ColorType for the possible values.
+
+                                                         If colortype_ is ColorType::none, then the image
+                                                         should not have a 'c' in the channels_ string. */
 
     std::vector<float>          spacings_;          /**< @brief Space between pixels/voxels. */
                                                     /**< Vector with the same size as @ref dims_, storing the
                                                          distance in mm between consecutive pixels/voxels
                                                          on every axis. */
 
-    uint8_t*                    data_;              /**< @brief Pointer to Image data.
+    uint8_t* data_;              /**< @brief Pointer to Image data.
 
                                                          If the Image is not the owner
                                                          of data, for example when using Image views, this
@@ -176,7 +176,7 @@ public:
     bool                        contiguous_;        /**< @brief Whether the image is stored contiguously or not in memory. */
 
     MetaData* meta_;                                /**< @brief Pointer to Image MetaData. */
-    HardwareAbstractionLayer*   hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
+    HardwareAbstractionLayer* hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
 
                                                          It can be CpuHal or ShallowCpuHal. The
                                                          former is responsible for allocating and deallocating data,
@@ -606,18 +606,21 @@ static void CropViewInternal(ViewType& view, const std::vector<int>& start, cons
     }
 
     view.data_ = view.Ptr(start);
-    view.datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
 
-    // TODO decomment the following lines and calculate new datasize
-    //if (view.contiguous_) {
-    //    for (int i = 0; i < view.dims_.size() - 1; ++i) {
-    //        if (new_dims[i] != view.dims_[i]) {
-    //            view.contiguous_ = false;
-    //        }
-    //    }
-    //}
+    if (view.contiguous_) {
+        for (int i = 0; i < view.dims_.size() - 1; ++i) {
+            if (new_dims[i] != view.dims_[i]) {
+                view.contiguous_ = false;
+            }
+        }
+    }
+    if (view.contiguous_) {
+        view.datasize_ = std::accumulate(std::begin(new_dims), std::end(new_dims), size_t(view.elemsize_), std::multiplies<size_t>());
+    }
+    else {
+        view.datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
+    }
 
-    view.contiguous_ = false;
     view.dims_ = std::move(new_dims);
 
 }
@@ -948,11 +951,11 @@ void CopyImage(const Image& src, Image& dst, DataType new_type, const std::strin
 
 /** @brief Performs a shallow copy of the source Image into the destination.
 
-The ShallowCopyImage() procedure takes an Image and copies the fields values into destination Image. 
-This means that source and destination Image(s) will point to the same Image data in memory. The data ownership 
+The ShallowCopyImage() procedure takes an Image and copies the fields values into destination Image.
+This means that source and destination Image(s) will point to the same Image data in memory. The data ownership
 of the source Image will be preserved, <em>i.e.</em> the result of the IsOwner() method on the source Image
-will be the same before and after the execution of the ShallowCopyImage(). Destination Image will never 
-be the owner of the data. Source and destination Image(s) cannot be the same. 
+will be the same before and after the execution of the ShallowCopyImage(). Destination Image will never
+be the owner of the data. Source and destination Image(s) cannot be the same.
 
 @param[in] src Source Image to be shallow copied into destination Image.
 @param[out] dst Destination Image that will hold a copy of the source Image field value. Cannot be the source Image.
