@@ -69,11 +69,11 @@ int main()
     TensorToView(t, view);
 
     //SequentialAugmentationContainer
-    //	AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
-    //	AugAdditiveLaplaceNoise std_dev=[0,51]
-    //	AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0
-    //	AugAdditivePoissonNoise lambda=[0,40]
-    //	AugResizeDim dims=(30,30) interp="linear"
+    // AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
+    // AugAdditiveLaplaceNoise std_dev=[0,51]
+    // AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0
+    // AugAdditivePoissonNoise lambda=[0,40]
+    // AugResizeDim dims=(30,30) interp="linear"
     //end
     stringstream ss(
         "SequentialAugmentationContainer\n"
@@ -82,6 +82,7 @@ int main()
         "    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
         "    AugAdditivePoissonNoise lambda=[0,40]\n"
         "    AugResizeDim dims=(30,30) interp=\"linear\"\n"
+        "    AugNormalize mean=(0.485, 0.456, 0.406) std=(0.229, 0.224, 0.225)\n"
         "end\n"
     );
     auto newdeal_augs = AugmentationFactory::create(ss);

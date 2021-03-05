@@ -100,6 +100,7 @@ public:
     std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds) override;
     void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) override;
     void Normalize(const Image& src, Image& dst, const double& mean, const double& std) override;
+    void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) override;
     void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
