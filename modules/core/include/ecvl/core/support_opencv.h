@@ -21,10 +21,11 @@ namespace ecvl {
 /** @brief Convert a cv::Mat into an ecvl::Image.
 
 @param[in] m Input OpenCV Mat.
+@param[in] ctype Input ColorType of the returned ecvl::Image. If not provided the ColorType is guessed from OpenCV Mat.
 
 @return ECVL image.
 */
-ecvl::Image MatToImage(const cv::Mat& m);
+ecvl::Image MatToImage(const cv::Mat& m, ColorType ctype = ColorType::none);
 
 /** @brief Convert a std::vector<cv::Mat> into an ecvl::Image.
 
