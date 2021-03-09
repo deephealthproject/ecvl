@@ -1295,7 +1295,6 @@ public:
             m.Get("std", param::type::vector, true, p);
             ch_std_ = p.vals_;
         }
-
     }
 };
 
@@ -1331,6 +1330,30 @@ public:
             size_.emplace_back(static_cast<int>(x));
         }
     }
+};
+
+/** @brief Augmentation ToFloat32
+
+This augmentation converts an Image in the range [0, 255] to an Image in the range [0, 1] having DataType::float32.
+
+@anchor AugToFloat32
+*/
+class AugToFloat32 : public Augmentation
+{
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        img.ConvertTo(DataType::float32);
+        img.Div(255);
+
+        if (!gt.IsEmpty()) {
+            const_cast<Image&>(gt).ConvertTo(DataType::float32);
+            const_cast<Image&>(gt).Div(255);
+        }
+    }
+public:
+    /** @brief AugToFloat32 constructor */
+    AugToFloat32() {}
+    AugToFloat32(std::istream& is) {}
 };
 } // namespace ecvl
 

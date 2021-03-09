@@ -26,10 +26,11 @@ using namespace std;
 int main()
 {
     // Open an Image
-    Image img;
+    Image img, tmp;
     if (!ImRead("../examples/data/test.jpg", img)) {
         return EXIT_FAILURE;
     }
+    tmp = img;
 
     // Create an augmentation sequence to be applied to the image
     auto augs = make_shared<SequentialAugmentationContainer>(
@@ -38,10 +39,12 @@ int main()
         AugFlip(.5),
         AugGammaContrast({ 3, 5 }),
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
-        AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0.5),
+        AugCoarseDropout({ 0, 0.55 }, { 0.02, 0.1 }, 0.5),
         AugAdditivePoissonNoise({ 0, 40 }),
         AugResizeDim({ 500, 500 }),
-        AugCenterCrop({ 224, 224 })
+        AugCenterCrop({ 224, 224 }),
+        AugToFloat32(),
+        AugNormalize({ 0.485, 0.456, 0.406 }, { 0.229, 0.224, 0.225 })
         );
 
     // Replace the random seed with a fixed one
@@ -68,24 +71,19 @@ int main()
     cout << "Executing TensorToView" << endl;
     TensorToView(t, view);
 
-    //SequentialAugmentationContainer
-    // AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
-    // AugAdditiveLaplaceNoise std_dev=[0,51]
-    // AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0
-    // AugAdditivePoissonNoise lambda=[0,40]
-    // AugResizeDim dims=(30,30) interp="linear"
-    //end
     stringstream ss(
         "SequentialAugmentationContainer\n"
-        "    AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp=\"linear\"\n"
+        "    AugRotate angle=[-5,5] center=(0,0) interp=\"linear\"\n"
         "    AugAdditiveLaplaceNoise std_dev=[0,0.51]\n"
         "    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
         "    AugAdditivePoissonNoise lambda=[0,40]\n"
-        "    AugResizeDim dims=(30,30) interp=\"linear\"\n"
+        "    AugResizeDim dims=(224,224) interp=\"linear\"\n"
+        "    AugToFloat32\n"
         "    AugNormalize mean=(0.485, 0.456, 0.406) std=(0.229, 0.224, 0.225)\n"
         "end\n"
     );
     auto newdeal_augs = AugmentationFactory::create(ss);
+    newdeal_augs->Apply(tmp);
 
     // Create the augmentations to be applied to the dataset images during training and test.
     // nullptr is given as augmentation for validation because this split doesn't exist in the mnist dataset.
