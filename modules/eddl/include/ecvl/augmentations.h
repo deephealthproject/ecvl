@@ -1217,7 +1217,7 @@ public:
     }
     AugSaltAndPepper(std::istream& is)
     {
-        auto m = param::read(is, "AugSalt");
+        auto m = param::read(is, "AugSaltAndPepper");
         param p;
 
         // seed is managed by AugmentationParam
@@ -1334,7 +1334,7 @@ public:
 
 /** @brief Augmentation ToFloat32
 
-This augmentation converts an Image in the range [0, 255] to an Image in the range [0, 1] having DataType::float32.
+This augmentation converts an Image to DataType::float32.
 
 @anchor AugToFloat32
 */
@@ -1343,17 +1343,73 @@ class AugToFloat32 : public Augmentation
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         img.ConvertTo(DataType::float32);
-        img.Div(255);
 
         if (!gt.IsEmpty()) {
             const_cast<Image&>(gt).ConvertTo(DataType::float32);
-            const_cast<Image&>(gt).Div(255);
         }
     }
 public:
     /** @brief AugToFloat32 constructor */
     AugToFloat32() {}
     AugToFloat32(std::istream& is) {}
+};
+
+/** @brief Augmentation DivBy255
+
+This augmentation divides an Image by 255.
+
+@anchor AugDivBy255
+*/
+class AugDivBy255 : public Augmentation
+{
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        img.Div(255);
+
+        if (!gt.IsEmpty()) {
+            const_cast<Image&>(gt).Div(255);
+        }
+    }
+public:
+    /** @brief AugDivBy255 constructor */
+    AugDivBy255() {}
+    AugDivBy255(std::istream& is) {}
+};
+
+/** @brief Augmentation wrapper for ecvl::AugScaleTo.
+
+@anchor AugScaleTo
+*/
+class AugScaleTo : public Augmentation
+{
+    double new_min_, new_max_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        ScaleTo(img, img, new_min_, new_max_);
+
+        if (!gt.IsEmpty()) {
+            ScaleTo(gt, const_cast<Image&>(gt), new_min_, new_max_);
+        }
+    }
+public:
+    /** @brief AugScaleTo constructor
+
+     @param[in] new_min double which indicates the new minimum value.
+     @param[in] new_max double which indicates the new maximum value.
+     */
+    AugScaleTo(const double& new_min, const double& new_max) : new_min_{ new_min }, new_max_{ new_max } {}
+    AugScaleTo(std::istream& is)
+    {
+        auto m = param::read(is, "AugScaleTo");
+        param p;
+
+        m.Get("new_min", param::type::number, true, p);
+        new_min_ = p.vals_[0];
+
+        m.Get("new_max", param::type::number, true, p);
+        new_max_ = p.vals_[0];
+    }
 };
 } // namespace ecvl
 

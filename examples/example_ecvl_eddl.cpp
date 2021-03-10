@@ -44,6 +44,7 @@ int main()
         AugResizeDim({ 500, 500 }),
         AugCenterCrop({ 224, 224 }),
         AugToFloat32(),
+        AugDivBy255(),
         AugNormalize({ 0.485, 0.456, 0.406 }, { 0.229, 0.224, 0.225 })
         );
 
@@ -79,6 +80,7 @@ int main()
         "    AugAdditivePoissonNoise lambda=[0,40]\n"
         "    AugResizeDim dims=(224,224) interp=\"linear\"\n"
         "    AugToFloat32\n"
+        "    AugDivBy255\n"
         "    AugNormalize mean=(0.485, 0.456, 0.406) std=(0.229, 0.224, 0.225)\n"
         "end\n"
     );

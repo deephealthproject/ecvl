@@ -80,6 +80,8 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugNormalize);
     AUG(AugCenterCrop);
     AUG(AugToFloat32);
+    AUG(AugDivBy255);
+    AUG(AugScaleTo);
 
     return nullptr; // Maybe throw?
 }
