@@ -670,6 +670,17 @@ The function crops Image src at the center and outputs the result in dst.
 */
 void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size);
 
+/** @brief Linearly scale an Image into a new range.
+
+The function linearly rescale the Image having values in [min,max] into a new arbitrary range [new_min,new_max].
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] new_min double which indicates the new minimum value.
+@param[in] new_max double which indicates the new maximum value.
+*/
+void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max);
+
 /** @example example_moments.cpp
 This is an example application of the raw and central moments.
 */

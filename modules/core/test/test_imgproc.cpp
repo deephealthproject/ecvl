@@ -771,9 +771,22 @@ TEST_F(Imgproc, CenterCrop##type) \
     EXPECT_TRUE(out_v({ 0,0,1 }) == 50); \
     EXPECT_TRUE(out_v({ 0,0,2 }) == 50); \
     EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 3)); \
+} \
+\
+TEST_F(Imgproc, ScaleTo_##type) \
+{ \
+    ScaleTo(g2_##type, out, 14, 60); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) == 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) == 60); \
+    ScaleTo(g2_##type, out, 0, 1); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
 }
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
-
 } // namespace

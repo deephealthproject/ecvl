@@ -719,4 +719,12 @@ void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>
 
     return src.hal_->CenterCrop(src, dst, size);
 }
+
+void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max)
+{
+    AlwaysCheck(src, dst);
+    return src.hal_->ScaleTo(src, dst, new_min, new_max);
+}
+
+
 } // namespace ecvl

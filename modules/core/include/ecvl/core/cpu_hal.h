@@ -102,7 +102,8 @@ public:
     void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval) override;
     void Normalize(const Image& src, Image& dst, const double& mean, const double& std) override;
     void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) override;
-    void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) override;
+    void CenterCrop(const Image& src, Image& dst, const std::vector<int>& size) override;
+    void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

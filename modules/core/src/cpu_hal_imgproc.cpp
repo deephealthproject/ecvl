@@ -2169,4 +2169,39 @@ void CpuHal::CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vec
     Table1D<CenterCropStruct> table;
     table(src.elemtype_)(src, dst, size);
 }
+
+template<DataType SDT>
+struct ScaleToStruct
+{
+    static void _(const Image& src, Image& dst, const double& new_min, const double& new_max)
+    {
+        // Formula
+        // newvalue = (new_max - new_min)/(max - min)*(value - max) + new_max
+        // or
+        // newvalue = a * value + b
+        // a = (new_max - new_min)/(max - min)
+        // b = new_max - a * max
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(dst);
+
+        TypeInfo_t<SDT> max = *std::max_element(src_v.Begin(), src_v.End());
+        TypeInfo_t<SDT> min = *std::min_element(src_v.Begin(), src_v.End());
+        double a = (new_max - new_min) / (max - min);
+        double b = new_max - a * max;
+
+        auto dst_it = dst_v.Begin();
+        auto src_it = src_v.Begin(), src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++dst_it) {
+            *dst_it = saturate_cast<TypeInfo_t<SDT>>(*src_it * a + b);
+        }
+    }
+};
+
+void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max)
+{
+    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_ };
+    static constexpr Table1D<ScaleToStruct> table;
+    table(src.elemtype_)(src, tmp, new_min, new_max);
+    dst = std::move(tmp);
+}
 } // namespace ecvl
