@@ -1,6 +1,8 @@
 /.vs*
+/.idea*
 /[Bb]uild*
 /[Bb]in*
+/cmake-build*
 
 **/data/*
 
