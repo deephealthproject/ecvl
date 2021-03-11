@@ -43,8 +43,7 @@ int main()
         AugAdditivePoissonNoise({ 0, 40 }),
         AugResizeDim({ 500, 500 }),
         AugCenterCrop({ 224, 224 }),
-        AugToFloat32(),
-        AugDivBy255(),
+        AugToFloat32(255),
         AugNormalize({ 0.485, 0.456, 0.406 }, { 0.229, 0.224, 0.225 })
         );
 
@@ -79,8 +78,7 @@ int main()
         "    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
         "    AugAdditivePoissonNoise lambda=[0,40]\n"
         "    AugResizeDim dims=(224,224) interp=\"linear\"\n"
-        "    AugToFloat32\n"
-        "    AugDivBy255\n"
+        "    AugToFloat32 divisor=255\n"
         "    AugNormalize mean=(0.485, 0.456, 0.406) std=(0.229, 0.224, 0.225)\n"
         "end\n"
     );

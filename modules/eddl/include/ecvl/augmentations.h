@@ -1334,29 +1334,46 @@ public:
 
 /** @brief Augmentation ToFloat32
 
-This augmentation converts an Image to DataType::float32.
+This augmentation converts an Image (and ground truth) to DataType::float32 dividing it by divisor (or divisor_gt) parameter.
 
 @anchor AugToFloat32
 */
 class AugToFloat32 : public Augmentation
 {
+    double divisor_, divisor_gt_;
+
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         img.ConvertTo(DataType::float32);
+        img.Div(divisor_);
 
         if (!gt.IsEmpty()) {
             const_cast<Image&>(gt).ConvertTo(DataType::float32);
+            img.Div(divisor_gt_);
         }
     }
 public:
-    /** @brief AugToFloat32 constructor */
-    AugToFloat32() {}
-    AugToFloat32(std::istream& is) {}
+    /** @brief AugToFloat32 constructor
+
+    @param[in] divisor Value used to divide the img Image.
+    @param[in] divisor_gt Value used to divide the gt Image.
+    */
+    AugToFloat32(const double& divisor = 1., const double& divisor_gt = 1.) : divisor_{ divisor }, divisor_gt_{ divisor_gt } {}
+    AugToFloat32(std::istream& is)
+    {
+        auto m = param::read(is, "AugToFloat32");
+        param p;
+
+        m.Get("divisor", param::type::number, false, p);
+        divisor_ = p.vals_[0];
+        m.Get("divisor_gt", param::type::number, false, p);
+        divisor_gt_ = p.vals_[0];
+    }
 };
 
 /** @brief Augmentation DivBy255
 
-This augmentation divides an Image by 255.
+This augmentation divides an Image (and ground truth if provided) by 255.
 
 @anchor AugDivBy255
 */
@@ -1387,10 +1404,6 @@ class AugScaleTo : public Augmentation
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         ScaleTo(img, img, new_min_, new_max_);
-
-        if (!gt.IsEmpty()) {
-            ScaleTo(gt, const_cast<Image&>(gt), new_min_, new_max_);
-        }
     }
 public:
     /** @brief AugScaleTo constructor
