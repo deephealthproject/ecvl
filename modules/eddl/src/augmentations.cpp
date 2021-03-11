@@ -20,7 +20,9 @@ std::default_random_engine AugmentationParam::re_(std::random_device{}());
 param_list param::read(std::istream& is, std::string fn_name_)
 {
     param_list m(move(fn_name_));
-    is >> std::ws;
+    if (is.peek() != '\n') {
+        is >> std::ws;
+    }
     while (is.peek() >= 0 && is.peek() != '\n') { // peek first, then check if it failed
         param p(is);
         m[p.name_] = p;
@@ -77,6 +79,9 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugSaltAndPepper);
     AUG(AugNormalize);
     AUG(AugCenterCrop);
+    AUG(AugToFloat32);
+    AUG(AugDivBy255);
+    AUG(AugScaleTo);
 
     return nullptr; // Maybe throw?
 }

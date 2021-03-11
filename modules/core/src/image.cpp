@@ -273,6 +273,15 @@ void ShallowCopyImage(const Image& src, Image& dst)
     dst.dev_        = src.dev_;
 }
 
+void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate)
+{
+    if (src.elemtype_ == dtype) {
+        dst = src;
+        return;
+    }
+    src.hal_->ConvertTo(src, dst, dtype, saturate);
+}
+
 Image& Image::operator+=(const Image& rhs)
 {
     Add(rhs);

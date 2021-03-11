@@ -18,7 +18,7 @@
 
 namespace ecvl
 {
-Image MatToImage(const cv::Mat& m)
+Image MatToImage(const cv::Mat& m, ColorType ctype)
 {
     Image img;
 
@@ -93,7 +93,12 @@ Image MatToImage(const cv::Mat& m)
             const cv::Mat& c = ch[i];
             coords.back() = i;
             //memcpy(img.data_ + (c.dataend - c.datastart) * i, c.data, c.dataend - c.datastart);
-            memcpy(img.Ptr(coords), c.data, c.dataend - c.datastart);
+            img.hal_->MemCopy(img.Ptr(coords), c.data, c.dataend - c.datastart);
+        }
+
+        // Switch to specific colortype if given
+        if (ctype != ColorType::none && ctype != img.colortype_) {
+            ChangeColorSpace(img, img, ctype);
         }
     }
     else {
@@ -143,7 +148,8 @@ cv::Mat ImageToMat(const Image& img)
     int mdims[] = { tmp.dims_[2], tmp.dims_[1] }; // Swap dimensions to have rows, cols
 
     cv::Mat m(2, mdims, type);
-    memcpy(m.data, tmp.data_, tmp.datasize_);
+    //memcpy(m.data, tmp.data_, tmp.datasize_);
+    img.hal_->MemCopy(m.data, tmp.data_, tmp.datasize_);
 
     return m;
 }
@@ -220,7 +226,9 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
             for (size_t j = 0; j < v.size(); j++) {
                 cv::split(v[j], vchannels);
 
-                memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
+                /*memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
+                    vchannels[i].data, img.strides_[img.strides_.size() - 2]);*/
+                img.hal_->MemCopy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
                     vchannels[i].data, img.strides_[img.strides_.size() - 2]);
             }
         }

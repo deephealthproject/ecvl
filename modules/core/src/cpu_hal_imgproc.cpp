@@ -61,7 +61,7 @@ void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vect
 
     cv::Mat m;
     cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_);
 }
 
 void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
@@ -73,7 +73,7 @@ void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>
 
     cv::Mat m;
     cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_);
 }
 
 void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
@@ -222,7 +222,7 @@ void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, co
     rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
     cv::Mat m;
     cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_);
 }
 
 void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp)
@@ -249,7 +249,7 @@ void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double 
 
     cv::Mat m;
     cv::warpAffine(ImageToMat(src), m, rot_matrix, { nw, nh }, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_);
 }
 
 void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
@@ -1534,7 +1534,7 @@ void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kerne
     int op_ = static_cast<int>(op);
     morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, static_cast<int>(border_type), border_value);
 
-    dst = MatToImage(dst_);
+    dst = MatToImage(dst_, src.colortype_);
 }
 
 void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag)
@@ -1549,7 +1549,7 @@ void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, dou
 
     cv::inpaint(src_, inpaintMask_, dst_, inpaintRadius, flag_);
 
-    dst = MatToImage(dst_);
+    dst = MatToImage(dst_, src.colortype_);
 }
 
 void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev)
@@ -1714,10 +1714,7 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
 
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
-    dst = MatToImage(tmp);
-    if (dst.colortype_ != src.colortype_) {
-        ChangeColorSpace(dst, dst, src.colortype_);
-    }
+    dst = MatToImage(tmp, src.colortype_);
 }
 
 void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp,
@@ -1773,10 +1770,7 @@ void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double
 
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
-    dst = MatToImage(tmp);
-    if (dst.colortype_ != src.colortype_) {
-        ChangeColorSpace(dst, dst, src.colortype_);
-    }
+    dst = MatToImage(tmp, src.colortype_);
 }
 
 void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit,
@@ -1816,10 +1810,7 @@ void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<fl
 
     cv::remap(ImageToMat(src), tmp, map1, map2, GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
 
-    dst = MatToImage(tmp);
-    if (dst.colortype_ != src.colortype_) {
-        ChangeColorSpace(dst, dst, src.colortype_);
-    }
+    dst = MatToImage(tmp, src.colortype_);
 }
 
 enum class NoiseType
@@ -2062,7 +2053,7 @@ void CpuHal::DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, do
     cv::Mat m = ImageToMat(src);
     cv::Scalar opencv_color = vsize(color) == 1 ? cv::Scalar(color[0]) : cv::Scalar(color[0], color[1], color[2]);
     cv::ellipse(m, cv::Point2i{ center[0], center[1] }, cv::Size{ axes[0], axes[1] }, angle, 0, 360, opencv_color, thickness);
-    src = ecvl::MatToImage(m);
+    src = ecvl::MatToImage(m, src.colortype_);
 }
 
 template <DataType SDT>
@@ -2177,5 +2168,40 @@ void CpuHal::CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vec
 {
     Table1D<CenterCropStruct> table;
     table(src.elemtype_)(src, dst, size);
+}
+
+template<DataType SDT>
+struct ScaleToStruct
+{
+    static void _(const Image& src, Image& dst, const double& new_min, const double& new_max)
+    {
+        // Formula
+        // newvalue = (new_max - new_min)/(max - min)*(value - max) + new_max
+        // or
+        // newvalue = a * value + b
+        // a = (new_max - new_min)/(max - min)
+        // b = new_max - a * max
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(dst);
+
+        TypeInfo_t<SDT> max = *std::max_element(src_v.Begin(), src_v.End());
+        TypeInfo_t<SDT> min = *std::min_element(src_v.Begin(), src_v.End());
+        double a = (new_max - new_min) / (max - min);
+        double b = new_max - a * max;
+
+        auto dst_it = dst_v.Begin();
+        auto src_it = src_v.Begin(), src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++dst_it) {
+            *dst_it = saturate_cast<TypeInfo_t<SDT>>(*src_it * a + b);
+        }
+    }
+};
+
+void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max)
+{
+    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_ };
+    static constexpr Table1D<ScaleToStruct> table;
+    table(src.elemtype_)(src, tmp, new_min, new_max);
+    dst = std::move(tmp);
 }
 } // namespace ecvl

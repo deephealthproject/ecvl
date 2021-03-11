@@ -553,6 +553,12 @@ public:
         hal_->SetTo(*this, value);
     }
 
+    /** @brief Convert Image to another DataType. */
+    void ConvertTo(DataType dtype, bool saturate = true)
+    {
+        hal_->ConvertTo(*this, *this, dtype, saturate);
+    }
+
     Image operator-() const;
 
     Image& operator+=(const Image& rhs);
@@ -572,10 +578,9 @@ public:
     friend Image operator/(Image lhs, const Image& rhs);
 };
 
-
 template <typename ViewType>
-static void CropViewInternal(ViewType& view, const std::vector<int>& start, const std::vector<int>& size) {
-
+static void CropViewInternal(ViewType& view, const std::vector<int>& start, const std::vector<int>& size)
+{
     std::vector<int> new_dims;
     int ssize = vsize(size);
     for (int i = 0; i < ssize; ++i) {
@@ -622,7 +627,6 @@ static void CropViewInternal(ViewType& view, const std::vector<int>& start, cons
     }
 
     view.dims_ = std::move(new_dims);
-
 }
 
 #include "iterators_impl.inc.h"
@@ -685,7 +689,6 @@ public:
     Iterator<basetype> Begin() { return Iterator<basetype>(*this); }
     Iterator<basetype> End() { return Iterator<basetype>(*this, dims_); }
 };
-
 
 template <DataType DT>
 class ConstView : public Image
@@ -963,6 +966,18 @@ be the owner of the data. Source and destination Image(s) cannot be the same.
 @anchor ShallowCopyImage
 */
 void ShallowCopyImage(const Image& src, Image& dst);
+
+/** @brief Convert Image to another DataType. 
+* 
+@param[in] src Source Image to be converted into destination Image.
+@param[out] dst Destination Image that will hold a converted copy of the source Image.
+@param[in] dtype DataType Desired DataType of dst Image.
+@param[in] saturate Wheter to apply saturate_cast to avoid possible overflows.
+
+@anchor ConvertTo
+*/
+void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate = true);
+
 
 /** @example example_image_view.cpp
  Example of basic Image and View functions.

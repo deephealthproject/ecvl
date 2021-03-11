@@ -305,6 +305,36 @@ TEST_F(CoreArithmetics, SetTo10##type) \
         EXPECT_TRUE(*i == static_cast<TypeInfo_t<DataType::type>>(10)); \
     } \
 } \
+\
+TEST_F(CoreArithmetics, ConvertTo##type) \
+{ \
+    { \
+        Image img({ 2, 2, 1 }, DataType::type, "xyc", ColorType::GRAY); \
+        img.SetTo(std::numeric_limits<TypeInfo_t<DataType::type>>::max()); \
+        ConvertTo(img, out, DataType::uint8, true); \
+        View<DataType::type> img_v(img); \
+        EXPECT_TRUE(out.elemtype_ == DataType::uint8); \
+        View<DataType::uint8> out_v(out); \
+        auto i = img_v.Begin(), e = img_v.End(); \
+        auto o_i = out_v.Begin(); \
+        for (; i != e; ++i, ++o_i) { \
+            EXPECT_TRUE(*o_i == saturate_cast<TypeInfo_t<DataType::uint8>>(*i)); \
+        } \
+    } \
+    { \
+        Image img({ 2, 2, 1 }, DataType::type, "xyc", ColorType::GRAY); \
+        img.SetTo(std::numeric_limits<TypeInfo_t<DataType::type>>::max()); \
+        ConvertTo(img, out, DataType::int16, true); \
+        View<DataType::type> img_v(img); \
+        EXPECT_TRUE(out.elemtype_ == DataType::int16); \
+        View<DataType::int16> out_v(out); \
+        auto i = img_v.Begin(), e = img_v.End(); \
+        auto o_i = out_v.Begin(); \
+        for (; i != e; ++i, ++o_i) { \
+            EXPECT_TRUE(*o_i == saturate_cast<TypeInfo_t<DataType::int16>>(*i)); \
+        } \
+    } \
+}
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
@@ -348,7 +378,7 @@ TEST_F(CoreImage, GpuToCpu##type) { \
 #undef ECVL_TUPLE
 #endif
 
-#if 0 // Functions reimplementation needed
+#if 0 // TODO Functions reimplementation needed
 TEST_F(CoreArithmetics, Anduint8)
 {
     Image tmp(g2_uint8);

@@ -125,6 +125,8 @@ public:
     @param[in] bindings Desired order of Image channels.
     */
     virtual void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
+
     virtual void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Flip2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
@@ -169,6 +171,7 @@ public:
     virtual void Normalize(const Image& src, Image& dst, const double& mean, const double& std) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

@@ -21,21 +21,65 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
 
 ### Optional
 - [EDDL](https://github.com/deephealthproject/eddl), European Distributed Deep Learning Library (`ECVL_BUILD_EDDL` flag)
+  <details>
+  <summary>
+    EDDL Versions Compatibility
+  </summary>
+  <table>
+    <thead>
+      <tr>
+        <th>ECVL</th>
+        <th>EDDL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0.3.3</td>
+        <td>0.9.1b</td>
+      </tr>
+      <tr>
+        <td>0.3.2</td>
+        <td>0.9.1b</td>
+      </tr>
+      <tr>
+        <td>0.3.1</td>
+        <td>0.8.3</td>
+      </tr>
+      <tr>
+        <td>0.3.0</td>
+        <td>0.8.0</td>
+      </tr>
+      <tr>
+        <td>0.2.3</td>
+        <td>0.6.0</td>
+      </tr>
+      <tr>
+        <td>0.2.2</td>
+        <td>0.6.0</td>
+      </tr>
+      <tr>
+        <td>0.2.1</td>
+        <td>0.4.3</td>
+      </tr>
+      <tr>
+        <td>0.2.0</td>
+        <td>0.4.3</td>
+      </tr>
+      <tr>
+        <td>0.1.1</td>
+        <td>0.4.2</td>
+      </tr>
+      <tr>
+        <td>0.1.0</td>
+        <td>0.3.1</td>
+      </tr>
+    </tbody>
+  </table>
+  </details>
+
 - [wxWidgets](https://www.wxwidgets.org/), required if `ECVL_BUILD_GUI` flag is enabled (wxWidgets build steps available [here](https://github.com/deephealthproject/ecvl-applications/blob/master/README.md))
   - OpenGL 3.3 or later, required by the 3D viewer enabled by `ECVL_BUILD_GUI` flag
 - [OpenSlide](https://github.com/openslide/openslide), required with `ECVL_WITH_OPENSLIDE` flag
-
-#### EDDL Version Compatibility
-| ECVL  | EDDL  | 
-|:-----:|:-----:|
-| 0.3.1 | 0.8.3 |
-| 0.3.0 | 0.8.0 |
-| 0.2.3 | 0.6.0 |
-| 0.2.2 | 0.6.0 |
-| 0.2.1 | 0.4.3 |
-| 0.2.0 | 0.4.3 |
-| 0.1.1 | 0.4.2 |
-| 0.1.0 | 0.3.1 |
 
 ## Installation
 Clone and install ECVL with:
