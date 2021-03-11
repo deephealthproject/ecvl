@@ -34,6 +34,10 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
     </thead>
     <tbody>
       <tr>
+        <td>0.3.4</td>
+        <td>0.9.1b</td>
+      </tr>
+      <tr>
         <td>0.3.3</td>
         <td>0.9.1b</td>
       </tr>
@@ -117,7 +121,7 @@ cmake \
   -DECVL_WITH_OPENSLIDE=ON \
   -DCMAKE_INSTALL_PREFIX=install \
   -DOpenCV_DIR=/home/<user>/opencv/build \
-  -Deddl_DIR=/home/<user>/eddl/build/cmake \
+  -Deddl_DIR=/home/<user>/eddl/build/install/lib/cmake/eddl \
   -DOPENSLIDE_INCLUDE_DIRECTORIES=/home/<user>/openslide_src/include/openslide \
   -DOPENSLIDE_LIBRARIES=/home/<user>/openslide_src/lib/libopenslide.so \
   -DwxWidgets_CONFIG_EXECUTABLE=/home/<user>/wxWidgets/build/install/bin/wx-config ..
