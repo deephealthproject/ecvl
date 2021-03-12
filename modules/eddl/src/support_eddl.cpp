@@ -318,4 +318,45 @@ void DLDataset::LoadBatch(tensor& images)
         ++offset;
     }
 }
+
+Image MakeGrid(const tensor& t, int cols, bool normalize)
+{
+    const auto batch_size = t->shape[0];
+    cols = std::min(batch_size, cols);
+    const auto rows = static_cast<int>(std::ceil(static_cast<double>(batch_size) / cols));
+
+    Image image_t;
+    vector<Image> vimages;
+    for (int r = 0, b = 0; r < rows; ++r) {
+        vector<Image> himages;
+        for (int c = 0; c < cols; ++c) {
+            tensor tensor_t;
+            if (b < batch_size) {
+                tensor_t = t->select({ to_string(b) });
+                TensorToImage(tensor_t, image_t);
+                if (normalize) {
+                    ScaleTo(image_t, image_t, 0, 1);
+                }
+                image_t.Mul(255.);
+                image_t.channels_ = "xyc";
+                image_t.ConvertTo(DataType::uint8);
+                delete tensor_t;
+            }
+            else {
+                image_t = Image({ t->shape[3],t->shape[2],t->shape[1] }, DataType::uint8, "xyc", ColorType::none);
+                image_t.SetTo(0);
+            }
+            himages.push_back(image_t);
+            ++b;
+        }
+        if (himages.size() > 1) {
+            HConcat(himages, image_t);
+        }
+        vimages.push_back(image_t);
+    }
+    if (vimages.size() > 1) {
+        VConcat(vimages, image_t);
+    }
+    return image_t;
+}
 } // namespace ecvl

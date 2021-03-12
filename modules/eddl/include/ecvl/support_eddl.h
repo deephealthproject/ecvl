@@ -215,6 +215,18 @@ Image must have 3 dimensions "xy[czo]" (in any order). \n
 */
 void ImageToTensor(const Image& img, tensor& t, const int& offset);
 
+/** @brief Make a grid of images from a EDDL Tensor.
+
+Return a grid of Image from a EDDL Tensor.
+
+@param[in] img Input EDDL Tensor of shape (B x C x H x W).
+@param[in] cols Number of images displayed in each row of the grid.
+@param[in] normalize If true, shift the image to the range [0,1].
+
+@return Image taht contains the grid of images
+*/
+Image MakeGrid(const tensor& t, int cols = 8, bool normalize = false);
+
 /** @example example_ecvl_eddl.cpp
  Example of using ECVL with EDDL.
 */

@@ -92,11 +92,15 @@ int main()
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
         AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0),
         AugAdditivePoissonNoise({ 0, 40 }),
-        AugResizeDim({ 30, 30 })
+        AugResizeDim({ 30, 30 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
     auto test_augs = make_shared<SequentialAugmentationContainer>(
-        AugResizeDim({ 30, 30 })
+        AugResizeDim({ 30, 30 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
     DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
@@ -127,6 +131,10 @@ int main()
     cout << "Executing LoadBatch on test set" << endl;
     d.SetSplit(SplitType::test);
     d.LoadBatch(x, y);
+
+    // Save some input images
+    ImWrite("mnist_batch.png", MakeGrid(x, 8, false));
+    ImWrite("mnist_batch_normalized.png", MakeGrid(x, 8, true));
 
     delete x;
     delete y;
