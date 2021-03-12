@@ -1349,7 +1349,7 @@ class AugToFloat32 : public Augmentation
 
         if (!gt.IsEmpty()) {
             const_cast<Image&>(gt).ConvertTo(DataType::float32);
-            img.Div(divisor_gt_);
+            const_cast<Image&>(gt).Div(divisor_gt_);
         }
     }
 public:
