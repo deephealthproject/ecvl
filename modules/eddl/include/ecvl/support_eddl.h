@@ -20,7 +20,6 @@
 #include "ecvl/dataset_parser.h"
 
 #include <eddl/apis/eddl.h>
-#include <eddl/apis/eddlT.h>
 
 #include <mutex>
 
@@ -156,12 +155,12 @@ public:
     @param[out] images `tensor` which stores the batch of images.
     @param[out] labels `tensor` which stores the batch of labels.
     */
-    void LoadBatch(tensor& images, tensor& labels);
+    void LoadBatch(Tensor*& images, Tensor*& labels);
 
     /** @brief Load a batch into _images_ `tensor`. Useful for tests set when you don't have labels.
     @param[out] images `tensor` which stores the batch of images.
     */
-    void LoadBatch(tensor& images);
+    void LoadBatch(Tensor*& images);
 };
 
 /** @brief Convert an EDDL Tensor into an ECVL Image.
@@ -176,7 +175,7 @@ Tensor dimensions must be \f$C\f$ x \f$H\f$ x \f$W\f$ or \f$N\f$ x \f$C\f$ x \f$
 @param[out] img Output ECVL Image. It is a "xyo" with DataType::float32 and ColorType::none Image.
 
 */
-void TensorToImage(tensor& t, Image& img);
+void TensorToImage(Tensor*& t, Image& img);
 
 /** @brief Convert an EDDL Tensor into an ECVL View.
 
@@ -190,7 +189,7 @@ Tensor dimensions must be \f$C\f$ x \f$H\f$ x \f$W\f$ or \f$N\f$ x \f$C\f$ x \f$
 @param[out] v Output ECVL View. It is a "xyo" with ColorType::none View.
 
 */
-void TensorToView(tensor& t, View<DataType::float32>& v);
+void TensorToView(Tensor*& t, View<DataType::float32>& v);
 
 /** @brief Convert an ECVL Image into an EDDL Tensor.
 
@@ -201,7 +200,7 @@ Output Tensor will be created with shape \f$C\f$ x \f$H\f$ x \f$W\f$. \n
 @param[out] t Output EDDL Tensor. It is created inside the function.
 
 */
-void ImageToTensor(const Image& img, tensor& t);
+void ImageToTensor(const Image& img, Tensor*& t);
 
 /** @brief Insert an ECVL Image into an EDDL Tensor.
 
@@ -213,7 +212,7 @@ Image must have 3 dimensions "xy[czo]" (in any order). \n
 @param[in] offset How many images are already stored in the Tensor.
 
 */
-void ImageToTensor(const Image& img, tensor& t, const int& offset);
+void ImageToTensor(const Image& img, Tensor*& t, const int& offset);
 
 /** @example example_ecvl_eddl.cpp
  Example of using ECVL with EDDL.

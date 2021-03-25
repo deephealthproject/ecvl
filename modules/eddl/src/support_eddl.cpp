@@ -25,7 +25,7 @@ using namespace ecvl::filesystem;
 
 namespace ecvl
 {
-void TensorToImage(tensor& t, Image& img)
+void TensorToImage(Tensor*& t, Image& img)
 {
     switch (t->ndim) {
     case 3:
@@ -42,7 +42,7 @@ void TensorToImage(tensor& t, Image& img)
     memcpy(img.data_, t->ptr, img.datasize_);
 }
 
-void TensorToView(tensor& t, View<DataType::float32>& v)
+void TensorToView(Tensor*& t, View<DataType::float32>& v)
 {
     switch (t->ndim) {
     case 3:
@@ -57,7 +57,7 @@ void TensorToView(tensor& t, View<DataType::float32>& v)
     }
 }
 
-void ImageToTensor(const Image& img, tensor& t)
+void ImageToTensor(const Image& img, Tensor*& t)
 {
     Image tmp;
     string channels;
@@ -96,7 +96,7 @@ void ImageToTensor(const Image& img, tensor& t)
     memcpy(t->ptr, tmp.data_, tmp.datasize_);
 }
 
-void ImageToTensor(const Image& img, tensor& t, const int& offset)
+void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
 {
     Image tmp;
     int tot_dims = 0;
@@ -189,7 +189,7 @@ void DLDataset::ResetAllBatches()
     } // CRITICAL REGION ENDS
 }
 
-void DLDataset::LoadBatch(tensor& images, tensor& labels)
+void DLDataset::LoadBatch(Tensor*& images, Tensor*& labels)
 {
     if (resize_dims_.size() != 2) {
         cerr << ECVL_ERROR_MSG "resize_dims_ must have 2 dimensions (height, width)" << endl;
@@ -271,7 +271,7 @@ void DLDataset::LoadBatch(tensor& images, tensor& labels)
     }
 }
 
-void DLDataset::LoadBatch(tensor& images)
+void DLDataset::LoadBatch(Tensor*& images)
 {
     if (resize_dims_.size() != 2) {
         cerr << ECVL_ERROR_MSG "resize_dims_ must have 2 dimensions (height, width)" << endl;
