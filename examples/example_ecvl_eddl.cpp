@@ -55,7 +55,7 @@ int main()
 
     // Convert an Image into tensor
     cout << "Executing ImageToTensor" << endl;
-    tensor t;
+    Tensor* t;
     ImageToTensor(img, t);
 
     // Apply eddl functions
@@ -111,8 +111,8 @@ int main()
 
     // Allocate memory for x and y tensors
     cout << "Create x and y" << endl;
-    tensor x = new Tensor({ batch_size, d.n_channels_, d.resize_dims_[0], d.resize_dims_[1] });
-    tensor y = new Tensor({ batch_size, static_cast<int>(d.classes_.size()) });
+    Tensor* x = new Tensor({ batch_size, d.n_channels_, d.resize_dims_[0], d.resize_dims_[1] });
+    Tensor* y = new Tensor({ batch_size, static_cast<int>(d.classes_.size()) });
 
     // Load a batch of d.batch_size_ images into x and corresponding labels in y
     // Images are resized to the dimensions specified in the augmentations chain
@@ -138,6 +138,7 @@ int main()
 
     delete x;
     delete y;
+    delete t;
 
     return EXIT_SUCCESS;
 }
