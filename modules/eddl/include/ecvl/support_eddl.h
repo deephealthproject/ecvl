@@ -224,7 +224,7 @@ Return a grid of Image from a EDDL Tensor.
 
 @return Image taht contains the grid of images
 */
-Image MakeGrid(const tensor& t, int cols = 8, bool normalize = false);
+Image MakeGrid(Tensor*& t, int cols = 8, bool normalize = false);
 
 /** @example example_ecvl_eddl.cpp
  Example of using ECVL with EDDL.

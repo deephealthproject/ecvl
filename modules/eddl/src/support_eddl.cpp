@@ -319,7 +319,7 @@ void DLDataset::LoadBatch(Tensor*& images)
     }
 }
 
-Image MakeGrid(const tensor& t, int cols, bool normalize)
+Image MakeGrid(Tensor*& t, int cols, bool normalize)
 {
     const auto batch_size = t->shape[0];
     cols = std::min(batch_size, cols);
@@ -330,7 +330,7 @@ Image MakeGrid(const tensor& t, int cols, bool normalize)
     for (int r = 0, b = 0; r < rows; ++r) {
         vector<Image> himages;
         for (int c = 0; c < cols; ++c) {
-            tensor tensor_t;
+            Tensor* tensor_t;
             if (b < batch_size) {
                 tensor_t = t->select({ to_string(b) });
                 TensorToImage(tensor_t, image_t);
