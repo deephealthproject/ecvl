@@ -4,6 +4,7 @@ var searchData=
   ['augadditivelaplacenoise',['AugAdditiveLaplaceNoise',['../classecvl_1_1_aug_additive_laplace_noise.html',1,'ecvl']]],
   ['augadditivepoissonnoise',['AugAdditivePoissonNoise',['../classecvl_1_1_aug_additive_poisson_noise.html',1,'ecvl']]],
   ['augbrightness',['AugBrightness',['../classecvl_1_1_aug_brightness.html',1,'ecvl']]],
+  ['augcentercrop',['AugCenterCrop',['../classecvl_1_1_aug_center_crop.html',1,'ecvl']]],
   ['augcoarsedropout',['AugCoarseDropout',['../classecvl_1_1_aug_coarse_dropout.html',1,'ecvl']]],
   ['augelastictransform',['AugElasticTransform',['../classecvl_1_1_aug_elastic_transform.html',1,'ecvl']]],
   ['augflip',['AugFlip',['../classecvl_1_1_aug_flip.html',1,'ecvl']]],

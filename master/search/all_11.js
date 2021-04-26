@@ -45,6 +45,7 @@ var searchData=
   ['str_5f',['str_',['../classecvl_1_1param.html#a1d8ac9209d2cbf5f7d6516ed5e9a1edd',1,'ecvl::param']]],
   ['strides_5f',['strides_',['../classecvl_1_1_image.html#a6a74e60fe9da7dd77117b50122d492cb',1,'ecvl::Image']]],
   ['string',['string',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4ab45cffe084dd3d20d928bee85e7b0f21',1,'ecvl::param']]],
+  ['strtointerpolationtype',['StrToInterpolationType',['../namespaceecvl.html#ac7b292ea76542bbd638f0268a87d955a',1,'ecvl']]],
   ['sub',['Sub',['../classecvl_1_1_image.html#a881d2781d789af08b911edc4fdb843c7',1,'ecvl::Image::Sub()'],['../namespaceecvl.html#ad73691e43244446abaa50b1b5cb8a2ba',1,'ecvl::Sub(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a0199c3a3cc3833340e0d3ce293100270',1,'ecvl::Sub(const Image &amp;src1, const ST2 &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#af302757f41708a994e368fbc47f21a16',1,'ecvl::Sub(const ST1 &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)']]],
   ['suffix_5f',['suffix_',['../classecvl_1_1_generate_segmentation_dataset.html#a8245227b5ea991b3009b6987d07cc1d3',1,'ecvl::GenerateSegmentationDataset']]],
   ['superior_5ftype',['superior_type',['../structecvl_1_1promote__superior__type.html#aaf192f08dcc4c7e96dd122a7b51ba610',1,'ecvl::promote_superior_type']]],

@@ -94,7 +94,8 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">augmentations.h File Reference</div>  </div>
 </div><!--header-->
@@ -189,6 +190,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_normalize.html">ecvl::AugNormalize</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#aabacccc60bc05ce9dd9ddb350f055be9" title="Normalize Image image with mean and standard deviation.">ecvl::Normalize</a>.  <a href="classecvl_1_1_aug_normalize.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_center_crop.html">ecvl::AugCenterCrop</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> CenterCrop wrapper for <a class="el" href="namespaceecvl.html#a243a01f0f7ef1b69db7f83fd814bbd1e" title="Crops the given image at the center.">ecvl::CenterCrop</a>.  <a href="classecvl_1_1_aug_center_crop.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -201,6 +205,11 @@ Macros</h2></td></tr>
 <tr class="separator:aa310b15661ffb081181bebb41ad938b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0172e449786e277499a4339aeb5e15a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="augmentations_8h.html#ab0172e449786e277499a4339aeb5e15a">ECVL_ERROR_AUGMENTATION_FORMAT</a>&#160;&#160;&#160;throw std::runtime_error(<a class="el" href="standard__errors_8h.html#af19b8e27c86b1b43b2c65d3075eea946">ECVL_ERROR_MSG</a> &quot;Format error while loading augmentation parameters&quot;);</td></tr>
 <tr class="separator:ab0172e449786e277499a4339aeb5e15a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ac7b292ea76542bbd638f0268a87d955a"><td class="memItemLeft" align="right" valign="top">InterpolationType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ac7b292ea76542bbd638f0268a87d955a">ecvl::StrToInterpolationType</a> (const std::string &amp;interp, const std::string &amp;aug_name)</td></tr>
+<tr class="separator:ac7b292ea76542bbd638f0268a87d955a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ab0172e449786e277499a4339aeb5e15a"></a>
