@@ -6,6 +6,7 @@ var searchData=
   ['generatedataset',['GenerateDataset',['../classecvl_1_1_generate_dataset.html',1,'ecvl::GenerateDataset'],['../classecvl_1_1_generate_dataset.html#a6942b18f739fb51cd56c5e288795dc33',1,'ecvl::GenerateDataset::GenerateDataset()']]],
   ['generatesegmentationdataset',['GenerateSegmentationDataset',['../classecvl_1_1_generate_segmentation_dataset.html',1,'ecvl::GenerateSegmentationDataset'],['../classecvl_1_1_generate_segmentation_dataset.html#a17fd6cbf7bc11cc9d6311a98d71b8911',1,'ecvl::GenerateSegmentationDataset::GenerateSegmentationDataset()']]],
   ['generatevalue',['GenerateValue',['../classecvl_1_1_augmentation_param.html#a4e5edf6594822a33f8f376927eab02c7',1,'ecvl::AugmentationParam']]],
+  ['genericget',['GenericGet',['../classecvl_1_1param__list.html#ab64d1d82c602afac2783b6b8d772572c',1,'ecvl::param_list']]],
   ['get',['Get',['../classecvl_1_1param__list.html#a9d0f475c949b13e0df1080160c1e7c0c',1,'ecvl::param_list']]],
   ['getdataset',['GetDataset',['../classecvl_1_1_generate_dataset.html#a91fc4a9c068f1ae4b028b9e675b974dc',1,'ecvl::GenerateDataset']]],
   ['getdefaultdatasize',['GetDefaultDatasize',['../classecvl_1_1_image.html#a1309dfa3c18326d69b2820c71a798997',1,'ecvl::Image']]],

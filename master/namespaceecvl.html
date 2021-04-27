@@ -610,6 +610,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aabacccc60bc05ce9dd9ddb350f055be9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aabacccc60bc05ce9dd9ddb350f055be9">Normalize</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const double &amp;mean, const double &amp;std)</td></tr>
 <tr class="memdesc:aabacccc60bc05ce9dd9ddb350f055be9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> image with mean and standard deviation.  <a href="#aabacccc60bc05ce9dd9ddb350f055be9">More...</a><br /></td></tr>
 <tr class="separator:aabacccc60bc05ce9dd9ddb350f055be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47b69df28caa89f7482df89d38c99698"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a47b69df28caa89f7482df89d38c99698">Normalize</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::vector&lt; double &gt; &amp;mean, const std::vector&lt; double &gt; &amp;std)</td></tr>
+<tr class="memdesc:a47b69df28caa89f7482df89d38c99698"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalize xyc <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> image with separate mean and standard deviation for each color channel.  <a href="#a47b69df28caa89f7482df89d38c99698">More...</a><br /></td></tr>
+<tr class="separator:a47b69df28caa89f7482df89d38c99698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a243a01f0f7ef1b69db7f83fd814bbd1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a243a01f0f7ef1b69db7f83fd814bbd1e">CenterCrop</a> (const <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">ecvl::Image</a> &amp;dst, const std::vector&lt; int &gt; &amp;size)</td></tr>
 <tr class="memdesc:a243a01f0f7ef1b69db7f83fd814bbd1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crops the given image at the center.  <a href="#a243a01f0f7ef1b69db7f83fd814bbd1e">More...</a><br /></td></tr>
 <tr class="separator:a243a01f0f7ef1b69db7f83fd814bbd1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -4014,7 +4017,7 @@ template&lt;typename ST1 &gt; </div>
 </div>
 </div>
 <a id="aabacccc60bc05ce9dd9ddb350f055be9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aabacccc60bc05ce9dd9ddb350f055be9">&#9670;&nbsp;</a></span>Normalize()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aabacccc60bc05ce9dd9ddb350f055be9">&#9670;&nbsp;</a></span>Normalize() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4052,13 +4055,65 @@ template&lt;typename ST1 &gt; </div>
 </div><div class="memdoc">
 
 <p>Normalize <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> image with mean and standard deviation. </p>
-<p>The Normalize creates an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in which each pixel of the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is subtracted by mean and divide by std. Useful for normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.</p>
+<p>The Normalize creates an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in which each pixel of the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is subtracted by mean and divide by std. Useful to normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> to normalize. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output normalized <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mean</td><td>Mean to use for normalization. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">std</td><td>Standard deviation to use for normalization. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a47b69df28caa89f7482df89d38c99698"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47b69df28caa89f7482df89d38c99698">&#9670;&nbsp;</a></span>Normalize() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::Normalize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mean</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>std</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Normalize xyc <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> image with separate mean and standard deviation for each color channel. </p>
+<p>The Normalize creates an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in which each pixel of the input xyc <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is subtracted by the mean and divide by the std for its channel. Useful to normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> to normalize. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>Output normalized <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mean</td><td>Vector of means to use for normalization. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">std</td><td>Vector of standard deviations to use for normalization. </td></tr>
   </table>
   </dd>
 </dl>

@@ -4,5 +4,5 @@ var searchData=
   ['niftiread',['NiftiRead',['../namespaceecvl.html#aa97c8b6896da19f4ecd6a90b8d3fef0c',1,'ecvl']]],
   ['niftiwrite',['NiftiWrite',['../namespaceecvl.html#a4a591dcd099666b3326c48d8651c9ea2',1,'ecvl']]],
   ['nonmaximasuppression',['NonMaximaSuppression',['../namespaceecvl.html#ab74faee8c2b550b7bee1fe07e0791c80',1,'ecvl']]],
-  ['normalize',['Normalize',['../namespaceecvl.html#aabacccc60bc05ce9dd9ddb350f055be9',1,'ecvl']]]
+  ['normalize',['Normalize',['../namespaceecvl.html#aabacccc60bc05ce9dd9ddb350f055be9',1,'ecvl::Normalize(const Image &amp;src, Image &amp;dst, const double &amp;mean, const double &amp;std)'],['../namespaceecvl.html#a47b69df28caa89f7482df89d38c99698',1,'ecvl::Normalize(const Image &amp;src, Image &amp;dst, const std::vector&lt; double &gt; &amp;mean, const std::vector&lt; double &gt; &amp;std)']]]
 ];
