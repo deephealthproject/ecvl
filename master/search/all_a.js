@@ -6,7 +6,7 @@ var searchData=
   ['larger_5farithmetic_5ftype',['larger_arithmetic_type',['../structecvl_1_1larger__arithmetic__type.html',1,'ecvl']]],
   ['larger_5farithmetic_5ftype_5ft',['larger_arithmetic_type_t',['../namespaceecvl.html#a0b1d568c55db655cdf97d744af726563',1,'ecvl']]],
   ['linear',['linear',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa',1,'ecvl']]],
-  ['loadbatch',['LoadBatch',['../classecvl_1_1_d_l_dataset.html#a1604b3caf751cb0a60f289d752b1443b',1,'ecvl::DLDataset::LoadBatch(tensor &amp;images, tensor &amp;labels)'],['../classecvl_1_1_d_l_dataset.html#a9425e594bc706cdd12896bfa262d4f28',1,'ecvl::DLDataset::LoadBatch(tensor &amp;images)']]],
+  ['loadbatch',['LoadBatch',['../classecvl_1_1_d_l_dataset.html#a831ade3a6b695584f245b93db681861c',1,'ecvl::DLDataset::LoadBatch(Tensor *&amp;images, Tensor *&amp;labels)'],['../classecvl_1_1_d_l_dataset.html#a66446c3987a1f63656aa38393a007b36',1,'ecvl::DLDataset::LoadBatch(Tensor *&amp;images)']]],
   ['loadimage',['LoadImage',['../classecvl_1_1_sample.html#a02375a672f1c862dc6079f4e2f9dcfe8',1,'ecvl::Sample']]],
   ['loadimagesandsplits',['LoadImagesAndSplits',['../classecvl_1_1_generate_dataset.html#a957eb7070f0c3880781da69fe3670444',1,'ecvl::GenerateDataset']]],
   ['loadsplitimages',['LoadSplitImages',['../classecvl_1_1_generate_dataset.html#ac813f36642932256231c450fd95fc289',1,'ecvl::GenerateDataset::LoadSplitImages()'],['../classecvl_1_1_generate_segmentation_dataset.html#a535e90c723f2dfdf0b886662730d80d7',1,'ecvl::GenerateSegmentationDataset::LoadSplitImages()'],['../classecvl_1_1_generate_classification_dataset.html#aec70d370caeef1b2c362f3f6a61ffa84',1,'ecvl::GenerateClassificationDataset::LoadSplitImages()']]],

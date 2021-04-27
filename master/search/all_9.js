@@ -8,7 +8,7 @@ var searchData=
   ['imagescalarmulimpl',['ImageScalarMulImpl',['../struct_image_scalar_mul_impl.html',1,'']]],
   ['imagescalarsubimpl',['ImageScalarSubImpl',['../struct_image_scalar_sub_impl.html',1,'']]],
   ['imagetomat',['ImageToMat',['../namespaceecvl.html#a1acfb7be8dd74703ac91f916339c464b',1,'ecvl']]],
-  ['imagetotensor',['ImageToTensor',['../namespaceecvl.html#ae9ead57ce6321a4deb024008cb148004',1,'ecvl::ImageToTensor(const Image &amp;img, tensor &amp;t)'],['../namespaceecvl.html#adb951745793a024dd263bc779cb00c3e',1,'ecvl::ImageToTensor(const Image &amp;img, tensor &amp;t, const int &amp;offset)']]],
+  ['imagetotensor',['ImageToTensor',['../namespaceecvl.html#a4d5ad6783012278db0b02c6015e90b01',1,'ecvl::ImageToTensor(const Image &amp;img, Tensor *&amp;t)'],['../namespaceecvl.html#afb46866dfcb35ffb2950971dcaf433af',1,'ecvl::ImageToTensor(const Image &amp;img, Tensor *&amp;t, const int &amp;offset)']]],
   ['img_5f',['img_',['../structecvl_1_1_iterator.html#ae6d61fa8c30d2c902856b2b7383ac194',1,'ecvl::Iterator::img_()'],['../structecvl_1_1_const_iterator.html#a0fe199baf8bfdfc184035db92fec9740',1,'ecvl::ConstIterator::img_()'],['../structecvl_1_1_contiguous_iterator.html#a1b5c4622272f11e64d1fb676ba99340a',1,'ecvl::ContiguousIterator::img_()'],['../structecvl_1_1_const_contiguous_iterator.html#ac0c5577ae6505dcfcab9f92a915e06cb',1,'ecvl::ConstContiguousIterator::img_()']]],
   ['imgcodecs_2eh',['imgcodecs.h',['../imgcodecs_8h.html',1,'']]],
   ['imgfromwx',['ImgFromWx',['../namespaceecvl.html#ae10d61f0fedc5b094ae5c23ef1c0f65a',1,'ecvl']]],
