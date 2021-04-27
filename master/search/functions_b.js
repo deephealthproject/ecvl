@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['mattoimage',['MatToImage',['../namespaceecvl.html#a82b4841d50d24b6caa40468a2c9c50c8',1,'ecvl']]],
+  ['mattoimage',['MatToImage',['../namespaceecvl.html#a80fbdfbbf414273984cf18222b4c77bd',1,'ecvl']]],
   ['matvectoimage',['MatVecToImage',['../namespaceecvl.html#a8d1b78ff48631d7b60bc0c201c438675',1,'ecvl']]],
   ['meanstddev',['MeanStdDev',['../namespaceecvl.html#a73979fb8877322e81048522db568a82d',1,'ecvl']]],
   ['memallocate',['MemAllocate',['../classecvl_1_1_gpu_hal.html#a4e8534d388ad4077289350329d678132',1,'ecvl::GpuHal::MemAllocate()'],['../classecvl_1_1_fpga_hal.html#ab8531ca1e0cd1c857f62cd599d9fe67a',1,'ecvl::FpgaHal::MemAllocate()']]],

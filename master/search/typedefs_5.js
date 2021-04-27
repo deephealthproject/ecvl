@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['optional',['optional',['../namespaceecvl.html#a526e1a5708238efff7d1b578fb59d692',1,'ecvl']]]
+  ['larger_5farithmetic_5ftype_5ft',['larger_arithmetic_type_t',['../namespaceecvl.html#a0b1d568c55db655cdf97d744af726563',1,'ecvl']]]
 ];

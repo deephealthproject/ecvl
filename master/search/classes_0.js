@@ -6,6 +6,7 @@ var searchData=
   ['augbrightness',['AugBrightness',['../classecvl_1_1_aug_brightness.html',1,'ecvl']]],
   ['augcentercrop',['AugCenterCrop',['../classecvl_1_1_aug_center_crop.html',1,'ecvl']]],
   ['augcoarsedropout',['AugCoarseDropout',['../classecvl_1_1_aug_coarse_dropout.html',1,'ecvl']]],
+  ['augdivby255',['AugDivBy255',['../classecvl_1_1_aug_div_by255.html',1,'ecvl']]],
   ['augelastictransform',['AugElasticTransform',['../classecvl_1_1_aug_elastic_transform.html',1,'ecvl']]],
   ['augflip',['AugFlip',['../classecvl_1_1_aug_flip.html',1,'ecvl']]],
   ['auggammacontrast',['AugGammaContrast',['../classecvl_1_1_aug_gamma_contrast.html',1,'ecvl']]],
@@ -23,5 +24,7 @@ var searchData=
   ['augrotate',['AugRotate',['../classecvl_1_1_aug_rotate.html',1,'ecvl']]],
   ['augsalt',['AugSalt',['../classecvl_1_1_aug_salt.html',1,'ecvl']]],
   ['augsaltandpepper',['AugSaltAndPepper',['../classecvl_1_1_aug_salt_and_pepper.html',1,'ecvl']]],
+  ['augscaleto',['AugScaleTo',['../classecvl_1_1_aug_scale_to.html',1,'ecvl']]],
+  ['augtofloat32',['AugToFloat32',['../classecvl_1_1_aug_to_float32.html',1,'ecvl']]],
   ['augtranspose',['AugTranspose',['../classecvl_1_1_aug_transpose.html',1,'ecvl']]]
 ];

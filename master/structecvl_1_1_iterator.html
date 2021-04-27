@@ -105,6 +105,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:af36b2a562fadf9853b549489476588fb"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_iterator.html#af36b2a562fadf9853b549489476588fb">difference_type</a> = std::ptrdiff_t</td></tr>
+<tr class="separator:af36b2a562fadf9853b549489476588fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eb3ac5f64b5861b6dd8b7c9d79a7631"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_iterator.html#a8eb3ac5f64b5861b6dd8b7c9d79a7631">value_type</a> = T</td></tr>
+<tr class="separator:a8eb3ac5f64b5861b6dd8b7c9d79a7631"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e46ef474a2636a2ef7b9a8121feae93"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_iterator.html#a5e46ef474a2636a2ef7b9a8121feae93">pointer</a> = <a class="el" href="structecvl_1_1_iterator.html#a8eb3ac5f64b5861b6dd8b7c9d79a7631">value_type</a> *</td></tr>
+<tr class="separator:a5e46ef474a2636a2ef7b9a8121feae93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e509e96e9f56a9f4c346bd23c9df6c5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_iterator.html#a0e509e96e9f56a9f4c346bd23c9df6c5">reference</a> = <a class="el" href="structecvl_1_1_iterator.html#a8eb3ac5f64b5861b6dd8b7c9d79a7631">value_type</a> &amp;</td></tr>
+<tr class="separator:a0e509e96e9f56a9f4c346bd23c9df6c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04a15ac0bf5ffc5cc5c76ecb539de2bc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_iterator.html#a04a15ac0bf5ffc5cc5c76ecb539de2bc">iterator_category</a> = std::forward_iterator_tag</td></tr>
+<tr class="separator:a04a15ac0bf5ffc5cc5c76ecb539de2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74ce138124bdf9455353ffe8b902d031"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structecvl_1_1_iterator.html">Iterator</a> &amp;(Iterator::*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structecvl_1_1_iterator.html#a74ce138124bdf9455353ffe8b902d031">IncrementMemFn</a>) ()</td></tr>
 <tr class="separator:a74ce138124bdf9455353ffe8b902d031"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -141,6 +151,24 @@ struct ecvl::Iterator&lt; T &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00025">25</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="af36b2a562fadf9853b549489476588fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af36b2a562fadf9853b549489476588fb">&#9670;&nbsp;</a></span>difference_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="structecvl_1_1_iterator.html">ecvl::Iterator</a>&lt; T &gt;::<a class="el" href="structecvl_1_1_iterator.html#af36b2a562fadf9853b549489476588fb">difference_type</a> =  std::ptrdiff_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00027">27</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+
+</div>
+</div>
 <a id="a74ce138124bdf9455353ffe8b902d031"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a74ce138124bdf9455353ffe8b902d031">&#9670;&nbsp;</a></span>IncrementMemFn</h2>
 
@@ -155,7 +183,79 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00037">37</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+
+</div>
+</div>
+<a id="a04a15ac0bf5ffc5cc5c76ecb539de2bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04a15ac0bf5ffc5cc5c76ecb539de2bc">&#9670;&nbsp;</a></span>iterator_category</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="structecvl_1_1_iterator.html">ecvl::Iterator</a>&lt; T &gt;::<a class="el" href="structecvl_1_1_iterator.html#a04a15ac0bf5ffc5cc5c76ecb539de2bc">iterator_category</a> =  std::forward_iterator_tag</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 <p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00031">31</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+
+</div>
+</div>
+<a id="a5e46ef474a2636a2ef7b9a8121feae93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e46ef474a2636a2ef7b9a8121feae93">&#9670;&nbsp;</a></span>pointer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="structecvl_1_1_iterator.html">ecvl::Iterator</a>&lt; T &gt;::<a class="el" href="structecvl_1_1_iterator.html#a5e46ef474a2636a2ef7b9a8121feae93">pointer</a> =  <a class="el" href="structecvl_1_1_iterator.html#a8eb3ac5f64b5861b6dd8b7c9d79a7631">value_type</a>*</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00029">29</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+
+</div>
+</div>
+<a id="a0e509e96e9f56a9f4c346bd23c9df6c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e509e96e9f56a9f4c346bd23c9df6c5">&#9670;&nbsp;</a></span>reference</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="structecvl_1_1_iterator.html">ecvl::Iterator</a>&lt; T &gt;::<a class="el" href="structecvl_1_1_iterator.html#a0e509e96e9f56a9f4c346bd23c9df6c5">reference</a> =  <a class="el" href="structecvl_1_1_iterator.html#a8eb3ac5f64b5861b6dd8b7c9d79a7631">value_type</a>&amp;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00030">30</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+
+</div>
+</div>
+<a id="a8eb3ac5f64b5861b6dd8b7c9d79a7631"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb3ac5f64b5861b6dd8b7c9d79a7631">&#9670;&nbsp;</a></span>value_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="structecvl_1_1_iterator.html">ecvl::Iterator</a>&lt; T &gt;::<a class="el" href="structecvl_1_1_iterator.html#a8eb3ac5f64b5861b6dd8b7c9d79a7631">value_type</a> =  T</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00028">28</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -218,7 +318,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00036">36</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00042">42</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -248,7 +348,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00039">39</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00045">45</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +377,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00035">35</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00041">41</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -306,7 +406,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00037">37</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00043">43</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +436,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00038">38</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00044">44</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -355,7 +455,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00029">29</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00035">35</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -373,7 +473,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00032">32</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00038">38</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -391,7 +491,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00027">27</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00033">33</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>
@@ -409,7 +509,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00028">28</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="iterators_8h_source.html#l00034">34</a> of file <a class="el" href="iterators_8h_source.html">iterators.h</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['type',['type',['../structecvl_1_1larger__arithmetic__type.html#a8485e207768685bd677933ab3797a7bf',1,'ecvl::larger_arithmetic_type::type()'],['../structecvl_1_1arithmetic__superior__type.html#ab9ce300e0fcd75bdc8b7a37abcec1c99',1,'ecvl::arithmetic_superior_type::type()'],['../structecvl_1_1promote__superior__type.html#a1a95e68158acc7c5180f26faea9f5c9e',1,'ecvl::promote_superior_type::type()']]],
-  ['typeinfo_5ft',['TypeInfo_t',['../namespaceecvl.html#a3300301af431df44980395b301ac4190',1,'ecvl']]]
+  ['reference',['reference',['../structecvl_1_1_iterator.html#a0e509e96e9f56a9f4c346bd23c9df6c5',1,'ecvl::Iterator::reference()'],['../structecvl_1_1_const_iterator.html#a9e15dc728818f231ef677a9e485d27b6',1,'ecvl::ConstIterator::reference()'],['../structecvl_1_1_contiguous_iterator.html#ac4be386ef5dbc54f0206120862ccb534',1,'ecvl::ContiguousIterator::reference()'],['../structecvl_1_1_const_contiguous_iterator.html#acbef98468513b7d45c70c1109ab68a06',1,'ecvl::ConstContiguousIterator::reference()']]]
 ];

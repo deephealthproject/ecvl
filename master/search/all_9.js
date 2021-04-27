@@ -31,12 +31,13 @@ var searchData=
   ['int32',['int32',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a0241adbbd83925f051b694d40f02747f',1,'ecvl']]],
   ['int64',['int64',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857aff9b3f96d37353c528517bc3656a00a8',1,'ecvl']]],
   ['int8',['int8',['../namespaceecvl.html#aaf30aceb57f44dc62f5f666f3955d857a27c006cc56b1ba88f960cf8b5144fcac',1,'ecvl']]],
-  ['integer',['integer',['../structecvl_1_1_table1_d_1_1integer.html',1,'ecvl::Table1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table1_d_1_1integer.html',1,'ecvl::SignedTable1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table2_d_1_1integer.html',1,'ecvl::Table2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table2_d_1_1integer.html',1,'ecvl::SignedTable2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;']]],
+  ['integer',['integer',['../structecvl_1_1_signed_table1_d_1_1integer.html',1,'ecvl::SignedTable1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table2_d_1_1integer.html',1,'ecvl::Table2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_signed_table2_d_1_1integer.html',1,'ecvl::SignedTable2D&lt; _StructFun, Args &gt;::integer&lt; i &gt;'],['../structecvl_1_1_table1_d_1_1integer.html',1,'ecvl::Table1D&lt; _StructFun, Args &gt;::integer&lt; i &gt;']]],
   ['integralimage',['IntegralImage',['../namespaceecvl.html#abd1bed8d85c640bf76e16d28884b1715',1,'ecvl']]],
   ['interpolationtype',['InterpolationType',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c',1,'ecvl']]],
   ['isempty',['IsEmpty',['../classecvl_1_1_image.html#ab7dfe59beca83e189162378368dc4484',1,'ecvl::Image']]],
   ['isowner',['IsOwner',['../classecvl_1_1_image.html#ab66d2ad85e32f02cc05a8b6da12788cc',1,'ecvl::Image']]],
   ['iterator',['Iterator',['../structecvl_1_1_iterator.html',1,'ecvl::Iterator&lt; T &gt;'],['../structecvl_1_1_iterator.html#a683c73c3643799cbf29fef92fe810d82',1,'ecvl::Iterator::Iterator()']]],
+  ['iterator_5fcategory',['iterator_category',['../structecvl_1_1_iterator.html#a04a15ac0bf5ffc5cc5c76ecb539de2bc',1,'ecvl::Iterator::iterator_category()'],['../structecvl_1_1_const_iterator.html#a4757497df80ad21e98bc3a95b6e0cb2c',1,'ecvl::ConstIterator::iterator_category()'],['../structecvl_1_1_contiguous_iterator.html#a42c8d79b8717e481b544d7303040b1e2',1,'ecvl::ContiguousIterator::iterator_category()'],['../structecvl_1_1_const_contiguous_iterator.html#a4a19db7ffc69bda0119981772b625cf6',1,'ecvl::ConstContiguousIterator::iterator_category()']]],
   ['iterators_2eh',['iterators.h',['../iterators_8h.html',1,'']]],
   ['iterators_5fimpl_2einc_2eh',['iterators_impl.inc.h',['../iterators__impl_8inc_8h.html',1,'']]]
 ];

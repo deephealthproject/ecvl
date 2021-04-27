@@ -3,6 +3,7 @@ var searchData=
   ['salt',['Salt',['../namespaceecvl.html#a2479ccd7f563973a4d6e39016cc75fea',1,'ecvl']]],
   ['saltandpepper',['SaltAndPepper',['../namespaceecvl.html#a7105a709b77f159fa91b7f09e2f449bf',1,'ecvl']]],
   ['saturate_5fcast',['saturate_cast',['../namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10',1,'ecvl::saturate_cast(IDT v)'],['../namespaceecvl.html#a2079b9789abfbb37d389825269364c84',1,'ecvl::saturate_cast(const IDT &amp;v)']]],
+  ['scaleto',['ScaleTo',['../namespaceecvl.html#a6ba1fce11624d83a13a15670344bade7',1,'ecvl']]],
   ['separablefilter2d',['SeparableFilter2D',['../namespaceecvl.html#a19e7c44332430068d3aba9677a09446b',1,'ecvl']]],
   ['sequentialaugmentationcontainer',['SequentialAugmentationContainer',['../classecvl_1_1_sequential_augmentation_container.html#a549dcbd0bbee596bbf18c9f804d9b583',1,'ecvl::SequentialAugmentationContainer::SequentialAugmentationContainer(Ts &amp;&amp;... t)'],['../classecvl_1_1_sequential_augmentation_container.html#a2d56b3f1ff73f41368a2d34ac6f51c78',1,'ecvl::SequentialAugmentationContainer::SequentialAugmentationContainer(std::vector&lt; std::shared_ptr&lt; Augmentation &gt;&gt; augs)'],['../classecvl_1_1_sequential_augmentation_container.html#a7ee4edbf4a4863f116e3ff13ccc7046b',1,'ecvl::SequentialAugmentationContainer::SequentialAugmentationContainer(std::istream &amp;is)']]],
   ['setbool',['setBool',['../structecvl_1_1_shader.html#a2809f66f0992c2e0c82c297bbdeb4904',1,'ecvl::Shader']]],
