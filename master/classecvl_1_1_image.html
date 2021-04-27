@@ -1819,8 +1819,11 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Pointer to <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> data. </p>
-<p>If the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> is not the owner of data, for example when using <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> views, this attribute will point to the data of another <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. The possession or not of the data depends on the HardwareAbstractionLayer. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_image_view_8cpp-example.html#a15">example_image_view.cpp</a>.</dd>
+<pre class="fragment">                If the Image is not the owner
+                of data, for example when using Image views, this
+                attribute will point to the data of another Image.
+                The possession or not of the data depends on the
+                HardwareAbstractionLayer. </pre> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_image_view_8cpp-example.html#a15">example_image_view.cpp</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00168">168</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
