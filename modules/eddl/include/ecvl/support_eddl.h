@@ -25,6 +25,8 @@
 
 namespace ecvl
 {
+#define ECVL_ERROR_AUG_DOES_NOT_EXIST throw std::runtime_error(ECVL_ERROR_MSG "Augmentation for this split does not exist");
+
 /** @brief Dataset Augmentations.
 
 This class represent the augmentations which will be applied to each split.
@@ -35,21 +37,30 @@ This is just a shallow container for the Augmentations
 */
 class DatasetAugmentations
 {
-    std::array<shared_ptr<Augmentation>, 3> augs_;
+    std::vector<shared_ptr<Augmentation>> augs_;
 public:
-    DatasetAugmentations(std::array<shared_ptr<Augmentation>, 3> augs = { nullptr,nullptr,nullptr })
-        : augs_(augs)
-    {}
+    DatasetAugmentations(const std::vector<shared_ptr<Augmentation>>& augs = { nullptr, nullptr, nullptr }) : augs_(augs) {}
 
 // Getters: YAGNI
 
+    bool Apply(const int split, Image& img, const Image& gt = Image())
+    {
+        // check if the augs for split st are provided
+        try {
+            if (augs_.at(split)) {
+                augs_[split]->Apply(img, gt);
+                return true;
+            }
+            return false;
+        }
+        catch (const std::out_of_range) {
+            ECVL_ERROR_AUG_DOES_NOT_EXIST
+        }
+    }
+
     bool Apply(SplitType st, Image& img, const Image& gt = Image())
     {
-        if (augs_[+st]) { // Magic + operator
-            augs_[+st]->Apply(img, gt);
-            return true;
-        }
-        return false;
+        return Apply(+st, img, gt); // Magic + operator
     }
 };
 
@@ -64,10 +75,9 @@ class DLDataset : public Dataset
 public:
     int batch_size_; /**< @brief Size of each dataset mini batch. */
     int n_channels_; /**< @brief Number of channels of the images. */
-    int n_channels_gt_; /**< @brief Number of channels of the ground truth images. */
-    SplitType current_split_; /**< @brief Current split from which images are loaded. */
+    int n_channels_gt_ = -1; /**< @brief Number of channels of the ground truth images. */
     std::vector<int> resize_dims_; /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
-    std::array<int, 3> current_batch_ = { 0,0,0 }; /**< @brief Number of batches already loaded for each split. */
+    std::vector<int> current_batch_; /**< @brief Number of batches already loaded for each split. */
     ColorType ctype_; /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_; /**< @brief ecvl::ColorType of the Dataset ground truth images. */
     DatasetAugmentations augs_; /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
@@ -95,61 +105,37 @@ public:
         ctype_{ ctype },
         ctype_gt_{ ctype_gt }
     {
-        current_split_ = SplitType::training;
-        // if training is empty check test and validation and if one of them isn't empty, set it as current split
-        if (GetSplit(SplitType::training).empty()) {
-            if (!GetSplit(SplitType::test).empty()) {
-                current_split_ = SplitType::test;
-            }
-            else if (!GetSplit(SplitType::validation).empty()) {
-                current_split_ = SplitType::validation;
-            }
-        }
-
-        Image tmp = this->samples_[0].LoadImage(ctype);
-        // Initialize resize_dims_ after that augmentations on images are performed
-        if (!augs_.Apply(SplitType::training, tmp)) {
-            if (!augs_.Apply(SplitType::validation, tmp)) {
-                augs_.Apply(SplitType::test, tmp);
-            }
-        }
-        auto y = tmp.channels_.find('y');
-        auto x = tmp.channels_.find('x');
-        assert(y != std::string::npos && x != std::string::npos);
-        resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
+        // resize current_batch_ to the number of splits and initialize it with 0
+        current_batch_.resize(split_.size(), 0);
 
         // Initialize n_channels_
+        Image tmp = samples_[0].LoadImage(ctype);
         n_channels_ = tmp.Channels();
 
-        // Initialize n_channels_gt_ if exists
-        if (!GetSplit().empty()) {
-            if (samples_[GetSplit()[0]].label_path_ != nullopt) {
-                n_channels_gt_ = samples_[GetSplit()[0]].LoadImage(ctype_gt_, true).Channels();
+        if (!split_.empty()) {
+            current_split_ = 0;
+            // Initialize resize_dims_ after that augmentations on the first image are performed
+            augs_.Apply(current_split_, tmp);
+            auto y = tmp.channels_.find('y');
+            auto x = tmp.channels_.find('x');
+            assert(y != std::string::npos && x != std::string::npos);
+            resize_dims_.insert(resize_dims_.begin(), { tmp.dims_[y],tmp.dims_[x] });
+
+            // Initialize n_channels_gt_ if exists
+            if (samples_[0].label_path_ != nullopt) {
+                n_channels_gt_ = samples_[0].LoadImage(ctype_gt_, true).Channels();
             }
+        }
+        else {
+            cout << ECVL_WARNING_MSG << "Missing splits in the dataset file." << endl;
         }
     }
 
-    /** @brief Returns the image indexes of the current Split.
-    @return vector of image indexes of the Split in use.
-    */
-    std::vector<int>& GetSplit();
-
-    /** @brief Returns the image indexes of the requested Split.
-    @param[in] split ecvl::SplitType representing the Split to get ("training", "validation", or "test").
-    @return vector of image indexes of the requested Split.
-    */
-    std::vector<int>& GetSplit(const SplitType& split);
-
-    /** @brief Reset the batch counter of the current Split. */
+    /** @brief Reset the batch counter of the current split. */
     void ResetCurrentBatch();
 
-    /** @brief Reset the batch counter of each Split. */
+    /** @brief Reset the batch counter of each split. */
     void ResetAllBatches();
-
-    /** @brief Set the current Split.
-    @param[in] split ecvl::SplitType representing the Split to set ("training", "validation", or "test").
-    */
-    void SetSplit(const SplitType& split);
 
     /** @brief Load a batch into _images_ and _labels_ `tensor`.
     @param[out] images `tensor` which stores the batch of images.
@@ -222,7 +208,7 @@ Return a grid of Image from a EDDL Tensor.
 @param[in] cols Number of images displayed in each row of the grid.
 @param[in] normalize If true, shift the image to the range [0,1].
 
-@return Image taht contains the grid of images
+@return Image that contains the grid of images
 */
 Image MakeGrid(Tensor*& t, int cols = 8, bool normalize = false);
 

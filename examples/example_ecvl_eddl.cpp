@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <unordered_map>
 
 #include "ecvl/core.h"
 #include "ecvl/support_eddl.h"
@@ -103,7 +102,8 @@ int main()
         AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
-    DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
+    // DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } }; // OLD version: nullptr are no more required
+    DatasetAugmentations dataset_augmentations{ {training_augs, test_augs } };
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;

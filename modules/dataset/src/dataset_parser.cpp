@@ -225,26 +225,13 @@ void Dataset::Dump(const path& file_path)
         }
     }
 
-    if (split_.training_.size() > 0 || split_.validation_.size() > 0 || split_.test_.size() > 0) {
+    if (split_.size() > 0) {
         os << "split:" << endl;
-    }
-
-    if (split_.training_.size() > 0) {
-        os << tab + "training:" << endl;
-        for (auto& i : split_.training_) {
-            os << tab + tab + "- " << i << endl;
-        }
-    }
-    if (split_.validation_.size() > 0) {
-        os << tab + "validation:" << endl;
-        for (auto& i : split_.validation_) {
-            os << tab + tab + "- " << i << endl;
-        }
-    }
-    if (split_.test_.size() > 0) {
-        os << tab + "test:" << endl;
-        for (auto& i : split_.test_) {
-            os << tab + tab + "- " << i << endl;
+        for (auto& s : split_) {
+            os << tab + s.first + ":" << endl;
+            for (auto& i : s.second) {
+                os << tab + tab + "- " << i << endl;
+            }
         }
     }
 
@@ -288,7 +275,68 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
 
     DecodeImages(config["images"], abs_filename.parent_path(), verify);
     if (config["split"].IsDefined()) {
-        this->split_ = config["split"].as<Split>();
+        for (YAML::const_iterator it = config["split"].begin(); it != config["split"].end(); ++it) {
+            // insert into the vector split_ the split name and the vector of image indices
+            split_.push_back(make_pair(it->first.as<string>(), it->second.as<vector<int>>()));
+        }
+    }
+}
+
+std::vector<int>& Dataset::GetSplit(const SplitType& split)
+{
+    return GetSplit(SplitTypeToString(split));
+}
+
+std::vector<int>& Dataset::GetSplit(const string& split)
+{
+    auto it = std::find_if(split_.begin(), split_.end(), [&](const std::pair<std::string, vector<int>>& element) { return element.first == split; });
+    if (it == this->split_.end()) {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+    else {
+        return it->second;
+    }
+}
+
+std::vector<int>& Dataset::GetSplit(const int& split)
+{
+    try {
+        return split_.at(split).second;
+    }
+    catch (const std::out_of_range) {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+}
+
+std::vector<int>& Dataset::GetSplit()
+{
+    return GetSplit(current_split_);
+}
+
+void Dataset::SetSplit(const SplitType& split)
+{
+    SetSplit(SplitTypeToString(split));
+}
+
+void Dataset::SetSplit(const string& split)
+{
+    // check if the split exists
+    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& pair) { return pair.first == split; })));
+    if (index < vsize(split_)) {
+        this->current_split_ = index;
+    }
+    else {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+}
+
+const string SplitTypeToString(const SplitType& split)
+{
+    switch (split) {
+    case SplitType::training:       return "training";
+    case SplitType::validation:     return "validation";
+    case SplitType::test:           return "test";
+    default:                        ECVL_ERROR_SPLIT_DOES_NOT_EXIST;
     }
 }
 }

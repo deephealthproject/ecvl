@@ -143,40 +143,12 @@ void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
 }
 
-std::vector<int>& DLDataset::GetSplit(const SplitType& split)
-{
-    if (split == SplitType::training) {
-        return this->split_.training_;
-    }
-    else if (split == SplitType::validation) {
-        return this->split_.validation_;
-    }
-    else {
-        return this->split_.test_;
-    }
-}
-
-std::vector<int>& DLDataset::GetSplit()
-{
-    return GetSplit(current_split_);
-}
-
-void DLDataset::SetSplit(const SplitType& split)
-{
-    if (GetSplit(split).size() > 0) {
-        this->current_split_ = split;
-    }
-    else {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-    }
-}
-
 void DLDataset::ResetCurrentBatch()
 {
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        this->current_batch_[+current_split_] = 0;
+        this->current_batch_[current_split_] = 0;
     } // CRITICAL REGION ENDS
 }
 
@@ -185,7 +157,7 @@ void DLDataset::ResetAllBatches()
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        this->current_batch_.fill(0);
+        fill(current_batch_.begin(), current_batch_.end(), 0);
     } // CRITICAL REGION ENDS
 }
 
@@ -224,8 +196,8 @@ void DLDataset::LoadBatch(Tensor*& images, Tensor*& labels)
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        start = current_batch_[+current_split_] * bs;
-        ++current_batch_[+current_split_];
+        start = current_batch_[current_split_] * bs;
+        ++current_batch_[current_split_];
     } // CRITICAL REGION ENDS
 
     if (vsize(GetSplit()) < start + bs) {
@@ -293,8 +265,8 @@ void DLDataset::LoadBatch(Tensor*& images)
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        start = current_batch_[+current_split_] * bs;
-        ++current_batch_[+current_split_];
+        start = current_batch_[current_split_] * bs;
+        ++current_batch_[current_split_];
     } // CRITICAL REGION ENDS
 
     if (vsize(GetSplit()) < start + bs) {

@@ -39,11 +39,8 @@ public:
         dataset_root_directory_(dataset_root_directory)
     {
         for (auto& p : filesystem::directory_iterator(dataset_root_directory_)) {
-            std::string tmp = p.path().stem().string();
-
-            // Check if split folders exist
-            if (tmp == "training" || tmp == "validation" || tmp == "test") {
-                splits_.emplace_back(tmp);
+            if (filesystem::is_directory(p)) {
+                splits_.emplace_back(p.path().stem().string());
             }
         }
         num_samples_.resize(splits_.size());
