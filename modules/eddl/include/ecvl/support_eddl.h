@@ -82,6 +82,7 @@ public:
     ColorType ctype_gt_; /**< @brief ecvl::ColorType of the Dataset ground truth images. */
     DatasetAugmentations augs_; /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
     std::mutex  mutex_current_batch_; /**< @brief std::mutex to add exclusive access to attribute current_batch_. */
+    static std::default_random_engine re_;
 
     /**
     @param[in] filename Path to the Dataset file.
@@ -131,11 +132,33 @@ public:
         }
     }
 
-    /** @brief Reset the batch counter of the current split. */
-    void ResetCurrentBatch();
+    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split. 
+    
+    If no split is provided (i.e. it is provided a value less than 0), the current split is reset. 
+    @param[in] split index of the split to reset.
+    @param[in] reshuffle boolean which indicates whether to shuffle the split samples indices or not.
+    */
+    void ResetBatch(int split = -1, bool reshuffle = false);
 
-    /** @brief Reset the batch counter of each split. */
-    void ResetAllBatches();
+    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
+
+    @param[in] split name of the split to reset.
+    @param[in] reshuffle boolean which indicates whether to shuffle the split samples indices or not.
+    */
+    void ResetBatch(std::string split, bool reshuffle = false);
+
+    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
+
+    @param[in] split SplitType of the split to reset.
+    @param[in] reshuffle boolean which indicates whether to shuffle the split samples indices or not.
+    */
+    void ResetBatch(SplitType split, bool reshuffle = false);
+
+    /** @brief Reset the batch counter of each split and optionally shuffle samples indices (within each split).
+
+    @param[in] reshuffle boolean which indicates whether to shuffle the samples indices or not.
+    */
+    void ResetAllBatches(bool reshuffle = false);
 
     /** @brief Load a batch into _images_ and _labels_ `tensor`.
     @param[out] images `tensor` which stores the batch of images.
@@ -147,6 +170,14 @@ public:
     @param[out] images `tensor` which stores the batch of images.
     */
     void LoadBatch(Tensor*& images);
+
+    /** @brief Set a fixed seed for the random generated values. Useful to reproduce experiments with same shuffling during training.
+    @param[in] seed Value of the seed for the random engine.
+    */
+    static void SetSplitSeed(unsigned seed)
+    {
+        re_.seed(seed);
+    }
 };
 
 /** @brief Convert an EDDL Tensor into an ECVL Image.

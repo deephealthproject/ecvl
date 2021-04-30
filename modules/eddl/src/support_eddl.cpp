@@ -25,6 +25,8 @@ using namespace ecvl::filesystem;
 
 namespace ecvl
 {
+default_random_engine DLDataset::re_(random_device{}());
+
 void TensorToImage(Tensor*& t, Image& img)
 {
     switch (t->ndim) {
@@ -143,21 +145,55 @@ void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
 }
 
-void DLDataset::ResetCurrentBatch()
+void DLDataset::ResetBatch(int split, bool reshuffle)
 {
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        this->current_batch_[current_split_] = 0;
+        auto split_index = current_split_ ? split < 0 : split;
+
+        try {
+            this->current_batch_.at(split_index) = 0;
+        }
+        catch (const std::out_of_range) {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+
+        if (reshuffle) {
+            shuffle(begin(GetSplit(split_index)), end(GetSplit(split_index)), re_);
+        }
     } // CRITICAL REGION ENDS
 }
 
-void DLDataset::ResetAllBatches()
+void DLDataset::ResetBatch(string split, bool reshuffle)
+{
+     // check if the split exists
+    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& pair) { return pair.first == split; })));
+    if (index < vsize(split_)) {
+        ResetBatch(index, reshuffle);
+    }
+    else {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+}
+
+void DLDataset::ResetBatch(SplitType split, bool reshuffle)
+{
+    ResetBatch(SplitTypeToString(split), reshuffle);
+}
+
+void DLDataset::ResetAllBatches(bool reshuffle)
 {
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
         fill(current_batch_.begin(), current_batch_.end(), 0);
+
+        if (reshuffle) {
+            for (auto& s : split_) {
+                shuffle(begin(s.second), end(s.second), re_);
+            }
+        }
     } // CRITICAL REGION ENDS
 }
 
