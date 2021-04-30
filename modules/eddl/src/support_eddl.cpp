@@ -327,6 +327,17 @@ void DLDataset::LoadBatch(Tensor*& images)
     }
 }
 
+void DLDataset::SetBatchSize(int bs)
+{
+    // check if the provided batch size is negative or greater than the current split size
+    if (bs > 0 || bs > vsize(split_[current_split_].second)) {
+        batch_size_ = bs;
+    }
+    else {
+        ECVL_ERROR_WRONG_PARAMS("bs in SetBatchSize")
+    }
+}
+
 Image MakeGrid(Tensor*& t, int cols, bool normalize)
 {
     const auto batch_size = t->shape[0];

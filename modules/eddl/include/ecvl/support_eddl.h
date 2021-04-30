@@ -178,6 +178,13 @@ public:
     {
         re_.seed(seed);
     }
+
+    /** @brief Set a new batch size inside the dataset.
+    
+    Notice that this will not affect the EDDL network batch size, that it has to be changed too.
+    @param[in] bs Value to set for the batch size.
+    */
+    void SetBatchSize(int bs);
 };
 
 /** @brief Convert an EDDL Tensor into an ECVL Image.
