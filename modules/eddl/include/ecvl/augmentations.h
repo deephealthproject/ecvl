@@ -367,7 +367,7 @@ class AugRotate : public Augmentation
     {
         Rotate2D(img, img, params_["angle"].value_, center_, scale_, interp_);
         if (!gt.IsEmpty()) {
-            Rotate2D(gt, const_cast<Image&>(gt), params_["angle"].value_, center_, scale_, interp_);
+            Rotate2D(gt, const_cast<Image&>(gt), params_["angle"].value_, center_, scale_, gt_interp_);
         }
     }
 public:
@@ -482,7 +482,7 @@ class AugResizeScale : public Augmentation
     {
         ResizeScale(img, img, scale_, interp_);
         if (!gt.IsEmpty()) {
-            ResizeScale(gt, const_cast<Image&>(gt), scale_, interp_);
+            ResizeScale(gt, const_cast<Image&>(gt), scale_, gt_interp_);
         }
     }
 public:
