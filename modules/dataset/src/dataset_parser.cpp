@@ -330,6 +330,16 @@ void Dataset::SetSplit(const string& split)
     }
 }
 
+vector<vector<path>> Dataset::GetLocations()
+{
+    const auto& size = vsize(samples_);
+    vector<vector<path>> locations(size);
+    for (int i = 0; i < size; ++i) {
+        locations[i] = samples_[i].location_;
+    }
+    return locations;
+}
+
 const string SplitTypeToString(const SplitType& split)
 {
     switch (split) {

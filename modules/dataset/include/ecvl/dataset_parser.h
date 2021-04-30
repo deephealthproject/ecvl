@@ -135,6 +135,14 @@ public:
     */
     void Dump(const filesystem::path& file_path);
 
+    /** @brief Retrieve the list of all samples locations in the dataset file.
+    
+    A single Sample can have multiple locations (e.g., if they are different acquisitions of the same image).
+    
+    @param[out] vector containing all the samples locations.
+    */
+    std::vector<std::vector<filesystem::path>> GetLocations();
+
     // RegEx which matchs URLs
     static const std::regex url_regex_;
 
