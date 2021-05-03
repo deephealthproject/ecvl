@@ -145,53 +145,47 @@ void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
 }
 
-void DLDataset::ResetBatch(int split, bool reshuffle)
+void DLDataset::ResetBatch(int split_index, bool shuffle)
 {
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
-
-        auto split_index = current_split_ ? split < 0 : split;
-
+        int index = current_split_ ? split_index < 0 : split_index;
+        // check if the split exists
         try {
-            this->current_batch_.at(split_index) = 0;
+            this->current_batch_.at(index) = 0;
         }
         catch (const std::out_of_range) {
             ECVL_ERROR_SPLIT_DOES_NOT_EXIST
         }
 
-        if (reshuffle) {
-            shuffle(begin(GetSplit(split_index)), end(GetSplit(split_index)), re_);
+        if (shuffle) {
+            std::shuffle(begin(GetSplit(index)), end(GetSplit(index)), re_);
         }
     } // CRITICAL REGION ENDS
 }
 
-void DLDataset::ResetBatch(string split, bool reshuffle)
+void DLDataset::ResetBatch(string split_name, bool shuffle)
 {
-     // check if the split exists
-    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& pair) { return pair.first == split; })));
-    if (index < vsize(split_)) {
-        ResetBatch(index, reshuffle);
-    }
-    else {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-    }
+    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_name_ == split_name; })));
+    ResetBatch(index, shuffle);
 }
 
-void DLDataset::ResetBatch(SplitType split, bool reshuffle)
+void DLDataset::ResetBatch(SplitType split_type, bool shuffle)
 {
-    ResetBatch(SplitTypeToString(split), reshuffle);
+    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_type_ == split_type; })));
+    ResetBatch(index, shuffle);
 }
 
-void DLDataset::ResetAllBatches(bool reshuffle)
+void DLDataset::ResetAllBatches(bool shuffle)
 {
     { // CRITICAL REGION STARTS
         std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
         fill(current_batch_.begin(), current_batch_.end(), 0);
 
-        if (reshuffle) {
+        if (shuffle) {
             for (auto& s : split_) {
-                shuffle(begin(s.second), end(s.second), re_);
+                std::shuffle(begin(s.samples_indices_), end(s.samples_indices_), re_);
             }
         }
     } // CRITICAL REGION ENDS
@@ -330,7 +324,7 @@ void DLDataset::LoadBatch(Tensor*& images)
 void DLDataset::SetBatchSize(int bs)
 {
     // check if the provided batch size is negative or greater than the current split size
-    if (bs > 0 || bs > vsize(split_[current_split_].second)) {
+    if (bs > 0 && bs < vsize(split_[current_split_].samples_indices_)) {
         batch_size_ = bs;
     }
     else {

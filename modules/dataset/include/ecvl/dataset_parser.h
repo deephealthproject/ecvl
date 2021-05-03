@@ -63,6 +63,32 @@ public:
     ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::BGR, const bool& is_gt = false);
 };
 
+/** @brief Split of a dataset.
+This class provides the name of the split and the indices of the samples that belong to this split. 
+It optionally provides the split type if the split name is one of training, validation or test.
+@anchor Split
+*/
+class Split
+{
+public:
+    std::string split_name_;                /**< @brief Name of the split. */
+    std::optional<SplitType> split_type_;   /**< @brief If the split is training, validation or test the corresponding SpitType is provided. */
+    std::vector<int> samples_indices_;      /**< @brief Vector containing samples indices of the split. */
+
+    Split() {}
+
+    /**
+    @param[in] split_name Name of the split.
+    @param[in] samples_indices Vector containing samples indices of the split.
+    */
+    Split(const std::string& split_name, const std::vector<int>& samples_indices) : split_name_{ split_name }, samples_indices_{ samples_indices }
+    {
+        if (split_name_ == "training") split_type_ = SplitType::training;
+        else if (split_name_ == "validation") split_type_ = SplitType::validation;
+        else if (split_name_ == "test") split_type_ = SplitType::test;
+    }
+};
+
 /** @brief DeepHealth Dataset.
 
 This class implements the DeepHealth Dataset Format (https://github.com/deephealthproject/ecvl/wiki/DeepHealth-Toolkit-Dataset-Format).
@@ -77,7 +103,7 @@ public:
     std::vector<std::string> classes_; /**< @brief Vector with all the classes available in the Dataset. */
     std::vector<std::string> features_; /**< @brief Vector with all the features available in the Dataset. */
     std::vector<Sample> samples_; /**< @brief Vector containing all the Dataset samples. See @ref Sample. */
-    std::vector<std::pair<std::string, std::vector<int>>> split_; /**< @brief Splits of the Dataset. */
+    std::vector<Split> split_; /**< @brief Splits of the Dataset. */
     int current_split_ = -1; /**< @brief Current split from which images are loaded. */
 
     Dataset() {}
@@ -94,37 +120,37 @@ public:
     std::vector<int>& GetSplit();
 
     /** @brief Returns the image indexes of the requested split.
-    @param[in] split ecvl::SplitType representing the split to get ("training", "validation", or "test").
+    @param[in] split_type ecvl::SplitType representing the split to get ("training", "validation", or "test").
     @return vector of image indexes of the requested split.
     */
-    std::vector<int>& GetSplit(const SplitType& split);
+    std::vector<int>& GetSplit(const SplitType& split_type);
 
     /** @brief Returns the image indexes of the requested split.
-    @param[in] split string representing the split to get.
+    @param[in] split_name string representing the split to get.
     @return vector of image indexes of the requested split.
     */
-    std::vector<int>& GetSplit(const std::string& split);
+    std::vector<int>& GetSplit(const std::string& split_name);
 
     /** @brief Returns the image indexes of the requested split.
-    @param[in] split int representing the index of the split to get.
+    @param[in] split_index int representing the index of the split to get.
     @return vector of image indexes of the requested split.
     */
-    std::vector<int>& GetSplit(const int& split);
+    std::vector<int>& GetSplit(const int& split_index);
 
     /** @brief Set the current split.
-    @param[in] split ecvl::SplitType representing the split to set ("training", "validation", or "test").
+    @param[in] split_type ecvl::SplitType representing the split to set ("training", "validation", or "test").
     */
-    void SetSplit(const SplitType& split);
+    void SetSplit(const SplitType& split_type);
 
     /** @brief Set the current split.
-    @param[in] split string representing the split to set.
+    @param[in] split_name string representing the split to set.
     */
-    void SetSplit(const std::string& split);
+    void SetSplit(const std::string& split_name);
 
     /** @brief Set the current split.
-    @param[in] split int representing the index of the split to set.
+    @param[in] split_index int representing the index of the split to set.
     */
-    void SetSplit(const int& split);
+    void SetSplit(const int& split_index);
 
     /** @brief Dump the Dataset into a YAML file following the DeepHealth Dataset Format.
 
@@ -136,9 +162,9 @@ public:
     void Dump(const filesystem::path& file_path);
 
     /** @brief Retrieve the list of all samples locations in the dataset file.
-    
+
     A single Sample can have multiple locations (e.g., if they are different acquisitions of the same image).
-    
+
     @param[out] vector containing all the samples locations.
     */
     std::vector<std::vector<filesystem::path>> GetLocations();
@@ -152,15 +178,6 @@ private:
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
 
-/** @brief Convert @ref SplitType in string.
-
-Useful for backward compatibility.
-
-@param[in] split SplitType to convert
-
-@return string that represent the provided SplitType
-*/
-const std::string SplitTypeToString(const SplitType& split);
 } // namespace ecvl
 
 #endif // ECVL_DATASET_PARSER_H_
