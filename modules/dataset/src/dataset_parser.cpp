@@ -13,6 +13,7 @@
 
 #include "ecvl/dataset_parser.h"
 
+#include <algorithm>
 #include <fstream>
 #include <regex>
 

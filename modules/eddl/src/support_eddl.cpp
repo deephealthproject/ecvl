@@ -18,6 +18,7 @@
 #include "ecvl/core/imgproc.h"
 #include "ecvl/core/standard_errors.h"
 
+#include <algorithm>
 #include <iostream>
 
 using namespace eddl;
