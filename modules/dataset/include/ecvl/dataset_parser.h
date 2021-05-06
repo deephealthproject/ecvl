@@ -72,7 +72,7 @@ class Split
 {
 public:
     std::string split_name_;                /**< @brief Name of the split. */
-    std::optional<SplitType> split_type_;   /**< @brief If the split is training, validation or test the corresponding SpitType is provided. */
+    optional<SplitType> split_type_;        /**< @brief If the split is training, validation or test the corresponding SpitType is provided. */
     std::vector<int> samples_indices_;      /**< @brief Vector containing samples indices of the split. */
 
     Split() {}
