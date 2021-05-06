@@ -229,8 +229,8 @@ void Dataset::Dump(const path& file_path)
     if (split_.size() > 0) {
         os << "split:" << endl;
         for (auto& s : split_) {
-            os << tab + s.first + ":" << endl;
-            for (auto& i : s.second) {
+            os << tab + s.split_name_ + ":" << endl;
+            for (auto& i : s.samples_indices_) {
                 os << tab + tab + "- " << i << endl;
             }
         }
@@ -278,31 +278,38 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
     if (config["split"].IsDefined()) {
         for (YAML::const_iterator it = config["split"].begin(); it != config["split"].end(); ++it) {
             // insert into the vector split_ the split name and the vector of image indices
-            split_.push_back(make_pair(it->first.as<string>(), it->second.as<vector<int>>()));
+            Split s(it->first.as<string>(), it->second.as<vector<int>>());
+            split_.push_back(s);
         }
     }
 }
 
-std::vector<int>& Dataset::GetSplit(const SplitType& split)
+std::vector<int>& Dataset::GetSplit(const SplitType& split_type)
 {
-    return GetSplit(SplitTypeToString(split));
-}
-
-std::vector<int>& Dataset::GetSplit(const string& split)
-{
-    auto it = std::find_if(split_.begin(), split_.end(), [&](const std::pair<std::string, vector<int>>& element) { return element.first == split; });
+    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_type_ == split_type; });
     if (it == this->split_.end()) {
         ECVL_ERROR_SPLIT_DOES_NOT_EXIST
     }
     else {
-        return it->second;
+        return it->samples_indices_;
     }
 }
 
-std::vector<int>& Dataset::GetSplit(const int& split)
+std::vector<int>& Dataset::GetSplit(const string& split_name)
+{
+    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_name_ == split_name; });
+    if (it == this->split_.end()) {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+    else {
+        return it->samples_indices_;
+    }
+}
+
+std::vector<int>& Dataset::GetSplit(const int& split_index)
 {
     try {
-        return split_.at(split).second;
+        return split_.at(split_index).samples_indices_;
     }
     catch (const std::out_of_range) {
         ECVL_ERROR_SPLIT_DOES_NOT_EXIST
@@ -314,17 +321,34 @@ std::vector<int>& Dataset::GetSplit()
     return GetSplit(current_split_);
 }
 
-void Dataset::SetSplit(const SplitType& split)
-{
-    SetSplit(SplitTypeToString(split));
-}
-
-void Dataset::SetSplit(const string& split)
+void Dataset::SetSplit(const SplitType& split_type)
 {
     // check if the split exists
-    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& pair) { return pair.first == split; })));
+    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_type_ == split_type; })));
     if (index < vsize(split_)) {
         this->current_split_ = index;
+    }
+    else {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+}
+
+void Dataset::SetSplit(const string& split_name)
+{
+    // check if the split exists
+    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_name_ == split_name; })));
+    if (index < vsize(split_)) {
+        this->current_split_ = index;
+    }
+    else {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+}
+
+void Dataset::SetSplit(const int& split_index)
+{
+    if (0 <= split_index && split_index < vsize(split_)) {
+        this->current_split_ = split_index;
     }
     else {
         ECVL_ERROR_SPLIT_DOES_NOT_EXIST
@@ -341,13 +365,4 @@ vector<vector<path>> Dataset::GetLocations()
     return locations;
 }
 
-const string SplitTypeToString(const SplitType& split)
-{
-    switch (split) {
-    case SplitType::training:       return "training";
-    case SplitType::validation:     return "validation";
-    case SplitType::test:           return "test";
-    default:                        ECVL_ERROR_SPLIT_DOES_NOT_EXIST;
-    }
-}
 }

@@ -132,33 +132,33 @@ public:
         }
     }
 
-    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split. 
-    
-    If no split is provided (i.e. it is provided a value less than 0), the current split is reset. 
-    @param[in] split index of the split to reset.
+    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
+
+    If no split is provided (i.e. it is provided a value less than 0), the current split is reset.
+    @param[in] split_index index of the split to reset.
     @param[in] reshuffle boolean which indicates whether to shuffle the split samples indices or not.
     */
-    void ResetBatch(int split = -1, bool reshuffle = false);
+    void ResetBatch(int split_index = -1, bool shuffle = false);
 
     /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
 
-    @param[in] split name of the split to reset.
+    @param[in] split_name name of the split to reset.
     @param[in] reshuffle boolean which indicates whether to shuffle the split samples indices or not.
     */
-    void ResetBatch(std::string split, bool reshuffle = false);
+    void ResetBatch(std::string split_name, bool shuffle = false);
 
     /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
 
-    @param[in] split SplitType of the split to reset.
+    @param[in] split_type SplitType of the split to reset.
     @param[in] reshuffle boolean which indicates whether to shuffle the split samples indices or not.
     */
-    void ResetBatch(SplitType split, bool reshuffle = false);
+    void ResetBatch(SplitType split_type, bool shuffle = false);
 
     /** @brief Reset the batch counter of each split and optionally shuffle samples indices (within each split).
 
     @param[in] reshuffle boolean which indicates whether to shuffle the samples indices or not.
     */
-    void ResetAllBatches(bool reshuffle = false);
+    void ResetAllBatches(bool shuffle = false);
 
     /** @brief Load a batch into _images_ and _labels_ `tensor`.
     @param[out] images `tensor` which stores the batch of images.
@@ -180,7 +180,7 @@ public:
     }
 
     /** @brief Set a new batch size inside the dataset.
-    
+
     Notice that this will not affect the EDDL network batch size, that it has to be changed too.
     @param[in] bs Value to set for the batch size.
     */
