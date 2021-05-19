@@ -98,18 +98,15 @@ public:
             is.ignore();
             type_ = type::range;
             read_vals(is, ']');
-        }
-        else if (next_char == '(') { // vector
+        } else if (next_char == '(') { // vector
             is.ignore();
             type_ = type::vector;
             read_vals(is, ')');
-        }
-        else if (next_char == '"') { // string
+        } else if (next_char == '"') { // string
             is.ignore();
             type_ = type::string;
             std::getline(is, str_, '"');
-        }
-        else {
+        } else {
             type_ = type::number;
             vals_.resize(1);
             is >> vals_[0];
@@ -365,9 +362,10 @@ class AugRotate : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        Rotate2D(img, img, params_["angle"].value_, center_, scale_, interp_);
+        const auto angle = params_["angle"].value_;
+        Rotate2D(img, img, angle, center_, scale_, interp_);
         if (!gt.IsEmpty()) {
-            Rotate2D(gt, const_cast<Image&>(gt), params_["angle"].value_, center_, scale_, gt_interp_);
+            Rotate2D(gt, const_cast<Image&>(gt), angle, center_, scale_, gt_interp_);
         }
     }
 public:
@@ -527,7 +525,8 @@ class AugFlip : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        if (params_["p"].value_ <= p_) {
+        const auto p = params_["p"].value_;
+        if (p <= p_) {
             Flip2D(img, img);
             if (!gt.IsEmpty()) {
                 Flip2D(gt, const_cast<Image&>(gt));
@@ -565,7 +564,8 @@ class AugMirror : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        if (params_["p"].value_ <= p_) {
+        const auto p = params_["p"].value_;
+        if (p <= p_) {
             Mirror2D(img, img);
             if (!gt.IsEmpty()) {
                 Mirror2D(gt, const_cast<Image&>(gt));
@@ -601,7 +601,8 @@ class AugGaussianBlur : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GaussianBlur(img, img, params_["sigma"].value_);
+        const auto sigma = params_["sigma"].value_;
+        GaussianBlur(img, img, sigma);
     }
 public:
     /** @brief AugGaussianBlur constructor
@@ -631,7 +632,8 @@ class AugAdditiveLaplaceNoise : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
+        const auto std_dev = params_["std_dev"].value_;
+        AdditiveLaplaceNoise(img, img, std_dev);
     }
 public:
     /** @brief AugAdditiveLaplaceNoise constructor
@@ -662,7 +664,8 @@ class AugAdditivePoissonNoise : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        AdditivePoissonNoise(img, img, params_["lambda"].value_);
+        const auto lambda = params_["lambda"].value_;
+        AdditivePoissonNoise(img, img, lambda);
     }
 public:
     /** @brief AugAdditivePoissonNoise constructor
@@ -693,7 +696,8 @@ class AugGammaContrast : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GammaContrast(img, img, params_["gamma"].value_);
+        const auto gamma = params_["gamma"].value_;
+        GammaContrast(img, img, gamma);
     }
 public:
     /** @brief AugGammaContrast constructor
@@ -726,8 +730,10 @@ class AugCoarseDropout : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        CoarseDropout(img, img, params_["p"].value_, params_["drop_size"].value_, per_channel);
+        const auto p = params_["p"].value_;
+        const auto drop_size = params_["drop_size"].value_;
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        CoarseDropout(img, img, p, drop_size, per_channel);
     }
 public:
     /** @brief AugCoarseDropout constructor
@@ -770,7 +776,8 @@ class AugTranspose : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        if (params_["p"].value_ <= p_) {
+        const auto p = params_["p"].value_;
+        if (p <= p_) {
             Transpose(img, img);
             if (!gt.IsEmpty()) {
                 Transpose(gt, const_cast<Image&>(gt));
@@ -806,7 +813,8 @@ class AugBrightness : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        Add(img, params_["beta"].value_, img);
+        const auto beta = params_["beta"].value_;
+        Add(img, beta, img);
     }
 public:
     /** @brief AugBrightness constructor
@@ -843,11 +851,13 @@ class AugGridDistortion : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GridDistortion(img, img, static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_,
-            border_value_, static_cast<unsigned>(params_["seed"].value_));
+        const auto num_steps = params_["num_steps"].value_;
+        const auto seed = params_["seed"].value_;
+        GridDistortion(img, img, static_cast<int>(num_steps), distort_limit_, interp_, border_type_,
+            border_value_, static_cast<unsigned>(seed));
         if (!gt.IsEmpty()) {
-            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(params_["num_steps"].value_), distort_limit_,
-                interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
+            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(num_steps), distort_limit_,
+                interp_, border_type_, border_value_, static_cast<unsigned>(seed));
         }
     }
 public:
@@ -894,23 +904,17 @@ public:
         if (m.Get("border_type", param::type::string, false, p)) {
             if (p.str_ == "constant") {
                 border_type_ = BorderType::BORDER_CONSTANT;
-            }
-            else if (p.str_ == "replicate") {
+            } else if (p.str_ == "replicate") {
                 border_type_ = BorderType::BORDER_REPLICATE;
-            }
-            else if (p.str_ == "reflect") {
+            } else if (p.str_ == "reflect") {
                 border_type_ = BorderType::BORDER_REFLECT;
-            }
-            else if (p.str_ == "wrap") {
+            } else if (p.str_ == "wrap") {
                 border_type_ = BorderType::BORDER_WRAP;
-            }
-            else if (p.str_ == "reflect_101") {
+            } else if (p.str_ == "reflect_101") {
                 border_type_ = BorderType::BORDER_REFLECT_101;
-            }
-            else if (p.str_ == "transparent") {
+            } else if (p.str_ == "transparent") {
                 border_type_ = BorderType::BORDER_TRANSPARENT;
-            }
-            else {
+            } else {
                 throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
             }
         }
@@ -933,11 +937,13 @@ class AugElasticTransform : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_,
-            border_value_, static_cast<unsigned>(params_["seed"].value_));
+        const auto alpha = params_["alpha"].value_;
+        const auto sigma = params_["sigma"].value_;
+        const auto seed = params_["seed"].value_;
+        ElasticTransform(img, img, alpha, sigma, interp_, border_type_, border_value_, static_cast<unsigned>(seed));
         if (!gt.IsEmpty()) {
-            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_,
-                border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
+            ElasticTransform(gt, const_cast<Image&>(gt), alpha, sigma, interp_,
+                border_type_, border_value_, static_cast<unsigned>(seed));
         }
     }
 public:
@@ -985,23 +991,17 @@ public:
         if (m.Get("border_type", param::type::string, false, p)) {
             if (p.str_ == "constant") {
                 border_type_ = BorderType::BORDER_CONSTANT;
-            }
-            else if (p.str_ == "replicate") {
+            } else if (p.str_ == "replicate") {
                 border_type_ = BorderType::BORDER_REPLICATE;
-            }
-            else if (p.str_ == "reflect") {
+            } else if (p.str_ == "reflect") {
                 border_type_ = BorderType::BORDER_REFLECT;
-            }
-            else if (p.str_ == "wrap") {
+            } else if (p.str_ == "wrap") {
                 border_type_ = BorderType::BORDER_WRAP;
-            }
-            else if (p.str_ == "reflect_101") {
+            } else if (p.str_ == "reflect_101") {
                 border_type_ = BorderType::BORDER_REFLECT_101;
-            }
-            else if (p.str_ == "transparent") {
+            } else if (p.str_ == "transparent") {
                 border_type_ = BorderType::BORDER_TRANSPARENT;
-            }
-            else {
+            } else {
                 throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
             }
         }
@@ -1026,11 +1026,12 @@ class AugOpticalDistortion : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
+        const auto seed = params_["seed"].value_;
         OpticalDistortion(img, img, distort_limit_, shift_limit_, interp_, border_type_,
-            border_value_, static_cast<unsigned>(params_["seed"].value_));
+            border_value_, static_cast<unsigned>(seed));
         if (!gt.IsEmpty()) {
             OpticalDistortion(gt, const_cast<Image&>(gt), distort_limit_, shift_limit_, interp_, border_type_,
-                border_value_, static_cast<unsigned>(params_["seed"].value_));
+                border_value_, static_cast<unsigned>(seed));
         }
     }
 public:
@@ -1076,23 +1077,17 @@ public:
         if (m.Get("border_type", param::type::string, false, p)) {
             if (p.str_ == "constant") {
                 border_type_ = BorderType::BORDER_CONSTANT;
-            }
-            else if (p.str_ == "replicate") {
+            } else if (p.str_ == "replicate") {
                 border_type_ = BorderType::BORDER_REPLICATE;
-            }
-            else if (p.str_ == "reflect") {
+            } else if (p.str_ == "reflect") {
                 border_type_ = BorderType::BORDER_REFLECT;
-            }
-            else if (p.str_ == "wrap") {
+            } else if (p.str_ == "wrap") {
                 border_type_ = BorderType::BORDER_WRAP;
-            }
-            else if (p.str_ == "reflect_101") {
+            } else if (p.str_ == "reflect_101") {
                 border_type_ = BorderType::BORDER_REFLECT_101;
-            }
-            else if (p.str_ == "transparent") {
+            } else if (p.str_ == "transparent") {
                 border_type_ = BorderType::BORDER_TRANSPARENT;
-            }
-            else {
+            } else {
                 throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
             }
         }
@@ -1113,8 +1108,10 @@ class AugSalt : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        Salt(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+        const auto p = params_["p"].value_;
+        const auto seed = params_["seed"].value_;
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        Salt(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
     /** @brief AugSalt constructor
@@ -1156,8 +1153,10 @@ class AugPepper : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        Pepper(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+        const auto p = params_["p"].value_;
+        const auto seed = params_["seed"].value_; 
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        Pepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
     /** @brief AugPepper constructor
@@ -1199,8 +1198,10 @@ class AugSaltAndPepper : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        SaltAndPepper(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+        const auto p = params_["p"].value_;
+        const auto seed = params_["seed"].value_; 
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        SaltAndPepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
     /** @brief AugSaltAndPepper constructor
@@ -1249,8 +1250,7 @@ class AugNormalize : public Augmentation
     {
         if (per_channel_) {
             Normalize(img, img, ch_mean_, ch_std_);
-        }
-        else {
+        } else {
             Normalize(img, img, mean_, std_);
         }
     }
@@ -1278,20 +1278,17 @@ public:
         if (p.type_ == param::type::number) {
             mean_ = p.vals_[0];
             per_channel_ = false;
-        }
-        else if (p.type_ == param::type::vector) {
+        } else if (p.type_ == param::type::vector) {
             ch_mean_ = p.vals_;
             per_channel_ = true;
-        }
-        else {
+        } else {
             throw std::runtime_error("AugNormalize: invalid mean type");
         }
 
         if (per_channel_ == false) {
             m.Get("std", param::type::number, true, p);
             std_ = p.vals_[0];
-        }
-        else {
+        } else {
             m.Get("std", param::type::vector, true, p);
             ch_std_ = p.vals_;
         }
