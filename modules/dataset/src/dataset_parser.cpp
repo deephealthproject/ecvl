@@ -274,13 +274,20 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
     }
 
     DecodeImages(config["images"], abs_filename.parent_path(), verify);
+
     if (config["split"].IsDefined()) {
         for (YAML::const_iterator it = config["split"].begin(); it != config["split"].end(); ++it) {
             // insert into the vector split_ the split name and the vector of image indices
             Split s(it->first.as<string>(), it->second.as<vector<int>>());
+
+            if (!samples_[s.samples_indices_[0]].label_ && !samples_[s.samples_indices_[0]].label_path_) {
+                s.no_label_ = true;
+            }
             split_.push_back(s);
         }
     }
+
+    task_ = classes_.empty() ? Task::segmentation : Task::classification;
 }
 
 std::vector<int>& Dataset::GetSplit(const SplitType& split_type)
@@ -363,5 +370,4 @@ vector<vector<path>> Dataset::GetLocations()
     }
     return locations;
 }
-
 }

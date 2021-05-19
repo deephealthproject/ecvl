@@ -36,6 +36,17 @@ namespace ecvl
 @anchor SplitType
 */
 UNSIGNED_ENUM_CLASS(SplitType, training, validation, test)
+
+/** @brief Enum class representing allowed tasks for the ECVL Dataset.
+
+@anchor Task
+ */
+enum class Task
+{
+    classification,
+    segmentation,
+};
+
 /** @brief Sample image in a dataset.
 
 This class provides the information to describe a dataset sample.
@@ -45,11 +56,11 @@ This class provides the information to describe a dataset sample.
 class Sample
 {
 public:
-    std::vector<filesystem::path> location_; /**< @brief Absolute path of the sample. */
-    optional<std::vector<int>> label_; /**< @brief Vector of sample labels. */
-    optional<filesystem::path> label_path_; /**< @brief Absolute path of sample ground truth. */
-    optional<std::map<int, std::string>> values_; /**< @brief Map (`map<feature-index,feature-value>`) which stores the features of a sample. */
-    std::vector<int> size_; /**< @brief Original x and y dimensions of the sample */
+    std::vector<filesystem::path> location_;        /**< @brief Absolute path of the sample. */
+    optional<std::vector<int>> label_;              /**< @brief Vector of sample labels. */
+    optional<filesystem::path> label_path_;         /**< @brief Absolute path of sample ground truth. */
+    optional<std::map<int, std::string>> values_;   /**< @brief Map (`map<feature-index,feature-value>`) which stores the features of a sample. */
+    std::vector<int> size_;                         /**< @brief Original x and y dimensions of the sample */
 
     /** @brief Return an Image of the dataset.
 
@@ -64,7 +75,7 @@ public:
 };
 
 /** @brief Split of a dataset.
-This class provides the name of the split and the indices of the samples that belong to this split. 
+This class provides the name of the split and the indices of the samples that belong to this split.
 It optionally provides the split type if the split name is one of training, validation or test.
 @anchor Split
 */
@@ -74,6 +85,10 @@ public:
     std::string split_name_;                /**< @brief Name of the split. */
     std::optional<SplitType> split_type_;   /**< @brief If the split is training, validation or test the corresponding SpitType is provided. */
     std::vector<int> samples_indices_;      /**< @brief Vector containing samples indices of the split. */
+    bool drop_last_ = false;                /**< @brief Whether to drop elements that don't fit batch size or not. */
+    int num_batches_;                       /**< @brief Number of batches of this split. */
+    int last_batch_;                        /**< @brief Dimension of the last batch of this split. */
+    bool no_label_ = false;                 /**< @brief Whether the split has samples with labels or not. */
 
     Split() {}
 
@@ -98,13 +113,14 @@ This class implements the DeepHealth Dataset Format (https://github.com/deepheal
 class Dataset
 {
 public:
-    std::string name_ = "DeepHealth dataset"; /**< @brief Name of the Dataset. */
-    std::string description_ = "This is the DeepHealth example dataset!"; /**< @brief Description of the Dataset. */
-    std::vector<std::string> classes_; /**< @brief Vector with all the classes available in the Dataset. */
-    std::vector<std::string> features_; /**< @brief Vector with all the features available in the Dataset. */
-    std::vector<Sample> samples_; /**< @brief Vector containing all the Dataset samples. See @ref Sample. */
-    std::vector<Split> split_; /**< @brief Splits of the Dataset. */
-    int current_split_ = -1; /**< @brief Current split from which images are loaded. */
+    std::string name_ = "DeepHealth dataset";                               /**< @brief Name of the Dataset. */
+    std::string description_ = "This is the DeepHealth example dataset!";   /**< @brief Description of the Dataset. */
+    std::vector<std::string> classes_;                                      /**< @brief Vector with all the classes available in the Dataset. */
+    std::vector<std::string> features_;                                     /**< @brief Vector with all the features available in the Dataset. */
+    std::vector<Sample> samples_;                                           /**< @brief Vector containing all the Dataset samples. See @ref Sample. */
+    std::vector<Split> split_;                                              /**< @brief Splits of the Dataset. See @ref Split. */
+    int current_split_ = -1;                                                /**< @brief Current split from which images are loaded. */
+    Task task_;                                                             /**< @brief Task of the dataset. */
 
     Dataset() {}
 
@@ -113,6 +129,9 @@ public:
     @param[in] verify Whether to log the non-existence of a dataset sample location or not.
     */
     Dataset(const filesystem::path& filename, bool verify = false);
+
+    /* Destructor */
+    virtual ~Dataset() {}
 
     /** @brief Returns the image indexes of the current split.
     @return vector of image indexes of the split in use.
@@ -140,17 +159,17 @@ public:
     /** @brief Set the current split.
     @param[in] split_type ecvl::SplitType representing the split to set ("training", "validation", or "test").
     */
-    void SetSplit(const SplitType& split_type);
+    virtual void SetSplit(const SplitType& split_type);
 
     /** @brief Set the current split.
     @param[in] split_name string representing the split to set.
     */
-    void SetSplit(const std::string& split_name);
+    virtual void SetSplit(const std::string& split_name);
 
     /** @brief Set the current split.
     @param[in] split_index int representing the index of the split to set.
     */
-    void SetSplit(const int& split_index);
+    virtual void SetSplit(const int& split_index);
 
     /** @brief Dump the Dataset into a YAML file following the DeepHealth Dataset Format.
 
@@ -165,7 +184,7 @@ public:
 
     A single Sample can have multiple locations (e.g., if they are different acquisitions of the same image).
 
-    @param[out] vector containing all the samples locations.
+    @return vector containing all the samples locations.
     */
     std::vector<std::vector<filesystem::path>> GetLocations();
 
@@ -177,7 +196,6 @@ private:
     void DecodeImages(const YAML::Node& node, const filesystem::path& root_path, bool verify);
     void FindLabel(Sample& sample, const YAML::Node& n);
 };
-
 } // namespace ecvl
 
 #endif // ECVL_DATASET_PARSER_H_

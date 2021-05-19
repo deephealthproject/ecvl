@@ -25,9 +25,12 @@ using namespace ecvl::filesystem;
 
 namespace ecvl
 {
+#define ECVL_ERROR_START_ALREADY_ACTIVE throw std::runtime_error(ECVL_ERROR_MSG "Trying to start the producer threads when they are already running!");
+#define ECVL_ERROR_STOP_ALREADY_END throw std::runtime_error(ECVL_ERROR_MSG "Trying to stop the producer threads when they are already ended!");
+#define ECVL_ERROR_WORKERS_LESS_THAN_ONE throw std::runtime_error(ECVL_ERROR_MSG "Dataset workers must be at least one");
 default_random_engine DLDataset::re_(random_device{}());
 
-void TensorToImage(Tensor*& t, Image& img)
+void TensorToImage(const Tensor* t, Image& img)
 {
     switch (t->ndim) {
     case 3:
@@ -44,7 +47,7 @@ void TensorToImage(Tensor*& t, Image& img)
     memcpy(img.data_, t->ptr, img.datasize_);
 }
 
-void TensorToView(Tensor*& t, View<DataType::float32>& v)
+void TensorToView(const Tensor* t, View<DataType::float32>& v)
 {
     switch (t->ndim) {
     case 3:
@@ -147,21 +150,22 @@ void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
 
 void DLDataset::ResetBatch(int split_index, bool shuffle)
 {
-    { // CRITICAL REGION STARTS
-        std::unique_lock<std::mutex> lck(mutex_current_batch_);
-        int index = current_split_ ? split_index < 0 : split_index;
-        // check if the split exists
-        try {
-            this->current_batch_.at(index) = 0;
-        }
-        catch (const std::out_of_range) {
-            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-        }
+    int index = split_index < 0 ? current_split_ : split_index;
+    // check if the split exists
+    try {
+        this->current_batch_.at(index) = 0;
+    }
+    catch (const std::out_of_range) {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
 
-        if (shuffle) {
-            std::shuffle(begin(GetSplit(index)), end(GetSplit(index)), re_);
-        }
-    } // CRITICAL REGION ENDS
+    if (shuffle) {
+        std::shuffle(begin(GetSplit(index)), end(GetSplit(index)), re_);
+    }
+
+    for (auto& tc : splits_tc_[index]) {
+        tc.Reset();
+    }
 }
 
 void DLDataset::ResetBatch(string split_name, bool shuffle)
@@ -178,17 +182,16 @@ void DLDataset::ResetBatch(SplitType split_type, bool shuffle)
 
 void DLDataset::ResetAllBatches(bool shuffle)
 {
-    { // CRITICAL REGION STARTS
-        std::unique_lock<std::mutex> lck(mutex_current_batch_);
+    fill(current_batch_.begin(), current_batch_.end(), 0);
 
-        fill(current_batch_.begin(), current_batch_.end(), 0);
-
-        if (shuffle) {
-            for (auto& s : split_) {
-                std::shuffle(begin(s.samples_indices_), end(s.samples_indices_), re_);
+    if (shuffle) {
+        for (int split_index = 0; split_index < vsize(split_); ++split_index) {
+            std::shuffle(begin(GetSplit(split_index)), end(GetSplit(split_index)), re_);
+            for (auto& tc : splits_tc_[split_index]) {
+                tc.Reset();
             }
         }
-    } // CRITICAL REGION ENDS
+    }
 }
 
 void DLDataset::LoadBatch(Tensor*& images, Tensor*& labels)
@@ -223,12 +226,9 @@ void DLDataset::LoadBatch(Tensor*& images, Tensor*& labels)
     }
 
     // Move to next samples
-    { // CRITICAL REGION STARTS
-        std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        start = current_batch_[current_split_] * bs;
-        ++current_batch_[current_split_];
-    } // CRITICAL REGION ENDS
+    start = current_batch_[current_split_] * bs;
+    ++current_batch_[current_split_];
 
     if (vsize(GetSplit()) < start + bs) {
         cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
@@ -292,12 +292,9 @@ void DLDataset::LoadBatch(Tensor*& images)
     }
 
     // Move to next samples
-    { // CRITICAL REGION STARTS
-        std::unique_lock<std::mutex> lck(mutex_current_batch_);
 
-        start = current_batch_[current_split_] * bs;
-        ++current_batch_[current_split_];
-    } // CRITICAL REGION ENDS
+    start = current_batch_[current_split_] * bs;
+    ++current_batch_[current_split_];
 
     if (vsize(GetSplit()) < start + bs) {
         cerr << ECVL_ERROR_MSG "Batch size is not even with the number of samples. Hint: loop through `num_batches = num_samples / batch_size;`" << endl;
@@ -371,5 +368,173 @@ Image MakeGrid(Tensor*& t, int cols, bool normalize)
         VConcat(vimages, image_t);
     }
     return image_t;
+}
+
+void DLDataset::ProduceImageLabel(Sample& elem)
+{
+    Image img = elem.LoadImage(ctype_, false);
+    switch (task_) {
+    case Task::classification:
+    {
+        LabelClass* label = nullptr;
+        // Read the label
+        if (!split_[current_split_].no_label_) {
+            label = new LabelClass();
+            label->label = elem.label_.value();
+        }
+        // Apply chain of augmentations only to sample image
+        augs_.Apply(current_split_, img);
+        queue_.Push(img, label);
+    }
+    break;
+    case Task::segmentation:
+    {
+        LabelImage* label = nullptr;
+        // Read the ground truth
+        if (!split_[current_split_].no_label_) {
+            label = new LabelImage();
+            Image gt = elem.LoadImage(ctype_gt_, true);
+            // Apply chain of augmentations to sample image and corresponding ground truth
+            augs_.Apply(current_split_, img, gt);
+            label->gt = gt;
+        }
+        else {
+            augs_.Apply(current_split_, img);
+        }
+        queue_.Push(img, label);
+    }
+    break;
+    }
+}
+
+void DLDataset::InitTC(int split_index)
+{
+    auto& split_indexes = split_[split_index].samples_indices_;
+    auto& drop_last = split_[split_index].drop_last_;
+    auto samples_per_queue = vsize(split_indexes) / num_workers_;
+    auto exceeding_samples = vsize(split_indexes) % num_workers_ * !drop_last;
+
+    // Set which are the indices of the samples managed by each thread
+    // The i-th thread manage samples from start to end
+    std::vector<ThreadCounters> split_tc;
+    for (auto i = 0; i < num_workers_; ++i) {
+        auto start = samples_per_queue * i;
+        auto end = start + samples_per_queue;
+        if (i >= num_workers_ - 1) {
+            // The last thread takes charge of exceeding samples
+            end += exceeding_samples;
+        }
+        split_tc.push_back(ThreadCounters(start, end));
+    }
+
+    splits_tc_[split_index] = split_tc;
+}
+
+void DLDataset::ThreadFunc(int thread_index)
+{
+    auto& tc_of_current_split = splits_tc_[current_split_];
+    while (tc_of_current_split[thread_index].counter_ < tc_of_current_split[thread_index].max_) {
+        auto sample_index = split_[current_split_].samples_indices_[tc_of_current_split[thread_index].counter_];
+        Sample& elem = samples_[sample_index];
+
+        ProduceImageLabel(elem);
+
+        ++tc_of_current_split[thread_index].counter_;
+    }
+}
+
+pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
+{
+    ++current_batch_[current_split_];
+    auto& s = split_[current_split_];
+    auto tensors_shape = tensors_shape_;
+
+    // Reduce batch size for the last batch in the split
+    if (current_batch_[current_split_] == s.num_batches_) {
+        tensors_shape.first[0] = s.last_batch_;
+        if (!s.no_label_) {
+            tensors_shape.second[0] = s.last_batch_;
+        }
+    }
+
+    unique_ptr<Tensor> x = make_unique<Tensor>(tensors_shape.first);
+    unique_ptr<Tensor> y = make_unique<Tensor>(tensors_shape.second);
+
+    Image img;
+    for (int i = 0; i < x->shape[0]; ++i) {
+        queue_.Pop(img, label_); // Consumer get samples from the queue
+
+        if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: possible for test split)
+            // Copy label into tensor
+            label_->ToTensorPlane(y.get(), i);
+            delete label_;
+            label_ = nullptr;
+        }
+        //Copy sample image into tensor
+        auto lhs = x.get();
+        ImageToTensor(img, lhs, i);
+    }
+
+    return make_pair(move(x), move(y));
+}
+
+void DLDataset::Start(int split_index)
+{
+    if (active_) {
+        ECVL_ERROR_START_ALREADY_ACTIVE
+    }
+
+    active_ = true;
+
+    if (split_index != -1 && split_index != current_split_) {
+        SetSplit(split_index);
+    }
+
+    producers_.clear();
+
+    if (num_workers_ > 0) {
+        for (int i = 0; i < num_workers_; ++i) {
+            producers_.push_back(std::thread(&DLDataset::ThreadFunc, this, i));
+        }
+    }
+    else {
+        ECVL_ERROR_WORKERS_LESS_THAN_ONE
+    }
+}
+
+void DLDataset::Stop()
+{
+    if (!active_) {
+        ECVL_ERROR_STOP_ALREADY_END
+    }
+
+    active_ = false;
+    for (int i = 0; i < num_workers_; ++i) {
+        producers_[i].join();
+    }
+}
+
+void DLDataset::SetSplit(const SplitType& split_type)
+{
+    Dataset::SetSplit(split_type);
+    if (split_[current_split_].no_label_) {
+        tensors_shape_.second = {};
+    }
+}
+
+void DLDataset::SetSplit(const std::string& split_name)
+{
+    Dataset::SetSplit(split_name);
+    if (split_[current_split_].no_label_) {
+        tensors_shape_.second = {};
+    }
+}
+
+void DLDataset::SetSplit(const int& split_index)
+{
+    Dataset::SetSplit(split_index);
+    if (split_[current_split_].no_label_) {
+        tensors_shape_.second = {};
+    }
 }
 } // namespace ecvl
