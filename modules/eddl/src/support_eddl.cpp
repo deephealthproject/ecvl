@@ -141,7 +141,7 @@ void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
     tot_dims = accumulate(img.dims_.begin(), img.dims_.end(), 1, std::multiplies<int>());
 
     // Check if the current image exceeds the total size of the tensor
-    if (t->size < tot_dims * (offset + 1)) {
+    if (t->size < static_cast<unsigned>(tot_dims * (offset + 1))) {
         cerr << ECVL_ERROR_MSG "Size of the images exceeds those of the tensor" << endl;
         ECVL_ERROR_INCOMPATIBLE_DIMENSIONS
     }

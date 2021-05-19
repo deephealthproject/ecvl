@@ -21,6 +21,7 @@
 
 #include <eddl/apis/eddl.h>
 
+#include <condition_variable>
 #include <mutex>
 #include <queue>
 
@@ -305,7 +306,6 @@ class DLDataset : public Dataset
 {
 protected:
     int batch_size_;                            /**< @brief Size of each dataset mini batch. */
-    std::vector<int> resize_dims_;              /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
     std::vector<int> current_batch_;            /**< @brief Number of batches already loaded for each split. */
     ColorType ctype_;                           /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_;                        /**< @brief ecvl::ColorType of the Dataset ground truth images. */
@@ -328,6 +328,7 @@ protected:
 public:
     int n_channels_;                            /**< @brief Number of channels of the images. */
     int n_channels_gt_ = -1;                    /**< @brief Number of channels of the ground truth images. */
+    std::vector<int> resize_dims_;              /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
 
     /**
     @param[in] filename Path to the Dataset file.
@@ -356,7 +357,7 @@ public:
         num_workers_{ num_workers },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt },
-        queue_{ batch_size_ * queue_ratio_size * num_workers_ }
+        queue_{ static_cast<unsigned>(batch_size_ * queue_ratio_size * num_workers_) }
     {
         // resize current_batch_ to the number of splits and initialize it with 0
         current_batch_.resize(split_.size(), 0);
