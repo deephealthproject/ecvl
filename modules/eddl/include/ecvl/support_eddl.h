@@ -395,8 +395,8 @@ public:
         auto s_index = 0;
         splits_tc_ = std::vector<std::vector<ThreadCounters>>(vsize(split_));
         for (auto& s : split_) {
-            s.num_batches_ = s.drop_last_ ? vsize(s.samples_indices_) / batch_size_ : (vsize(s.samples_indices_) + batch_size_ - 1) / batch_size_;
-            s.last_batch_ = vsize(s.samples_indices_) % batch_size_;
+            s.SetNumBatches(batch_size_);
+            s.SetLastBatch(batch_size_);
 
             InitTC(s_index);
             ++s_index;
@@ -513,19 +513,28 @@ public:
     auto GetQueueSize() { return queue_.Length(); };
 
     /** @brief Set the current split and if the split doesn't have labels update the dataset tensors_shape_.
-    @param[in] split_type ecvl::SplitType representing the split to set ("training", "validation", or "test").
-    */
-    void SetSplit(const SplitType& split_type) override;
 
-    /** @brief Set the current split and if the split doesn't have labels update the dataset tensors_shape_.
-    @param[in] split_name string representing the split to set.
+    @param[in] split index, name or ecvl::SplitType representing the split to set.
     */
-    void SetSplit(const std::string& split_name) override;
+    void SetSplit(const ecvl::any& split) override;
 
-    /** @brief Set the current split and if the split doesn't have labels update the dataset tensors_shape_.
-    @param[in] split_index int representing the index of the split to set.
+    /** @brief Set the dataset augmentations.
+
+    @param[in] da @ref DatasetAugmentations to set.
     */
-    void SetSplit(const int& split_index) override;
+    void SetAugmentations(const DatasetAugmentations& da);
+
+    /** @brief Get the number of batches of the specified split.
+
+    @param[in] split index, name or ecvl::SplitType representing the split from which to get the number of batches.
+    @return number of batches of the specified split.
+    */
+    int GetNumBatches(const ecvl::any& split);
+
+    /** @brief Get the number of batches of the current split.
+    @return number of batches of the current split.
+    */
+    int GetNumBatches();
 };
 
 /** @brief Make a grid of images from a EDDL Tensor.

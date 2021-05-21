@@ -15,10 +15,12 @@
 #define ECVL_DATASET_PARSER_H_
 
 #include "ecvl/core.h"
+#include "ecvl/core/any.h"
 #include "ecvl/core/filesystem.h"
 #include "ecvl/core/optional.h"
 
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <vector>
 #include <regex>
@@ -102,6 +104,16 @@ public:
         else if (split_name_ == "validation") split_type_ = SplitType::validation;
         else if (split_name_ == "test") split_type_ = SplitType::test;
     }
+
+    void SetNumBatches(int batch_size)
+    {
+        num_batches_ = drop_last_ ? vsize(samples_indices_) / batch_size : (vsize(samples_indices_) + batch_size - 1) / batch_size;
+    }
+
+    void SetLastBatch(int batch_size)
+    {
+        last_batch_ = vsize(samples_indices_) % batch_size;
+    }
 };
 
 /** @brief DeepHealth Dataset.
@@ -112,6 +124,11 @@ This class implements the DeepHealth Dataset Format (https://github.com/deepheal
 */
 class Dataset
 {
+    std::map<std::string, int> features_map_;
+    void DecodeImages(const YAML::Node& node, const filesystem::path& root_path, bool verify);
+    void FindLabel(Sample& sample, const YAML::Node& n);
+protected:
+    std::vector<ecvl::Split>::iterator GetSplitIt(ecvl::any split);
 public:
     std::string name_ = "DeepHealth dataset";                               /**< @brief Name of the Dataset. */
     std::string description_ = "This is the DeepHealth example dataset!";   /**< @brief Description of the Dataset. */
@@ -139,37 +156,15 @@ public:
     std::vector<int>& GetSplit();
 
     /** @brief Returns the image indexes of the requested split.
-    @param[in] split_type ecvl::SplitType representing the split to get ("training", "validation", or "test").
+    @param[in] split index, name or ecvl::SplitType representing the split to get.
     @return vector of image indexes of the requested split.
     */
-    std::vector<int>& GetSplit(const SplitType& split_type);
-
-    /** @brief Returns the image indexes of the requested split.
-    @param[in] split_name string representing the split to get.
-    @return vector of image indexes of the requested split.
-    */
-    std::vector<int>& GetSplit(const std::string& split_name);
-
-    /** @brief Returns the image indexes of the requested split.
-    @param[in] split_index int representing the index of the split to get.
-    @return vector of image indexes of the requested split.
-    */
-    std::vector<int>& GetSplit(const int& split_index);
+    std::vector<int>& GetSplit(const ecvl::any& split);
 
     /** @brief Set the current split.
-    @param[in] split_type ecvl::SplitType representing the split to set ("training", "validation", or "test").
+    @param[in] split index, name or ecvl::SplitType representing the split to set.
     */
-    virtual void SetSplit(const SplitType& split_type);
-
-    /** @brief Set the current split.
-    @param[in] split_name string representing the split to set.
-    */
-    virtual void SetSplit(const std::string& split_name);
-
-    /** @brief Set the current split.
-    @param[in] split_index int representing the index of the split to set.
-    */
-    virtual void SetSplit(const int& split_index);
+    virtual void SetSplit(const ecvl::any& split);
 
     /** @brief Dump the Dataset into a YAML file following the DeepHealth Dataset Format.
 
@@ -190,11 +185,6 @@ public:
 
     // RegEx which matchs URLs
     static const std::regex url_regex_;
-
-private:
-    std::map<std::string, int> features_map_;
-    void DecodeImages(const YAML::Node& node, const filesystem::path& root_path, bool verify);
-    void FindLabel(Sample& sample, const YAML::Node& n);
 };
 } // namespace ecvl
 

@@ -291,35 +291,36 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
     task_ = classes_.empty() ? Task::segmentation : Task::classification;
 }
 
-std::vector<int>& Dataset::GetSplit(const SplitType& split_type)
+vector<Split>::iterator Dataset::GetSplitIt(any split)
 {
-    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_type_ == split_type; });
+    if (split.type() == typeid(int)) {
+        try {
+            return split_.begin() + any_cast<int>(split);
+        }
+        catch (const out_of_range) {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+    }
+    auto func = [&](const auto& s) {
+        if (split.type() == typeid(string)) {
+            auto tmp = s.split_name_;
+            return tmp == any_cast<string>(split);
+        }
+        else if (split.type() == typeid(SplitType)) {
+            auto tmp = s.split_type_;
+            return tmp == any_cast<SplitType>(split);
+        }
+        else {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+    };
+
+    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return func(s); });
     if (it == this->split_.end()) {
         ECVL_ERROR_SPLIT_DOES_NOT_EXIST
     }
     else {
-        return it->samples_indices_;
-    }
-}
-
-std::vector<int>& Dataset::GetSplit(const string& split_name)
-{
-    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_name_ == split_name; });
-    if (it == this->split_.end()) {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-    }
-    else {
-        return it->samples_indices_;
-    }
-}
-
-std::vector<int>& Dataset::GetSplit(const int& split_index)
-{
-    try {
-        return split_.at(split_index).samples_indices_;
-    }
-    catch (const std::out_of_range) {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        return it;
     }
 }
 
@@ -328,34 +329,25 @@ std::vector<int>& Dataset::GetSplit()
     return GetSplit(current_split_);
 }
 
-void Dataset::SetSplit(const SplitType& split_type)
+std::vector<int>& Dataset::GetSplit(const any& split)
 {
-    // check if the split exists
-    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_type_ == split_type; })));
-    if (index < vsize(split_)) {
-        this->current_split_ = index;
-    }
-    else {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-    }
+    auto it = GetSplitIt(split);
+    return it->samples_indices_;
 }
 
-void Dataset::SetSplit(const string& split_name)
+void Dataset::SetSplit(const any& split)
 {
-    // check if the split exists
-    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_name_ == split_name; })));
-    if (index < vsize(split_)) {
-        this->current_split_ = index;
+    int index;
+    if (split.type() == typeid(int)) {
+        index = any_cast<int>(split);
     }
     else {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        index = static_cast<int>(distance(split_.begin(), GetSplitIt(split)));
     }
-}
 
-void Dataset::SetSplit(const int& split_index)
-{
-    if (0 <= split_index && split_index < vsize(split_)) {
-        this->current_split_ = split_index;
+    // check if the split exists
+    if (0 <= index && index < vsize(split_)) {
+        this->current_split_ = index;
     }
     else {
         ECVL_ERROR_SPLIT_DOES_NOT_EXIST

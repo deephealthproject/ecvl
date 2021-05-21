@@ -319,17 +319,6 @@ void DLDataset::LoadBatch(Tensor*& images)
     }
 }
 
-void DLDataset::SetBatchSize(int bs)
-{
-    // check if the provided batch size is negative or greater than the current split size
-    if (bs > 0 && bs < vsize(split_[current_split_].samples_indices_)) {
-        batch_size_ = bs;
-    }
-    else {
-        ECVL_ERROR_WRONG_PARAMS("bs in SetBatchSize")
-    }
-}
-
 Image MakeGrid(Tensor*& t, int cols, bool normalize)
 {
     const auto batch_size = t->shape[0];
@@ -515,27 +504,55 @@ void DLDataset::Stop()
     }
 }
 
-void DLDataset::SetSplit(const SplitType& split_type)
+int DLDataset::GetNumBatches()
 {
-    Dataset::SetSplit(split_type);
+    return GetNumBatches(current_split_);
+}
+
+int DLDataset::GetNumBatches(const any& split)
+{
+    auto it = GetSplitIt(split);
+    return it->num_batches_;
+}
+
+void DLDataset::SetSplit(const any& split)
+{
+    Dataset::SetSplit(split);
     if (split_[current_split_].no_label_) {
         tensors_shape_.second = {};
     }
 }
 
-void DLDataset::SetSplit(const std::string& split_name)
+void DLDataset::SetAugmentations(const DatasetAugmentations& da)
 {
-    Dataset::SetSplit(split_name);
-    if (split_[current_split_].no_label_) {
-        tensors_shape_.second = {};
-    }
+    augs_ = da;
+
+    // Initialize resize_dims_ after that augmentations on the first image are performed
+    Image tmp = samples_[0].LoadImage(ctype_);
+    augs_.Apply(current_split_, tmp);
+    auto y = tmp.channels_.find('y');
+    auto x = tmp.channels_.find('x');
+    assert(y != std::string::npos && x != std::string::npos);
+    resize_dims_[0] = tmp.dims_[y];
+    resize_dims_[1] = tmp.dims_[x];
 }
 
-void DLDataset::SetSplit(const int& split_index)
+void DLDataset::SetBatchSize(int bs)
 {
-    Dataset::SetSplit(split_index);
-    if (split_[current_split_].no_label_) {
-        tensors_shape_.second = {};
+    // check if the provided batch size is negative or greater than the current split size
+    if (bs > 0 && bs < vsize(split_[current_split_].samples_indices_)) {
+        int new_queue_size = static_cast<int>(queue_.Length() / batch_size_ * bs);
+        batch_size_ = bs;
+        tensors_shape_.first[0] = batch_size_;
+        tensors_shape_.second[0] = batch_size_;
+        queue_.SetSize(new_queue_size);
+        for (auto& s : split_) {
+            s.SetNumBatches(batch_size_);
+            s.SetLastBatch(batch_size_);
+        }
+    }
+    else {
+        ECVL_ERROR_WRONG_PARAMS("bs in SetBatchSize")
     }
 }
 } // namespace ecvl
