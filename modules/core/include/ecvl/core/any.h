@@ -69,12 +69,24 @@
 namespace ecvl
 {
 using any = std::experimental::any;
+
+template <typename T>
+auto any_cast(const T& t)
+{
+    return std::experimental::any_cast<T>(t);
+}
 }
 #   else
 #       include <any>
 namespace ecvl
 {
 using any = std::any;
+
+template <typename T>
+auto any_cast(const T& t)
+{
+    return std::any_cast<T>(t);
+}
 }
 #   endif
 
