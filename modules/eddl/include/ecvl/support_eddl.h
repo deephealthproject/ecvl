@@ -423,25 +423,11 @@ public:
 
     /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
 
-    If no split is provided (i.e. it is provided a value less than 0), the current split is reset.
-    @param[in] split_index index of the split to reset.
+    If no split is provided or an illegal value is provided, the current split is reset.
+    @param[in] split_index index, name or SplitType of the split to reset.
     @param[in] shuffle boolean which indicates whether to shuffle the split samples indices or not.
     */
-    void ResetBatch(int split_index = -1, bool shuffle = false);
-
-    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
-
-    @param[in] split_name name of the split to reset.
-    @param[in] shuffle boolean which indicates whether to shuffle the split samples indices or not.
-    */
-    void ResetBatch(std::string split_name, bool shuffle = false);
-
-    /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
-
-    @param[in] split_type SplitType of the split to reset.
-    @param[in] shuffle boolean which indicates whether to shuffle the split samples indices or not.
-    */
-    void ResetBatch(SplitType split_type, bool shuffle = false);
+    void ResetBatch(const ecvl::any& split = -1, bool shuffle = false);
 
     /** @brief Reset the batch counter of each split and optionally shuffle samples indices (within each split).
 
@@ -526,15 +512,11 @@ public:
 
     /** @brief Get the number of batches of the specified split.
 
+    If no split is provided or an illegal value is provided, the number of batches of the current split is returned.
     @param[in] split index, name or ecvl::SplitType representing the split from which to get the number of batches.
     @return number of batches of the specified split.
     */
-    int GetNumBatches(const ecvl::any& split);
-
-    /** @brief Get the number of batches of the current split.
-    @return number of batches of the current split.
-    */
-    int GetNumBatches();
+    int GetNumBatches(const ecvl::any& split = -1);
 };
 
 /** @brief Make a grid of images from a EDDL Tensor.

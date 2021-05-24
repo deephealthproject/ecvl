@@ -291,11 +291,25 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
     task_ = classes_.empty() ? Task::segmentation : Task::classification;
 }
 
+int Dataset::GetSplitIndex(any split)
+{
+    if (split.type() == typeid(int)) {
+        auto s = any_cast<int>(split);
+        int index = s < 0 || s >= split_.size() ? current_split_ : s;
+        return index;
+    }
+    else {
+        return static_cast<int>(distance(split_.begin(), GetSplitIt(split)));
+    }
+}
+
 vector<Split>::iterator Dataset::GetSplitIt(any split)
 {
     if (split.type() == typeid(int)) {
         try {
-            return split_.begin() + any_cast<int>(split);
+            auto s = any_cast<int>(split);
+            int index = s < 0 || s >= split_.size() ? current_split_ : s;
+            return split_.begin() + index;
         }
         catch (const out_of_range) {
             ECVL_ERROR_SPLIT_DOES_NOT_EXIST
@@ -305,6 +319,10 @@ vector<Split>::iterator Dataset::GetSplitIt(any split)
         if (split.type() == typeid(string)) {
             auto tmp = s.split_name_;
             return tmp == any_cast<string>(split);
+        }
+        else if (split.type() == typeid(const char*)) {
+            auto tmp = s.split_name_;
+            return tmp == any_cast<const char*>(split);
         }
         else if (split.type() == typeid(SplitType)) {
             auto tmp = s.split_type_;
@@ -324,11 +342,6 @@ vector<Split>::iterator Dataset::GetSplitIt(any split)
     }
 }
 
-std::vector<int>& Dataset::GetSplit()
-{
-    return GetSplit(current_split_);
-}
-
 std::vector<int>& Dataset::GetSplit(const any& split)
 {
     auto it = GetSplitIt(split);
@@ -337,21 +350,8 @@ std::vector<int>& Dataset::GetSplit(const any& split)
 
 void Dataset::SetSplit(const any& split)
 {
-    int index;
-    if (split.type() == typeid(int)) {
-        index = any_cast<int>(split);
-    }
-    else {
-        index = static_cast<int>(distance(split_.begin(), GetSplitIt(split)));
-    }
-
-    // check if the split exists
-    if (0 <= index && index < vsize(split_)) {
-        this->current_split_ = index;
-    }
-    else {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-    }
+    int index = GetSplitIndex(split);
+    this->current_split_ = index;
 }
 
 vector<vector<path>> Dataset::GetLocations()

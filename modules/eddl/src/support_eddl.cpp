@@ -149,16 +149,10 @@ void ImageToTensor(const Image& img, Tensor*& t, const int& offset)
     memcpy(t->ptr + tot_dims * offset, tmp.data_, tot_dims * sizeof(float));
 }
 
-void DLDataset::ResetBatch(int split_index, bool shuffle)
+void DLDataset::ResetBatch(const any& split, bool shuffle)
 {
-    int index = split_index < 0 ? current_split_ : split_index;
-    // check if the split exists
-    try {
-        this->current_batch_.at(index) = 0;
-    }
-    catch (const std::out_of_range) {
-        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
-    }
+    int index = GetSplitIndex(split);
+    this->current_batch_.at(index) = 0;
 
     if (shuffle) {
         std::shuffle(begin(GetSplit(index)), end(GetSplit(index)), re_);
@@ -167,18 +161,6 @@ void DLDataset::ResetBatch(int split_index, bool shuffle)
     for (auto& tc : splits_tc_[index]) {
         tc.Reset();
     }
-}
-
-void DLDataset::ResetBatch(string split_name, bool shuffle)
-{
-    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_name_ == split_name; })));
-    ResetBatch(index, shuffle);
-}
-
-void DLDataset::ResetBatch(SplitType split_type, bool shuffle)
-{
-    int index = static_cast<int>(distance(split_.begin(), find_if(split_.begin(), split_.end(), [&](const auto& s) { return s.split_type_ == split_type; })));
-    ResetBatch(index, shuffle);
 }
 
 void DLDataset::ResetAllBatches(bool shuffle)
@@ -502,11 +484,6 @@ void DLDataset::Stop()
     for (int i = 0; i < num_workers_; ++i) {
         producers_[i].join();
     }
-}
-
-int DLDataset::GetNumBatches()
-{
-    return GetNumBatches(current_split_);
 }
 
 int DLDataset::GetNumBatches(const any& split)

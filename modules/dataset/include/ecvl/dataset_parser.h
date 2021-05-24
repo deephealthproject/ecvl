@@ -73,7 +73,7 @@ public:
 
     @return Image containing the loaded sample.
     */
-    ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::BGR, const bool& is_gt = false);
+    ecvl::Image LoadImage(ecvl::ColorType ctype = ecvl::ColorType::RGB, const bool& is_gt = false);
 };
 
 /** @brief Split of a dataset.
@@ -129,6 +129,7 @@ class Dataset
     void FindLabel(Sample& sample, const YAML::Node& n);
 protected:
     std::vector<ecvl::Split>::iterator GetSplitIt(ecvl::any split);
+    int GetSplitIndex(ecvl::any split);
 public:
     std::string name_ = "DeepHealth dataset";                               /**< @brief Name of the Dataset. */
     std::string description_ = "This is the DeepHealth example dataset!";   /**< @brief Description of the Dataset. */
@@ -150,16 +151,13 @@ public:
     /* Destructor */
     virtual ~Dataset() {}
 
-    /** @brief Returns the image indexes of the current split.
-    @return vector of image indexes of the split in use.
-    */
-    std::vector<int>& GetSplit();
-
     /** @brief Returns the image indexes of the requested split.
+    
+    If no split is provided or an illegal value is provided, the current split is returned.
     @param[in] split index, name or ecvl::SplitType representing the split to get.
     @return vector of image indexes of the requested split.
     */
-    std::vector<int>& GetSplit(const ecvl::any& split);
+    std::vector<int>& GetSplit(const ecvl::any& split = -1);
 
     /** @brief Set the current split.
     @param[in] split index, name or ecvl::SplitType representing the split to set.
