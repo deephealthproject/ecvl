@@ -112,7 +112,10 @@ public:
 
     void SetLastBatch(int batch_size)
     {
-        last_batch_ = vsize(samples_indices_) % batch_size;
+        // last batch is the remainder of the number of samples of the split divided by the batch size.
+        // if drop last is true or the remainder is 0, last batch is equal to the batch size.
+        auto value = vsize(samples_indices_) % batch_size;
+        last_batch_ = drop_last_ ? batch_size : (value == 0 ? batch_size : value);
     }
 };
 
@@ -152,7 +155,7 @@ public:
     virtual ~Dataset() {}
 
     /** @brief Returns the image indexes of the requested split.
-    
+
     If no split is provided or an illegal value is provided, the current split is returned.
     @param[in] split index, name or ecvl::SplitType representing the split to get.
     @return vector of image indexes of the requested split.

@@ -90,7 +90,8 @@ TEST(Augmentations, ConstructFromStreamAllParamsOk)
     ss = stringstream("divisor=255 divisor_gt=255");
     EXPECT_NO_THROW(p = make_unique<AugToFloat32>(ss));
     EXPECT_NO_THROW(p->Apply(img));
-    EXPECT_NO_THROW(p = make_unique<AugDivBy255>(stringstream("")));
+    ss = stringstream("");
+    EXPECT_NO_THROW(p = make_unique<AugDivBy255>(ss));
     EXPECT_NO_THROW(p->Apply(img));
     ss = stringstream("new_min=0 new_max=1");
     EXPECT_NO_THROW(p = make_unique<AugScaleTo>(ss));
@@ -149,7 +150,8 @@ TEST(Augmentations, ConstructFromStreamWithoutOptionalParms)
     ss = stringstream("divisor=255");
     EXPECT_NO_THROW(p = make_unique<AugToFloat32>(ss));
     EXPECT_NO_THROW(p->Apply(img));
-    EXPECT_NO_THROW(p = make_unique<AugDivBy255>(stringstream("")));
+    ss = stringstream("");
+    EXPECT_NO_THROW(p = make_unique<AugDivBy255>(ss));
     EXPECT_NO_THROW(p->Apply(img));
     ss = stringstream("new_min=0 new_max=1");
     EXPECT_NO_THROW(p = make_unique<AugScaleTo>(ss));

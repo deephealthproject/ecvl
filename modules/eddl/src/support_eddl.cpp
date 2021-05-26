@@ -417,6 +417,10 @@ void DLDataset::ThreadFunc(int thread_index)
 
 pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
 {
+    if (!active_) {
+        cout << ECVL_WARNING_MSG << "You're trying to get a batch without starting the threads - you'll wait forever!" << endl;
+    }
+
     ++current_batch_[current_split_];
     auto& s = split_[current_split_];
     auto tensors_shape = tensors_shape_;

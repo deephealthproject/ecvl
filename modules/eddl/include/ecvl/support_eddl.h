@@ -115,6 +115,11 @@ public:
     {
         return Apply(+st, img, gt); // Magic + operator
     }
+
+    bool IsEmpty() const
+    {
+        return augs_.empty();
+    }
 };
 
 /** @brief Label class representing the Sample labels, which may have different representations depending on the task.
@@ -369,7 +374,14 @@ public:
         if (!split_.empty()) {
             current_split_ = 0;
             // Initialize resize_dims_ after that augmentations on the first image are performed
-            augs_.Apply(current_split_, tmp);
+            if (augs_.IsEmpty()) {
+                cout << ECVL_WARNING_MSG << "Augmentations are empty!" << endl;
+            }
+            else {
+                while (!augs_.Apply(current_split_, tmp)) {
+                    ++current_split_;
+                }
+            }
             auto y = tmp.channels_.find('y');
             auto x = tmp.channels_.find('x');
             assert(y != std::string::npos && x != std::string::npos);
@@ -406,12 +418,12 @@ public:
         case Task::classification:
             label_ = new LabelClass();
             tensors_shape_ = make_pair<vector<int>, vector<int>>({ batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] }, { batch_size_, vsize(classes_) });
-        break;
+            break;
         case Task::segmentation:
             label_ = new LabelImage();
             tensors_shape_ = make_pair<vector<int>, vector<int>>({ batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
                 { batch_size_, n_channels_gt_, resize_dims_[0], resize_dims_[1] });
-        break;
+            break;
         }
     }
 

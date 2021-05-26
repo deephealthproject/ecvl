@@ -1,0 +1,121 @@
+/*
+* ECVL - European Computer Vision Library
+* Version: 0.3.4
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Authors:
+*    Costantino Grana (costantino.grana@unimore.it)
+*    Federico Bolelli (federico.bolelli@unimore.it)
+*    Michele Cancilla (michele.cancilla@unimore.it)
+*    Laura Canalini (laura.canalini@unimore.it)
+*    Stefano Allegretti (stefano.allegretti@unimore.it)
+* All rights reserved.
+*/
+
+#include <fstream>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+#include "ecvl/augmentations.h"
+#include "ecvl/core.h"
+#include "ecvl/support_eddl.h"
+#include "ecvl/core/filesystem.h"
+
+using namespace ecvl;
+using namespace ecvl::filesystem;
+using namespace eddl;
+using namespace std;
+
+int main()
+{
+    // Create the augmentations to be applied to the dataset images during training and test.
+    auto training_augs = make_shared<SequentialAugmentationContainer>(
+        AugRotate({ -5, 5 }),
+        AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
+        AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0),
+        AugAdditivePoissonNoise({ 0, 40 }),
+        AugToFloat32(255)
+        );
+
+    auto test_augs = make_shared<SequentialAugmentationContainer>(AugToFloat32(255));
+
+    // Replace the random seed with a fixed one to have reproducible experiments
+    AugmentationParam::SetSeed(0);
+
+    DatasetAugmentations dataset_augmentations{ { training_augs, test_augs } };
+
+    int epochs = 5;
+    int batch_size = 200;
+    int num_workers = 4;
+    int queue_ratio = 5;
+    cout << "Creating a DLDataset" << endl;
+
+    // Initialize the DLDataset
+    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { true, false });
+    //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
+
+    ofstream of;
+    cv::TickMeter tm;
+    cv::TickMeter tm_epoch;
+    auto num_batches_training = d.GetNumBatches(SplitType::training);
+    auto num_batches_test = d.GetNumBatches(SplitType::test);
+
+    pair<unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+
+    for (int i = 0; i < epochs; ++i) {
+        tm_epoch.reset();
+        tm_epoch.start();
+
+        cout << "Starting training" << endl;
+        d.SetSplit(SplitType::training);
+
+        // Reset current split with shuffling
+        d.ResetBatch(d.current_split_, true);
+
+        // Spawn num_workers threads
+        d.Start();
+        for (int j = 0; j < num_batches_training; ++j) {
+            tm.reset();
+            tm.start();
+            cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
+            cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+            samples_and_labels = d.GetBatch();
+
+            // Sleep in order to simulate EDDL train_batch
+            cout << "sleeping...";
+            this_thread::sleep_for(chrono::milliseconds(500));
+
+            tm.stop();
+            cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+        }
+        d.Stop();
+
+        cout << "Starting test" << endl;
+        d.SetSplit(SplitType::test);
+
+        // Reset current split without shuffling
+        d.ResetBatch(d.current_split_, false);
+
+        d.Start();
+        for (int j = 0; j < num_batches_test; ++j) {
+            tm.reset();
+            tm.start();
+            cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
+            cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+            samples_and_labels = d.GetBatch();
+
+            // Sleep in order to simulate EDDL evaluate_batch
+            cout << "sleeping... - ";
+            this_thread::sleep_for(chrono::milliseconds(500));
+            tm.stop();
+            cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+        }
+        d.Stop();
+        tm_epoch.stop();
+        cout << "Epoch elapsed time: " << tm_epoch.getTimeSec() << endl;
+    }
+
+    return EXIT_SUCCESS;
+}
