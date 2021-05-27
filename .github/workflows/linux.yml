@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         cfg:
-          - { os: ubuntu-18.04, c-version: gcc-6, cxx-version: g++-6, generator: "Unix Makefiles" }
-          - { os: ubuntu-18.04, c-version: gcc-10, cxx-version: g++-10, generator: "Unix Makefiles" }
+          - { os: ubuntu-18.04, c-version: gcc-7, cxx-version: g++-7, generator: "Unix Makefiles" }
+          - { os: ubuntu-18.04, c-version: gcc-11, cxx-version: g++-11, generator: "Unix Makefiles" }
           - { os: ubuntu-18.04, c-version: clang-5.0, cxx-version: clang++-5.0, generator: "Unix Makefiles" }
           - { os: ubuntu-18.04, c-version: clang-10, cxx-version: clang++-10, generator: "Unix Makefiles" }
     steps:
