@@ -44,10 +44,10 @@ int main()
 
     DatasetAugmentations dataset_augmentations{ { training_augs, test_augs } };
 
-    int epochs = 5;
-    int batch_size = 200;
-    int num_workers = 4;
-    int queue_ratio = 5;
+    constexpr int epochs = 5;
+    constexpr int batch_size = 200;
+    constexpr int num_workers = 4;
+    constexpr int queue_ratio = 5;
     cout << "Creating a DLDataset" << endl;
 
     // Initialize the DLDataset
@@ -60,12 +60,14 @@ int main()
     auto num_batches_training = d.GetNumBatches(SplitType::training);
     auto num_batches_test = d.GetNumBatches(SplitType::test);
 
-    pair<unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
-
     for (int i = 0; i < epochs; ++i) {
         tm_epoch.reset();
         tm_epoch.start();
-
+        /* Resize to batch_size if we have done a resize previously
+        if (d.split_[d.current_split_].last_batch_ != batch_size){
+            net->resize(batch_size);
+        }
+        */
         cout << "Starting training" << endl;
         d.SetSplit(SplitType::training);
 
@@ -80,11 +82,15 @@ int main()
             cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
             cout << "|fifo| " << d.GetQueueSize() << " - ";
 
-            samples_and_labels = d.GetBatch();
+            // pair<unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+            // samples_and_labels = d.GetBatch();
+            // or...
+            auto [x, y] = d.GetBatch();
 
             // Sleep in order to simulate EDDL train_batch
             cout << "sleeping...";
             this_thread::sleep_for(chrono::milliseconds(500));
+            // eddl::train_batch(net, { x.get() }, { y.get() });
 
             tm.stop();
             cout << "Elapsed time: " << tm.getTimeMilli() << endl;
@@ -104,11 +110,22 @@ int main()
             cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
             cout << "|fifo| " << d.GetQueueSize() << " - ";
 
-            samples_and_labels = d.GetBatch();
+            // pair<unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+            // samples_and_labels = d.GetBatch();
+            // or...
+            auto [x, y] = d.GetBatch();
 
+            /* Resize net for last batch
+            if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {
+                // last mini-batch could have different size
+                net->resize(x_batch);
+            }
+            */
             // Sleep in order to simulate EDDL evaluate_batch
             cout << "sleeping... - ";
             this_thread::sleep_for(chrono::milliseconds(500));
+            // eddl::eval_batch(net, { x.get() }, { y.get() });
+
             tm.stop();
             cout << "Elapsed time: " << tm.getTimeMilli() << endl;
         }
