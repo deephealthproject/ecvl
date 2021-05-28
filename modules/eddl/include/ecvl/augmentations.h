@@ -1335,9 +1335,13 @@ public:
         auto m = param::read(is, "AugCenterCrop");
         param p;
 
-        m.Get("size", param::type::vector, true, p);
-        for (const auto& x : p.vals_) {
-            size_.emplace_back(static_cast<int>(x));
+        if (m.Get("size", param::type::vector, false, p)) {
+            for (const auto& x : p.vals_) {
+                size_.emplace_back(static_cast<int>(x));
+            }
+            infer_ = false;
+        } else {
+            infer_ = true;
         }
     }
 };

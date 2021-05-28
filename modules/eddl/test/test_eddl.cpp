@@ -84,6 +84,9 @@ TEST(Augmentations, ConstructFromStreamAllParamsOk)
     ss = stringstream("mean=100 std=1");
     EXPECT_NO_THROW(p = make_unique<AugNormalize>(ss));
     EXPECT_NO_THROW(p->Apply(img));
+    ss = stringstream("");
+    EXPECT_NO_THROW(p = make_unique<AugCenterCrop>(ss));
+    EXPECT_NO_THROW(p->Apply(img));
     ss = stringstream("size=(100,100)");
     EXPECT_NO_THROW(p = make_unique<AugCenterCrop>(ss));
     EXPECT_NO_THROW(p->Apply(img));
