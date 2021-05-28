@@ -16,7 +16,7 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
 
 ## Requirements
 - CMake 3.13 or later
-- C++ Compiler with C++17 support (e.g. GCC 6 or later, Clang 5.0 or later, Visual Studio 2017 or later)
+- C++ Compiler with C++17 support (e.g. GCC 7 or later, Clang 5.0 or later, Visual Studio 2017 or later)
 - [OpenCV](https://opencv.org) 3.0 or later (modules required: `core`, `imgproc`, `imgcodecs`, `photo`, [`calib3d` since OpenCV 4.0 only. Note that `calib3d` depends on `features2d` and `flann`])
 
 ### Optional
@@ -193,16 +193,16 @@ Contributions of any kind are welcome!
   <tr>
     <td style="text-align:center">Windows Server 2016</td>
     <td style="text-align:center">VS 2017 15.9.28307</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
     <td style="text-align:center" rowspan="2"><a href="https://github.com/deephealthproject/ecvl/actions?query=workflow%3Awindows"><img src="https://github.com/deephealthproject/ecvl/workflows/windows/badge.svg" alt="Workflow status badge" loading="lazy" height="20"></a></td>
   </tr>
   <tr>
     <td style="text-align:center">Windows Server 2019</td>
-    <td style="text-align:center">VS 2019 16.8.30804</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">VS 2019 16.9.31229</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
   </tr>
 </table>
@@ -228,31 +228,31 @@ Contributions of any kind are welcome!
   </tr>
   <tr>
     <td style="text-align:center">Ubuntu 18.04.5</td>
-    <td style="text-align:center">GCC 6.5.0</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">GCC 7.5.0</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
     <td style="text-align:center" rowspan="4"><a href="https://github.com/deephealthproject/ecvl/actions?query=workflow%3Alinux"><img src="https://github.com/deephealthproject/ecvl/workflows/linux/badge.svg" alt="Workflow status badge" loading="lazy" height="20"></a></td>
   </tr>
   <tr>
     <td style="text-align:center">Ubuntu 18.04.5</td>
-    <td style="text-align:center">GCC 10.1.0</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">GCC 11.1.0</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
   </tr>
   <tr>
     <td style="text-align:center">Ubuntu 18.04.5</td>
     <td style="text-align:center">Clang 5.0.1</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
   </tr>
   <tr>
     <td style="text-align:center">Ubuntu 18.04.5</td>
     <td style="text-align:center">Clang 10.0.0</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
   </tr>
 </table>
@@ -273,8 +273,8 @@ Contributions of any kind are welcome!
   <tr>
     <td style="text-align:center">macOS 10.15</td>
     <td style="text-align:center">Apple Clang 12.0.0</td>
-    <td style="text-align:center">3.4.13</td>
-    <td style="text-align:center">0.8.3</td>
+    <td style="text-align:center">3.4.14</td>
+    <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
     <td style="text-align:center" rowspan="4"><a href="https://github.com/deephealthproject/ecvl/actions?query=workflow%3Amacos"><img src="https://github.com/deephealthproject/ecvl/workflows/macos/badge.svg" alt="Workflow status badge" loading="lazy" height="20"></a></td>
   </tr>
