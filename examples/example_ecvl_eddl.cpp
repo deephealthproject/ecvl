@@ -33,6 +33,7 @@ int main()
 
     // Create an augmentation sequence to be applied to the image
     auto augs = make_shared<SequentialAugmentationContainer>(
+        AugCenterCrop(), // Make image squared
         AugRotate({ -5, 5 }),
         AugMirror(.5),
         AugFlip(.5),

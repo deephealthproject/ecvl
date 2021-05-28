@@ -1154,7 +1154,7 @@ class AugPepper : public Augmentation
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         const auto p = params_["p"].value_;
-        const auto seed = params_["seed"].value_; 
+        const auto seed = params_["seed"].value_;
         const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
         Pepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
@@ -1199,7 +1199,7 @@ class AugSaltAndPepper : public Augmentation
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         const auto p = params_["p"].value_;
-        const auto seed = params_["seed"].value_; 
+        const auto seed = params_["seed"].value_;
         const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
         SaltAndPepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
@@ -1302,20 +1302,33 @@ public:
 class AugCenterCrop : public Augmentation
 {
     std::vector<int> size_;
+    bool infer_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        CenterCrop(img, img, size_);
+        std::vector<int> new_size = size_;
+        if (infer_) {
+            // TODO: 3D implementation
+            new_size = std::vector<int>(2, std::min(img.Width(), img.Height()));
+        }
+        CenterCrop(img, img, new_size);
         if (!gt.IsEmpty()) {
-            CenterCrop(gt, const_cast<Image&>(gt), size_);
+            CenterCrop(gt, const_cast<Image&>(gt), new_size);
         }
     }
 public:
+    /** @brief AugCenterCrop constructor. Crop size is inferred from the minimum image dimension.
+    \f$
+       crop\_size = min(Image_{cols}, Image_{rows})
+    \f$
+    */
+    AugCenterCrop() : infer_{ true } {}
+
     /** @brief AugCenterCrop constructor
 
     @param[in] size std::vector<int> that specifies the new size of each dimension [w,h].
     */
-    AugCenterCrop(const std::vector<int>& size) : size_{ size } {}
+    AugCenterCrop(const std::vector<int>& size) : size_{ size }, infer_{ false } {}
 
     AugCenterCrop(std::istream& is)
     {
