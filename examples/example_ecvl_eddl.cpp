@@ -70,6 +70,7 @@ int main()
     cout << "Executing TensorToView" << endl;
     TensorToView(t, view);
 
+    // Create an augmentation sequence from stream
     stringstream ss(
         "SequentialAugmentationContainer\n"
         "    AugRotate angle=[-5,5] center=(0,0) interp=\"linear\"\n"
@@ -84,8 +85,9 @@ int main()
     auto newdeal_augs = AugmentationFactory::create(ss);
     newdeal_augs->Apply(tmp);
 
+    /*--------------------------------------------------------------------------------------------*/
+
     // Create the augmentations to be applied to the dataset images during training and test.
-    // nullptr is given as augmentation for validation because this split doesn't exist in the mnist dataset.
     auto training_augs = make_shared<SequentialAugmentationContainer>(
         AugRotate({ -5, 5 }),
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
@@ -102,7 +104,8 @@ int main()
         AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
-    // DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } }; // OLD version: nullptr are no more required
+    // OLD version: now the number of augmentations must match the number of splits in the yml file
+    // DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
     DatasetAugmentations dataset_augmentations{ {training_augs, test_augs } };
 
     int batch_size = 64;

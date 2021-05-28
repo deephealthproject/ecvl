@@ -490,7 +490,7 @@ void DLDataset::Stop()
     }
 }
 
-int DLDataset::GetNumBatches(const any& split)
+const int DLDataset::GetNumBatches(const any& split)
 {
     auto it = GetSplitIt(split);
     return it->num_batches_;

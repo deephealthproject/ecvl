@@ -291,7 +291,7 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
     task_ = classes_.empty() ? Task::segmentation : Task::classification;
 }
 
-int Dataset::GetSplitIndex(any split)
+const int Dataset::GetSplitIndex(any split)
 {
     if (split.type() == typeid(int)) {
         auto s = any_cast<int>(split);
@@ -299,7 +299,7 @@ int Dataset::GetSplitIndex(any split)
         return index;
     }
     else {
-        return static_cast<int>(distance(split_.begin(), GetSplitIt(split)));
+        return static_cast<const int>(distance(split_.begin(), GetSplitIt(split)));
     }
 }
 
@@ -308,7 +308,7 @@ vector<Split>::iterator Dataset::GetSplitIt(any split)
     if (split.type() == typeid(int)) {
         try {
             auto s = any_cast<int>(split);
-            int index = s < 0 || s >= split_.size() ? current_split_ : s;
+            const int index = s < 0 || s >= split_.size() ? current_split_ : s;
             return split_.begin() + index;
         }
         catch (const out_of_range) {
@@ -342,7 +342,7 @@ vector<Split>::iterator Dataset::GetSplitIt(any split)
     }
 }
 
-std::vector<int>& Dataset::GetSplit(const any& split)
+vector<int>& Dataset::GetSplit(const any& split)
 {
     auto it = GetSplitIt(split);
     return it->samples_indices_;
@@ -354,7 +354,7 @@ void Dataset::SetSplit(const any& split)
     this->current_split_ = index;
 }
 
-vector<vector<path>> Dataset::GetLocations()
+vector<vector<path>> Dataset::GetLocations() const
 {
     const auto& size = vsize(samples_);
     vector<vector<path>> locations(size);

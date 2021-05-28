@@ -508,7 +508,7 @@ public:
 
     @return Size of the producers-consumer queue of the dataset.
     */
-    auto GetQueueSize() { return queue_.Length(); };
+    auto GetQueueSize() const { return queue_.Length(); };
 
     /** @brief Set the current split and if the split doesn't have labels update the dataset tensors_shape_.
 
@@ -528,7 +528,7 @@ public:
     @param[in] split index, name or ecvl::SplitType representing the split from which to get the number of batches.
     @return number of batches of the specified split.
     */
-    int GetNumBatches(const ecvl::any& split = -1);
+    const int GetNumBatches(const ecvl::any& split = -1);
 };
 
 /** @brief Make a grid of images from a EDDL Tensor.

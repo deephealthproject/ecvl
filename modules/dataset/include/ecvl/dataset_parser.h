@@ -132,7 +132,7 @@ class Dataset
     void FindLabel(Sample& sample, const YAML::Node& n);
 protected:
     std::vector<ecvl::Split>::iterator GetSplitIt(ecvl::any split);
-    int GetSplitIndex(ecvl::any split);
+    const int GetSplitIndex(ecvl::any split);
 public:
     std::string name_ = "DeepHealth dataset";                               /**< @brief Name of the Dataset. */
     std::string description_ = "This is the DeepHealth example dataset!";   /**< @brief Description of the Dataset. */
@@ -182,7 +182,7 @@ public:
 
     @return vector containing all the samples locations.
     */
-    std::vector<std::vector<filesystem::path>> GetLocations();
+    std::vector<std::vector<filesystem::path>> GetLocations() const;
 
     // RegEx which matchs URLs
     static const std::regex url_regex_;
