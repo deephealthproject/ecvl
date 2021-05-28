@@ -479,7 +479,7 @@ public:
 
     @anchor ProduceImageLabel
     */
-    void ProduceImageLabel(Sample& elem);
+    virtual void ProduceImageLabel(Sample& elem);
 
     /** @brief Function called when the thread are spawned.
 
