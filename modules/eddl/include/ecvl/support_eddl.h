@@ -94,7 +94,14 @@ class DatasetAugmentations
 public:
     DatasetAugmentations(const std::vector<shared_ptr<Augmentation>>& augs = { nullptr, nullptr, nullptr }) : augs_(augs) {}
 
-// Getters: YAGNI
+    // This makes a deep copy of the Augmentations
+    DatasetAugmentations(const DatasetAugmentations& other) {
+        for (const auto& a : other.augs_) {
+            augs_.emplace_back(a->Clone());
+        }
+    }
+
+    // Getters: YAGNI
 
     bool Apply(const int split, Image& img, const Image& gt = Image())
     {
@@ -479,7 +486,7 @@ public:
 
     @anchor ProduceImageLabel
     */
-    virtual void ProduceImageLabel(Sample& elem);
+    virtual void ProduceImageLabel(DatasetAugmentations& augs, Sample& elem);
 
     /** @brief Function called when the thread are spawned.
 
