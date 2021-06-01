@@ -165,7 +165,7 @@ public:
     /** @brief Set the current split.
     @param[in] split index, name or ecvl::SplitType representing the split to set.
     */
-    virtual void SetSplit(const ecvl::any& split);
+    void SetSplit(const ecvl::any& split);
 
     /** @brief Dump the Dataset into a YAML file following the DeepHealth Dataset Format.
 

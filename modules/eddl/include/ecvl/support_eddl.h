@@ -282,6 +282,12 @@ public:
         max_size_ = max_size;
         threshold_ = thresh != -1 ? thresh : max_size / 2;
     }
+
+    void Clear()
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        cpq_ = {};
+    }
 };
 
 /** @brief Class representing the thread counters.
@@ -321,6 +327,7 @@ protected:
     std::vector<std::vector<ThreadCounters>> splits_tc_; /**< @brief Each dataset split has its own vector of threads, each of which has its counters: <counter,min,max>. */
     std::vector<std::thread> producers_;        /**< @brief Vector of threads representing the samples producers. */
     bool active_ = false;                       /**< @brief Whether the threads have already been launched or not. */
+    std::mutex active_mutex_;                   /**< @brief Mutex for active_ variable. */
     static std::default_random_engine re_;      /**< @brief Engine used for random number generation. */
     Label* label_ = nullptr;                    /**< @brief Label pointer which will be specialized based on the dataset task. */
 
@@ -509,12 +516,6 @@ public:
     @return Size of the producers-consumer queue of the dataset.
     */
     auto GetQueueSize() const { return queue_.Length(); };
-
-    /** @brief Set the current split and if the split doesn't have labels update the dataset tensors_shape_.
-
-    @param[in] split index, name or ecvl::SplitType representing the split to set.
-    */
-    void SetSplit(const ecvl::any& split) override;
 
     /** @brief Set the dataset augmentations.
 

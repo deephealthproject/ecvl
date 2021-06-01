@@ -412,6 +412,11 @@ void DLDataset::ThreadFunc(int thread_index)
         ProduceImageLabel(elem);
 
         ++tc_of_current_split[thread_index].counter_;
+
+        std::unique_lock<std::mutex> lock(active_mutex_);
+        if (!active_) {
+            return;
+        }
     }
 }
 
@@ -433,6 +438,9 @@ pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
         }
     }
 
+    // If current split has no labels (e.g., test split could have no labels) set y as empty tensor
+    tensors_shape.second = (s.no_label_) ? vector<int>{} : tensors_shape.second;
+
     unique_ptr<Tensor> x = make_unique<Tensor>(tensors_shape.first);
     unique_ptr<Tensor> y = make_unique<Tensor>(tensors_shape.second);
 
@@ -440,15 +448,16 @@ pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
     for (int i = 0; i < x->shape[0]; ++i) {
         queue_.Pop(img, label_); // Consumer get samples from the queue
 
+        // Copy sample image into tensor
+        auto lhs = x.get();
+        ImageToTensor(img, lhs, i);
+
         if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: possible for test split)
             // Copy label into tensor
             label_->ToTensorPlane(y.get(), i);
             delete label_;
             label_ = nullptr;
         }
-        //Copy sample image into tensor
-        auto lhs = x.get();
-        ImageToTensor(img, lhs, i);
     }
 
     return make_pair(move(x), move(y));
@@ -467,6 +476,7 @@ void DLDataset::Start(int split_index)
     }
 
     producers_.clear();
+    queue_.Clear();
 
     if (num_workers_ > 0) {
         for (int i = 0; i < num_workers_; ++i) {
@@ -494,14 +504,6 @@ const int DLDataset::GetNumBatches(const any& split)
 {
     auto it = GetSplitIt(split);
     return it->num_batches_;
-}
-
-void DLDataset::SetSplit(const any& split)
-{
-    Dataset::SetSplit(split);
-    if (split_[current_split_].no_label_) {
-        tensors_shape_.second = {};
-    }
 }
 
 void DLDataset::SetAugmentations(const DatasetAugmentations& da)
