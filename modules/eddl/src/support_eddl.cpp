@@ -356,7 +356,7 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
         }
         // Apply chain of augmentations only to sample image
         augs.Apply(current_split_, img);
-        queue_.Push(img, label);
+        queue_.Push(elem, img, label);
     }
     break;
     case Task::segmentation:
@@ -373,7 +373,7 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
         else {
             augs.Apply(current_split_, img);
         }
-        queue_.Push(img, label);
+        queue_.Push(elem, img, label);
     }
     break;
     }
@@ -416,7 +416,7 @@ void DLDataset::ThreadFunc(int thread_index)
     }
 }
 
-pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
+tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
 {
     if (!active_) {
         cout << ECVL_WARNING_MSG << "You're trying to get a batch without starting the threads - you'll wait forever!" << endl;
@@ -437,9 +437,11 @@ pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
     unique_ptr<Tensor> x = make_unique<Tensor>(tensors_shape.first);
     unique_ptr<Tensor> y = make_unique<Tensor>(tensors_shape.second);
 
+    const int batch_len = x->shape[0];
     Image img;
-    for (int i = 0; i < x->shape[0]; ++i) {
-        queue_.Pop(img, label_); // Consumer get samples from the queue
+    vector<Sample> samples(batch_len);
+    for (int i = 0; i < batch_len; ++i) {
+        queue_.Pop(samples[i], img, label_); // Consumer get samples from the queue
 
         if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: possible for test split)
             // Copy label into tensor
@@ -452,7 +454,7 @@ pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
         ImageToTensor(img, lhs, i);
     }
 
-    return make_pair(move(x), move(y));
+    return make_tuple(move(samples), move(x), move(y));
 }
 
 void DLDataset::Start(int split_index)

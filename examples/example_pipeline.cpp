@@ -51,7 +51,7 @@ int main()
     cout << "Creating a DLDataset" << endl;
 
     // Initialize the DLDataset
-    DLDataset d("../examples/data/mnist/mnist.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { true, false });
+    DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { true, false });
     //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
 
     ofstream of;
@@ -82,10 +82,10 @@ int main()
             cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
             cout << "|fifo| " << d.GetQueueSize() << " - ";
 
-            // pair<unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+            // tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
             // samples_and_labels = d.GetBatch();
             // or...
-            auto [x, y] = d.GetBatch();
+            auto [samples, x, y] = d.GetBatch();
 
             // Sleep in order to simulate EDDL train_batch
             cout << "sleeping...";
@@ -110,10 +110,10 @@ int main()
             cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
             cout << "|fifo| " << d.GetQueueSize() << " - ";
 
-            // pair<unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+            // tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
             // samples_and_labels = d.GetBatch();
             // or...
-            auto [x, y] = d.GetBatch();
+            auto [_, x, y] = d.GetBatch();
 
             /* Resize net for last batch
             if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {

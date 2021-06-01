@@ -24,6 +24,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <queue>
+#include <tuple>
 
 namespace ecvl
 {
@@ -95,7 +96,8 @@ public:
     DatasetAugmentations(const std::vector<shared_ptr<Augmentation>>& augs = { nullptr, nullptr, nullptr }) : augs_(augs) {}
 
     // This makes a deep copy of the Augmentations
-    DatasetAugmentations(const DatasetAugmentations& other) {
+    DatasetAugmentations(const DatasetAugmentations& other)
+    {
         for (const auto& a : other.augs_) {
             augs_.emplace_back(a->Clone());
         }
@@ -201,7 +203,7 @@ class ProducersConsumerQueue
     std::condition_variable cond_notempty_;     /**< @brief Condition variable that wait if the queue is empty. */
     std::condition_variable cond_notfull_;      /**< @brief Condition variable that wait if the queue is full. */
     std::mutex mutex_;                          /**< @brief Mutex to grant exclusive access to the queue. */
-    std::queue<std::pair<Image, Label*>> cpq_;  /**< @brief Queue of samples, stored as pair of Image and Label pointer. */
+    std::queue<std::tuple<Sample, Image, Label*>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
     unsigned max_size_;                         /**< @brief Maximum size of the queue. */
     unsigned threshold_;                        /**< @brief Threshold from which restart to produce samples. If not specified, it's set to the half of maximum size. */
 
@@ -219,34 +221,35 @@ public:
 
     /** @brief Push a sample in the queue.
 
-    Take the lock of the queue and wait if the queue is full. Otherwise, push the pair Image, Label into the queue.
+    Take the lock of the queue and wait if the queue is full. Otherwise, push the tuple Sample, Image, Label into the queue.
+
+    @param[in] sample Sample to push in queue.
     @param[in] image Image to push in the queue.
     @param[in] label Label to push in the queue.
     */
-    void Push(const Image& image, Label* label)
+    void Push(const Sample& sample, const Image& image, Label* const label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cond_notfull_.wait(lock, [this]() { return !IsFull(); });
-        cpq_.push(make_pair(image, label));
+        cpq_.push(make_tuple(sample, image, label));
         cond_notempty_.notify_one();
     }
 
     /** @brief Pop a sample from the queue.
 
-    Take the lock of the queue and wait if the queue is empty. Otherwise, pop an Image and its Label from the queue.
+    Take the lock of the queue and wait if the queue is empty. Otherwise, pop a Sample, Image and its Label from the queue.
     If the queue size is still bigger than the half of the maximum size, don't notify the Push to avoid an always-full queue.
 
+    @param[in] sample Sample to pop in queue.
     @param[in] image Image to pop from the queue.
     @param[in] label Label to pop from the queue.
     */
-    void Pop(Image& image, Label*& label)
+    void Pop(Sample& sample, Image& image, Label*& label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cond_notempty_.wait(lock, [this]() { return !IsEmpty(); });
-        auto p = cpq_.front();
+        std::tie(sample, image, label) = cpq_.front();
         cpq_.pop();
-        image = p.first;
-        label = p.second;
         if (Length() < threshold_) {
             cond_notfull_.notify_one();
         }
@@ -498,9 +501,9 @@ public:
 
     /** @brief Pop batch_size samples from the queue and copy them into EDDL tensors.
 
-    @return pair of EDDL Tensor, first with the image, second with the label.
+    @return tuples of Samples and EDDL Tensors, the first with the image and the second with the label.
     */
-    pair<unique_ptr<Tensor>, unique_ptr<Tensor>> GetBatch();
+    std::tuple<std::vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> GetBatch();
 
     /** @brief Spawn num_workers thread.
 
