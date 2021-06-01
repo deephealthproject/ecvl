@@ -6,6 +6,9 @@ FetchContent_Declare(
 
 if(ECVL_WITH_DICOM)
     if(ECVL_BUILD_DEPS)
+        if(POLICY CMP0115)
+            set(CMAKE_POLICY_DEFAULT_CMP0115 OLD)
+        endif()
         FetchContent_GetProperties(dcmtk)
         if(NOT dcmtk_POPULATED)
             FetchContent_Populate(dcmtk)

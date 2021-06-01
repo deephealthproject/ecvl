@@ -342,7 +342,7 @@ Image MakeGrid(Tensor*& t, int cols, bool normalize)
     return image_t;
 }
 
-void DLDataset::ProduceImageLabel(Sample& elem)
+void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
 {
     Image img = elem.LoadImage(ctype_, false);
     switch (task_) {
@@ -355,8 +355,8 @@ void DLDataset::ProduceImageLabel(Sample& elem)
             label->label = elem.label_.value();
         }
         // Apply chain of augmentations only to sample image
-        augs_.Apply(current_split_, img);
-        queue_.Push(img, label);
+        augs.Apply(current_split_, img);
+        queue_.Push(elem, img, label);
     }
     break;
     case Task::segmentation:
@@ -367,13 +367,13 @@ void DLDataset::ProduceImageLabel(Sample& elem)
             label = new LabelImage();
             Image gt = elem.LoadImage(ctype_gt_, true);
             // Apply chain of augmentations to sample image and corresponding ground truth
-            augs_.Apply(current_split_, img, gt);
+            augs.Apply(current_split_, img, gt);
             label->gt = gt;
         }
         else {
-            augs_.Apply(current_split_, img);
+            augs.Apply(current_split_, img);
         }
-        queue_.Push(img, label);
+        queue_.Push(elem, img, label);
     }
     break;
     }
@@ -405,11 +405,12 @@ void DLDataset::InitTC(int split_index)
 void DLDataset::ThreadFunc(int thread_index)
 {
     auto& tc_of_current_split = splits_tc_[current_split_];
+    DatasetAugmentations augs = augs_;
     while (tc_of_current_split[thread_index].counter_ < tc_of_current_split[thread_index].max_) {
         auto sample_index = split_[current_split_].samples_indices_[tc_of_current_split[thread_index].counter_];
         Sample& elem = samples_[sample_index];
 
-        ProduceImageLabel(elem);
+        ProduceImageLabel(augs, elem);
 
         ++tc_of_current_split[thread_index].counter_;
 
@@ -420,7 +421,7 @@ void DLDataset::ThreadFunc(int thread_index)
     }
 }
 
-pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
+tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
 {
     if (!active_) {
         cout << ECVL_WARNING_MSG << "You're trying to get a batch without starting the threads - you'll wait forever!" << endl;
@@ -444,9 +445,11 @@ pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
     unique_ptr<Tensor> x = make_unique<Tensor>(tensors_shape.first);
     unique_ptr<Tensor> y = make_unique<Tensor>(tensors_shape.second);
 
+    const int batch_len = x->shape[0];
     Image img;
-    for (int i = 0; i < x->shape[0]; ++i) {
-        queue_.Pop(img, label_); // Consumer get samples from the queue
+    vector<Sample> samples(batch_len);
+    for (int i = 0; i < batch_len; ++i) {
+        queue_.Pop(samples[i], img, label_); // Consumer get samples from the queue
 
         // Copy sample image into tensor
         auto lhs = x.get();
@@ -460,7 +463,7 @@ pair<unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
         }
     }
 
-    return make_pair(move(x), move(y));
+    return make_tuple(move(samples), move(x), move(y));
 }
 
 void DLDataset::Start(int split_index)
