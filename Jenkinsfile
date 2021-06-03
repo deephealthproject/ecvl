@@ -47,7 +47,7 @@ pipeline {
                                     echo 'Building..'
                                     bat 'powershell ../../ecvl_dependencies/ecvl_dependencies.ps1'
                                     cmakeBuild buildDir: 'build', buildType: 'Release', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=C:/Library/openslide-win32-20171122/lib/libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
-                                        [args: '--parallel 4', withCmake: true]
+                                        [args: '--config Release --parallel 4', withCmake: true]
                                     ]
                                 }
                             }
