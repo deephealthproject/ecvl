@@ -99,7 +99,7 @@ public:
     DatasetAugmentations(const DatasetAugmentations& other)
     {
         for (const auto& a : other.augs_) {
-            augs_.emplace_back(a->Clone());
+            a ? augs_.emplace_back(a->Clone()) : augs_.emplace_back(nullptr);
         }
     }
 
@@ -365,7 +365,7 @@ public:
     */
     DLDataset(const filesystem::path& filename,
         const int batch_size,
-        DatasetAugmentations augs = DatasetAugmentations(),
+        const DatasetAugmentations& augs = DatasetAugmentations(),
         ColorType ctype = ColorType::RGB,
         ColorType ctype_gt = ColorType::GRAY,
         int num_workers = 1,
@@ -375,7 +375,7 @@ public:
 
         Dataset{ filename, verify },
         batch_size_{ batch_size },
-        augs_(std::move(augs)),
+        augs_(augs),
         num_workers_{ num_workers },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt },
