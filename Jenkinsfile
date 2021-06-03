@@ -25,7 +25,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Testing..'
-                                    ctest arguments: '-C Debug -VV', installation: 'InSearchPath', workingDir: 'build'
+                                    ctest arguments: '-C Release -VV', installation: 'InSearchPath', workingDir: 'build'
                                 }
                             }
                         }
@@ -56,7 +56,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Testing..'
-                                    bat 'cd build && ctest -C Debug -VV'
+                                    bat 'cd build && ctest -C Release -VV'
                                 }
                             }
                         }

@@ -99,7 +99,7 @@ public:
     DatasetAugmentations(const DatasetAugmentations& other)
     {
         for (const auto& a : other.augs_) {
-            a ? augs_.emplace_back(a->Clone()) : augs_.emplace_back(nullptr);
+            augs_.emplace_back(a ? a->Clone() : nullptr);
         }
     }
 
