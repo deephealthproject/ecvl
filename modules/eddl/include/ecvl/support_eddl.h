@@ -93,7 +93,7 @@ class DatasetAugmentations
 {
     std::vector<shared_ptr<Augmentation>> augs_;
 public:
-    DatasetAugmentations(const std::vector<shared_ptr<Augmentation>>& augs = { nullptr, nullptr, nullptr }) : augs_(augs) {}
+    DatasetAugmentations(const std::vector<shared_ptr<Augmentation>>& augs) : augs_(augs) {}
 
     // This makes a deep copy of the Augmentations
     DatasetAugmentations(const DatasetAugmentations& other)
@@ -365,7 +365,7 @@ public:
     */
     DLDataset(const filesystem::path& filename,
         const int batch_size,
-        const DatasetAugmentations& augs = DatasetAugmentations(),
+        const DatasetAugmentations& augs,
         ColorType ctype = ColorType::RGB,
         ColorType ctype_gt = ColorType::GRAY,
         int num_workers = 1,
