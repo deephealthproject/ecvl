@@ -93,6 +93,9 @@ $(function() {
 <li>samples_
 : <a class="el" href="classecvl_1_1_dataset.html#a7d4abab1f90aabf7f53ad0179a051365">ecvl::Dataset</a>
 </li>
+<li>samples_indices_
+: <a class="el" href="classecvl_1_1_split.html#aafcf1efa4b84f3710b27b2a3446136c2">ecvl::Split</a>
+</li>
 <li>seed_max
 : <a class="el" href="classecvl_1_1_augmentation_param.html#a3a01accc8367720b13d090411ec9e56c">ecvl::AugmentationParam</a>
 </li>
@@ -100,7 +103,13 @@ $(function() {
 : <a class="el" href="classecvl_1_1_augmentation_param.html#ad115b77f421c25c6a7d8b61aa602d61a">ecvl::AugmentationParam</a>
 </li>
 <li>SequentialAugmentationContainer()
-: <a class="el" href="classecvl_1_1_sequential_augmentation_container.html#a549dcbd0bbee596bbf18c9f804d9b583">ecvl::SequentialAugmentationContainer</a>
+: <a class="el" href="classecvl_1_1_sequential_augmentation_container.html#a7ee4edbf4a4863f116e3ff13ccc7046b">ecvl::SequentialAugmentationContainer</a>
+</li>
+<li>SetAugmentations()
+: <a class="el" href="classecvl_1_1_d_l_dataset.html#a0d6ef5d17b5a11882130d70b012c09ad">ecvl::DLDataset</a>
+</li>
+<li>SetBatchSize()
+: <a class="el" href="classecvl_1_1_d_l_dataset.html#afd10d75804288e21a039f4240de0ede2">ecvl::DLDataset</a>
 </li>
 <li>setBool()
 : <a class="el" href="structecvl_1_1_shader.html#a2809f66f0992c2e0c82c297bbdeb4904">ecvl::Shader</a>
@@ -117,6 +126,9 @@ $(function() {
 <li>setInt()
 : <a class="el" href="structecvl_1_1_shader.html#a92521283e6d39f5e31f4b86a5f268035">ecvl::Shader</a>
 </li>
+<li>SetLastBatch()
+: <a class="el" href="classecvl_1_1_split.html#a1e0819ed531e33b53520f769a3cfe875">ecvl::Split</a>
+</li>
 <li>setMat2()
 : <a class="el" href="structecvl_1_1_shader.html#aa8dbe0609251046a224195e4b4ed2494">ecvl::Shader</a>
 </li>
@@ -126,11 +138,20 @@ $(function() {
 <li>setMat4()
 : <a class="el" href="structecvl_1_1_shader.html#a6e5c01e45f12fbda248a42e4fd9c93fc">ecvl::Shader</a>
 </li>
+<li>SetNumBatches()
+: <a class="el" href="classecvl_1_1_split.html#a4810f8de0f523b48c94bb8b21d9f8ee3">ecvl::Split</a>
+</li>
 <li>SetSeed()
 : <a class="el" href="classecvl_1_1_augmentation_param.html#a9dd5b299c340a1e9912ddc4b0b4fecac">ecvl::AugmentationParam</a>
 </li>
+<li>SetSize()
+: <a class="el" href="classecvl_1_1_producers_consumer_queue.html#aa3af100aa9b8a2490daf33f198c8c11b">ecvl::ProducersConsumerQueue</a>
+</li>
 <li>SetSplit()
-: <a class="el" href="classecvl_1_1_d_l_dataset.html#a33374516a1191d0733d760556c0fa058">ecvl::DLDataset</a>
+: <a class="el" href="classecvl_1_1_dataset.html#a7ab1f1ba49c394988770b0d61fa0dda1">ecvl::Dataset</a>
+</li>
+<li>SetSplitSeed()
+: <a class="el" href="classecvl_1_1_d_l_dataset.html#a15d83fd89debf1ffe61ea390ba926fdc">ecvl::DLDataset</a>
 </li>
 <li>SetTo()
 : <a class="el" href="classecvl_1_1_image.html#aff60e5a7db417c79c8b64c2cb0c5e6f4">ecvl::Image</a>
@@ -142,7 +163,7 @@ $(function() {
 : <a class="el" href="structecvl_1_1_shader.html#aaf216bda58feb6fcfe6fc3ab0cf71e67">ecvl::Shader</a>
 </li>
 <li>setVec4()
-: <a class="el" href="structecvl_1_1_shader.html#a429422ba39805c0267ee9349806e43f1">ecvl::Shader</a>
+: <a class="el" href="structecvl_1_1_shader.html#aca2f65ddf9626baa835681778234769f">ecvl::Shader</a>
 </li>
 <li>Shader()
 : <a class="el" href="structecvl_1_1_shader.html#afeb1840bd8c8e7a3936715d04c2c89ec">ecvl::Shader</a>
@@ -159,11 +180,29 @@ $(function() {
 <li>spacings_
 : <a class="el" href="classecvl_1_1_image.html#ac08c58802200db31fb2167c5ade4367d">ecvl::Image</a>
 </li>
+<li>Split()
+: <a class="el" href="classecvl_1_1_split.html#ade538d0baf6abf7600c89ea483aa4def">ecvl::Split</a>
+</li>
 <li>split_
-: <a class="el" href="classecvl_1_1_dataset.html#a999787c1a37e1d7320f034d5828574e8">ecvl::Dataset</a>
+: <a class="el" href="classecvl_1_1_dataset.html#a6e6d8af673312d237dfe0b2b3b671368">ecvl::Dataset</a>
+</li>
+<li>split_name_
+: <a class="el" href="classecvl_1_1_split.html#a4360ec96bcba3ef66ab3e00f1e37920a">ecvl::Split</a>
+</li>
+<li>split_type_
+: <a class="el" href="classecvl_1_1_split.html#ae00f53baa1bdf4f63804eef22d70ab4a">ecvl::Split</a>
 </li>
 <li>splits_
 : <a class="el" href="classecvl_1_1_generate_dataset.html#a92114bdfc9c88a0804d25d9587a53c88">ecvl::GenerateDataset</a>
+</li>
+<li>splits_tc_
+: <a class="el" href="classecvl_1_1_d_l_dataset.html#a7714055cdb7e71f2291c3db2281dfff6">ecvl::DLDataset</a>
+</li>
+<li>Start()
+: <a class="el" href="classecvl_1_1_d_l_dataset.html#ad5c7dc9bd7627621d515ddc90ca16a40">ecvl::DLDataset</a>
+</li>
+<li>Stop()
+: <a class="el" href="classecvl_1_1_d_l_dataset.html#ae441e1b649cc9167ffb8f9740312a558">ecvl::DLDataset</a>
 </li>
 <li>str_
 : <a class="el" href="classecvl_1_1param.html#a1d8ac9209d2cbf5f7d6516ed5e9a1edd">ecvl::param</a>

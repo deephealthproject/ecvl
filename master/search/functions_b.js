@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['makegrid',['MakeGrid',['../namespaceecvl.html#a310b48785dc2cbeabbea636789a7ddaa',1,'ecvl']]],
   ['mattoimage',['MatToImage',['../namespaceecvl.html#a80fbdfbbf414273984cf18222b4c77bd',1,'ecvl']]],
   ['matvectoimage',['MatVecToImage',['../namespaceecvl.html#a8d1b78ff48631d7b60bc0c201c438675',1,'ecvl']]],
   ['meanstddev',['MeanStdDev',['../namespaceecvl.html#a73979fb8877322e81048522db568a82d',1,'ecvl']]],

@@ -115,6 +115,8 @@ Inheritance diagram for ecvl::AugCoarseDropout:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a5fbff4cef5ce7d8883ba1ecf8cc52623"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_coarse_dropout.html#a5fbff4cef5ce7d8883ba1ecf8cc52623">Clone</a> () const override</td></tr>
+<tr class="separator:a5fbff4cef5ce7d8883ba1ecf8cc52623"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2984fc250a48176d764d7a693174102e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_coarse_dropout.html#a2984fc250a48176d764d7a693174102e">AugCoarseDropout</a> (const std::array&lt; double, 2 &gt; &amp;p, const std::array&lt; double, 2 &gt; &amp;drop_size, const double &amp;per_channel)</td></tr>
 <tr class="memdesc:a2984fc250a48176d764d7a693174102e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_coarse_dropout.html" title="Augmentation wrapper for ecvl::CoarseDropout.">AugCoarseDropout</a> constructor.  <a href="#a2984fc250a48176d764d7a693174102e">More...</a><br /></td></tr>
 <tr class="separator:a2984fc250a48176d764d7a693174102e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,10 +138,10 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#abf7537b0520ba88dd624839bc7a951dd" title="Sets rectangular areas within an Image to zero.">ecvl::CoarseDropout</a>. </p>
 <p><a class="anchor" id="AugCoarseDropout"></a></p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a7">example_ecvl_eddl.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a8">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00727">727</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00765">765</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2984fc250a48176d764d7a693174102e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2984fc250a48176d764d7a693174102e">&#9670;&nbsp;</a></span>AugCoarseDropout() <span class="overload">[1/2]</span></h2>
@@ -191,7 +193,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00745">745</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00785">785</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
@@ -219,7 +221,37 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00752">752</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00792">792</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5fbff4cef5ce7d8883ba1ecf8cc52623"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fbff4cef5ce7d8883ba1ecf8cc52623">&#9670;&nbsp;</a></span>Clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt; ecvl::AugCoarseDropout::Clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classecvl_1_1_augmentation.html#a0486bf229e9b539cb600fb2783d7a906">ecvl::Augmentation</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00777">777</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

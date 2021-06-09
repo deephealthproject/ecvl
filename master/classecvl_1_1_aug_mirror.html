@@ -115,6 +115,8 @@ Inheritance diagram for ecvl::AugMirror:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ac47657a1e5ff980cf4cb7be6ce2ad7db"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_mirror.html#ac47657a1e5ff980cf4cb7be6ce2ad7db">Clone</a> () const override</td></tr>
+<tr class="separator:ac47657a1e5ff980cf4cb7be6ce2ad7db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a607403988b0cc19c7e3ea9b45ba865d2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_mirror.html#a607403988b0cc19c7e3ea9b45ba865d2">AugMirror</a> (double p=0.5)</td></tr>
 <tr class="memdesc:a607403988b0cc19c7e3ea9b45ba865d2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_mirror.html" title="Augmentation wrapper for ecvl::Mirror2D.">AugMirror</a> constructor.  <a href="#a607403988b0cc19c7e3ea9b45ba865d2">More...</a><br /></td></tr>
 <tr class="separator:a607403988b0cc19c7e3ea9b45ba865d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,10 +138,10 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a616ea6f429139cd593198b7804a2a5fd" title="Mirrors an Image.">ecvl::Mirror2D</a>. </p>
 <p><a class="anchor" id="AugMirror"></a></p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a3">example_ecvl_eddl.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a4">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00561">561</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00589">589</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a607403988b0cc19c7e3ea9b45ba865d2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a607403988b0cc19c7e3ea9b45ba865d2">&#9670;&nbsp;</a></span>AugMirror() <span class="overload">[1/2]</span></h2>
@@ -173,7 +175,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00580">580</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00610">610</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
@@ -201,7 +203,37 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00585">585</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00615">615</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac47657a1e5ff980cf4cb7be6ce2ad7db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac47657a1e5ff980cf4cb7be6ce2ad7db">&#9670;&nbsp;</a></span>Clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt; ecvl::AugMirror::Clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classecvl_1_1_augmentation.html#a0486bf229e9b539cb600fb2783d7a906">ecvl::Augmentation</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00604">604</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

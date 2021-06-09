@@ -115,6 +115,8 @@ Inheritance diagram for ecvl::AugElasticTransform:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:af3f2bf51145564001cd4234f2db4d520"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_elastic_transform.html#af3f2bf51145564001cd4234f2db4d520">Clone</a> () const override</td></tr>
+<tr class="separator:af3f2bf51145564001cd4234f2db4d520"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36bfb96ea01249be1a3124cdea1e2e24"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_elastic_transform.html#a36bfb96ea01249be1a3124cdea1e2e24">AugElasticTransform</a> (const std::array&lt; double, 2 &gt; &amp;alpha, const std::array&lt; double, 2 &gt; &amp;sigma, const <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> &amp;interp=<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>, const <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> &amp;border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a>, const int &amp;border_value=0)</td></tr>
 <tr class="memdesc:a36bfb96ea01249be1a3124cdea1e2e24"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_elastic_transform.html" title="Augmentation wrapper for ecvl::ElasticTransform.">AugElasticTransform</a> constructor.  <a href="#a36bfb96ea01249be1a3124cdea1e2e24">More...</a><br /></td></tr>
 <tr class="separator:a36bfb96ea01249be1a3124cdea1e2e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,7 +139,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#ac0cadcb0a4b3bc15cb00dade7c004686" title="Elastic deformation of input Image. Based on https://github.com/albumentations-team/albumentations/bl...">ecvl::ElasticTransform</a>. </p>
 <p><a class="anchor" id="AugElasticTransform"></a></p>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00932">932</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00978">978</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a36bfb96ea01249be1a3124cdea1e2e24"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a36bfb96ea01249be1a3124cdea1e2e24">&#9670;&nbsp;</a></span>AugElasticTransform() <span class="overload">[1/2]</span></h2>
@@ -203,7 +205,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00958">958</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01006">1006</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
@@ -231,7 +233,37 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00970">970</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01018">1018</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="af3f2bf51145564001cd4234f2db4d520"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3f2bf51145564001cd4234f2db4d520">&#9670;&nbsp;</a></span>Clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt; ecvl::AugElasticTransform::Clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classecvl_1_1_augmentation.html#a0486bf229e9b539cb600fb2783d7a906">ecvl::Augmentation</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00996">996</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

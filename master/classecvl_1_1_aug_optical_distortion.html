@@ -115,6 +115,8 @@ Inheritance diagram for ecvl::AugOpticalDistortion:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a97c5cf015ac5d2044ef8f0ce2f6e7f16"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_optical_distortion.html#a97c5cf015ac5d2044ef8f0ce2f6e7f16">Clone</a> () const override</td></tr>
+<tr class="separator:a97c5cf015ac5d2044ef8f0ce2f6e7f16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41827cb383034220d1c8de470210358b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_optical_distortion.html#a41827cb383034220d1c8de470210358b">AugOpticalDistortion</a> (const std::array&lt; float, 2 &gt; &amp;distort_limit, const std::array&lt; float, 2 &gt; &amp;shift_limit, const <a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a> &amp;interp=<a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca9a932b3cb396238423eb2f33ec17d6aa">InterpolationType::linear</a>, const <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> &amp;border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3a7e056e0ac081ae9a5e1889dd5183aae9">BorderType::BORDER_REFLECT_101</a>, const int &amp;border_value=0)</td></tr>
 <tr class="memdesc:a41827cb383034220d1c8de470210358b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_optical_distortion.html" title="Augmentation wrapper for ecvl::OpticalDistortion.">AugOpticalDistortion</a> constructor.  <a href="#a41827cb383034220d1c8de470210358b">More...</a><br /></td></tr>
 <tr class="separator:a41827cb383034220d1c8de470210358b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,7 +139,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b" title="Barrel / pincushion distortion. Based on https://github.com/albumentations-team/albumentations/blob/m...">ecvl::OpticalDistortion</a>. </p>
 <p><a class="anchor" id="AugOpticalDistortion"></a></p>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01019">1019</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01067">1067</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a41827cb383034220d1c8de470210358b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41827cb383034220d1c8de470210358b">&#9670;&nbsp;</a></span>AugOpticalDistortion() <span class="overload">[1/2]</span></h2>
@@ -203,7 +205,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01046">1046</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01096">1096</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
@@ -231,7 +233,37 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01056">1056</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01106">1106</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a97c5cf015ac5d2044ef8f0ce2f6e7f16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97c5cf015ac5d2044ef8f0ce2f6e7f16">&#9670;&nbsp;</a></span>Clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt; ecvl::AugOpticalDistortion::Clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classecvl_1_1_augmentation.html#a0486bf229e9b539cb600fb2783d7a906">ecvl::Augmentation</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l01086">1086</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

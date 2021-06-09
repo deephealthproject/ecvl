@@ -102,9 +102,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="core_8h_source.html">ecvl/core.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="any_8h_source.html">ecvl/core/any.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="filesystem_8h_source.html">ecvl/core/filesystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="optional_8h_source.html">ecvl/core/optional.h</a>&quot;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;iterator&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;regex&gt;</code><br />
@@ -118,7 +120,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_sample.html" title="Sample image in a dataset.">Sample</a> image in a dataset.  <a href="classecvl_1_1_sample.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html">ecvl::Split</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits of a dataset.  <a href="classecvl_1_1_split.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_split.html" title="Split of a dataset. This class provides the name of the split and the indices of the samples that bel...">Split</a> of a dataset. This class provides the name of the split and the indices of the samples that belong to this split. It optionally provides the split type if the split name is one of training, validation or test.  <a href="classecvl_1_1_split.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html">ecvl::Dataset</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">DeepHealth <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>.  <a href="classecvl_1_1_dataset.html#details">More...</a><br /></td></tr>
@@ -142,6 +144,11 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ad4c37278cb980c0477ef2ab5b2740569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum class representing the Dataset supported splits.  <a href="namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569">More...</a><br /></td></tr>
 <tr class="separator:ad4c37278cb980c0477ef2ab5b2740569"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ad0a722a2c4e29bbf38093db3b9ad70"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9ad0a722a2c4e29bbf38093db3b9ad70">ecvl::Task</a> { <a class="el" href="namespaceecvl.html#a9ad0a722a2c4e29bbf38093db3b9ad70a63f69c7f958795918b41fbcd71a8c811">ecvl::Task::classification</a>, 
+<a class="el" href="namespaceecvl.html#a9ad0a722a2c4e29bbf38093db3b9ad70a679fe1db8dc7308e44404587d0348c5e">ecvl::Task::segmentation</a>
+ }</td></tr>
+<tr class="memdesc:a9ad0a722a2c4e29bbf38093db3b9ad70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum class representing allowed tasks for the ECVL Dataset.  <a href="namespaceecvl.html#a9ad0a722a2c4e29bbf38093db3b9ad70">More...</a><br /></td></tr>
+<tr class="separator:a9ad0a722a2c4e29bbf38093db3b9ad70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -174,9 +181,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">enum class</span> name : unsigned { __VA_ARGS__ };\</div><div class="line">inline constexpr <span class="keywordtype">unsigned</span> <a class="code" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">operator+ </a>(name <span class="keyword">const</span> val) { <span class="keywordflow">return</span> static_cast&lt;unsigned&gt;(val); }</div><div class="ttc" id="namespaceecvl_html_af7e9ec15cba92409e1f55ed63dafee47"><div class="ttname"><a href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">ecvl::operator+</a></div><div class="ttdeci">constexpr unsigned operator+(SplitType const val)</div><div class="ttdef"><b>Definition:</b> <a href="dataset__parser_8h_source.html#l00038">dataset_parser.h:38</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">enum class</span> name : unsigned { __VA_ARGS__ };\</div><div class="line">inline constexpr <span class="keywordtype">unsigned</span> <a class="code" href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">operator+ </a>(name <span class="keyword">const</span> val) { <span class="keywordflow">return</span> static_cast&lt;unsigned&gt;(val); }</div><div class="ttc" id="namespaceecvl_html_af7e9ec15cba92409e1f55ed63dafee47"><div class="ttname"><a href="namespaceecvl.html#af7e9ec15cba92409e1f55ed63dafee47">ecvl::operator+</a></div><div class="ttdeci">constexpr unsigned operator+(SplitType const val)</div><div class="ttdef"><b>Definition:</b> <a href="dataset__parser_8h_source.html#l00040">dataset_parser.h:40</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00029">29</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00031">31</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>

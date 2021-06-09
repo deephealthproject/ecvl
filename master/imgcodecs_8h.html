@@ -112,7 +112,8 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a5b3b383e32f49f0ffb9033c0ebac1408"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408">ecvl::ImReadMode</a> { <a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408abfc52a030be6cc5e47fe83a81e3175a0">ecvl::ImReadMode::GRAYSCALE</a> = 0, 
+<tr class="memitem:a5b3b383e32f49f0ffb9033c0ebac1408"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408">ecvl::ImReadMode</a> { <a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a46335765005ff44b1fe1e38e5d2ddfcc">ecvl::ImReadMode::UNCHANGED</a> = -1, 
+<a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408abfc52a030be6cc5e47fe83a81e3175a0">ecvl::ImReadMode::GRAYSCALE</a> = 0, 
 <a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a04bd834032febb3fda8c6936ee140949">ecvl::ImReadMode::COLOR</a> = 1, 
 <a class="el" href="namespaceecvl.html#a5b3b383e32f49f0ffb9033c0ebac1408a33013e2672ae997d28c8e5cc888e069e">ecvl::ImReadMode::ANYCOLOR</a> = 4
  }</td></tr>
@@ -124,6 +125,12 @@ Functions</h2></td></tr>
 <tr class="memitem:aec6358a43280d5c5352e9300fe1beddb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#aec6358a43280d5c5352e9300fe1beddb">ecvl::ImRead</a> (const ecvl::filesystem::path &amp;filename, Image &amp;dst, ImReadMode flags=ImReadMode::ANYCOLOR)</td></tr>
 <tr class="memdesc:aec6358a43280d5c5352e9300fe1beddb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a file.  <a href="namespaceecvl.html#aec6358a43280d5c5352e9300fe1beddb">More...</a><br /></td></tr>
 <tr class="separator:aec6358a43280d5c5352e9300fe1beddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a406c931165318eabbf75215483d1a8f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a406c931165318eabbf75215483d1a8f3">ecvl::ImRead</a> (const char *buffer, const int size, Image &amp;dst, ImReadMode flags=ImReadMode::ANYCOLOR)</td></tr>
+<tr class="memdesc:a406c931165318eabbf75215483d1a8f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a buffer in memory. This is an overloaded function, provided for convenience.  <a href="namespaceecvl.html#a406c931165318eabbf75215483d1a8f3">More...</a><br /></td></tr>
+<tr class="separator:a406c931165318eabbf75215483d1a8f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f40dc5fd158d70602bd5729b64ef1f5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a7f40dc5fd158d70602bd5729b64ef1f5">ecvl::ImRead</a> (const std::vector&lt; char &gt; &amp;buffer, Image &amp;dst, ImReadMode flags=ImReadMode::ANYCOLOR)</td></tr>
+<tr class="memdesc:a7f40dc5fd158d70602bd5729b64ef1f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an image from a buffer in memory. This is an overloaded function, provided for convenience.  <a href="namespaceecvl.html#a7f40dc5fd158d70602bd5729b64ef1f5">More...</a><br /></td></tr>
+<tr class="separator:a7f40dc5fd158d70602bd5729b64ef1f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acba09d5e0c958dfee5093f60a89688ae"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#acba09d5e0c958dfee5093f60a89688ae">ecvl::ImReadMulti</a> (const ecvl::filesystem::path &amp;filename, Image &amp;dst)</td></tr>
 <tr class="memdesc:acba09d5e0c958dfee5093f60a89688ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a multi-page image from a file.  <a href="namespaceecvl.html#acba09d5e0c958dfee5093f60a89688ae">More...</a><br /></td></tr>
 <tr class="separator:acba09d5e0c958dfee5093f60a89688ae"><td class="memSeparator" colspan="2">&#160;</td></tr>

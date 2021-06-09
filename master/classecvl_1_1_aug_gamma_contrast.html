@@ -115,6 +115,8 @@ Inheritance diagram for ecvl::AugGammaContrast:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ad318c2d6e66f6def038280e7cf640eb8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_gamma_contrast.html#ad318c2d6e66f6def038280e7cf640eb8">Clone</a> () const override</td></tr>
+<tr class="separator:ad318c2d6e66f6def038280e7cf640eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3843c2767bf2ca7d10b06368416afc60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_gamma_contrast.html#a3843c2767bf2ca7d10b06368416afc60">AugGammaContrast</a> (const std::array&lt; double, 2 &gt; &amp;gamma)</td></tr>
 <tr class="memdesc:a3843c2767bf2ca7d10b06368416afc60"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_aug_gamma_contrast.html" title="Augmentation wrapper for ecvl::GammaContrast.">AugGammaContrast</a> constructor.  <a href="#a3843c2767bf2ca7d10b06368416afc60">More...</a><br /></td></tr>
 <tr class="separator:a3843c2767bf2ca7d10b06368416afc60"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,10 +138,10 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#ac8a3ad3fc46ff27075d4b671cc996b6c" title="Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma).">ecvl::GammaContrast</a>. </p>
 <p><a class="anchor" id="AugGammaContrast"></a></p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a5">example_ecvl_eddl.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a6">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00695">695</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00731">731</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3843c2767bf2ca7d10b06368416afc60"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3843c2767bf2ca7d10b06368416afc60">&#9670;&nbsp;</a></span>AugGammaContrast() <span class="overload">[1/2]</span></h2>
@@ -173,7 +175,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00708">708</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00746">746</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>
@@ -201,7 +203,37 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00713">713</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00751">751</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad318c2d6e66f6def038280e7cf640eb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad318c2d6e66f6def038280e7cf640eb8">&#9670;&nbsp;</a></span>Clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classecvl_1_1_augmentation.html">Augmentation</a>&gt; ecvl::AugGammaContrast::Clone </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classecvl_1_1_augmentation.html#a0486bf229e9b539cb600fb2783d7a906">ecvl::Augmentation</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="augmentations_8h_source.html#l00739">739</a> of file <a class="el" href="augmentations_8h_source.html">augmentations.h</a>.</p>
 
 </div>
 </div>

@@ -1,16 +1,17 @@
 var searchData=
 [
   ['macros_2eh',['macros.h',['../macros_8h.html',1,'']]],
+  ['makegrid',['MakeGrid',['../namespaceecvl.html#a310b48785dc2cbeabbea636789a7ddaa',1,'ecvl']]],
   ['mattoimage',['MatToImage',['../namespaceecvl.html#a80fbdfbbf414273984cf18222b4c77bd',1,'ecvl']]],
   ['matvectoimage',['MatVecToImage',['../namespaceecvl.html#a8d1b78ff48631d7b60bc0c201c438675',1,'ecvl']]],
-  ['max_5f',['max_',['../classecvl_1_1_augmentation_param.html#a7ce2d71d8d0de3d04cb8c4a64e8f59d1',1,'ecvl::AugmentationParam']]],
+  ['max_5f',['max_',['../classecvl_1_1_augmentation_param.html#a7ce2d71d8d0de3d04cb8c4a64e8f59d1',1,'ecvl::AugmentationParam::max_()'],['../classecvl_1_1_thread_counters.html#af7568da6102b8b272cf0f62c3861b2b9',1,'ecvl::ThreadCounters::max_()']]],
   ['meanstddev',['MeanStdDev',['../namespaceecvl.html#a73979fb8877322e81048522db568a82d',1,'ecvl']]],
   ['memallocate',['MemAllocate',['../classecvl_1_1_gpu_hal.html#a4e8534d388ad4077289350329d678132',1,'ecvl::GpuHal::MemAllocate()'],['../classecvl_1_1_fpga_hal.html#ab8531ca1e0cd1c857f62cd599d9fe67a',1,'ecvl::FpgaHal::MemAllocate()']]],
   ['memcopy',['MemCopy',['../classecvl_1_1_gpu_hal.html#a52ec801b1e813ecf507804cc3de8c8b0',1,'ecvl::GpuHal::MemCopy()'],['../classecvl_1_1_fpga_hal.html#a11a1e0076a7c5a173edf1ec9cb55bb8f',1,'ecvl::FpgaHal::MemCopy()']]],
   ['memdeallocate',['MemDeallocate',['../classecvl_1_1_gpu_hal.html#a292386c85db7fc2cd7928e74f59295c1',1,'ecvl::GpuHal::MemDeallocate()'],['../classecvl_1_1_fpga_hal.html#a5fe7e3594bf673603c98e9085097d08c',1,'ecvl::FpgaHal::MemDeallocate()']]],
   ['meta_5f',['meta_',['../classecvl_1_1_image.html#a32383ca82c257c20e22b4587965d4566',1,'ecvl::Image']]],
   ['metadata',['MetaData',['../classecvl_1_1_meta_data.html',1,'ecvl']]],
-  ['min_5f',['min_',['../classecvl_1_1_augmentation_param.html#a99591f2dfb088b638ca041b700e6b889',1,'ecvl::AugmentationParam']]],
+  ['min_5f',['min_',['../classecvl_1_1_augmentation_param.html#a99591f2dfb088b638ca041b700e6b889',1,'ecvl::AugmentationParam::min_()'],['../classecvl_1_1_thread_counters.html#a41d1f95ed70e36b2d1690b1de89c7e46',1,'ecvl::ThreadCounters::min_()']]],
   ['mirror2d',['Mirror2D',['../namespaceecvl.html#a616ea6f429139cd593198b7804a2a5fd',1,'ecvl']]],
   ['moments',['Moments',['../namespaceecvl.html#a1f9d22b5521082c3a334f6ef9d3a1d16',1,'ecvl']]],
   ['morph_5fblackhat',['MORPH_BLACKHAT',['../namespaceecvl.html#a4696838ef2eb912185348d2585a3ce36abab238f32734ecfb0155ddec17535fd7',1,'ecvl']]],
@@ -24,6 +25,5 @@ var searchData=
   ['morphology',['Morphology',['../namespaceecvl.html#a09f0ab2d8976efcb4c383b711d3082c3',1,'ecvl']]],
   ['morphtype',['MorphType',['../namespaceecvl.html#a4696838ef2eb912185348d2585a3ce36',1,'ecvl']]],
   ['mul',['Mul',['../classecvl_1_1_image.html#a89de053110d52a4dfe2004a99e02665b',1,'ecvl::Image::Mul()'],['../namespaceecvl.html#aefb3bf550679f0b94a93825ee6e7c21a',1,'ecvl::Mul(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a35c905269cf9cf1766cd0036d0f38438',1,'ecvl::Mul(const Image &amp;src1, const ST2 &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a47d848d2a7171b4cb8a1a01b4d6fd984',1,'ecvl::Mul(const ST1 &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)']]],
-  ['multithreshold',['MultiThreshold',['../namespaceecvl.html#a3052b3748c8ce86579b4d65b832da743',1,'ecvl']]],
-  ['mutex_5fcurrent_5fbatch_5f',['mutex_current_batch_',['../classecvl_1_1_d_l_dataset.html#a13f7c815daf802af4d3e4aa19e4ca831',1,'ecvl::DLDataset']]]
+  ['multithreshold',['MultiThreshold',['../namespaceecvl.html#a3052b3748c8ce86579b4d65b832da743',1,'ecvl']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['ecvl_5ferror_5faug_5fdoes_5fnot_5fexist',['ECVL_ERROR_AUG_DOES_NOT_EXIST',['../support__eddl_8h.html#a7a1e2338c408bccc4fbbfc66b8441060',1,'support_eddl.h']]],
   ['ecvl_5ferror_5faugmentation_5fformat',['ECVL_ERROR_AUGMENTATION_FORMAT',['../augmentations_8h.html#ab0172e449786e277499a4339aeb5e15a',1,'augmentations.h']]],
   ['ecvl_5ferror_5faugmentation_5fname',['ECVL_ERROR_AUGMENTATION_NAME',['../augmentations_8h.html#aa310b15661ffb081181bebb41ad938b6',1,'augmentations.h']]],
   ['ecvl_5ferror_5fcannot_5fload_5ffrom_5furl',['ECVL_ERROR_CANNOT_LOAD_FROM_URL',['../standard__errors_8h.html#a70f1c9bce5dfcb185969fd85d34ca8eb',1,'standard_errors.h']]],
