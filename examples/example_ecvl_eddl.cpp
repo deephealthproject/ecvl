@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <unordered_map>
 
 #include "ecvl/core.h"
 #include "ecvl/support_eddl.h"
@@ -34,6 +33,7 @@ int main()
 
     // Create an augmentation sequence to be applied to the image
     auto augs = make_shared<SequentialAugmentationContainer>(
+        AugCenterCrop(), // Make image squared
         AugRotate({ -5, 5 }),
         AugMirror(.5),
         AugFlip(.5),
@@ -71,6 +71,7 @@ int main()
     cout << "Executing TensorToView" << endl;
     TensorToView(t, view);
 
+    // Create an augmentation sequence from stream
     stringstream ss(
         "SequentialAugmentationContainer\n"
         "    AugRotate angle=[-5,5] center=(0,0) interp=\"linear\"\n"
@@ -85,21 +86,28 @@ int main()
     auto newdeal_augs = AugmentationFactory::create(ss);
     newdeal_augs->Apply(tmp);
 
+    /*--------------------------------------------------------------------------------------------*/
+
     // Create the augmentations to be applied to the dataset images during training and test.
-    // nullptr is given as augmentation for validation because this split doesn't exist in the mnist dataset.
     auto training_augs = make_shared<SequentialAugmentationContainer>(
         AugRotate({ -5, 5 }),
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
         AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0),
         AugAdditivePoissonNoise({ 0, 40 }),
-        AugResizeDim({ 30, 30 })
+        AugResizeDim({ 30, 30 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
     auto test_augs = make_shared<SequentialAugmentationContainer>(
-        AugResizeDim({ 30, 30 })
+        AugResizeDim({ 30, 30 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
-    DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
+    // OLD version: now the number of augmentations must match the number of splits in the yml file
+    // DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
+    DatasetAugmentations dataset_augmentations{ {training_augs, test_augs } };
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
@@ -127,6 +135,10 @@ int main()
     cout << "Executing LoadBatch on test set" << endl;
     d.SetSplit(SplitType::test);
     d.LoadBatch(x, y);
+
+    // Save some input images
+    ImWrite("mnist_batch.png", MakeGrid(x, 8, false));
+    ImWrite("mnist_batch_normalized.png", MakeGrid(x, 8, true));
 
     delete x;
     delete y;

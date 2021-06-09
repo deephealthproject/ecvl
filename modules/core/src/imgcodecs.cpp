@@ -52,6 +52,21 @@ bool ImRead(const path& filename, Image& dst, ImReadMode flags)
     }
 }
 
+bool ImRead(const std::vector<char>& buffer, Image& dst, ImReadMode flags)
+{
+    cv::InputArray ia(buffer);
+    dst = MatToImage(cv::imdecode(ia, (int)flags));
+
+    // TODO: Nifti and Dicom version?
+    return !dst.IsEmpty();
+}
+
+bool ImRead(const char* buffer, const int size, Image& dst, ImReadMode flags)
+{
+    const std::vector<char> buf(buffer, buffer + size);
+    return ImRead(buf, dst, flags);
+}
+
 bool ImReadMulti(const path& filename, Image& dst)
 {
     std::vector<cv::Mat> v;

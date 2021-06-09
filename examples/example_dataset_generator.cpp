@@ -45,17 +45,18 @@ int main()
     vector<int> mask;
     vector<int> black;
 
-    for (auto& index : d_segmentation.split_.training_) {
-        if (d_segmentation.samples_[index].label_path_.value().filename().compare("black.png") == 0) {
-            black.emplace_back(index);
+    auto& training = d_segmentation.GetSplit("training");
+    for (auto& sample_index : training) {
+        if (d_segmentation.samples_[sample_index].label_path_.value().filename().compare("black.png") == 0) {
+            black.emplace_back(sample_index);
         }
         else {
-            mask.emplace_back(index);
+            mask.emplace_back(sample_index);
         }
     }
 
-    d_segmentation.split_.training_.clear();
-    d_segmentation.split_.training_.insert(d_segmentation.split_.training_.end(), mask.begin(), mask.end());
+    training.clear();
+    training.insert(training.end(), mask.begin(), mask.end());
 
     // Dump the Dataset on file
     d_segmentation.Dump(dateset_root_folder_segmentation / path(dateset_root_folder_segmentation.stem().string() + ".yml"));

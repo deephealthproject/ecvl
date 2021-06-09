@@ -13,6 +13,7 @@
 
 #include "ecvl/dataset_parser.h"
 
+#include <algorithm>
 #include <fstream>
 #include <regex>
 
@@ -225,26 +226,13 @@ void Dataset::Dump(const path& file_path)
         }
     }
 
-    if (split_.training_.size() > 0 || split_.validation_.size() > 0 || split_.test_.size() > 0) {
+    if (split_.size() > 0) {
         os << "split:" << endl;
-    }
-
-    if (split_.training_.size() > 0) {
-        os << tab + "training:" << endl;
-        for (auto& i : split_.training_) {
-            os << tab + tab + "- " << i << endl;
-        }
-    }
-    if (split_.validation_.size() > 0) {
-        os << tab + "validation:" << endl;
-        for (auto& i : split_.validation_) {
-            os << tab + tab + "- " << i << endl;
-        }
-    }
-    if (split_.test_.size() > 0) {
-        os << tab + "test:" << endl;
-        for (auto& i : split_.test_) {
-            os << tab + tab + "- " << i << endl;
+        for (auto& s : split_) {
+            os << tab + s.split_name_ + ":" << endl;
+            for (auto& i : s.samples_indices_) {
+                os << tab + tab + "- " << i << endl;
+            }
         }
     }
 
@@ -287,8 +275,92 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
     }
 
     DecodeImages(config["images"], abs_filename.parent_path(), verify);
+
     if (config["split"].IsDefined()) {
-        this->split_ = config["split"].as<Split>();
+        for (YAML::const_iterator it = config["split"].begin(); it != config["split"].end(); ++it) {
+            // insert into the vector split_ the split name and the vector of image indices
+            Split s(it->first.as<string>(), it->second.as<vector<int>>());
+
+            if (!samples_[s.samples_indices_[0]].label_ && !samples_[s.samples_indices_[0]].label_path_) {
+                s.no_label_ = true;
+            }
+            split_.push_back(s);
+        }
     }
+
+    task_ = classes_.empty() ? Task::segmentation : Task::classification;
+}
+
+const int Dataset::GetSplitIndex(any split)
+{
+    if (split.type() == typeid(int)) {
+        auto s = any_cast<int>(split);
+        int index = s < 0 || s >= split_.size() ? current_split_ : s;
+        return index;
+    }
+    else {
+        return static_cast<const int>(distance(split_.begin(), GetSplitIt(split)));
+    }
+}
+
+vector<Split>::iterator Dataset::GetSplitIt(any split)
+{
+    if (split.type() == typeid(int)) {
+        try {
+            auto s = any_cast<int>(split);
+            const int index = s < 0 || s >= split_.size() ? current_split_ : s;
+            return split_.begin() + index;
+        }
+        catch (const out_of_range) {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+    }
+    auto func = [&](const auto& s) {
+        if (split.type() == typeid(string)) {
+            auto tmp = s.split_name_;
+            return tmp == any_cast<string>(split);
+        }
+        else if (split.type() == typeid(const char*)) {
+            auto tmp = s.split_name_;
+            return tmp == any_cast<const char*>(split);
+        }
+        else if (split.type() == typeid(SplitType)) {
+            auto tmp = s.split_type_;
+            return tmp == any_cast<SplitType>(split);
+        }
+        else {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+    };
+
+    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return func(s); });
+    if (it == this->split_.end()) {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+    else {
+        return it;
+    }
+}
+
+vector<int>& Dataset::GetSplit(const any& split)
+{
+    auto it = GetSplitIt(split);
+    return it->samples_indices_;
+}
+
+void Dataset::SetSplit(const any& split)
+{
+    int index = GetSplitIndex(split);
+    this->current_split_ = index;
+}
+
+vector<vector<path>> Dataset::GetLocations() const
+{
+    const auto& size = vsize(samples_);
+    vector<vector<path>> locations(size);
+    for (int i = 0; i < size; ++i) {
+        locations[i] = samples_[i].location_;
+    }
+    return locations;
 }
 }

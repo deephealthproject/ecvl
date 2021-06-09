@@ -31,6 +31,16 @@ using namespace std;
 
 namespace ecvl
 {
+
+InitDCMTK::InitDCMTK()
+{
+    DJDecoderRegistration::registerCodecs();
+}
+InitDCMTK::~InitDCMTK()
+{
+    DJDecoderRegistration::cleanup();
+}
+
 bool OverlayMetaData::Query(const std::string& name, std::string& value) const
 {
     if (name == "overlay") {
@@ -50,9 +60,8 @@ bool OverlayMetaData::Query(const std::string& name, std::string& value) const
 
 bool DicomRead(const std::string& filename, Image& dst)
 {
+    static InitDCMTK init_dcmtk; // Created only first time DicomRead is called
     bool return_value = true;
-
-    DJDecoderRegistration::registerCodecs();
 
     DicomImage* image = new DicomImage(filename.c_str());
     if (image == NULL) {
@@ -93,7 +102,7 @@ bool DicomRead(const std::string& filename, Image& dst)
             }
             else {
                 for (int i = 0; i < planes; i++) {
-                    memcpy(dst.data_ + x * y * DataTypeSize(dst_datatype) * i, reinterpret_cast<void * const *>(dipixel_data)[i], x * y * DataTypeSize(dst_datatype));
+                    memcpy(dst.data_ + x * y * DataTypeSize(dst_datatype) * i, reinterpret_cast<void* const*>(dipixel_data)[i], x * y * DataTypeSize(dst_datatype));
                 }
             }
 
@@ -157,8 +166,6 @@ bool DicomRead(const std::string& filename, Image& dst)
     if (!return_value) {
         dst = Image();
     }
-
-    DJDecoderRegistration::cleanup();
 
     return return_value;
 }

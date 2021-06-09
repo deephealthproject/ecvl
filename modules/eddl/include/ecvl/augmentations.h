@@ -219,11 +219,13 @@ public:
         }
         RealApply(img, gt);
     }
+    virtual std::shared_ptr<Augmentation> Clone() const = 0;
     virtual ~Augmentation() = default;
 
 private:
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
 };
+#define DEFINE_AUGMENTATION_CLONE(class_name) std::shared_ptr<Augmentation> Clone() const override { return std::make_shared<class_name>(*this); }
 
 struct AugmentationFactory
 {
@@ -261,10 +263,19 @@ class SequentialAugmentationContainer : public Augmentation
     }
     std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
 public:
+    DEFINE_AUGMENTATION_CLONE(SequentialAugmentationContainer)
+
     template<typename ...Ts>
     SequentialAugmentationContainer(Ts&&... t) : augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... }) {}
 
     SequentialAugmentationContainer(std::vector<std::shared_ptr<Augmentation>> augs) : augs_(augs) {}
+
+    SequentialAugmentationContainer(const SequentialAugmentationContainer& other) : Augmentation(other)
+    {
+        for (const auto& a : other.augs_) {
+            augs_.emplace_back(a->Clone());
+        }
+    }
 
     SequentialAugmentationContainer(std::istream& is)
     {
@@ -306,6 +317,8 @@ class OneOfAugmentationContainer : public Augmentation
     std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
     double p_;
 public:
+    DEFINE_AUGMENTATION_CLONE(OneOfAugmentationContainer)
+
     template<typename ...Ts>
     OneOfAugmentationContainer(double p, Ts&&... t) : p_(p), augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... })
     {
@@ -315,6 +328,13 @@ public:
     OneOfAugmentationContainer(double p, std::vector<std::shared_ptr<Augmentation>> augs) : p_(p), augs_(augs)
     {
         params_["p"] = AugmentationParam(0, 1);
+    }
+
+    OneOfAugmentationContainer(const OneOfAugmentationContainer& other) : Augmentation(other)
+    {
+        for (const auto& a : other.augs_) {
+            augs_.emplace_back(a->Clone());
+        }
     }
 
     OneOfAugmentationContainer(std::istream& is)
@@ -369,6 +389,8 @@ class AugRotate : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugRotate)
+
     /** @brief AugRotate constructor
 
     @param[in] angle Parameter which determines the range of degrees [min,max] to randomly select from.
@@ -434,6 +456,8 @@ class AugResizeDim : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugResizeDim)
+
     /** @brief AugResizeDim constructor
 
     @param[in] dims std::vector<int> that specifies the new size of each dimension.
@@ -484,6 +508,8 @@ class AugResizeScale : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugResizeScale)
+
     /** @brief AugResizeScale constructor
 
     @param[in] scale std::vector<double> that specifies the scale to apply to each dimension.
@@ -534,6 +560,8 @@ class AugFlip : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugFlip)
+
     /** @brief AugFlip constructor
 
     @param[in] p Probability of each image to get flipped.
@@ -573,6 +601,8 @@ class AugMirror : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugMirror)
+
     /** @brief AugMirror constructor
 
     @param[in] p Probability of each image to get mirrored.
@@ -605,6 +635,8 @@ class AugGaussianBlur : public Augmentation
         GaussianBlur(img, img, sigma);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugGaussianBlur)
+
     /** @brief AugGaussianBlur constructor
 
     @param[in] sigma Parameter which determines the range of sigma [min,max] to randomly select from.
@@ -636,6 +668,8 @@ class AugAdditiveLaplaceNoise : public Augmentation
         AdditiveLaplaceNoise(img, img, std_dev);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugAdditiveLaplaceNoise)
+
     /** @brief AugAdditiveLaplaceNoise constructor
 
     @param[in] std_dev Parameter which determines the range of values [min,max] to randomly select the standard deviation of the noise generating distribution.
@@ -668,6 +702,8 @@ class AugAdditivePoissonNoise : public Augmentation
         AdditivePoissonNoise(img, img, lambda);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugAdditivePoissonNoise)
+
     /** @brief AugAdditivePoissonNoise constructor
 
     @param[in] lambda Parameter which determines the range of values [min,max] to randomly select the lambda of the noise generating distribution.
@@ -700,6 +736,8 @@ class AugGammaContrast : public Augmentation
         GammaContrast(img, img, gamma);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugGammaContrast)
+
     /** @brief AugGammaContrast constructor
 
     @param[in] gamma Parameter which determines the range of values [min,max] to randomly select the exponent for the contrast adjustment.
@@ -736,6 +774,8 @@ class AugCoarseDropout : public Augmentation
         CoarseDropout(img, img, p, drop_size, per_channel);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugCoarseDropout)
+
     /** @brief AugCoarseDropout constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any rectangle being set to zero.
@@ -785,6 +825,8 @@ class AugTranspose : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugTranspose)
+
     /** @brief AugTranspose constructor
 
     @param[in] p Probability of each image to get transposed.
@@ -817,6 +859,8 @@ class AugBrightness : public Augmentation
         Add(img, beta, img);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugBrightness)
+
     /** @brief AugBrightness constructor
 
     @param[in] beta Parameter which determines the range of values [min,max] to randomly select the value for the brightness adjustment.
@@ -861,6 +905,8 @@ class AugGridDistortion : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugGridDistortion)
+
     /** @brief AugGridDistortion constructor
 
     @param[in] num_steps Parameter which determines the range of values [min,max] to randomly select the number of grid cells on each side.
@@ -947,6 +993,8 @@ class AugElasticTransform : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugElasticTransform)
+
     /** @brief AugElasticTransform constructor
 
     @param[in] alpha Parameter which determines the range of values [min,max] to randomly select the scaling factor that controls the intensity of the deformation.
@@ -1035,6 +1083,8 @@ class AugOpticalDistortion : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugOpticalDistortion)
+
     /** @brief AugOpticalDistortion constructor
 
     @param[in] distort_limit Parameter which determines the range of values [min,max] to randomly select the distortion steps.
@@ -1114,6 +1164,8 @@ class AugSalt : public Augmentation
         Salt(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugSalt)
+
     /** @brief AugSalt constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to white.
@@ -1154,11 +1206,13 @@ class AugPepper : public Augmentation
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         const auto p = params_["p"].value_;
-        const auto seed = params_["seed"].value_; 
+        const auto seed = params_["seed"].value_;
         const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
         Pepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugPepper)
+
     /** @brief AugPepper constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to black.
@@ -1199,11 +1253,13 @@ class AugSaltAndPepper : public Augmentation
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         const auto p = params_["p"].value_;
-        const auto seed = params_["seed"].value_; 
+        const auto seed = params_["seed"].value_;
         const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
         SaltAndPepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugSaltAndPepper)
+
     /** @brief AugSaltAndPepper constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to white or black.
@@ -1255,6 +1311,8 @@ class AugNormalize : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugNormalize)
+
     /** @brief AugNormalize constructor
 
     @param[in] mean Mean to substract from all pixel.
@@ -1302,29 +1360,48 @@ public:
 class AugCenterCrop : public Augmentation
 {
     std::vector<int> size_;
+    bool infer_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        CenterCrop(img, img, size_);
+        std::vector<int> new_size = size_;
+        if (infer_) {
+            // TODO: 3D implementation
+            new_size = std::vector<int>(2, std::min(img.Width(), img.Height()));
+        }
+        CenterCrop(img, img, new_size);
         if (!gt.IsEmpty()) {
-            CenterCrop(gt, const_cast<Image&>(gt), size_);
+            CenterCrop(gt, const_cast<Image&>(gt), new_size);
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugCenterCrop)
+
+    /** @brief AugCenterCrop constructor. Crop size is inferred from the minimum image dimension.
+    \f$
+       crop\_size = min(Image_{cols}, Image_{rows})
+    \f$
+    */
+    AugCenterCrop() : infer_{ true } {}
+
     /** @brief AugCenterCrop constructor
 
     @param[in] size std::vector<int> that specifies the new size of each dimension [w,h].
     */
-    AugCenterCrop(const std::vector<int>& size) : size_{ size } {}
+    AugCenterCrop(const std::vector<int>& size) : size_{ size }, infer_{ false } {}
 
     AugCenterCrop(std::istream& is)
     {
         auto m = param::read(is, "AugCenterCrop");
         param p;
 
-        m.Get("size", param::type::vector, true, p);
-        for (const auto& x : p.vals_) {
-            size_.emplace_back(static_cast<int>(x));
+        if (m.Get("size", param::type::vector, false, p)) {
+            for (const auto& x : p.vals_) {
+                size_.emplace_back(static_cast<int>(x));
+            }
+            infer_ = false;
+        } else {
+            infer_ = true;
         }
     }
 };
@@ -1350,6 +1427,8 @@ class AugToFloat32 : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugToFloat32)
+
     /** @brief AugToFloat32 constructor
 
     @param[in] divisor Value used to divide the img Image.
@@ -1385,6 +1464,8 @@ class AugDivBy255 : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugDivBy255)
+
     /** @brief AugDivBy255 constructor */
     AugDivBy255() {}
     AugDivBy255(std::istream& is) {}
@@ -1403,6 +1484,8 @@ class AugScaleTo : public Augmentation
         ScaleTo(img, img, new_min_, new_max_);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugScaleTo)
+
     /** @brief AugScaleTo constructor
 
      @param[in] new_min double which indicates the new minimum value.
