@@ -47,7 +47,7 @@ int main()
     constexpr int epochs = 5;
     constexpr int batch_size = 200;
     constexpr int num_workers = 4;
-    constexpr int queue_ratio = 5;
+    constexpr double queue_ratio = 5.;
     cout << "Creating a DLDataset" << endl;
 
     // Initialize the DLDataset

@@ -369,7 +369,7 @@ public:
         ColorType ctype = ColorType::RGB,
         ColorType ctype_gt = ColorType::GRAY,
         int num_workers = 1,
-        int queue_ratio_size = 1,
+        double queue_ratio_size = 1.,
         vector<bool> drop_last = {},
         bool verify = false) :
 
