@@ -296,7 +296,13 @@ public:
     void Clear()
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        cpq_ = {};
+
+        // Remove residual samples and delete data
+        while (!IsEmpty()) {
+            auto [sample, image, label] = cpq_.front();
+            delete label; // Deallocate pointer
+            cpq_.pop();
+        }
     }
 };
 

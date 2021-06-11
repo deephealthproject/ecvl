@@ -476,9 +476,6 @@ void DLDataset::Start(int split_index)
         SetSplit(split_index);
     }
 
-    producers_.clear();
-    queue_.Clear();
-
     if (num_workers_ > 0) {
         for (int i = 0; i < num_workers_; ++i) {
             producers_.push_back(std::thread(&DLDataset::ThreadFunc, this, i));
@@ -499,6 +496,9 @@ void DLDataset::Stop()
     for (int i = 0; i < num_workers_; ++i) {
         producers_[i].join();
     }
+
+    producers_.clear();
+    queue_.Clear();
 }
 
 const int DLDataset::GetNumBatches(const any& split)
