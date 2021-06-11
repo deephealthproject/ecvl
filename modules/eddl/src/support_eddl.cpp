@@ -455,11 +455,9 @@ tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatc
         auto lhs = x.get();
         ImageToTensor(img, lhs, i);
 
-        if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: possible for test split)
-            // Copy label into tensor
-            label_->ToTensorPlane(y.get(), i);
-            delete label_;
-            label_ = nullptr;
+        if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: test split with no labels)
+            label_->ToTensorPlane(y.get(), i); // Copy label into tensor at position i
+            delete label_; // Destroy label of popped sample
         }
     }
 

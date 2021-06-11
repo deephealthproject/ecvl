@@ -433,21 +433,16 @@ public:
 
         switch (task_) {
         case Task::classification:
-            label_ = new LabelClass();
-            tensors_shape_ = make_pair<vector<int>, vector<int>>({ batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] }, { batch_size_, vsize(classes_) });
+            tensors_shape_ = make_pair<vector<int>, vector<int>>(
+                { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
+                { batch_size_, vsize(classes_) });
             break;
         case Task::segmentation:
-            label_ = new LabelImage();
-            tensors_shape_ = make_pair<vector<int>, vector<int>>({ batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
+            tensors_shape_ = make_pair<vector<int>, vector<int>>(
+                { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
                 { batch_size_, n_channels_gt_, resize_dims_[0], resize_dims_[1] });
             break;
         }
-    }
-
-    /* Destructor */
-    ~DLDataset()
-    {
-        delete label_;
     }
 
     /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
