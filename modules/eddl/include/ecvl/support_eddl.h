@@ -21,9 +21,11 @@
 
 #include <eddl/apis/eddl.h>
 
+#include <algorithm>
 #include <condition_variable>
 #include <mutex>
 #include <queue>
+#include <thread>
 #include <tuple>
 
 namespace ecvl
@@ -331,13 +333,14 @@ This class extends the DeepHealth Dataset with Deep Learning specific members.
 */
 class DLDataset : public Dataset
 {
+    const unsigned processor_count = std::thread::hardware_concurrency();
 protected:
     int batch_size_;                            /**< @brief Size of each dataset mini batch. */
     std::vector<int> current_batch_;            /**< @brief Number of batches already loaded for each split. */
     ColorType ctype_;                           /**< @brief ecvl::ColorType of the Dataset images. */
     ColorType ctype_gt_;                        /**< @brief ecvl::ColorType of the Dataset ground truth images. */
     DatasetAugmentations augs_;                 /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
-    int num_workers_;                           /**< @brief Number of parallel workers. */
+    unsigned num_workers_;                      /**< @brief Number of parallel workers. */
     ProducersConsumerQueue queue_;              /**< @brief Producers-consumer queue of the dataset. */
     std::pair< std::vector<int>, std::vector<int>> tensors_shape_; /**< @brief Shape of sample and label tensors. */
     std::vector<std::vector<ThreadCounters>> splits_tc_; /**< @brief Each dataset split has its own vector of threads, each of which has its counters: <counter,min,max>. */
@@ -372,17 +375,17 @@ public:
     DLDataset(const filesystem::path& filename,
         const int batch_size,
         const DatasetAugmentations& augs,
-        ColorType ctype = ColorType::RGB,
-        ColorType ctype_gt = ColorType::GRAY,
-        int num_workers = 1,
-        double queue_ratio_size = 1.,
-        vector<bool> drop_last = {},
+        const ColorType ctype = ColorType::RGB,
+        const ColorType ctype_gt = ColorType::GRAY,
+        const unsigned num_workers = 1,
+        const double queue_ratio_size = 1.,
+        const vector<bool>& drop_last = {},
         bool verify = false) :
 
         Dataset{ filename, verify },
         batch_size_{ batch_size },
         augs_(augs),
-        num_workers_{ num_workers },
+        num_workers_{ std::min(num_workers, processor_count) },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt },
         queue_{ static_cast<unsigned>(batch_size_ * queue_ratio_size * num_workers_) }

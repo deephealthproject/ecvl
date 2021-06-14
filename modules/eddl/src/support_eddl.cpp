@@ -390,7 +390,7 @@ void DLDataset::InitTC(int split_index)
     // Set which are the indices of the samples managed by each thread
     // The i-th thread manage samples from start to end
     std::vector<ThreadCounters> split_tc;
-    for (auto i = 0; i < num_workers_; ++i) {
+    for (auto i = 0u; i < num_workers_; ++i) {
         auto start = samples_per_queue * i;
         auto end = start + samples_per_queue;
         if (i >= num_workers_ - 1) {
@@ -478,7 +478,7 @@ void DLDataset::Start(int split_index)
     }
 
     if (num_workers_ > 0) {
-        for (int i = 0; i < num_workers_; ++i) {
+        for (auto i = 0u; i < num_workers_; ++i) {
             producers_.push_back(std::thread(&DLDataset::ThreadFunc, this, i));
         }
     }
@@ -494,7 +494,7 @@ void DLDataset::Stop()
     }
 
     active_ = false;
-    for (int i = 0; i < num_workers_; ++i) {
+    for (auto i = 0u; i < num_workers_; ++i) {
         producers_[i].join();
     }
 
