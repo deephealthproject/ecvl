@@ -13,6 +13,6 @@ var searchData=
   ['normalize',['Normalize',['../namespaceecvl.html#aabacccc60bc05ce9dd9ddb350f055be9',1,'ecvl::Normalize(const Image &amp;src, Image &amp;dst, const double &amp;mean, const double &amp;std)'],['../namespaceecvl.html#a47b69df28caa89f7482df89d38c99698',1,'ecvl::Normalize(const Image &amp;src, Image &amp;dst, const std::vector&lt; double &gt; &amp;mean, const std::vector&lt; double &gt; &amp;std)']]],
   ['num_5fbatches_5f',['num_batches_',['../classecvl_1_1_split.html#a88f9f36ad8ff9df25ae79e1fa0e57779',1,'ecvl::Split']]],
   ['num_5fsamples_5f',['num_samples_',['../classecvl_1_1_generate_dataset.html#ae0b9aad46da54a92124c577a0fe7877d',1,'ecvl::GenerateDataset']]],
-  ['num_5fworkers_5f',['num_workers_',['../classecvl_1_1_d_l_dataset.html#a87c668b53548b8fe0dee04f94ffb3c02',1,'ecvl::DLDataset']]],
+  ['num_5fworkers_5f',['num_workers_',['../classecvl_1_1_d_l_dataset.html#a5e062c9c1438eb3d06abd4a2dcffe683',1,'ecvl::DLDataset']]],
   ['number',['number',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4ab1bc248a7ff2b2e95569f56de68615df',1,'ecvl::param']]]
 ];

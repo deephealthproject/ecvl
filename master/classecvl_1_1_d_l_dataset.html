@@ -120,8 +120,8 @@ Inheritance diagram for ecvl::DLDataset:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0603aa06e966074ac2026454c578ef72"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a0603aa06e966074ac2026454c578ef72">DLDataset</a> (const filesystem::path &amp;filename, const int batch_size, const <a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a> &amp;augs, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> ctype=<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a889574aebacda6bfd3e534e2b49b8028">ColorType::RGB</a>, <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> ctype_gt=<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>, int num_workers=1, double queue_ratio_size=1., vector&lt; bool &gt; drop_last={}, bool verify=false)</td></tr>
-<tr class="separator:a0603aa06e966074ac2026454c578ef72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94b8069eb6451fda031bd390fe2e6296"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a94b8069eb6451fda031bd390fe2e6296">DLDataset</a> (const filesystem::path &amp;filename, const int batch_size, const <a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a> &amp;augs, const <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> ctype=<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a889574aebacda6bfd3e534e2b49b8028">ColorType::RGB</a>, const <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> ctype_gt=<a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a>, const unsigned num_workers=1, const double queue_ratio_size=1., const vector&lt; bool &gt; &amp;drop_last={}, bool verify=false)</td></tr>
+<tr class="separator:a94b8069eb6451fda031bd390fe2e6296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4774e71ad80bea83fc0271d6fcbac7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#aa4774e71ad80bea83fc0271d6fcbac7e">ResetBatch</a> (const <a class="el" href="namespaceecvl.html#af7652c8e860e8a586cab6a6246a7a93c">ecvl::any</a> &amp;split=-1, bool shuffle=false)</td></tr>
 <tr class="memdesc:aa4774e71ad80bea83fc0271d6fcbac7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the batch counter and optionally shuffle samples indices of the specified split.  <a href="#aa4774e71ad80bea83fc0271d6fcbac7e">More...</a><br /></td></tr>
 <tr class="separator:aa4774e71ad80bea83fc0271d6fcbac7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -252,9 +252,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a0419df94e1f53c0376e00e7479ed8eff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a0419df94e1f53c0376e00e7479ed8eff">augs_</a></td></tr>
 <tr class="memdesc:a0419df94e1f53c0376e00e7479ed8eff"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split.  <a href="#a0419df94e1f53c0376e00e7479ed8eff">More...</a><br /></td></tr>
 <tr class="separator:a0419df94e1f53c0376e00e7479ed8eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87c668b53548b8fe0dee04f94ffb3c02"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a87c668b53548b8fe0dee04f94ffb3c02">num_workers_</a></td></tr>
-<tr class="memdesc:a87c668b53548b8fe0dee04f94ffb3c02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of parallel workers.  <a href="#a87c668b53548b8fe0dee04f94ffb3c02">More...</a><br /></td></tr>
-<tr class="separator:a87c668b53548b8fe0dee04f94ffb3c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e062c9c1438eb3d06abd4a2dcffe683"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a5e062c9c1438eb3d06abd4a2dcffe683">num_workers_</a></td></tr>
+<tr class="memdesc:a5e062c9c1438eb3d06abd4a2dcffe683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of parallel workers.  <a href="#a5e062c9c1438eb3d06abd4a2dcffe683">More...</a><br /></td></tr>
+<tr class="separator:a5e062c9c1438eb3d06abd4a2dcffe683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_producers_consumer_queue.html">ProducersConsumerQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a642f5cf66d966fa954bdc8aba25e6cb7">queue_</a></td></tr>
 <tr class="memdesc:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Producers-consumer queue of the dataset.  <a href="#a642f5cf66d966fa954bdc8aba25e6cb7">More...</a><br /></td></tr>
 <tr class="separator:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,10 +296,10 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#_a20">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00332">332</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00334">334</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0603aa06e966074ac2026454c578ef72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0603aa06e966074ac2026454c578ef72">&#9670;&nbsp;</a></span>DLDataset()</h2>
+<a id="a94b8069eb6451fda031bd390fe2e6296"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94b8069eb6451fda031bd390fe2e6296">&#9670;&nbsp;</a></span>DLDataset()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -328,31 +328,31 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td>
           <td class="paramname"><em>ctype</em> = <code><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a889574aebacda6bfd3e534e2b49b8028">ColorType::RGB</a></code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td>
           <td class="paramname"><em>ctype_gt</em> = <code><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3a48bf014c704c9eaae100a98006a37bf7">ColorType::GRAY</a></code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">const unsigned&#160;</td>
           <td class="paramname"><em>num_workers</em> = <code>1</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double&#160;</td>
+          <td class="paramtype">const double&#160;</td>
           <td class="paramname"><em>queue_ratio_size</em> = <code>1.</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vector&lt; bool &gt;&#160;</td>
+          <td class="paramtype">const vector&lt; bool &gt; &amp;&#160;</td>
           <td class="paramname"><em>drop_last</em> = <code>{}</code>, </td>
         </tr>
         <tr>
@@ -388,7 +388,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00372">372</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00375">375</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -466,7 +466,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the current size of the producers-consumer queue of the dataset. </p>
 <dl class="section return"><dt>Returns</dt><dd>Size of the producers-consumer queue of the dataset. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00534">534</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00537">537</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -761,7 +761,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00490">490</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00493">493</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -860,7 +860,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Whether the threads have already been launched or not. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00345">345</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00348">348</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -886,7 +886,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Mutex for active_ variable. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00346">346</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00349">349</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -912,7 +912,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00339">339</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00342">342</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -938,7 +938,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Size of each dataset mini batch. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00335">335</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00338">338</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -964,7 +964,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00337">337</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00340">340</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -990,7 +990,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00338">338</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00341">341</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1016,7 +1016,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of batches already loaded for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00336">336</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00339">339</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1042,7 +1042,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p><a class="el" href="classecvl_1_1_label.html" title="Label class representing the Sample labels, which may have different representations depending on the...">Label</a> pointer which will be specialized based on the dataset task. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00348">348</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00351">351</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1062,7 +1062,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a22">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00357">357</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00360">360</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1080,12 +1080,12 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of channels of the ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00358">358</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00361">361</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
-<a id="a87c668b53548b8fe0dee04f94ffb3c02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87c668b53548b8fe0dee04f94ffb3c02">&#9670;&nbsp;</a></span>num_workers_</h2>
+<a id="a5e062c9c1438eb3d06abd4a2dcffe683"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e062c9c1438eb3d06abd4a2dcffe683">&#9670;&nbsp;</a></span>num_workers_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1094,7 +1094,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int ecvl::DLDataset::num_workers_</td>
+          <td class="memname">unsigned ecvl::DLDataset::num_workers_</td>
         </tr>
       </table>
   </td>
@@ -1106,7 +1106,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of parallel workers. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00340">340</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00343">343</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1132,7 +1132,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Vector of threads representing the samples producers. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00344">344</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00347">347</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1158,7 +1158,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Producers-consumer queue of the dataset. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00341">341</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00344">344</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1184,7 +1184,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Engine used for random number generation. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00347">347</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00350">350</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1204,7 +1204,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a23">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00359">359</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00362">362</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1230,7 +1230,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Each dataset split has its own vector of threads, each of which has its counters: &lt;counter,min,max&gt;. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00343">343</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00346">346</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1256,7 +1256,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Shape of sample and label tensors. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00342">342</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00345">345</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
