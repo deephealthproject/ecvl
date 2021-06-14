@@ -384,7 +384,8 @@ void DLDataset::InitTC(int split_index)
     auto& split_indexes = split_[split_index].samples_indices_;
     auto& drop_last = split_[split_index].drop_last_;
     auto samples_per_queue = vsize(split_indexes) / num_workers_;
-    auto exceeding_samples = vsize(split_indexes) % num_workers_ * !drop_last;
+    // if drop_last, subtract the number of samples that will be dropped out -> do not produce samples which are dropped
+    auto exceeding_samples = vsize(split_indexes) % num_workers_ - (vsize(split_indexes) % batch_size_) * drop_last;
 
     // Set which are the indices of the samples managed by each thread
     // The i-th thread manage samples from start to end

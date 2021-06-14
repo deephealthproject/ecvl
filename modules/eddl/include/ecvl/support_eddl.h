@@ -420,9 +420,14 @@ public:
         }
 
         // Set drop_last parameter for each split
-        if (!drop_last.empty() && vsize(drop_last) == vsize(split_)) {
-            for (int i = 0; i < vsize(drop_last); ++i) {
-                split_[i].drop_last_ = drop_last[i];
+        if (!drop_last.empty()) {
+            if (vsize(drop_last) == vsize(split_)) {
+                for (int i = 0; i < vsize(drop_last); ++i) {
+                    split_[i].drop_last_ = drop_last[i];
+                }
+            }
+            else {
+                cout << ECVL_WARNING_MSG << "drop_last is not empty but the provided size is different from the size of the splits. The default value 'false' is set for all the splits" << endl;
             }
         }
 
