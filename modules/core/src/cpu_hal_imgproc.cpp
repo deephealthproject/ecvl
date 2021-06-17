@@ -112,7 +112,6 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     int pivot = (src_height + 1) / 2;
     bool setup = false;
     int r_end;
-#pragma omp parallel for firstprivate(setup, r_end)
     for (int r = 0; r < pivot; ++r) {
         if (!setup) {
             r_end = src_height - 1 - r;
@@ -179,7 +178,6 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 
     int pivot = (src_width + 1) / 2;
 
-#pragma omp parallel for
     for (int r = 0; r < src_height; ++r) {
         // Get the address of next row
         int pos = r * src_stride_y;
@@ -407,13 +405,11 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
 
     switch (thresh_type) {
     case ecvl::ThresholdingType::BINARY:
-    #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             tmp_data[i] = src_data[i] > thresh_t ? maxval_t : minval_t;
         }
         break;
     case ecvl::ThresholdingType::BINARY_INV:
-    #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             tmp_data[i] = src_data[i] <= thresh_t ? maxval_t : minval_t;
         }
@@ -549,7 +545,6 @@ void MultiThresholdImpl(const Image& src, Image& dst, const std::vector<int>& th
         auto elemsize = src.elemsize_;
         auto limit = tmp.datasize_ / elemsize;
 
-    #pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             auto p = src_data[i];
             int k = 0, e = vsize(thresholds);
@@ -1398,7 +1393,6 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
         // 4x time faster than generic version below
         // Fill each tmp color plane by row
         for (int i = 0; i < src_0.Channels(); ++i) {
-        #pragma omp parallel for
             for (int r = 0; r < src_0.dims_[1]; ++r) {
                 for (int c = 0; c < n_images; ++c) {
                     memcpy(tmp.data_ + cumul_strides[c] + r * tmp.strides_[1] + i * tmp.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
@@ -1887,7 +1881,6 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     #undef ECVL_TUPLE
     }
     else {
-    #pragma omp parallel for
         for (int r = 0; r < src_height; ++r) {
             int row_pos = r * tmp_stride_y;
             for (int c = 0; c < src_width; ++c) {
