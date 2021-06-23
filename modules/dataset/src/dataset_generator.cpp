@@ -146,8 +146,7 @@ void GenerateDataset::LoadImagesAndSplits()
         // load indexes of images for each split
         d_.split_.resize(splits_.size());
         for (int i = 0; i < splits_.size(); ++i) {
-            d_.split_[i].split_name_ = splits_[i];
-            d_.split_[i].samples_indices_.resize(num_samples_[i]);
+            d_.split_[i] = Split(splits_[i], vector<int>(num_samples_[i]));
             iota(d_.split_[i].samples_indices_.begin(), d_.split_[i].samples_indices_.end(), img_index);
             img_index += num_samples_[i];
         }

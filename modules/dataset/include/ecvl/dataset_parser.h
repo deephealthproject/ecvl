@@ -92,13 +92,16 @@ public:
     int last_batch_;                        /**< @brief Dimension of the last batch of this split. */
     bool no_label_ = false;                 /**< @brief Whether the split has samples with labels or not. */
 
-    Split() {}
+    Split() = default;
 
     /**
     @param[in] split_name Name of the split.
     @param[in] samples_indices Vector containing samples indices of the split.
+    @param[in] drop_last Whether to drop elements that don't fit batch size or not.
+    @param[in] no_label Whether the split has samples with labels or not.
     */
-    Split(const std::string& split_name, const std::vector<int>& samples_indices) : split_name_{ split_name }, samples_indices_{ samples_indices }
+    Split(const std::string& split_name, const std::vector<int>& samples_indices, const bool drop_last = false, const bool no_label = false)
+        : split_name_{ split_name }, samples_indices_{ samples_indices }, drop_last_{ drop_last }, no_label_{ no_label }
     {
         if (split_name_ == "training") split_type_ = SplitType::training;
         else if (split_name_ == "validation") split_type_ = SplitType::validation;

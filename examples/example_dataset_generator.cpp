@@ -45,7 +45,8 @@ int main()
     vector<int> mask;
     vector<int> black;
 
-    auto& training = d_segmentation.GetSplit("training");
+    // auto& training = d_segmentation.GetSplit("training"); // Or
+    auto& training = d_segmentation.GetSplit(SplitType::training);
     for (auto& sample_index : training) {
         if (d_segmentation.samples_[sample_index].label_path_.value().filename().compare("black.png") == 0) {
             black.emplace_back(sample_index);
