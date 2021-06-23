@@ -44,7 +44,7 @@ var searchData=
   ['size_5f',['size_',['../classecvl_1_1_sample.html#a4af5a7c2c257ae3525df865e371804c6',1,'ecvl::Sample']]],
   ['slicetimingcorrection',['SliceTimingCorrection',['../namespaceecvl.html#aff2892ab98d988a39a2a7c984893d052',1,'ecvl']]],
   ['spacings_5f',['spacings_',['../classecvl_1_1_image.html#ac08c58802200db31fb2167c5ade4367d',1,'ecvl::Image']]],
-  ['split',['Split',['../classecvl_1_1_split.html',1,'ecvl::Split'],['../classecvl_1_1_split.html#ade538d0baf6abf7600c89ea483aa4def',1,'ecvl::Split::Split()'],['../classecvl_1_1_split.html#a2d65891ccfb558324f0467ba52494ed5',1,'ecvl::Split::Split(const std::string &amp;split_name, const std::vector&lt; int &gt; &amp;samples_indices)']]],
+  ['split',['Split',['../classecvl_1_1_split.html',1,'ecvl::Split'],['../classecvl_1_1_split.html#a675e3311fe74f0781207a6c8df2ea43b',1,'ecvl::Split::Split()=default'],['../classecvl_1_1_split.html#ae4a5f39f4d46369c619aef3b80cd5cc3',1,'ecvl::Split::Split(const std::string &amp;split_name, const std::vector&lt; int &gt; &amp;samples_indices, const bool drop_last=false, const bool no_label=false)']]],
   ['split_5f',['split_',['../classecvl_1_1_dataset.html#a6e6d8af673312d237dfe0b2b3b671368',1,'ecvl::Dataset']]],
   ['split_5fname_5f',['split_name_',['../classecvl_1_1_split.html#a4360ec96bcba3ef66ab3e00f1e37920a',1,'ecvl::Split']]],
   ['split_5ftype_5f',['split_type_',['../classecvl_1_1_split.html#ae00f53baa1bdf4f63804eef22d70ab4a',1,'ecvl::Split']]],

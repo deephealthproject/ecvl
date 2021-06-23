@@ -107,10 +107,10 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ade538d0baf6abf7600c89ea483aa4def"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html#ade538d0baf6abf7600c89ea483aa4def">Split</a> ()</td></tr>
-<tr class="separator:ade538d0baf6abf7600c89ea483aa4def"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d65891ccfb558324f0467ba52494ed5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html#a2d65891ccfb558324f0467ba52494ed5">Split</a> (const std::string &amp;split_name, const std::vector&lt; int &gt; &amp;samples_indices)</td></tr>
-<tr class="separator:a2d65891ccfb558324f0467ba52494ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675e3311fe74f0781207a6c8df2ea43b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html#a675e3311fe74f0781207a6c8df2ea43b">Split</a> ()=default</td></tr>
+<tr class="separator:a675e3311fe74f0781207a6c8df2ea43b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4a5f39f4d46369c619aef3b80cd5cc3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html#ae4a5f39f4d46369c619aef3b80cd5cc3">Split</a> (const std::string &amp;split_name, const std::vector&lt; int &gt; &amp;samples_indices, const bool drop_last=false, const bool no_label=false)</td></tr>
+<tr class="separator:ae4a5f39f4d46369c619aef3b80cd5cc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4810f8de0f523b48c94bb8b21d9f8ee3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html#a4810f8de0f523b48c94bb8b21d9f8ee3">SetNumBatches</a> (int batch_size)</td></tr>
 <tr class="separator:a4810f8de0f523b48c94bb8b21d9f8ee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e0819ed531e33b53520f769a3cfe875"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_split.html#a1e0819ed531e33b53520f769a3cfe875">SetLastBatch</a> (int batch_size)</td></tr>
@@ -146,8 +146,8 @@ Public Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00084">84</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ade538d0baf6abf7600c89ea483aa4def"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade538d0baf6abf7600c89ea483aa4def">&#9670;&nbsp;</a></span>Split() <span class="overload">[1/2]</span></h2>
+<a id="a675e3311fe74f0781207a6c8df2ea43b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a675e3311fe74f0781207a6c8df2ea43b">&#9670;&nbsp;</a></span>Split() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -164,17 +164,15 @@ Public Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00095">95</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
-
 </div>
 </div>
-<a id="a2d65891ccfb558324f0467ba52494ed5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d65891ccfb558324f0467ba52494ed5">&#9670;&nbsp;</a></span>Split() <span class="overload">[2/2]</span></h2>
+<a id="ae4a5f39f4d46369c619aef3b80cd5cc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4a5f39f4d46369c619aef3b80cd5cc3">&#9670;&nbsp;</a></span>Split() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -192,7 +190,19 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
-          <td class="paramname"><em>samples_indices</em>&#160;</td>
+          <td class="paramname"><em>samples_indices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>drop_last</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>no_label</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -210,11 +220,13 @@ Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">split_name</td><td>Name of the split. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">samples_indices</td><td>Vector containing samples indices of the split. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">drop_last</td><td>Whether to drop elements that don't fit batch size or not. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">no_label</td><td>Whether the split has samples with labels or not. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00101">101</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00103">103</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -243,7 +255,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00113">113</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00116">116</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>
@@ -271,7 +283,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00108">108</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dataset__parser_8h_source.html#l00111">111</a> of file <a class="el" href="dataset__parser_8h_source.html">dataset_parser.h</a>.</p>
 
 </div>
 </div>

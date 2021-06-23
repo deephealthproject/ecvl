@@ -31,7 +31,7 @@ var searchData=
   ['signedtable1d',['SignedTable1D',['../structecvl_1_1_signed_table1_d.html#a53bce940800e0c856b9516aadc90bb2f',1,'ecvl::SignedTable1D']]],
   ['signedtable2d',['SignedTable2D',['../structecvl_1_1_signed_table2_d.html#a8e390f2e104c598c6b1d7969fcb61cf7',1,'ecvl::SignedTable2D']]],
   ['slicetimingcorrection',['SliceTimingCorrection',['../namespaceecvl.html#aff2892ab98d988a39a2a7c984893d052',1,'ecvl']]],
-  ['split',['Split',['../classecvl_1_1_split.html#ade538d0baf6abf7600c89ea483aa4def',1,'ecvl::Split::Split()'],['../classecvl_1_1_split.html#a2d65891ccfb558324f0467ba52494ed5',1,'ecvl::Split::Split(const std::string &amp;split_name, const std::vector&lt; int &gt; &amp;samples_indices)']]],
+  ['split',['Split',['../classecvl_1_1_split.html#a675e3311fe74f0781207a6c8df2ea43b',1,'ecvl::Split::Split()=default'],['../classecvl_1_1_split.html#ae4a5f39f4d46369c619aef3b80cd5cc3',1,'ecvl::Split::Split(const std::string &amp;split_name, const std::vector&lt; int &gt; &amp;samples_indices, const bool drop_last=false, const bool no_label=false)']]],
   ['sqdist',['SqDist',['../namespaceecvl.html#ad622d4a358d3d36773cf63ba96882ef7',1,'ecvl']]],
   ['stack',['Stack',['../namespaceecvl.html#ac4f0336afb75df754337fb55a106b12a',1,'ecvl']]],
   ['start',['Start',['../classecvl_1_1_d_l_dataset.html#ad5c7dc9bd7627621d515ddc90ca16a40',1,'ecvl::DLDataset']]],
