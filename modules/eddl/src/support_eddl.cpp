@@ -477,6 +477,11 @@ void DLDataset::Start(int split_index)
         SetSplit(split_index);
     }
 
+    // Check if current split has samples "to consume" -> reset_batch already called
+    if (current_batch_.at(current_split_) > 0) {
+        cerr << ECVL_WARNING_MSG << "`current_batch_` of the current split has not been reset. Did you miss a `ResetBatch()`?" << endl;
+    }
+
     if (num_workers_ > 0) {
         for (auto i = 0u; i < num_workers_; ++i) {
             producers_.push_back(std::thread(&DLDataset::ThreadFunc, this, i));
