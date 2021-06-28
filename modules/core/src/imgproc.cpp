@@ -702,8 +702,8 @@ void Normalize(const Image& src, Image& dst, const vector<double>& mean, const v
 {
     AlwaysCheck(src, dst);
 
-    if (src.dims_.size() != mean.size() || src.dims_.size() != std.size()) {
-        ECVL_ERROR_WRONG_PARAMS("mean and std have different sizes from src.dims_")
+    if (src.channels_.size() != mean.size() || src.channels_.size() != std.size()) {
+        ECVL_ERROR_WRONG_PARAMS("mean and std have different sizes from src.channels_")
     }
 
     return src.hal_->Normalize(src, dst, mean, std);
