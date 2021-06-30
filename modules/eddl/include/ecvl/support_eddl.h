@@ -204,7 +204,7 @@ class ProducersConsumerQueue
 {
     std::condition_variable cond_notempty_;     /**< @brief Condition variable that wait if the queue is empty. */
     std::condition_variable cond_notfull_;      /**< @brief Condition variable that wait if the queue is full. */
-    std::mutex mutex_;                          /**< @brief Mutex to grant exclusive access to the queue. */
+    mutable std::mutex mutex_;                  /**< @brief Mutex to grant exclusive access to the queue. */
     std::queue<std::tuple<Sample, Image, Label*>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
     unsigned max_size_;                         /**< @brief Maximum size of the queue. */
     unsigned threshold_;                        /**< @brief Threshold from which restart to produce samples. If not specified, it's set to the half of maximum size. */
@@ -232,7 +232,7 @@ public:
     void Push(const Sample& sample, const Image& image, Label* const label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        cond_notfull_.wait(lock, [this]() { return !IsFull(); });
+        cond_notfull_.wait(lock, [this]() { return cpq_.size() < max_size_; });
         cpq_.push(make_tuple(sample, image, label));
         cond_notempty_.notify_one();
     }
@@ -249,11 +249,11 @@ public:
     void Pop(Sample& sample, Image& image, Label*& label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        cond_notempty_.wait(lock, [this]() { return !IsEmpty(); });
+        cond_notempty_.wait(lock, [this]() { return !cpq_.empty(); });
         std::tie(sample, image, label) = cpq_.front();
         cpq_.pop();
-        if (Length() < threshold_) {
-            cond_notfull_.notify_one();
+        if (cpq_.size() < threshold_) {
+            cond_notfull_.notify_all();
         }
     }
 
@@ -263,6 +263,7 @@ public:
     */
     bool IsFull() const
     {
+        std::unique_lock<std::mutex> lock(mutex_);
         return cpq_.size() >= max_size_;
     }
 
@@ -272,6 +273,7 @@ public:
     */
     bool IsEmpty() const
     {
+        std::unique_lock<std::mutex> lock(mutex_);
         return cpq_.empty();
     }
 
@@ -281,6 +283,7 @@ public:
     */
     size_t Length() const
     {
+        std::unique_lock<std::mutex> lock(mutex_);
         return cpq_.size();
     }
 
@@ -300,7 +303,7 @@ public:
         std::unique_lock<std::mutex> lock(mutex_);
 
         // Remove residual samples and delete data
-        while (!IsEmpty()) {
+        while (!cpq_.empty()) {
             auto [sample, image, label] = cpq_.front();
             delete label; // Deallocate pointer
             cpq_.pop();
@@ -388,7 +391,7 @@ public:
         num_workers_{ std::min(num_workers, processor_count) },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt },
-        queue_{ static_cast<unsigned>(batch_size_ * queue_ratio_size * num_workers_) }
+        queue_{ static_cast<unsigned>(batch_size * queue_ratio_size * std::min(num_workers, processor_count)) }
     {
         // resize current_batch_ to the number of splits and initialize it with 0
         current_batch_.resize(split_.size(), 0);
