@@ -750,6 +750,7 @@ TEST_F(Imgproc, NormalizeChannels##type) \
     EXPECT_TRUE(out_v({ 1,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,2 }) - mean[2]) / std[2])); \
     EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean[2]) / std[2])); \
     EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean[2]) / std[2])); \
+    EXPECT_THROW(Normalize(g2_##type, out, mean, std), std::runtime_error); \
 } \
 \
 TEST_F(Imgproc, CenterCrop##type) \
