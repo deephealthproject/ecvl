@@ -82,7 +82,7 @@ int main()
             cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
             cout << "|fifo| " << d.GetQueueSize() << " - ";
 
-            // tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+            // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
             // samples_and_labels = d.GetBatch();
             // or...
             auto [samples, x, y] = d.GetBatch();
@@ -110,7 +110,7 @@ int main()
             cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
             cout << "|fifo| " << d.GetQueueSize() << " - ";
 
-            // tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> samples_and_labels;
+            // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
             // samples_and_labels = d.GetBatch();
             // or...
             auto [_, x, y] = d.GetBatch();
