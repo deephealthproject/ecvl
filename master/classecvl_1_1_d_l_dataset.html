@@ -143,9 +143,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a08d5996b53a6561db6a517a843acd211"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a08d5996b53a6561db6a517a843acd211">ThreadFunc</a> (int thread_index)</td></tr>
 <tr class="memdesc:a08d5996b53a6561db6a517a843acd211"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function called when the thread are spawned.  <a href="#a08d5996b53a6561db6a517a843acd211">More...</a><br /></td></tr>
 <tr class="separator:a08d5996b53a6561db6a517a843acd211"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5988dffdd2cb67a32402459ddf131815"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; std::vector&lt; <a class="el" href="classecvl_1_1_sample.html">Sample</a> &gt;, unique_ptr&lt; Tensor &gt;, unique_ptr&lt; Tensor &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a5988dffdd2cb67a32402459ddf131815">GetBatch</a> ()</td></tr>
-<tr class="memdesc:a5988dffdd2cb67a32402459ddf131815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop batch_size samples from the queue and copy them into EDDL tensors.  <a href="#a5988dffdd2cb67a32402459ddf131815">More...</a><br /></td></tr>
-<tr class="separator:a5988dffdd2cb67a32402459ddf131815"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23c48ce2bd90c2ebb756e31a1d6b47a4"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; std::vector&lt; <a class="el" href="classecvl_1_1_sample.html">Sample</a> &gt;, shared_ptr&lt; Tensor &gt;, shared_ptr&lt; Tensor &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a23c48ce2bd90c2ebb756e31a1d6b47a4">GetBatch</a> ()</td></tr>
+<tr class="memdesc:a23c48ce2bd90c2ebb756e31a1d6b47a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop batch_size samples from the queue and copy them into EDDL tensors.  <a href="#a23c48ce2bd90c2ebb756e31a1d6b47a4">More...</a><br /></td></tr>
+<tr class="separator:a23c48ce2bd90c2ebb756e31a1d6b47a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5c7dc9bd7627621d515ddc90ca16a40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#ad5c7dc9bd7627621d515ddc90ca16a40">Start</a> (int split_index=-1)</td></tr>
 <tr class="memdesc:ad5c7dc9bd7627621d515ddc90ca16a40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn num_workers thread.  <a href="#ad5c7dc9bd7627621d515ddc90ca16a40">More...</a><br /></td></tr>
 <tr class="separator:ad5c7dc9bd7627621d515ddc90ca16a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -393,14 +393,14 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5988dffdd2cb67a32402459ddf131815"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5988dffdd2cb67a32402459ddf131815">&#9670;&nbsp;</a></span>GetBatch()</h2>
+<a id="a23c48ce2bd90c2ebb756e31a1d6b47a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23c48ce2bd90c2ebb756e31a1d6b47a4">&#9670;&nbsp;</a></span>GetBatch()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt;std::vector&lt;<a class="el" href="classecvl_1_1_sample.html">Sample</a>&gt;, unique_ptr&lt;Tensor&gt;, unique_ptr&lt;Tensor&gt; &gt; ecvl::DLDataset::GetBatch </td>
+          <td class="memname">std::tuple&lt;std::vector&lt;<a class="el" href="classecvl_1_1_sample.html">Sample</a>&gt;, shared_ptr&lt;Tensor&gt;, shared_ptr&lt;Tensor&gt; &gt; ecvl::DLDataset::GetBatch </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
