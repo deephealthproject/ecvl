@@ -522,7 +522,7 @@ public:
 
     @return tuples of Samples and EDDL Tensors, the first with the image and the second with the label.
     */
-    std::tuple<std::vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> GetBatch();
+    std::tuple<std::vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> GetBatch();
 
     /** @brief Spawn num_workers thread.
 

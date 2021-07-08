@@ -422,7 +422,7 @@ void DLDataset::ThreadFunc(int thread_index)
     }
 }
 
-tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatch()
+tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> DLDataset::GetBatch()
 {
     if (!active_) {
         cout << ECVL_WARNING_MSG << "You're trying to get a batch without starting the threads - you'll wait forever!" << endl;
@@ -443,8 +443,8 @@ tuple<vector<Sample>, unique_ptr<Tensor>, unique_ptr<Tensor>> DLDataset::GetBatc
     // If current split has no labels (e.g., test split could have no labels) set y as empty tensor
     tensors_shape.second = (s.no_label_) ? vector<int>{} : tensors_shape.second;
 
-    unique_ptr<Tensor> x = make_unique<Tensor>(tensors_shape.first);
-    unique_ptr<Tensor> y = make_unique<Tensor>(tensors_shape.second);
+    shared_ptr<Tensor> x = make_shared<Tensor>(tensors_shape.first);
+    shared_ptr<Tensor> y = make_shared<Tensor>(tensors_shape.second);
 
     const int batch_len = x->shape[0];
     Image img;
