@@ -44,94 +44,265 @@ int main()
 
     DatasetAugmentations dataset_augmentations{ { training_augs, test_augs } };
 
-    constexpr int epochs = 5;
-    constexpr int batch_size = 200;
-    constexpr int num_workers = 4;
-    constexpr double queue_ratio = 5.;
-    cout << "Creating a DLDataset" << endl;
-
-    // Initialize the DLDataset
-    DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { true, false });
-    //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
+    constexpr int epochs = 1;
+    constexpr int batch_size = 500;
+    unsigned num_workers = 1;
+    constexpr double queue_ratio = 20.;
 
     ofstream of;
     cv::TickMeter tm;
     cv::TickMeter tm_epoch;
-    auto num_batches_training = d.GetNumBatches(SplitType::training);
-    auto num_batches_test = d.GetNumBatches(SplitType::test);
+    {
+        cout << "Running tests with " << num_workers << num_workers;
+        cout << "Creating a DLDataset" << endl;
+        DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { false, false });
+        //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
+        auto num_batches_training = d.GetNumBatches(SplitType::training);
+        auto num_batches_test = d.GetNumBatches(SplitType::test);
 
-    for (int i = 0; i < epochs; ++i) {
-        tm_epoch.reset();
-        tm_epoch.start();
-        /* Resize to batch_size if we have done a resize previously
-        if (d.split_[d.current_split_].last_batch_ != batch_size){
-            net->resize(batch_size);
-        }
-        */
-        cout << "Starting training" << endl;
-        d.SetSplit(SplitType::training);
-
-        // Reset current split with shuffling
-        d.ResetBatch(d.current_split_, true);
-
-        // Spawn num_workers threads
-        d.Start();
-        for (int j = 0; j < num_batches_training; ++j) {
-            tm.reset();
-            tm.start();
-            cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
-            cout << "|fifo| " << d.GetQueueSize() << " - ";
-
-            // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
-            // samples_and_labels = d.GetBatch();
-            // or...
-            auto [samples, x, y] = d.GetBatch();
-
-            // Sleep in order to simulate EDDL train_batch
-            cout << "sleeping...";
-            this_thread::sleep_for(chrono::milliseconds(500));
-            // eddl::train_batch(net, { x.get() }, { y.get() });
-
-            tm.stop();
-            cout << "Elapsed time: " << tm.getTimeMilli() << endl;
-        }
-        d.Stop();
-
-        cout << "Starting test" << endl;
-        d.SetSplit(SplitType::test);
-
-        // Reset current split without shuffling
-        d.ResetBatch(d.current_split_, false);
-
-        d.Start();
-        for (int j = 0; j < num_batches_test; ++j) {
-            tm.reset();
-            tm.start();
-            cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
-            cout << "|fifo| " << d.GetQueueSize() << " - ";
-
-            // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
-            // samples_and_labels = d.GetBatch();
-            // or...
-            auto [_, x, y] = d.GetBatch();
-
-            /* Resize net for last batch
-            if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {
-                // last mini-batch could have different size
-                net->resize(x_batch);
+        for (int i = 0; i < epochs; ++i) {
+            tm_epoch.reset();
+            tm_epoch.start();
+            /* Resize to batch_size if we have done a resize previously
+            if (d.split_[d.current_split_].last_batch_ != batch_size){
+                net->resize(batch_size);
             }
             */
-            // Sleep in order to simulate EDDL evaluate_batch
-            cout << "sleeping... - ";
-            this_thread::sleep_for(chrono::milliseconds(500));
-            // eddl::eval_batch(net, { x.get() }, { y.get() });
+            cout << "Starting training" << endl;
+            d.SetSplit(SplitType::training);
 
-            tm.stop();
-            cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            // Reset current split with shuffling
+            d.ResetBatch(d.current_split_, true);
+
+            // Spawn num_workers threads
+            d.Start();
+            for (int j = 0; j < num_batches_training; ++j) {
+                tm.reset();
+                tm.start();
+                cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
+                cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+                // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
+                // samples_and_labels = d.GetBatch();
+                // or...
+                auto [samples, x, y] = d.GetBatch();
+
+                // Sleep in order to simulate EDDL train_batch
+                cout << "sleeping...";
+                this_thread::sleep_for(chrono::milliseconds(50));
+                // eddl::train_batch(net, { x.get() }, { y.get() });
+
+                tm.stop();
+                cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            }
+            d.Stop();
+
+            cout << "Starting test" << endl;
+            d.SetSplit(SplitType::test);
+
+            // Reset current split without shuffling
+            d.ResetBatch(d.current_split_, false);
+
+            d.Start();
+            for (int j = 0; j < num_batches_test; ++j) {
+                tm.reset();
+                tm.start();
+                cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
+                cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+                // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
+                // samples_and_labels = d.GetBatch();
+                // or...
+                auto [_, x, y] = d.GetBatch();
+
+                /* Resize net for last batch
+                if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {
+                    // last mini-batch could have different size
+                    net->resize(x_batch);
+                }
+                */
+                // Sleep in order to simulate EDDL evaluate_batch
+                cout << "sleeping... - ";
+                this_thread::sleep_for(chrono::milliseconds(50));
+                // eddl::eval_batch(net, { x.get() }, { y.get() });
+
+                tm.stop();
+                cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            }
+            d.Stop();
+            tm_epoch.stop();
+            cout << "Epoch elapsed time: " << tm_epoch.getTimeSec() << endl;
         }
-        d.Stop();
-        tm_epoch.stop();
-        cout << "Epoch elapsed time: " << tm_epoch.getTimeSec() << endl;
+    }
+
+    num_workers = 2;
+
+    {
+        cout << "Running tests with " << num_workers << num_workers;
+        cout << "Creating a DLDataset" << endl;
+        DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { false, false });
+        //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
+        auto num_batches_training = d.GetNumBatches(SplitType::training);
+        auto num_batches_test = d.GetNumBatches(SplitType::test);
+
+        for (int i = 0; i < epochs; ++i) {
+            tm_epoch.reset();
+            tm_epoch.start();
+            /* Resize to batch_size if we have done a resize previously
+            if (d.split_[d.current_split_].last_batch_ != batch_size){
+                net->resize(batch_size);
+            }
+            */
+            cout << "Starting training" << endl;
+            d.SetSplit(SplitType::training);
+
+            // Reset current split with shuffling
+            d.ResetBatch(d.current_split_, true);
+
+            // Spawn num_workers threads
+            d.Start();
+            for (int j = 0; j < num_batches_training; ++j) {
+                tm.reset();
+                tm.start();
+                cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
+                cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+                // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
+                // samples_and_labels = d.GetBatch();
+                // or...
+                auto [samples, x, y] = d.GetBatch();
+
+                // Sleep in order to simulate EDDL train_batch
+                cout << "sleeping...";
+                this_thread::sleep_for(chrono::milliseconds(50));
+                // eddl::train_batch(net, { x.get() }, { y.get() });
+
+                tm.stop();
+                cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            }
+            d.Stop();
+
+            cout << "Starting test" << endl;
+            d.SetSplit(SplitType::test);
+
+            // Reset current split without shuffling
+            d.ResetBatch(d.current_split_, false);
+
+            d.Start();
+            for (int j = 0; j < num_batches_test; ++j) {
+                tm.reset();
+                tm.start();
+                cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
+                cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+                // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
+                // samples_and_labels = d.GetBatch();
+                // or...
+                auto [_, x, y] = d.GetBatch();
+
+                /* Resize net for last batch
+                if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {
+                    // last mini-batch could have different size
+                    net->resize(x_batch);
+                }
+                */
+                // Sleep in order to simulate EDDL evaluate_batch
+                cout << "sleeping... - ";
+                this_thread::sleep_for(chrono::milliseconds(50));
+                // eddl::eval_batch(net, { x.get() }, { y.get() });
+
+                tm.stop();
+                cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            }
+            d.Stop();
+            tm_epoch.stop();
+            cout << "Epoch elapsed time: " << tm_epoch.getTimeSec() << endl;
+        }
+    }
+
+    num_workers = 8;
+
+    {
+        cout << "Running tests with " << num_workers << num_workers;
+        cout << "Creating a DLDataset" << endl;
+        DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { false, false });
+        //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
+        auto num_batches_training = d.GetNumBatches(SplitType::training);
+        auto num_batches_test = d.GetNumBatches(SplitType::test);
+
+        for (int i = 0; i < epochs; ++i) {
+            tm_epoch.reset();
+            tm_epoch.start();
+            /* Resize to batch_size if we have done a resize previously
+            if (d.split_[d.current_split_].last_batch_ != batch_size){
+                net->resize(batch_size);
+            }
+            */
+            cout << "Starting training" << endl;
+            d.SetSplit(SplitType::training);
+
+            // Reset current split with shuffling
+            d.ResetBatch(d.current_split_, true);
+
+            // Spawn num_workers threads
+            d.Start();
+            for (int j = 0; j < num_batches_training; ++j) {
+                tm.reset();
+                tm.start();
+                cout << "Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_training - 1 << ") - ";
+                cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+                // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
+                // samples_and_labels = d.GetBatch();
+                // or...
+                auto [samples, x, y] = d.GetBatch();
+
+                // Sleep in order to simulate EDDL train_batch
+                cout << "sleeping...";
+                this_thread::sleep_for(chrono::milliseconds(50));
+                // eddl::train_batch(net, { x.get() }, { y.get() });
+
+                tm.stop();
+                cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            }
+            d.Stop();
+
+            cout << "Starting test" << endl;
+            d.SetSplit(SplitType::test);
+
+            // Reset current split without shuffling
+            d.ResetBatch(d.current_split_, false);
+
+            d.Start();
+            for (int j = 0; j < num_batches_test; ++j) {
+                tm.reset();
+                tm.start();
+                cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
+                cout << "|fifo| " << d.GetQueueSize() << " - ";
+
+                // tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> samples_and_labels;
+                // samples_and_labels = d.GetBatch();
+                // or...
+                auto [_, x, y] = d.GetBatch();
+
+                /* Resize net for last batch
+                if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {
+                    // last mini-batch could have different size
+                    net->resize(x_batch);
+                }
+                */
+                // Sleep in order to simulate EDDL evaluate_batch
+                cout << "sleeping... - ";
+                this_thread::sleep_for(chrono::milliseconds(50));
+                // eddl::eval_batch(net, { x.get() }, { y.get() });
+
+                tm.stop();
+                cout << "Elapsed time: " << tm.getTimeMilli() << endl;
+            }
+            d.Stop();
+            tm_epoch.stop();
+            cout << "Epoch elapsed time: " << tm_epoch.getTimeSec() << endl;
+        }
     }
 
     return EXIT_SUCCESS;
