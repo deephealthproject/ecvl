@@ -34,6 +34,7 @@ var searchData=
   ['setvec2',['setVec2',['../structecvl_1_1_shader.html#a94e74e0722ca4dd486106857e254cf0b',1,'ecvl::Shader::setVec2(const std::string &amp;name, const glm::vec2 &amp;value) const'],['../structecvl_1_1_shader.html#af77ba1a0d1005d5a0c5deb2c7030dd41',1,'ecvl::Shader::setVec2(const std::string &amp;name, float x, float y) const']]],
   ['setvec3',['setVec3',['../structecvl_1_1_shader.html#aaf216bda58feb6fcfe6fc3ab0cf71e67',1,'ecvl::Shader::setVec3(const std::string &amp;name, const glm::vec3 &amp;value) const'],['../structecvl_1_1_shader.html#adeb51d8787391c03cccc20832f66fdd6',1,'ecvl::Shader::setVec3(const std::string &amp;name, float x, float y, float z) const']]],
   ['setvec4',['setVec4',['../structecvl_1_1_shader.html#a429422ba39805c0267ee9349806e43f1',1,'ecvl::Shader::setVec4(const std::string &amp;name, const glm::vec4 &amp;value) const'],['../structecvl_1_1_shader.html#aca2f65ddf9626baa835681778234769f',1,'ecvl::Shader::setVec4(const std::string &amp;name, float x, float y, float z, float w)']]],
+  ['setworkers',['SetWorkers',['../classecvl_1_1_d_l_dataset.html#a6399e55111993d55a7cce3ba8e6b3fc8',1,'ecvl::DLDataset']]],
   ['shader',['Shader',['../structecvl_1_1_shader.html',1,'ecvl::Shader'],['../structecvl_1_1_shader.html#afeb1840bd8c8e7a3936715d04c2c89ec',1,'ecvl::Shader::Shader()']]],
   ['shader_2eh',['shader.h',['../shader_8h.html',1,'']]],
   ['shallowcopyimage',['ShallowCopyImage',['../namespaceecvl.html#a8d25671bbf3ce40ab2e0c5ef2f30afe3',1,'ecvl']]],
