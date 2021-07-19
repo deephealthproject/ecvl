@@ -31,6 +31,7 @@
 namespace ecvl
 {
 #define ECVL_ERROR_AUG_DOES_NOT_EXIST throw std::runtime_error(ECVL_ERROR_MSG "Augmentation for this split does not exist");
+#define ECVL_ERROR_WORKERS_LESS_THAN_ONE throw std::runtime_error(ECVL_ERROR_MSG "Dataset workers must be at least one");
 
 /** @brief Convert an ECVL Image into an EDDL Tensor.
 
@@ -336,7 +337,7 @@ This class extends the DeepHealth Dataset with Deep Learning specific members.
 */
 class DLDataset : public Dataset
 {
-    const unsigned processor_count = std::thread::hardware_concurrency();
+    const unsigned processor_count_ = std::thread::hardware_concurrency();
 protected:
     int batch_size_;                            /**< @brief Size of each dataset mini batch. */
     std::vector<int> current_batch_;            /**< @brief Number of batches already loaded for each split. */
@@ -388,10 +389,10 @@ public:
         Dataset{ filename, verify },
         batch_size_{ batch_size },
         augs_(augs),
-        num_workers_{ std::min(num_workers, processor_count) },
+        num_workers_{ std::min(num_workers, processor_count_) },
         ctype_{ ctype },
         ctype_gt_{ ctype_gt },
-        queue_{ static_cast<unsigned>(batch_size * queue_ratio_size * std::min(num_workers, processor_count)) }
+        queue_{ static_cast<unsigned>(batch_size * queue_ratio_size * std::min(num_workers, processor_count_)) }
     {
         // resize current_batch_ to the number of splits and initialize it with 0
         current_batch_.resize(split_.size(), 0);
@@ -552,6 +553,21 @@ public:
     @return number of batches of the specified split.
     */
     const int GetNumBatches(const ecvl::any& split = -1);
+
+    /** @brief Change the number of workers.
+
+    @param[in] num_workers Number of threads/workers that will be spawned.
+    */
+    void SetWorkers(const unsigned num_workers) {
+        if (num_workers < 0) {
+            ECVL_ERROR_WORKERS_LESS_THAN_ONE
+        }
+
+        num_workers_ = std::min(num_workers, processor_count_);
+        for (int i = 0; i < vsize(split_); ++i) {
+            InitTC(i);
+        }
+    }
 };
 
 /** @brief Make a grid of images from a EDDL Tensor.

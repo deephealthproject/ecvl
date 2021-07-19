@@ -28,7 +28,6 @@ namespace ecvl
 {
 #define ECVL_ERROR_START_ALREADY_ACTIVE throw std::runtime_error(ECVL_ERROR_MSG "Trying to start the producer threads when they are already running!");
 #define ECVL_ERROR_STOP_ALREADY_END throw std::runtime_error(ECVL_ERROR_MSG "Trying to stop the producer threads when they are already ended!");
-#define ECVL_ERROR_WORKERS_LESS_THAN_ONE throw std::runtime_error(ECVL_ERROR_MSG "Dataset workers must be at least one");
 default_random_engine DLDataset::re_(random_device{}());
 
 void TensorToImage(const Tensor* t, Image& img)
