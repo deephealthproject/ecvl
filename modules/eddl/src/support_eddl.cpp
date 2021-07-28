@@ -355,7 +355,10 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
         }
         // Apply chain of augmentations only to sample image
         augs.Apply(current_split_, img);
-        queue_.Push(elem, img, label);
+        //#pragma omp critical (task_queue)
+        {
+            queue_.Push(elem, img, label);
+        }
     }
     break;
     case Task::segmentation:
@@ -372,7 +375,10 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
         else {
             augs.Apply(current_split_, img);
         }
-        queue_.Push(elem, img, label);
+        //#pragma omp critical (task_queue)
+        {
+            queue_.Push(elem, img, label);
+        }
     }
     break;
     }
@@ -414,18 +420,18 @@ void DLDataset::ThreadFunc(int thread_index)
 
         ++tc_of_current_split[thread_index].counter_;
 
-        std::unique_lock<std::mutex> lock(active_mutex_);
+        /*std::unique_lock<std::mutex> lock(active_mutex_);
         if (!active_) {
             return;
-        }
+        }*/
     }
 }
 
 tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> DLDataset::GetBatch()
 {
-    if (!active_) {
-        cout << ECVL_WARNING_MSG << "You're trying to get a batch without starting the threads - you'll wait forever!" << endl;
-    }
+    //if (!active_) {
+    //    cout << ECVL_WARNING_MSG << "You're trying to get a batch without starting the threads - you'll wait forever!" << endl;
+    //}
 
     ++current_batch_[current_split_];
     auto& s = split_[current_split_];

@@ -27,6 +27,8 @@
 #include <queue>
 #include <thread>
 #include <tuple>
+#include <chrono>
+#include <omp.h>
 
 namespace ecvl
 {
@@ -203,24 +205,27 @@ public:
 */
 class ProducersConsumerQueue
 {
-    std::condition_variable cond_notempty_;     /**< @brief Condition variable that wait if the queue is empty. */
-    std::condition_variable cond_notfull_;      /**< @brief Condition variable that wait if the queue is full. */
-    mutable std::mutex mutex_;                  /**< @brief Mutex to grant exclusive access to the queue. */
+    //std::condition_variable cond_notempty_;     /**< @brief Condition variable that wait if the queue is empty. */
+    //std::condition_variable cond_notfull_;      /**< @brief Condition variable that wait if the queue is full. */
+    //mutable std::mutex mutex_;                  /**< @brief Mutex to grant exclusive access to the queue. */
     std::queue<std::tuple<Sample, Image, Label*>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
     unsigned max_size_;                         /**< @brief Maximum size of the queue. */
     unsigned threshold_;                        /**< @brief Threshold from which restart to produce samples. If not specified, it's set to the half of maximum size. */
+    static inline omp_lock_t lock_;
 
 public:
-    ProducersConsumerQueue() {}
+        
+    ProducersConsumerQueue() { omp_init_lock(&lock_); }
+    ~ProducersConsumerQueue() { Clear(); omp_destroy_lock(&lock_); }
     /**
     @param[in] mxsz Maximum size of the queue.
     */
-    ProducersConsumerQueue(unsigned mxsz) : max_size_(mxsz), threshold_(max_size_ / 2) {}
+    ProducersConsumerQueue(unsigned mxsz) : max_size_(mxsz), threshold_(max_size_ / 2) { omp_init_lock(&lock_); }
     /**
     @param[in] mxsz Maximum size of the queue.
     @param[in] thresh Threshold from which restart to produce samples.
     */
-    ProducersConsumerQueue(unsigned mxsz, unsigned thresh) : max_size_(mxsz), threshold_(thresh) {}
+    ProducersConsumerQueue(unsigned mxsz, unsigned thresh) : max_size_(mxsz), threshold_(thresh) { omp_init_lock(&lock_); }
 
     /** @brief Push a sample in the queue.
 
@@ -232,10 +237,13 @@ public:
     */
     void Push(const Sample& sample, const Image& image, Label* const label)
     {
-        std::unique_lock<std::mutex> lock(mutex_);
-        cond_notfull_.wait(lock, [this]() { return cpq_.size() < max_size_; });
+        //std::unique_lock<std::mutex> lock(mutex_);
+        //cond_notfull_.wait(lock, [this]() { return cpq_.size() < max_size_; });
+        //omp_set_lock(&lock_);
+        while (!omp_test_lock(&lock_));
         cpq_.push(make_tuple(sample, image, label));
-        cond_notempty_.notify_one();
+        omp_unset_lock(&lock_);
+        //cond_notempty_.notify_one();
     }
 
     /** @brief Pop a sample from the queue.
@@ -249,13 +257,24 @@ public:
     */
     void Pop(Sample& sample, Image& image, Label*& label)
     {
-        std::unique_lock<std::mutex> lock(mutex_);
-        cond_notempty_.wait(lock, [this]() { return !cpq_.empty(); });
-        std::tie(sample, image, label) = cpq_.front();
-        cpq_.pop();
-        if (cpq_.size() < threshold_) {
-            cond_notfull_.notify_all();
+        //std::unique_lock<std::mutex> lock(mutex_);
+        //cond_notempty_.wait(lock, [this]() { return !cpq_.empty(); });
+        while (1) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            //omp_set_lock(&lock_);
+            while (!omp_test_lock(&lock_));
+
+            if (cpq_.size() > 0) {
+                std::tie(sample, image, label) = cpq_.front();
+                cpq_.pop();
+                break;
+            }
+            omp_unset_lock(&lock_);
         }
+        /*if (cpq_.size() < threshold_) {
+            cond_notfull_.notify_all();
+        }*/
+        omp_unset_lock(&lock_);
     }
 
     /** @brief Check if the queue is full.
@@ -264,8 +283,12 @@ public:
     */
     bool IsFull() const
     {
-        std::unique_lock<std::mutex> lock(mutex_);
+        //std::unique_lock<std::mutex> lock(mutex_);
+        //omp_set_lock(&lock_);
+        while (!omp_test_lock(&lock_));
+
         return cpq_.size() >= max_size_;
+        omp_unset_lock(&lock_);
     }
 
     /** @brief Check if the queue is empty.
@@ -274,8 +297,12 @@ public:
     */
     bool IsEmpty() const
     {
-        std::unique_lock<std::mutex> lock(mutex_);
+        //std::unique_lock<std::mutex> lock(mutex_);
+        //omp_set_lock(&lock_);
+        while (!omp_test_lock(&lock_));
+
         return cpq_.empty();
+        omp_unset_lock(&lock_);
     }
 
     /** @brief Calculate the current size of the queue.
@@ -284,8 +311,11 @@ public:
     */
     size_t Length() const
     {
-        std::unique_lock<std::mutex> lock(mutex_);
+        //std::unique_lock<std::mutex> lock(mutex_);
+        //omp_set_lock(&lock_);
+        while (!omp_test_lock(&lock_));
         return cpq_.size();
+        omp_unset_lock(&lock_);
     }
 
     /** @brief Set the maximum size of the queue and optionally the threshold from which restart to produce samples.
@@ -301,14 +331,16 @@ public:
 
     void Clear()
     {
-        std::unique_lock<std::mutex> lock(mutex_);
-
+        //std::unique_lock<std::mutex> lock(mutex_);
+        //omp_set_lock(&lock_);
+        while (!omp_test_lock(&lock_));
         // Remove residual samples and delete data
         while (!cpq_.empty()) {
             auto [sample, image, label] = cpq_.front();
             delete label; // Deallocate pointer
             cpq_.pop();
         }
+        omp_unset_lock(&lock_);
     }
 };
 
