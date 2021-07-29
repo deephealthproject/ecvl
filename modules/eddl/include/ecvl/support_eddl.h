@@ -23,9 +23,7 @@
 
 #include <algorithm>
 #include <condition_variable>
-#include <mutex>
 #include <queue>
-#include <thread>
 #include <tuple>
 #include <chrono>
 #include <omp.h>
@@ -211,10 +209,10 @@ class ProducersConsumerQueue
     std::queue<std::tuple<Sample, Image, Label*>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
     unsigned max_size_;                         /**< @brief Maximum size of the queue. */
     unsigned threshold_;                        /**< @brief Threshold from which restart to produce samples. If not specified, it's set to the half of maximum size. */
-    static inline omp_lock_t lock_;
+    mutable omp_lock_t lock_;
 
 public:
-        
+
     ProducersConsumerQueue() { omp_init_lock(&lock_); }
     ~ProducersConsumerQueue() { Clear(); omp_destroy_lock(&lock_); }
     /**
@@ -239,8 +237,7 @@ public:
     {
         //std::unique_lock<std::mutex> lock(mutex_);
         //cond_notfull_.wait(lock, [this]() { return cpq_.size() < max_size_; });
-        //omp_set_lock(&lock_);
-        while (!omp_test_lock(&lock_));
+        omp_set_lock(&lock_);
         cpq_.push(make_tuple(sample, image, label));
         omp_unset_lock(&lock_);
         //cond_notempty_.notify_one();
@@ -260,10 +257,7 @@ public:
         //std::unique_lock<std::mutex> lock(mutex_);
         //cond_notempty_.wait(lock, [this]() { return !cpq_.empty(); });
         while (1) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(2));
-            //omp_set_lock(&lock_);
-            while (!omp_test_lock(&lock_));
-
+            omp_set_lock(&lock_);
             if (cpq_.size() > 0) {
                 std::tie(sample, image, label) = cpq_.front();
                 cpq_.pop();
@@ -284,11 +278,10 @@ public:
     bool IsFull() const
     {
         //std::unique_lock<std::mutex> lock(mutex_);
-        //omp_set_lock(&lock_);
-        while (!omp_test_lock(&lock_));
-
-        return cpq_.size() >= max_size_;
+        omp_set_lock(&lock_);
+        const auto size = cpq_.size();
         omp_unset_lock(&lock_);
+        return size >= max_size_;
     }
 
     /** @brief Check if the queue is empty.
@@ -298,11 +291,10 @@ public:
     bool IsEmpty() const
     {
         //std::unique_lock<std::mutex> lock(mutex_);
-        //omp_set_lock(&lock_);
-        while (!omp_test_lock(&lock_));
-
-        return cpq_.empty();
+        omp_set_lock(&lock_);
+        const auto is_empty = cpq_.empty();
         omp_unset_lock(&lock_);
+        return is_empty;
     }
 
     /** @brief Calculate the current size of the queue.
@@ -312,10 +304,10 @@ public:
     size_t Length() const
     {
         //std::unique_lock<std::mutex> lock(mutex_);
-        //omp_set_lock(&lock_);
-        while (!omp_test_lock(&lock_));
-        return cpq_.size();
+        omp_set_lock(&lock_);
+        const auto size = cpq_.size();
         omp_unset_lock(&lock_);
+        return size;
     }
 
     /** @brief Set the maximum size of the queue and optionally the threshold from which restart to produce samples.
@@ -332,8 +324,7 @@ public:
     void Clear()
     {
         //std::unique_lock<std::mutex> lock(mutex_);
-        //omp_set_lock(&lock_);
-        while (!omp_test_lock(&lock_));
+        omp_set_lock(&lock_);
         // Remove residual samples and delete data
         while (!cpq_.empty()) {
             auto [sample, image, label] = cpq_.front();
@@ -382,7 +373,7 @@ protected:
     std::vector<std::vector<ThreadCounters>> splits_tc_; /**< @brief Each dataset split has its own vector of threads, each of which has its counters: <counter,min,max>. */
     std::vector<std::thread> producers_;        /**< @brief Vector of threads representing the samples producers. */
     bool active_ = false;                       /**< @brief Whether the threads have already been launched or not. */
-    std::mutex active_mutex_;                   /**< @brief Mutex for active_ variable. */
+    //std::mutex active_mutex_;                   /**< @brief Mutex for active_ variable. */
     static std::default_random_engine re_;      /**< @brief Engine used for random number generation. */
     Label* label_ = nullptr;                    /**< @brief Label pointer which will be specialized based on the dataset task. */
 
