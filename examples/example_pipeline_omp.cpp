@@ -148,13 +148,11 @@ int main()
                 #pragma omp parallel num_threads(num_workers)
                 {
                     const int prod_index = omp_get_thread_num();
-                    cout << prod_index << endl;
                     d.ThreadFunc(prod_index);
                 }
             }
             else {
                 // Consumer thread
-
                 for (int j = 0; j < num_batches_test; ++j) {
                     tm.reset();
                     tm.start();
