@@ -45,12 +45,12 @@ int main()
         AugToFloat32(255)
         );
 
-    auto test_augs = make_shared<SequentialAugmentationContainer>(AugToFloat32(255));
+    auto test_augs = make_shared<SequentialAugmentationContainer>(AugCenterCrop(), AugResizeDim({ 224,224 }), AugToFloat32(255));
 
     // Replace the random seed with a fixed one to have reproducible experiments
     AugmentationParam::SetSeed(0);
 
-    DatasetAugmentations dataset_augmentations{ { training_augs, test_augs } };
+    DatasetAugmentations dataset_augmentations{ { training_augs, test_augs, test_augs } };
 
     constexpr int batch_size = 8;
     constexpr double queue_ratio = 1.;
