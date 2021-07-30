@@ -28,6 +28,7 @@ using namespace std;
 
 layer LeNet(layer x, const int& num_classes);
 layer VGG16(layer x, const int& num_classes);
+layer VGG16BN(layer x, const int& num_classes);
 
 int main()
 {
@@ -37,15 +38,26 @@ int main()
     // Create the augmentations to be applied to the dataset images during training and test.
     auto training_augs = make_shared<SequentialAugmentationContainer>(
         AugCenterCrop(),
-        AugResizeDim({ 224,224 }),
-        AugRotate({ -5, 5 }),
-        AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
-        AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0),
-        AugAdditivePoissonNoise({ 0, 40 }),
-        AugToFloat32(255)
+        AugResizeDim({ 224,224 }, InterpolationType::cubic),
+        AugMirror(.5),
+        AugFlip(.5),
+        AugRotate({ -180, 180 }),
+        AugAdditivePoissonNoise({ 0, 10 }),
+        AugGammaContrast({ .5, 1.5 }),
+        AugGaussianBlur({ .0, .8 }),
+        AugCoarseDropout({ 0, 0.03 }, { 0, 0.05 }, 0.25),
+        AugToFloat32(255),
+        //AugNormalize({ 0.6681, 0.5301, 0.5247 }, { 0.1337, 0.1480, 0.1595 }) // isic stats
+        AugNormalize({ 0.485, 0.456, 0.406 }, { 0.229, 0.224, 0.225 }) // imagenet stats
         );
 
-    auto test_augs = make_shared<SequentialAugmentationContainer>(AugCenterCrop(), AugResizeDim({ 224,224 }), AugToFloat32(255));
+    auto test_augs = make_shared<SequentialAugmentationContainer>(
+        AugCenterCrop(),
+        AugResizeDim({ 224,224 }, InterpolationType::cubic),
+        AugToFloat32(255),
+        //AugNormalize({ 0.6681, 0.5301, 0.5247 }, { 0.1337, 0.1480, 0.1595 }) // isic stats
+        AugNormalize({ 0.485, 0.456, 0.406 }, { 0.229, 0.224, 0.225 }) // imagenet stats
+        );
 
     // Replace the random seed with a fixed one to have reproducible experiments
     AugmentationParam::SetSeed(0);
@@ -53,7 +65,7 @@ int main()
     DatasetAugmentations dataset_augmentations{ { training_augs, test_augs, test_augs } };
 
     constexpr int epochs = 30;
-    constexpr int batch_size = 8;
+    constexpr int batch_size = 4;
     constexpr double queue_ratio = 1.;
     unsigned num_workers = 4;
 
@@ -68,13 +80,13 @@ int main()
     //layer in = Input({ 1,28,28 });
     //layer out = Softmax(LeNet(in, 10));
     layer in = Input({ 3,224,224 });
-    layer out = Softmax(VGG16(in, 7));
+    layer out = Softmax(VGG16BN(in, 7));
     model net = Model({ in }, { out });
 
     // Build model
     build(net,
-        sgd(1e-2f, 0.9f, 1e-5f),
-        //adam(1e-4f, 0.9f, 0.99f, 1e-8f, 1e-5f),
+        sgd(1e-3f, 0.9f),
+        //adam(1e-4f),
         { "sce" },
         { "accuracy" },
         CS_GPU({ 1 }, "low_mem")
@@ -128,7 +140,13 @@ int main()
                     if (j == num_batches_training - 1 && x->shape[0] != batch_size) {
                         net->resize(x->shape[0]);
                     }
-
+                    // Check input images
+                    //for (int ind = 0; ind < batch_size; ++ind) {
+                    //    unique_ptr<Tensor> tmp(x->select({ to_string(ind), ":", ":", ":" }));
+                    //    tmp->mult_(255.);
+                    //    //tmp->normalize_(0.f, 255.f);
+                    //    tmp->save("images/train_image_" + to_string(j) + "_" + to_string(ind) + ".png");
+                    //}
                     train_batch(net, { x.get() }, { y.get() });
                     print_loss(net, j);
                     tm.stop();
@@ -216,8 +234,32 @@ layer VGG16(layer x, const int& num_classes)
     x = MaxPool(ReLu(Conv(x, 512, { 3,3 })), { 2,2 }, { 2,2 });
 
     x = Reshape(x, { -1 });
-    x = ReLu(Dense(x, 4096));
-    x = ReLu(Dense(x, 4096));
+    x = Dropout(ReLu(Dense(x, 4096)), 0.5f);
+    x = Dropout(ReLu(Dense(x, 4096)), 0.5f);
+    x = Dense(x, num_classes);
+
+    return x;
+}
+
+layer VGG16BN(layer x, const int& num_classes)
+{
+    x = ReLu(BatchNormalization(Conv(x, 64, { 3,3 }), true));
+    x = MaxPool(ReLu(BatchNormalization(Conv(x, 64, { 3,3 }), true)), { 2,2 }, { 2,2 });
+    x = ReLu(BatchNormalization(Conv(x, 128, { 3,3 }), true));
+    x = MaxPool(ReLu(BatchNormalization(Conv(x, 128, { 3,3 }), true)), { 2,2 }, { 2,2 });
+    x = ReLu(BatchNormalization(Conv(x, 256, { 3,3 }), true));
+    x = ReLu(BatchNormalization(Conv(x, 256, { 3,3 }), true));
+    x = MaxPool(ReLu(BatchNormalization(Conv(x, 256, { 3,3 }), true)), { 2,2 }, { 2,2 });
+    x = ReLu(BatchNormalization(Conv(x, 512, { 3,3 }), true));
+    x = ReLu(BatchNormalization(Conv(x, 512, { 3,3 }), true));
+    x = MaxPool(ReLu(BatchNormalization(Conv(x, 512, { 3,3 }), true)), { 2,2 }, { 2,2 });
+    x = ReLu(BatchNormalization(Conv(x, 512, { 3,3 }), true));
+    x = ReLu(BatchNormalization(Conv(x, 512, { 3,3 }), true));
+    x = MaxPool(ReLu(BatchNormalization(Conv(x, 512, { 3,3 }), true)), { 2,2 }, { 2,2 });
+
+    x = Reshape(x, { -1 });
+    x = Dropout(ReLu(Dense(x, 4096)), 0.5f);
+    x = Dropout(ReLu(Dense(x, 4096)), 0.5f);
     x = Dense(x, num_classes);
 
     return x;
