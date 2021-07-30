@@ -52,6 +52,7 @@ int main()
 
     DatasetAugmentations dataset_augmentations{ { training_augs, test_augs, test_augs } };
 
+    constexpr int epochs = 30;
     constexpr int batch_size = 8;
     constexpr double queue_ratio = 1.;
     unsigned num_workers = 4;
@@ -63,7 +64,6 @@ int main()
     ofstream of;
     cv::TickMeter tm;
     cv::TickMeter tm_epoch;
-    constexpr int epochs = 5;
 
     //layer in = Input({ 1,28,28 });
     //layer out = Softmax(LeNet(in, 10));
@@ -73,7 +73,8 @@ int main()
 
     // Build model
     build(net,
-        sgd(0.01f, 0.9f),
+        sgd(1e-2f, 0.9f, 1e-5f),
+        //adam(1e-4f, 0.9f, 0.99f, 1e-8f, 1e-5f),
         { "sce" },
         { "accuracy" },
         CS_GPU({ 1 }, "low_mem")
@@ -81,7 +82,7 @@ int main()
     summary(net);
 
     auto num_batches_training = d.GetNumBatches(SplitType::training);
-    auto num_batches_test = d.GetNumBatches(SplitType::test);
+    auto num_batches_val = d.GetNumBatches(SplitType::validation);
 
     vector<Sample> samples;
     shared_ptr<Tensor>x, y;
@@ -89,11 +90,12 @@ int main()
     for (int i = 0; i < epochs; ++i) {
         tm_epoch.reset();
         tm_epoch.start();
+        reset_loss(net);
+
         // Resize to batch_size if we have done a resize previously
         if (d.split_[d.current_split_].last_batch_ != batch_size) {
             net->resize(batch_size);
         }
-
         cout << "Starting training" << endl;
         d.SetSplit(SplitType::training);
 
@@ -130,13 +132,19 @@ int main()
                     train_batch(net, { x.get() }, { y.get() });
                     print_loss(net, j);
                     tm.stop();
-                    cout << "Elapsed time: " << tm.getTimeMilli() << " ms" << endl;
+                    cout << "Elapsed time: " << tm.getTimeSec() << " s" << endl;
                 }
             }
         }
 
-        cout << "Starting test" << endl;
-        d.SetSplit(SplitType::test);
+        cout << "Starting validation" << endl;
+        d.SetSplit(SplitType::validation);
+        reset_loss(net);
+
+        // Resize to batch_size if we have done a resize previously
+        if (d.split_[d.current_split_].last_batch_ != batch_size) {
+            net->resize(batch_size);
+        }
 
         // Reset current split without shuffling
         d.ResetBatch(d.current_split_, false);
@@ -153,16 +161,16 @@ int main()
             }
             else {
                 // Consumer thread
-                for (int j = 0; j < num_batches_test; ++j) {
+                for (int j = 0; j < num_batches_val; ++j) {
                     tm.reset();
                     tm.start();
-                    cout << "Test: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_test - 1 << ") - ";
+                    cout << "Validation: Epoch " << i << "/" << epochs - 1 << " (batch " << j << "/" << num_batches_val - 1 << ") - ";
                     cout << "|fifo| " << d.GetQueueSize() << " - ";
 
                     tie(samples, x, y) = d.GetBatch();
 
                     // Resize net for last batch
-                    if (auto x_batch = x->shape[0]; j == num_batches_test - 1 && x_batch != batch_size) {
+                    if (auto x_batch = x->shape[0]; j == num_batches_val - 1 && x_batch != batch_size) {
                         // last mini-batch could have different size
                         net->resize(x_batch);
                     }
@@ -170,7 +178,7 @@ int main()
                     print_loss(net, j);
 
                     tm.stop();
-                    cout << "Elapsed time: " << tm.getTimeMilli() << " ms" << endl;
+                    cout << "Elapsed time: " << tm.getTimeSec() << " s" << endl;
                 }
             }
         }
