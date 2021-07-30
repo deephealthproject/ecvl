@@ -355,10 +355,7 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
         }
         // Apply chain of augmentations only to sample image
         augs.Apply(current_split_, img);
-        //#pragma omp critical (task_queue)
-        {
-            queue_.Push(elem, img, label);
-        }
+        queue_.Push(elem, img, label);
     }
     break;
     case Task::segmentation:
@@ -375,10 +372,7 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
         else {
             augs.Apply(current_split_, img);
         }
-        //#pragma omp critical (task_queue)
-        {
-            queue_.Push(elem, img, label);
-        }
+        queue_.Push(elem, img, label);
     }
     break;
     }
