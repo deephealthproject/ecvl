@@ -254,21 +254,16 @@ public:
 
         omp_set_lock(&lock_);
         cpq_.push(t);
-        // If we have reached the maximum size of elements in queue, then wait for the
-        // other producers and set cond_var_queue_full_ to true. Next time Push is 
+        const auto s = cpq_.size();
+        omp_unset_lock(&lock_);
+
+        // If we have reached the maximum size of elements in queue, then 
+        // set cond_var_queue_full_ to true. Next time Push is
         // called, the producer will get stuck in the while loop
-        if (cpq_.size() >= max_size_) {
-            omp_unset_lock(&lock_);
-            #pragma omp barrier
-            #pragma omp single
-            {
-                omp_set_lock(&queue_full_lock_);
-                cond_var_queue_full_ = true;
-                omp_unset_lock(&queue_full_lock_);
-            }
-        }
-        else {
-            omp_unset_lock(&lock_);
+        if (s >= max_size_) {
+            omp_set_lock(&queue_full_lock_);
+            cond_var_queue_full_ = true;
+            omp_unset_lock(&queue_full_lock_);
         }
     }
 
@@ -296,11 +291,13 @@ public:
             omp_unset_lock(&lock_);
         }
         // Resume producers if have been paused because of queue size limit
-        omp_set_lock(&queue_full_lock_);
-        if (cond_var_queue_full_ && cpq_.size() < threshold_) {
+        omp_unset_lock(&lock_);
+        omp_set_lock(&lock_);
+        if (cpq_.size() < threshold_) {
+            omp_set_lock(&queue_full_lock_);
             cond_var_queue_full_ = false;
+            omp_unset_lock(&queue_full_lock_);
         }
-        omp_unset_lock(&queue_full_lock_);
         omp_unset_lock(&lock_);
     }
 
