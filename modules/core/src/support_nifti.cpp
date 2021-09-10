@@ -57,6 +57,8 @@ namespace ecvl
 #define DT_COMPLEX256           2048     /* long double pair (256 bits)  */
 #define DT_RGBA32               2304     /* 4 byte RGBA (32 bits/voxel)  */
 
+#define ECVL_ERROR_RESERVED_BITS throw std::runtime_error(ECVL_ERROR_MSG "Wrong reserved bits in gz decompression");
+
 struct EndianReader
 {
     istream& is_;
@@ -92,14 +94,96 @@ struct EndianReader
     }
 };
 
+class bitreader
+{
+    std::istream& _is;
+    unsigned char _buffer;
+    int _bits;
+
+    bitreader(const bitreader&);
+    bitreader& operator= (const bitreader&);
+
+public:
+    bitreader(std::istream& is) : _is(is), _bits(8) {}
+
+    operator std::istream& () { return _is; }
+
+    unsigned read_bit()
+    {
+        if (_bits == 8) {
+            _is.get(reinterpret_cast<char&>(_buffer));
+            _bits = 0;
+        }
+        return (_buffer >> _bits++) & 1;
+    }
+
+    // Read from the bitstream the count bit specified and put them in the least significant bit of the result
+    unsigned operator() (unsigned count)
+    {
+        unsigned u = 0;
+        for (int i = 0; i < count; ++i) {
+            u |= read_bit() << i;
+        }
+        return u;
+    }
+};
+
+template<uint16_t Size>
+class huffman
+{
+public:
+    array<pair<uint32_t, uint8_t>, Size> codes;
+
+    huffman(const array<uint8_t, Size>& lengths)
+    {
+        auto max_length = *max_element(lengths.begin(), lengths.end());
+        vector<uint32_t> bl_count(max_length + 1, 0);
+        for (uint16_t i = 0; i < Size; ++i) {
+            bl_count[lengths[i]]++;
+        }
+
+        uint32_t code = 0;
+        bl_count[0] = 0;
+        vector<uint32_t> next_code(max_length + 1, 0);
+
+        for (uint8_t bits = 1; bits <= max_length; bits++) {
+            code = (code + bl_count[bits - 1]) << 1;
+            next_code[bits] = code;
+        }
+
+        for (uint16_t n = 0; n < Size; n++) {
+            uint8_t len = lengths[n];
+            if (len != 0) {
+                codes[n] = make_pair(next_code[len], len);
+                next_code[len]++;
+            }
+        }
+    }
+
+    uint16_t decode(bitreader& br)
+    {
+        uint32_t buffer = 0;
+        uint8_t len = 0;
+        while (1) {
+            auto bit = br(1);
+            buffer = (buffer << 1) | bit;
+            ++len;
+            auto res = find(codes.begin(), codes.end(), make_pair(buffer, len));
+            if (res != codes.end()) {
+                return res - codes.begin();
+            }
+        }
+    }
+};
+
 // Home-made variation
 bool NiftiRead(const path& filename, Image& dst)
 {
-    ifstream is;
-    is.exceptions(ifstream::failbit | ifstream::eofbit | ifstream::badbit);
+    ifstream ifile;
+    ifile.exceptions(ifstream::failbit | ifstream::eofbit | ifstream::badbit);
 
     try {
-        is.open(filename, ios::binary);
+        ifile.open(filename, ios::binary);
 
         // Nifti 1 header
         struct nifti
@@ -161,9 +245,254 @@ bool NiftiRead(const path& filename, Image& dst)
             char magic[4];      /*!< MUST be "ni1\0" or "n+1\0". */
         } header;
 
+        // gzip header
+        struct gzip
+        {
+            char  id1;               /*!< MUST be 31       */
+            unsigned char  id2;      /*!< MUST be 139      */
+            char  cm;               /*!< Compression Method     */
+            char  flg;              /*!< FLaGs */
+            int   mtime;              /*!< Modification TIME */
+            char  xfl;              /*!< eXtra FLags */
+            char  os;              /*!< Operating System */
+            short xlen;              /*!< eXtra LENgth */
+            //short crc16;              /*!< CRC-16 */
+            int   crc32;              /*!< CRC-32 */
+            int   isize;              /*!< Input SIZE */
+        } header_gz;
+
+        /* Check if the file is compressed with gzip*/
+        ifile.read(reinterpret_cast<char*>(&header_gz.id1), sizeof(char));
+        ifile.read(reinterpret_cast<char*>(&header_gz.id2), sizeof(char));
+
+        string output_data;
+        bool is_compressed = false;
+        if (header_gz.id1 == 0x1f && header_gz.id2 == 0x8b) {
+            is_compressed = true;
+            bool fhcrc = false, fextra = false, fname = false, fcomment = false, freserved = false; // ignoring ftext
+
+            ifile.read(reinterpret_cast<char*>(&header_gz.cm), sizeof(char));
+            ifile.read(reinterpret_cast<char*>(&header_gz.flg), sizeof(char));
+            ifile.read(reinterpret_cast<char*>(&header_gz.mtime), sizeof(int));
+            ifile.read(reinterpret_cast<char*>(&header_gz.xfl), sizeof(char));
+            ifile.read(reinterpret_cast<char*>(&header_gz.os), sizeof(char));
+
+            if (header_gz.cm != 8) {
+                throw std::runtime_error(ECVL_ERROR_MSG "Wrong compression method in gz decompression");
+            }
+
+            //if (header_gz.cm >= 0 && header_gz.cm < 8) {
+            //    throw std::runtime_error(ECVL_ERROR_MSG "Wrong reserved bits in gz decompression");
+            //}
+
+            fhcrc = header_gz.flg & 0b00000010;
+            fextra = header_gz.flg & 0b00000100;
+            fname = header_gz.flg & 0b00001000;
+            fcomment = header_gz.flg & 0b00010000;
+            freserved = header_gz.flg & 0b11100000;
+
+            if (freserved) {
+                ECVL_ERROR_RESERVED_BITS
+            }
+
+            if (fextra) {
+                ifile.read(reinterpret_cast<char*>(&header_gz.xlen), sizeof(short));
+                ifile.seekg(header_gz.xlen, ios::cur);
+            }
+
+            if (fname) {
+                char c;
+                while (1) {
+                    ifile.get(c);
+                    if (c == 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (fcomment) {
+                char c;
+                while (1) {
+                    ifile.get(c);
+                    if (c == 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (fhcrc) {
+                ifile.seekg(16, ios::cur);
+                //is.read(reinterpret_cast<char*>(&header_gz.crc16), sizeof(short));
+            }
+
+            unsigned char byte;
+            int iter = 0;
+            bitreader br(ifile);
+            bool bfinal = false;
+
+            // while it's not the last block
+            do {
+                bfinal = br.read_bit();
+                uint8_t btype = br(2);
+
+                if (btype == 3) {
+                    // reserved - error
+                    ECVL_ERROR_RESERVED_BITS
+                }
+                if (btype == 0) {
+                    // no compression
+                    short len;
+                    ifile.read(reinterpret_cast<char*>(&len), sizeof(short));
+                    ifile.seekg(2, ios::cur);
+                    output_data.resize(output_data.size() + len);
+                    ifile.read(reinterpret_cast<char*>(output_data.data() + (len * iter)), len);
+                    ++iter;
+                }
+                else {  // 01 = compressed with fixed huffman code and 10 = compressed with dynamic huffman code
+                    array<uint8_t, 288> lit_len_code_lengths{}; // automatically initialized to 0
+                    array<uint8_t, 32> distance_code_lengths{};
+
+                    if (btype == 2) {
+                        //  dynamic - read representation of code trees
+                        uint16_t hlit = br(5) + 257;
+                        uint8_t hdist = br(5) + 1;
+                        uint8_t hclen = br(4) + 4;
+
+                        array<uint8_t, 19> cl_cl{ 0 }; // code lengths for the code length alphabet
+                        array<uint8_t, 19> indices{ 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
+
+                        for (int i = 0; i < hclen; ++i) {
+                            cl_cl[indices[i]] = br(3);
+                        }
+
+                        huffman<19> h(cl_cl);
+                        vector<uint8_t> total_code_lengths(hlit + hdist, 0);
+                        for (uint16_t i = 0; i < hlit + hdist;) {
+                            auto value = h.decode(br);
+                            switch (value) {
+                            case 16:
+                            {
+                                auto repeat = br(2) + 3;
+                                auto prev_length = total_code_lengths[i - 1];
+
+                                for (int j = 0; j < repeat; ++j) {
+                                    total_code_lengths[i++] = prev_length;
+                                }
+                            }
+                            break;
+                            case 17:
+                            {
+                                auto repeat = br(3) + 3;
+                                for (int j = 0; j < repeat; ++j) {
+                                    total_code_lengths[i++] = 0;
+                                }
+                            }
+                            break;
+                            case 18:
+                            {
+                                auto repeat = br(7) + 11;
+                                for (int j = 0; j < repeat; ++j) {
+                                    total_code_lengths[i++] = 0;
+                                }
+                            }
+                            break;
+                            default:
+                                total_code_lengths[i++] = value;
+                            }
+                        }
+
+                        copy(total_code_lengths.begin(), total_code_lengths.begin() + hlit, lit_len_code_lengths.begin());
+                        copy(total_code_lengths.begin() + hlit, total_code_lengths.end(), distance_code_lengths.begin());
+                    }
+                    else if (btype == 1) {
+                        fill(lit_len_code_lengths.begin(), lit_len_code_lengths.begin() + 144, 8);
+                        fill(lit_len_code_lengths.begin() + 144, lit_len_code_lengths.begin() + 256, 9);
+                        fill(lit_len_code_lengths.begin() + 256, lit_len_code_lengths.begin() + 280, 7);
+                        fill(lit_len_code_lengths.begin() + 280, lit_len_code_lengths.end(), 8);
+
+                        distance_code_lengths.fill(5);
+                    }
+                    else {
+                        ECVL_ERROR_NOT_REACHABLE_CODE
+                    }
+
+                    huffman<288> h_lit_len(lit_len_code_lengths);
+                    huffman<32> h_dist(distance_code_lengths);
+
+                    while (1) {
+                        auto value = h_lit_len.decode(br);
+                        if (value < 256) {
+                            output_data.push_back(value);
+                        }
+                        else if (value == 256) {
+                            break;
+                        }
+                        else {
+                            uint16_t length;
+                            if (value < 265) {
+                                length = value - 254;
+                            }
+                            else if (value < 269) {
+                                length = (value - 265) * 2 + 11 + br(1);
+                            }
+                            else if (value < 273) {
+                                length = (value - 269) * 4 + 19 + br(2);
+                            }
+                            else if (value < 277) {
+                                length = (value - 273) * 8 + 35 + br(3);
+                            }
+                            else if (value < 281) {
+                                length = (value - 277) * 16 + 67 + br(4);
+                            }
+                            else if (value < 285) {
+                                length = (value - 281) * 32 + 131 + br(5);
+                            }
+                            else if (value == 285) {
+                                length = 258;
+                            }
+                            else {
+                                ECVL_ERROR_NOT_REACHABLE_CODE
+                            }
+
+                            value = h_dist.decode(br);
+                            uint16_t dist;
+                            if (value < 4) {
+                                dist = value + 1;
+                            }
+                            else if (value < 30) {
+                                uint8_t extra_bits = (value - 2) / 2;
+                                uint16_t power = 1 << extra_bits;
+                                uint16_t start_value = power * 2 + 1;
+                                dist = start_value + power * (value % 2) + br(extra_bits);
+                            }
+                            else {
+                                ECVL_ERROR_NOT_REACHABLE_CODE
+                            }
+
+                            size_t start_pos = output_data.size() - dist;
+                            for (uint16_t j = 0; j < length; ++j) {
+                                output_data.push_back(output_data[start_pos + j]);
+                            }
+                        }
+                    }
+                }
+            } while (!bfinal);
+
+            ifile.read(reinterpret_cast<char*>(&header_gz.crc32), sizeof(int));
+            ifile.read(reinterpret_cast<char*>(&header_gz.isize), sizeof(int));
+            if (output_data.size() % (1ull << 32) != header_gz.isize) {
+                throw std::runtime_error(ECVL_ERROR_MSG "Size of the original (uncompressed) input does not match isize");
+            }
+        }
+        else {
+            ifile.seekg(0, ios::beg);
+        }
+        stringstream ss(output_data);
+        istream* is_ptr = is_compressed ? dynamic_cast<istream*>(&ss) : dynamic_cast<istream*>(&ifile);
+        istream& is = *is_ptr;
         /* Time to read fields */
 
-        // This first fields allows us to understand wether we should switch the endianness or not
+        // This first fields allows us to understand whether we should switch the endianness or not
         bool swap_endianness = false;
         is.read(reinterpret_cast<char*>(&header.sizeof_hdr), sizeof(int));
         if (header.sizeof_hdr == 0x5C010000) {
@@ -211,8 +540,13 @@ bool NiftiRead(const path& filename, Image& dst)
 
         if (strcmp("ni1", header.magic) == 0) {
             string data_file = filename.string().substr(0, filename.string().find_last_of('.') + 1) + "img";
-            is.close();
-            is.open(data_file, ios::binary);
+            if (is_compressed) {
+                ECVL_ERROR_NOT_IMPLEMENTED
+            }
+            else {
+                ifile.close();
+                ifile.open(data_file, ios::binary);
+            }
         }
         else if (strcmp("n+1", header.magic) == 0) {
             // Skip possible extension
@@ -228,7 +562,6 @@ bool NiftiRead(const path& filename, Image& dst)
 
         // Create ecvl::Image and read data
         int ndims = header.dim[0];
-
 
         // Convert nifti_image into ecvl::Image
         DataType data_type;
@@ -246,9 +579,9 @@ bool NiftiRead(const path& filename, Image& dst)
         case  DT_INT64:            data_type = DataType::int64;     break;              /* long long (64 bits)          */
         //case  DT_UINT64:           data_type = DataType::uint64;    break;                /* unsigned long long (64 bits) */
         case  DT_RGBA32:           data_type = DataType::uint8;     break;               /* 4 byte RGBA (32 bits/voxel)  */                       // warning: 4 channels
-        //case  DT_COMPLEX256:       data_type = DataType::none;      break;                  /* long double pair (256 bits)  */                    // unsupported 
-        //case  DT_COMPLEX128:       data_type = DataType::none;      break;                  /* double pair (128 bits)       */                    // unsupported 
-        //case  DT_FLOAT128:         data_type = DataType::none;      break;                /* long double (128 bits)       */                      // unsupported 
+        //case  DT_COMPLEX256:       data_type = DataType::none;      break;                  /* long double pair (256 bits)  */                    // unsupported
+        //case  DT_COMPLEX128:       data_type = DataType::none;      break;                  /* double pair (128 bits)       */                    // unsupported
+        //case  DT_FLOAT128:         data_type = DataType::none;      break;                /* long double (128 bits)       */                      // unsupported
         //case  DT_UNKNOWN:          data_type = DataType::none;      break;               /* what it says, dude           */
         //case  DT_ALL:              data_type = DataType::none;      break;           /* not very useful (?)          */
         //case  DT_COMPLEX:          data_type = DataType::none;      break;               /* complex (64 bits/voxel)      */                       // unsupported
@@ -342,7 +675,7 @@ bool NiftiRead(const path& filename, Image& dst)
             is.read(reinterpret_cast<char*>(dst.data_), dst.datasize_);
         }
 
-        is.close();
+        ifile.close();
 
         if (allocated_data) {
             delete[] data;
@@ -407,7 +740,7 @@ bool NiftiWrite(const path& filename, const Image& src)
     size_t c_pos = tmp1.channels_.find('c');
     if (c_pos != string::npos) {
         target_channel = "c";
-        num_channels--;        
+        num_channels--;
     }
     for (int i = 0; i < num_channels && i < 4; i++) {
         target_channel += target_channel_model[i];
