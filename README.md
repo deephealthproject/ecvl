@@ -34,6 +34,10 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
     </thead>
     <tbody>
       <tr>
+        <td>0.4.1</td>
+        <td>1.0.2a</td>
+      </tr>
+      <tr>
         <td>0.3.5</td>
         <td>0.9.2b</td>
       </tr>
