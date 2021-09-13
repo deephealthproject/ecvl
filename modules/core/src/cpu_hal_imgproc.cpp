@@ -1866,7 +1866,6 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
         case DataType::type: \
             { \
                 TypeInfo_t<DataType::type>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp.data_); \
-                OMP_PAR_FOR \
                 for (int i = 0; i < tmp.datasize_ / tmp.elemsize_; ++i) { \
                     if (dist(re) == 0) { \
                         tmp_data[i] = static_cast<TypeInfo_t<DataType::type>>(color()); \
@@ -2077,9 +2076,9 @@ struct NormalizeChannelsStruct
     {
         using srctype = typename TypeInfo<SDT>::basetype;
         Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
-        
+
         for (int c = 0; c < src.channels_.size(); ++c) {
-            ConstView<SDT> src_v(src, { 0, 0, c }, {src.dims_[0], src.dims_[1], 1});
+            ConstView<SDT> src_v(src, { 0, 0, c }, { src.dims_[0], src.dims_[1], 1 });
             View<SDT> dst_v(tmp, { 0, 0, c }, { src.dims_[0], src.dims_[1], 1 });
 
             auto tmp_it = dst_v.Begin();
@@ -2102,7 +2101,6 @@ void CpuHal::Normalize(const Image& src, Image& dst, const double& mean, const d
 
 void CpuHal::Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std)
 {
-   
     if (src.channels_ != "xyc") {
         ECVL_ERROR_NOT_IMPLEMENTED_WHAT("CpuHal::Normalize with multiple means and stds require xyc channels\n")
     }
@@ -2110,7 +2108,6 @@ void CpuHal::Normalize(const Image& src, Image& dst, const std::vector<double>& 
     Table1D<NormalizeChannelsStruct> table;
     table(src.elemtype_)(src, dst, mean, std);
 }
-
 
 template <DataType SDT>
 struct CenterCropStruct

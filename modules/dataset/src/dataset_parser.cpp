@@ -224,6 +224,12 @@ void Dataset::Dump(const path& file_path)
         else if (s.label_path_ != nullopt) {
             os << tab + tab + "label: " << s.label_path_.value().generic_string() << endl;
         }
+        if (s.values_ != nullopt) {
+            os << tab + tab + "values: [";
+            for (auto& v : s.values_.value()) {
+                os << s.values_.value()[0] << "]" << endl;
+            }
+        }
     }
 
     if (split_.size() > 0) {
