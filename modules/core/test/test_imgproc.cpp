@@ -786,6 +786,19 @@ TEST_F(Imgproc, ScaleTo_##type) \
     EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
     EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
     EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+}\
+\
+TEST_F(Imgproc, GammaContrast_##type) \
+{ \
+    GammaContrast(g1_##type, out, 3); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((g1_##type##_v({ 0,0,0 }) / 255.),3)))); \
+    GammaContrast(rgb2_##type, out, 3); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 0,0,0 }) / 255.),3)))); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 1,0,0 }) / 255.),3)))); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 0,1,0 }) / 255.),3)))); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 1,1,0 }) / 255.),3)))); \
 }
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"

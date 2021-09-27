@@ -310,10 +310,6 @@ void GammaContrast(const Image& src, Image& dst, double gamma)
 {
     AlwaysCheck(src, dst);
 
-    if (src.elemtype_ != DataType::uint8) {
-        ECVL_ERROR_NOT_IMPLEMENTED
-    }
-
     src.hal_->GammaContrast(src, dst, gamma);
 }
 
