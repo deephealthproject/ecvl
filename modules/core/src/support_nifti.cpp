@@ -121,7 +121,7 @@ public:
     unsigned operator() (unsigned count)
     {
         unsigned u = 0;
-        for (int i = 0; i < count; ++i) {
+        for (unsigned i = 0; i < count; ++i) {
             u |= read_bit() << i;
         }
         return u;
@@ -170,7 +170,7 @@ public:
             ++len;
             auto res = find(codes.begin(), codes.end(), make_pair(buffer, len));
             if (res != codes.end()) {
-                return res - codes.begin();
+                return static_cast<uint16_t>(res - codes.begin());
             }
         }
     }
@@ -325,7 +325,6 @@ bool NiftiRead(const path& filename, Image& dst)
                 //is.read(reinterpret_cast<char*>(&header_gz.crc16), sizeof(short));
             }
 
-            unsigned char byte;
             int iter = 0;
             bitreader br(ifile);
             bool bfinal = false;
@@ -375,7 +374,7 @@ bool NiftiRead(const path& filename, Image& dst)
                                 auto repeat = br(2) + 3;
                                 auto prev_length = total_code_lengths[i - 1];
 
-                                for (int j = 0; j < repeat; ++j) {
+                                for (unsigned j = 0; j < repeat; ++j) {
                                     total_code_lengths[i++] = prev_length;
                                 }
                             }
@@ -383,7 +382,7 @@ bool NiftiRead(const path& filename, Image& dst)
                             case 17:
                             {
                                 auto repeat = br(3) + 3;
-                                for (int j = 0; j < repeat; ++j) {
+                                for (unsigned j = 0; j < repeat; ++j) {
                                     total_code_lengths[i++] = 0;
                                 }
                             }
@@ -391,13 +390,13 @@ bool NiftiRead(const path& filename, Image& dst)
                             case 18:
                             {
                                 auto repeat = br(7) + 11;
-                                for (int j = 0; j < repeat; ++j) {
+                                for (unsigned j = 0; j < repeat; ++j) {
                                     total_code_lengths[i++] = 0;
                                 }
                             }
                             break;
                             default:
-                                total_code_lengths[i++] = value;
+                                total_code_lengths[i++] = static_cast<uint8_t>(value);
                             }
                         }
 
@@ -422,7 +421,7 @@ bool NiftiRead(const path& filename, Image& dst)
                     while (1) {
                         auto value = h_lit_len.decode(br);
                         if (value < 256) {
-                            output_data.push_back(value);
+                            output_data.push_back(static_cast<uint8_t>(value));
                         }
                         else if (value == 256) {
                             break;
