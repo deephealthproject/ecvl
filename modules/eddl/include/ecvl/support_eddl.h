@@ -206,7 +206,7 @@ class ProducersConsumerQueue
     std::condition_variable cond_notempty_;     /**< @brief Condition variable that wait if the queue is empty. */
     std::condition_variable cond_notfull_;      /**< @brief Condition variable that wait if the queue is full. */
     mutable std::mutex mutex_;                  /**< @brief Mutex to grant exclusive access to the queue. */
-    std::queue<std::tuple<Sample, Image, Label*>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
+    std::queue<std::tuple<Sample, Image, std::shared_ptr<Label>>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
     unsigned max_size_;                         /**< @brief Maximum size of the queue. */
     unsigned threshold_;                        /**< @brief Threshold from which restart to produce samples. If not specified, it's set to the half of maximum size. */
 
@@ -230,7 +230,7 @@ public:
     @param[in] image Image to push in the queue.
     @param[in] label Label to push in the queue.
     */
-    void Push(const Sample& sample, const Image& image, Label* const label)
+    void Push(const Sample& sample, const Image& image, std::shared_ptr<Label> const label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cond_notfull_.wait(lock, [this]() { return cpq_.size() < max_size_; });
@@ -247,7 +247,7 @@ public:
     @param[in] image Image to pop from the queue.
     @param[in] label Label to pop from the queue.
     */
-    void Pop(Sample& sample, Image& image, Label*& label)
+    void Pop(Sample& sample, Image& image, std::shared_ptr<Label>& label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cond_notempty_.wait(lock, [this]() { return !cpq_.empty(); });
@@ -305,8 +305,6 @@ public:
 
         // Remove residual samples and delete data
         while (!cpq_.empty()) {
-            auto [sample, image, label] = cpq_.front();
-            delete label; // Deallocate pointer
             cpq_.pop();
         }
     }
@@ -352,7 +350,7 @@ protected:
     bool active_ = false;                       /**< @brief Whether the threads have already been launched or not. */
     std::mutex active_mutex_;                   /**< @brief Mutex for active_ variable. */
     static std::default_random_engine re_;      /**< @brief Engine used for random number generation. */
-    Label* label_ = nullptr;                    /**< @brief Label pointer which will be specialized based on the dataset task. */
+    std::shared_ptr<Label> label_ = nullptr;                    /**< @brief Label pointer which will be specialized based on the dataset task. */
 
     /** @brief Set which are the indices of the samples managed by each thread.
 

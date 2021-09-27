@@ -347,10 +347,10 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
     switch (task_) {
     case Task::classification:
     {
-        LabelClass* label = nullptr;
+        shared_ptr<LabelClass> label = nullptr;
         // Read the label
         if (!split_[current_split_].no_label_) {
-            label = new LabelClass();
+            label = make_shared<LabelClass>();
             label->label = elem.label_.value();
         }
         // Apply chain of augmentations only to sample image
@@ -360,10 +360,10 @@ void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
     break;
     case Task::segmentation:
     {
-        LabelImage* label = nullptr;
+        shared_ptr<LabelImage> label = nullptr;
         // Read the ground truth
         if (!split_[current_split_].no_label_) {
-            label = new LabelImage();
+            label = make_shared<LabelImage>();
             Image gt = elem.LoadImage(ctype_gt_, true);
             // Apply chain of augmentations to sample image and corresponding ground truth
             augs.Apply(current_split_, img, gt);
@@ -457,7 +457,6 @@ tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> DLDataset::GetBatc
 
         if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: test split with no labels)
             label_->ToTensorPlane(y.get(), i); // Copy label into tensor at position i
-            delete label_; // Destroy label of popped sample
         }
     }
 
