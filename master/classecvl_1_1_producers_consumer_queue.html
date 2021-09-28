@@ -112,12 +112,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a50d2e774ed35ad81ae2ef5f286128f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4178fcfb6a85a51d09ad4ee6c08a40a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a4178fcfb6a85a51d09ad4ee6c08a40a8">ProducersConsumerQueue</a> (unsigned mxsz, unsigned thresh)</td></tr>
 <tr class="separator:a4178fcfb6a85a51d09ad4ee6c08a40a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a6e78176bc77e0cf8ec0744f4c94366"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a5a6e78176bc77e0cf8ec0744f4c94366">Push</a> (const <a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;image, <a class="el" href="classecvl_1_1_label.html">Label</a> *const label)</td></tr>
-<tr class="memdesc:a5a6e78176bc77e0cf8ec0744f4c94366"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a sample in the queue.  <a href="#a5a6e78176bc77e0cf8ec0744f4c94366">More...</a><br /></td></tr>
-<tr class="separator:a5a6e78176bc77e0cf8ec0744f4c94366"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a830f1444e5d0805a2d9f2fe6283a3182"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a830f1444e5d0805a2d9f2fe6283a3182">Pop</a> (<a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;image, <a class="el" href="classecvl_1_1_label.html">Label</a> *&amp;label)</td></tr>
-<tr class="memdesc:a830f1444e5d0805a2d9f2fe6283a3182"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a sample from the queue.  <a href="#a830f1444e5d0805a2d9f2fe6283a3182">More...</a><br /></td></tr>
-<tr class="separator:a830f1444e5d0805a2d9f2fe6283a3182"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69a931137c8f848b488fb458d6c999c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a69a931137c8f848b488fb458d6c999c5">Push</a> (const <a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;image, std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; const label)</td></tr>
+<tr class="memdesc:a69a931137c8f848b488fb458d6c999c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a sample in the queue.  <a href="#a69a931137c8f848b488fb458d6c999c5">More...</a><br /></td></tr>
+<tr class="separator:a69a931137c8f848b488fb458d6c999c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c3fdbb6517136d068c8a53852257e3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a7c3fdbb6517136d068c8a53852257e3f">Pop</a> (<a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;image, std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; &amp;label)</td></tr>
+<tr class="memdesc:a7c3fdbb6517136d068c8a53852257e3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a sample from the queue.  <a href="#a7c3fdbb6517136d068c8a53852257e3f">More...</a><br /></td></tr>
+<tr class="separator:a7c3fdbb6517136d068c8a53852257e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfeced419b8af2a920651fd8dcd87e9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#acfeced419b8af2a920651fd8dcd87e9f">IsFull</a> () const</td></tr>
 <tr class="memdesc:acfeced419b8af2a920651fd8dcd87e9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the queue is full.  <a href="#acfeced419b8af2a920651fd8dcd87e9f">More...</a><br /></td></tr>
 <tr class="separator:acfeced419b8af2a920651fd8dcd87e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -363,8 +363,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a830f1444e5d0805a2d9f2fe6283a3182"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a830f1444e5d0805a2d9f2fe6283a3182">&#9670;&nbsp;</a></span>Pop()</h2>
+<a id="a7c3fdbb6517136d068c8a53852257e3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c3fdbb6517136d068c8a53852257e3f">&#9670;&nbsp;</a></span>Pop()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,7 +387,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_label.html">Label</a> *&amp;&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>label</em>&#160;</td>
         </tr>
         <tr>
@@ -418,8 +418,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5a6e78176bc77e0cf8ec0744f4c94366"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a6e78176bc77e0cf8ec0744f4c94366">&#9670;&nbsp;</a></span>Push()</h2>
+<a id="a69a931137c8f848b488fb458d6c999c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69a931137c8f848b488fb458d6c999c5">&#9670;&nbsp;</a></span>Push()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -442,7 +442,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_label.html">Label</a> *const&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; const&#160;</td>
           <td class="paramname"><em>label</em>&#160;</td>
         </tr>
         <tr>

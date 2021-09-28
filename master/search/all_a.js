@@ -1,7 +1,7 @@
 var searchData=
 [
   ['label',['Label',['../classecvl_1_1_label.html',1,'ecvl::Label'],['../classecvl_1_1_label_class.html#af9bc3a8996a7e484d7bafd345dc8609a',1,'ecvl::LabelClass::label()']]],
-  ['label_5f',['label_',['../classecvl_1_1_sample.html#aaf66ba7bc86ad56998f6ab22124cbd9c',1,'ecvl::Sample::label_()'],['../classecvl_1_1_d_l_dataset.html#ab3671a5477ad3be4832e8f2660728d34',1,'ecvl::DLDataset::label_()']]],
+  ['label_5f',['label_',['../classecvl_1_1_sample.html#aaf66ba7bc86ad56998f6ab22124cbd9c',1,'ecvl::Sample::label_()'],['../classecvl_1_1_d_l_dataset.html#a85f11b3b0c818f39e4fd2e8b73b30f1c',1,'ecvl::DLDataset::label_()']]],
   ['label_5fpath_5f',['label_path_',['../classecvl_1_1_sample.html#abe44b09e2becd0c50c369f7037792a1b',1,'ecvl::Sample']]],
   ['labelclass',['LabelClass',['../classecvl_1_1_label_class.html',1,'ecvl']]],
   ['labelimage',['LabelImage',['../classecvl_1_1_label_image.html',1,'ecvl']]],
