@@ -358,6 +358,23 @@ protected:
     */
     void InitTC(int split_index);
 
+    /** @brief Set internal EDDL tensors shape. */
+    void SetTensorsShape()
+    {
+        switch (task_) {
+        case Task::classification:
+            tensors_shape_ = make_pair<vector<int>, vector<int>>(
+                { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
+                { batch_size_, vsize(classes_) });
+            break;
+        case Task::segmentation:
+            tensors_shape_ = make_pair<vector<int>, vector<int>>(
+                { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
+                { batch_size_, n_channels_gt_, resize_dims_[0], resize_dims_[1] });
+            break;
+        }
+    }
+
 public:
     int n_channels_;                            /**< @brief Number of channels of the images. */
     int n_channels_gt_ = -1;                    /**< @brief Number of channels of the ground truth images. */
@@ -447,18 +464,7 @@ public:
             ++s_index;
         }
 
-        switch (task_) {
-        case Task::classification:
-            tensors_shape_ = make_pair<vector<int>, vector<int>>(
-                { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
-                { batch_size_, vsize(classes_) });
-            break;
-        case Task::segmentation:
-            tensors_shape_ = make_pair<vector<int>, vector<int>>(
-                { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
-                { batch_size_, n_channels_gt_, resize_dims_[0], resize_dims_[1] });
-            break;
-        }
+        SetTensorsShape();
     }
 
     /** @brief Reset the batch counter and optionally shuffle samples indices of the specified split.
@@ -556,7 +562,8 @@ public:
 
     @param[in] num_workers Number of threads/workers that will be spawned.
     */
-    void SetWorkers(const unsigned num_workers) {
+    void SetWorkers(const unsigned num_workers)
+    {
         if (num_workers < 0) {
             ECVL_ERROR_WORKERS_LESS_THAN_ONE
         }
@@ -565,6 +572,19 @@ public:
         for (int i = 0; i < vsize(split_); ++i) {
             InitTC(i);
         }
+    }
+
+    /** @brief Change the number of channels of the Image produced by ECVL and update the internal EDDL tensors shape accordingly.
+    Useful for custom data loading.
+
+    @param[in] n_channels Number of channels of input Image.
+    @param[in] n_channels_gt Number of channels of ground truth.
+    */
+    void SetNumChannels(const int n_channels, const int n_channels_gt = 1)
+    {
+        n_channels_ = n_channels;
+        n_channels_gt_ = n_channels_gt;
+        SetTensorsShape();
     }
 };
 

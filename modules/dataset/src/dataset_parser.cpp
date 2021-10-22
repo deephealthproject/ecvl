@@ -87,9 +87,8 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_CANNOT_LOAD_IMAGE
         }
 
-        // ImRead always return BGR, so we have to change color space for other color type
-        if (img.colortype_ != ctype) {
-            ChangeColorSpace(img, img, ctype);
+        if (is_gt) {
+            break;
         }
 
         images.push_back(img);
@@ -97,6 +96,11 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
 
     if (images.size() > 1) {
         Stack(images, img);
+    }
+
+    // ImRead always return BGR, so we have to change color space for other color type
+    if (img.colortype_ != ctype) {
+        ChangeColorSpace(img, img, ctype);
     }
 
     if (size_.empty()) {
