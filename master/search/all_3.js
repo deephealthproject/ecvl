@@ -14,7 +14,7 @@ var searchData=
   ['colortype',['ColorType',['../namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3',1,'ecvl']]],
   ['colortype_5f',['colortype_',['../classecvl_1_1_image.html#a48a690afebe942f779dd1520c61d4d9e',1,'ecvl::Image']]],
   ['common_2eh',['common.h',['../common_8h.html',1,'']]],
-  ['connectedcomponentslabeling',['ConnectedComponentsLabeling',['../namespaceecvl.html#aed7ae9e9c78f257354b6c638521cc1ab',1,'ecvl']]],
+  ['connectedcomponentslabeling',['ConnectedComponentsLabeling',['../namespaceecvl.html#a3a90a593c2bab22f255e611572011a41',1,'ecvl']]],
   ['constcontiguousiterator',['ConstContiguousIterator',['../structecvl_1_1_const_contiguous_iterator.html',1,'ecvl::ConstContiguousIterator&lt; T &gt;'],['../structecvl_1_1_const_contiguous_iterator.html#a2d587cfec2e55a91e113fa19afdb2c13',1,'ecvl::ConstContiguousIterator::ConstContiguousIterator()']]],
   ['constcontiguousview',['ConstContiguousView',['../classecvl_1_1_const_contiguous_view.html',1,'ecvl::ConstContiguousView&lt; DT &gt;'],['../classecvl_1_1_const_contiguous_view.html#a6acec54d9b5549e1b18d9be5083d890b',1,'ecvl::ConstContiguousView::ConstContiguousView()'],['../classecvl_1_1_const_contiguous_view.html#a4c9c2d233c932018ba902b400c599dff',1,'ecvl::ConstContiguousView::ConstContiguousView(const Image &amp;img)']]],
   ['constcontiguousviewxyc',['ConstContiguousViewXYC',['../classecvl_1_1_const_contiguous_view_x_y_c.html',1,'ecvl::ConstContiguousViewXYC&lt; DT &gt;'],['../classecvl_1_1_const_contiguous_view_x_y_c.html#a7e6deedb2ab0e763233b2ea5fc37772e',1,'ecvl::ConstContiguousViewXYC::ConstContiguousViewXYC()']]],

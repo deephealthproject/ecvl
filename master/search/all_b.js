@@ -2,7 +2,7 @@ var searchData=
 [
   ['macros_2eh',['macros.h',['../macros_8h.html',1,'']]],
   ['makegrid',['MakeGrid',['../namespaceecvl.html#a310b48785dc2cbeabbea636789a7ddaa',1,'ecvl']]],
-  ['mattoimage',['MatToImage',['../namespaceecvl.html#a80fbdfbbf414273984cf18222b4c77bd',1,'ecvl']]],
+  ['mattoimage',['MatToImage',['../namespaceecvl.html#ae0eb8691f24f83a795298ec2910330cf',1,'ecvl']]],
   ['matvectoimage',['MatVecToImage',['../namespaceecvl.html#a8d1b78ff48631d7b60bc0c201c438675',1,'ecvl']]],
   ['max_5f',['max_',['../classecvl_1_1_augmentation_param.html#a7ce2d71d8d0de3d04cb8c4a64e8f59d1',1,'ecvl::AugmentationParam::max_()'],['../classecvl_1_1_thread_counters.html#af7568da6102b8b272cf0f62c3861b2b9',1,'ecvl::ThreadCounters::max_()']]],
   ['meanstddev',['MeanStdDev',['../namespaceecvl.html#a73979fb8877322e81048522db568a82d',1,'ecvl']]],
