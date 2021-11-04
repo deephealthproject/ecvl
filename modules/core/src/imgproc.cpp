@@ -361,7 +361,7 @@ vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n)
     return src.hal_->GetMaxN(src, n);
 }
 
-void ConnectedComponentsLabeling(const Image& src, Image& dst)
+int ConnectedComponentsLabeling(const Image& src, Image& dst)
 {
     AlwaysCheck(src, dst);
 
@@ -369,7 +369,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-    src.hal_->ConnectedComponentsLabeling(src, dst);
+    return src.hal_->ConnectedComponentsLabeling(src, dst);
 }
 
 void FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)

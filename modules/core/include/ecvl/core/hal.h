@@ -147,7 +147,7 @@ public:
     virtual void IntegralImage(const Image& src, Image& dst, DataType dst_type) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void NonMaximaSuppression(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n) { ECVL_ERROR_NOT_IMPLEMENTED }
-    virtual void ConnectedComponentsLabeling(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual int ConnectedComponentsLabeling(const Image& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void FindContours(const Image& src, std::vector<std::vector<ecvl::Point2i>>& contours) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Stack(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void HConcat(const std::vector<Image>& src, Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }

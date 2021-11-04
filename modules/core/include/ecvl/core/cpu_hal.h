@@ -79,7 +79,7 @@ public:
     void IntegralImage(const Image& src, Image& dst, DataType dst_type) override;
     void NonMaximaSuppression(const Image& src, Image& dst) override;
     std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n) override;
-    void ConnectedComponentsLabeling(const Image& src, Image& dst) override;
+    int ConnectedComponentsLabeling(const Image& src, Image& dst) override;
     void FindContours(const Image& src, std::vector<std::vector<ecvl::Point2i>>& contours) override;
     void Stack(const std::vector<Image>& src, Image& dst) override;
     void HConcat(const std::vector<Image>& src, Image& dst) override;

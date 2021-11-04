@@ -18,7 +18,7 @@
 
 namespace ecvl
 {
-Image MatToImage(const cv::Mat& m, ColorType ctype)
+Image MatToImage(const cv::Mat& m, ColorType ctype, const std::string& dst_channels)
 {
     Image img;
 
@@ -99,6 +99,10 @@ Image MatToImage(const cv::Mat& m, ColorType ctype)
         // Switch to specific colortype if given
         if (ctype != ColorType::none && ctype != img.colortype_) {
             ChangeColorSpace(img, img, ctype);
+        }
+
+        if (dst_channels != "") {
+            RearrangeChannels(img, img, dst_channels);
         }
     }
     else {

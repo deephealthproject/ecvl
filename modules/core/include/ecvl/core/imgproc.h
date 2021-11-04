@@ -303,8 +303,9 @@ efficient algorithm to label connected components inside binary images using 8-w
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
 @param[out] dst Output Image.
+@return number of different objects, including background.
 */
-void ConnectedComponentsLabeling(const Image& src, Image& dst);
+int ConnectedComponentsLabeling(const Image& src, Image& dst);
 
 /** @brief Finds contours in a binary image
 
