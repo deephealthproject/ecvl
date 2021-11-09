@@ -20,7 +20,8 @@ using namespace std;
 int main()
 {
     // Open an Image
-    Image img1, img2, tmp;
+    Image img1(Device::FPGA), img2(Device::FPGA), tmp(Device::FPGA);
+
     if (!ImRead("../examples/data/test.jpg", img1)) {
         return EXIT_FAILURE;
     }

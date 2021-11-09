@@ -277,6 +277,25 @@ public:
     {
     }
 
+    Image( Device dev ) :
+        elemtype_{ DataType::none },
+        elemsize_{ DataTypeSize(elemtype_) },
+        dims_{},
+        spacings_{},
+        strides_{},
+        channels_{},
+        colortype_{ ColorType::none },
+        data_{ nullptr },
+        datasize_{ 0 },
+        contiguous_{ true },
+        meta_{ nullptr },
+        hal_{ nullptr },
+        dev_{ Device::FPGA }
+    {
+	    printf("a FPGA\n");
+    }
+
+
     /** @brief Initializing constructor
 
         The initializing constructor creates a proper image and allocates the data.

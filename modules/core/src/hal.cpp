@@ -29,6 +29,10 @@ namespace ecvl
 
 HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool shallow)
 {
+	printf("Entro en factory\n");
+	if (dev == ecvl::Device::NONE) printf("NONE\n");
+	if (dev == ecvl::Device::CPU) printf("CPU\n");
+	exit(1);
     switch (dev) {
     case ecvl::Device::NONE:
         throw std::runtime_error("This is a big problem. You should never try to obtain a HAL from NONE device.");
@@ -46,6 +50,7 @@ HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool sha
         ECVL_ERROR_DEVICE_UNAVAILABLE(GPU)
 #endif
     case ecvl::Device::FPGA:
+		printf(" FPGA\n");
         return FpgaHal::GetInstance();
     default:
         ECVL_ERROR_NOT_REACHABLE_CODE

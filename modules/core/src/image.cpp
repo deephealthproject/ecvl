@@ -258,6 +258,8 @@ void ShallowCopyImage(const Image& src, Image& dst)
         ECVL_ERROR_WRONG_PARAMS("src and dst cannot be the same Image.")
     }
 
+    printf("Estoy en ShallowCopyImage\n");
+
     dst.elemtype_   = src.elemtype_;
     dst.elemsize_   = src.elemsize_;
     dst.dims_       = src.dims_;
