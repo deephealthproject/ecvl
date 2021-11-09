@@ -154,6 +154,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_pepper.html">AugPepper</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a407f4c64587b11deccebc131a4a2975c" title="Adds pepper noise (black pixels) to an Image.">ecvl::Pepper</a>.  <a href="classecvl_1_1_aug_pepper.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_random_crop.html">AugRandomCrop</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a2f5449c33adccd41659602093ddec78f" title="Crop the source Image at a random location with the size specified.">ecvl::RandomCrop</a>.  <a href="classecvl_1_1_aug_random_crop.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_resize_dim.html">AugResizeDim</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a010dd55cace0a7b700391238952f9e55" title="Resizes an Image to the specified dimensions.">ecvl::ResizeDim</a>.  <a href="classecvl_1_1_aug_resize_dim.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -170,7 +173,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a7105a709b77f159fa91b7f09e2f449bf" title="Adds salt and pepper noise (white and black pixels) to an Image. White and black pixels are equally l...">ecvl::SaltAndPepper</a>.  <a href="classecvl_1_1_aug_salt_and_pepper.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_scale_to.html">AugScaleTo</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="classecvl_1_1_aug_scale_to.html" title="Augmentation wrapper for ecvl::AugScaleTo.">ecvl::AugScaleTo</a>.  <a href="classecvl_1_1_aug_scale_to.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a6ba1fce11624d83a13a15670344bade7" title="Linearly scale an Image into a new range.">ecvl::ScaleTo</a>.  <a href="classecvl_1_1_aug_scale_to.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_to_float32.html">AugToFloat32</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> ToFloat32.  <a href="classecvl_1_1_aug_to_float32.html#details">More...</a><br /></td></tr>
@@ -665,6 +668,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a6ba1fce11624d83a13a15670344bade7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6ba1fce11624d83a13a15670344bade7">ScaleTo</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const double &amp;new_min, const double &amp;new_max)</td></tr>
 <tr class="memdesc:a6ba1fce11624d83a13a15670344bade7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linearly scale an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> into a new range.  <a href="#a6ba1fce11624d83a13a15670344bade7">More...</a><br /></td></tr>
 <tr class="separator:a6ba1fce11624d83a13a15670344bade7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4547127ac1ff2f2c8d5646ea3bc8852d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a4547127ac1ff2f2c8d5646ea3bc8852d">Pad</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::vector&lt; int &gt; &amp;padding, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660">BorderType::BORDER_CONSTANT</a>, const int &amp;border_value=0)</td></tr>
+<tr class="memdesc:a4547127ac1ff2f2c8d5646ea3bc8852d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pad an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a4547127ac1ff2f2c8d5646ea3bc8852d">More...</a><br /></td></tr>
+<tr class="separator:a4547127ac1ff2f2c8d5646ea3bc8852d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f5449c33adccd41659602093ddec78f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a2f5449c33adccd41659602093ddec78f">RandomCrop</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::vector&lt; int &gt; &amp;size, bool pad_if_needed=false, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660">BorderType::BORDER_CONSTANT</a>, const int &amp;border_value=0, const unsigned seed=std::default_random_engine::default_seed)</td></tr>
+<tr class="memdesc:a2f5449c33adccd41659602093ddec78f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crop the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> at a random location with the size specified.  <a href="#a2f5449c33adccd41659602093ddec78f">More...</a><br /></td></tr>
+<tr class="separator:a2f5449c33adccd41659602093ddec78f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplParams" colspan="2">template&lt;DataType ODT, typename IDT &gt; </td></tr>
 <tr class="memitem:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structecvl_1_1_type_info.html">TypeInfo</a>&lt; ODT &gt;::basetype&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10">saturate_cast</a> (IDT v)</td></tr>
 <tr class="memdesc:afaa228c1d0b2e3eef2622ca7e4ffec10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saturate a value (of any type) to the specified type.  <a href="#afaa228c1d0b2e3eef2622ca7e4ffec10">More...</a><br /></td></tr>
@@ -716,6 +725,8 @@ Functions</h2></td></tr>
 <tr class="separator:af7e9ec15cba92409e1f55ed63dafee47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7b292ea76542bbd638f0268a87d955a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54c">InterpolationType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#ac7b292ea76542bbd638f0268a87d955a">StrToInterpolationType</a> (const std::string &amp;interp, const std::string &amp;aug_name)</td></tr>
 <tr class="separator:ac7b292ea76542bbd638f0268a87d955a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdd0086879bdd4d7bfe6523063b263ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#acdd0086879bdd4d7bfe6523063b263ed">StrToBorderType</a> (const std::string &amp;interp, const std::string &amp;aug_name)</td></tr>
+<tr class="separator:acdd0086879bdd4d7bfe6523063b263ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d5ad6783012278db0b02c6015e90b01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a4d5ad6783012278db0b02c6015e90b01">ImageToTensor</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;img, Tensor *&amp;t)</td></tr>
 <tr class="memdesc:a4d5ad6783012278db0b02c6015e90b01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an ECVL <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> into an EDDL Tensor.  <a href="#a4d5ad6783012278db0b02c6015e90b01">More...</a><br /></td></tr>
 <tr class="separator:a4d5ad6783012278db0b02c6015e90b01"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -4736,6 +4747,65 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
+<a id="a4547127ac1ff2f2c8d5646ea3bc8852d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4547127ac1ff2f2c8d5646ea3bc8852d">&#9670;&nbsp;</a></span>Pad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::Pad </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>padding</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a>&#160;</td>
+          <td class="paramname"><em>border_type</em> = <code><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660">BorderType::BORDER_CONSTANT</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int &amp;&#160;</td>
+          <td class="paramname"><em>border_value</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pad an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </p>
+<p>A border is added to the 4 sides of the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It can be specified equal for all the sides, equal for top and bottom and for left and right or different for all the sides.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>The output padded <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">padding</td><td>vector&lt;int&gt; that can have size 1 (pad is equal for all the sides of the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>), 2 (top/bottom, left/right) or 4 (top, bottom, left, right). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_type</td><td>Flag used to specify the pixel extrapolation method. Default is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_value</td><td>Padding value if border_type is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a>. Default is 0. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a407f4c64587b11deccebc131a4a2975c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a407f4c64587b11deccebc131a4a2975c">&#9670;&nbsp;</a></span>Pepper()</h2>
 
@@ -4921,6 +4991,77 @@ template&lt;typename T , typename U &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="type__promotion_8h_source.html#l00074">74</a> of file <a class="el" href="type__promotion_8h_source.html">type_promotion.h</a>.</p>
+
+</div>
+</div>
+<a id="a2f5449c33adccd41659602093ddec78f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f5449c33adccd41659602093ddec78f">&#9670;&nbsp;</a></span>RandomCrop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::RandomCrop </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>pad_if_needed</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a>&#160;</td>
+          <td class="paramname"><em>border_type</em> = <code><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660">BorderType::BORDER_CONSTANT</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int &amp;&#160;</td>
+          <td class="paramname"><em>border_value</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned&#160;</td>
+          <td class="paramname"><em>seed</em> = <code>std::default_random_engine::default_seed</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Crop the source <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> at a random location with the size specified. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. It must be xy[czo] (in any order). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>The output cropped <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">size</td><td>vector&lt;int&gt; with the desired (width, height) of the output <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">pad_if_needed</td><td>If the desired size is bigger than the src <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> and pad_if_needed is true, the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> will be padded. Otherwise, an exception will be thrown. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_type</td><td>If pad_if_needed is true, this flag is used to specify the pixel extrapolation method. Default is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">border_value</td><td>Padding value if border_type is <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660" title="iiiiii|abcdefgh|iiiiiii with some specified i">BorderType::BORDER_CONSTANT</a> and if pad_if_needed is true. Default is 0. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -5719,6 +5860,34 @@ template&lt;typename ODT , typename IDT &gt; </div>
 </dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a28">example_imgproc.cpp</a>.</dd>
 </dl>
+
+</div>
+</div>
+<a id="acdd0086879bdd4d7bfe6523063b263ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdd0086879bdd4d7bfe6523063b263ed">&#9670;&nbsp;</a></span>StrToBorderType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> ecvl::StrToBorderType </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>interp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>aug_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

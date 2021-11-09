@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['randomcrop',['RandomCrop',['../namespaceecvl.html#a2f5449c33adccd41659602093ddec78f',1,'ecvl']]],
   ['read',['read',['../classecvl_1_1param.html#a43dea3b16668f75ec0c231de5800f1d4',1,'ecvl::param']]],
   ['rearrangechannels',['RearrangeChannels',['../namespaceecvl.html#a1536192e99512f3f0861136540217333',1,'ecvl::RearrangeChannels(const Image &amp;src, Image &amp;dst, const std::string &amp;channels)'],['../namespaceecvl.html#ad7c0141f7c5608427cbbbde765532b34',1,'ecvl::RearrangeChannels(const Image &amp;src, Image &amp;dst, const std::string &amp;channels, DataType new_type)']]],
   ['reset',['Reset',['../classecvl_1_1_thread_counters.html#ac7eadfad27e7f64387e24d1b47c2e727',1,'ecvl::ThreadCounters']]],

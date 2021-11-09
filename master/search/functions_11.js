@@ -39,6 +39,7 @@ var searchData=
   ['stack',['Stack',['../namespaceecvl.html#ac4f0336afb75df754337fb55a106b12a',1,'ecvl']]],
   ['start',['Start',['../classecvl_1_1_d_l_dataset.html#ad5c7dc9bd7627621d515ddc90ca16a40',1,'ecvl::DLDataset']]],
   ['stop',['Stop',['../classecvl_1_1_d_l_dataset.html#ae441e1b649cc9167ffb8f9740312a558',1,'ecvl::DLDataset']]],
+  ['strtobordertype',['StrToBorderType',['../namespaceecvl.html#acdd0086879bdd4d7bfe6523063b263ed',1,'ecvl']]],
   ['strtointerpolationtype',['StrToInterpolationType',['../namespaceecvl.html#ac7b292ea76542bbd638f0268a87d955a',1,'ecvl']]],
   ['sub',['Sub',['../classecvl_1_1_image.html#a881d2781d789af08b911edc4fdb843c7',1,'ecvl::Image::Sub()'],['../namespaceecvl.html#ad73691e43244446abaa50b1b5cb8a2ba',1,'ecvl::Sub(const Image &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#a0199c3a3cc3833340e0d3ce293100270',1,'ecvl::Sub(const Image &amp;src1, const ST2 &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)'],['../namespaceecvl.html#af302757f41708a994e368fbc47f21a16',1,'ecvl::Sub(const ST1 &amp;src1, const Image &amp;src2, Image &amp;dst, DataType dst_type=DataType::none, bool saturate=true)']]]
 ];

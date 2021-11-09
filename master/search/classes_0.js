@@ -19,6 +19,7 @@ var searchData=
   ['augnormalize',['AugNormalize',['../classecvl_1_1_aug_normalize.html',1,'ecvl']]],
   ['augopticaldistortion',['AugOpticalDistortion',['../classecvl_1_1_aug_optical_distortion.html',1,'ecvl']]],
   ['augpepper',['AugPepper',['../classecvl_1_1_aug_pepper.html',1,'ecvl']]],
+  ['augrandomcrop',['AugRandomCrop',['../classecvl_1_1_aug_random_crop.html',1,'ecvl']]],
   ['augresizedim',['AugResizeDim',['../classecvl_1_1_aug_resize_dim.html',1,'ecvl']]],
   ['augresizescale',['AugResizeScale',['../classecvl_1_1_aug_resize_scale.html',1,'ecvl']]],
   ['augrotate',['AugRotate',['../classecvl_1_1_aug_rotate.html',1,'ecvl']]],

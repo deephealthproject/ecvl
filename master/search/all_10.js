@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['randomcrop',['RandomCrop',['../namespaceecvl.html#a2f5449c33adccd41659602093ddec78f',1,'ecvl']]],
   ['range',['range',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4a37b19816109a32106d109e83bbb3c97d',1,'ecvl::param']]],
   ['re_5f',['re_',['../classecvl_1_1_augmentation_param.html#a65ba6f692f2fbf5ba269334d0aa8276d',1,'ecvl::AugmentationParam::re_()'],['../classecvl_1_1_d_l_dataset.html#a1bfbc6bd3eb90356251719e357a71ce4',1,'ecvl::DLDataset::re_()']]],
   ['read',['read',['../classecvl_1_1param.html#a43dea3b16668f75ec0c231de5800f1d4',1,'ecvl::param']]],
