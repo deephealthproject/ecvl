@@ -723,5 +723,22 @@ void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& 
     return src.hal_->ScaleTo(src, dst, new_min, new_max);
 }
 
+void Pad(const Image& src, Image& dst, const vector<int>& padding, BorderType border_type, const int& border_value)
+{
+    AlwaysCheck(src, dst);
+    return src.hal_->Pad(src, dst, padding, border_type, border_value);
+}
 
+void RandomCrop(const Image& src, Image& dst, const vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed)
+{
+    AlwaysCheck(src, dst);
+    if (vsize(size) != 2) {
+        throw runtime_error(ECVL_ERROR_MSG "Size in RandomCrop must be (width, height)");
+    }
+    if (src.channels_.size() != 3) {
+        throw runtime_error(ECVL_ERROR_MSG "src Image in RandomCrop must have 3 dimensions: 'xy[czo]' (in any order)");
+    }
+
+    return src.hal_->RandomCrop(src, dst, size, pad_if_needed, border_type, border_value, seed);
+}
 } // namespace ecvl

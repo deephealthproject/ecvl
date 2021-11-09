@@ -104,6 +104,8 @@ public:
     void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) override;
     void CenterCrop(const Image& src, Image& dst, const std::vector<int>& size) override;
     void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max) override;
+    void Pad(const Image& src, Image& dst, const std::vector<int>& padding, BorderType border_type, const int& border_value) override;
+    void RandomCrop(const Image& src, Image& dst, const std::vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed) override;
 
     void Neg(const Image& src, Image& dst, DataType dst_type, bool saturate) override;
     void Add(const Image& src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) override;

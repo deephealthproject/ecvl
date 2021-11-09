@@ -2195,4 +2195,101 @@ void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const 
     table(src.elemtype_)(src, tmp, new_min, new_max);
     dst = std::move(tmp);
 }
+
+template <DataType SDT>
+struct RandomCropStruct
+{
+    static void _(const Image& src, Image& dst, const vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+
+        int src_w = src.Width();
+        int src_h = src.Height();
+        Image tmp = src;
+
+        if (pad_if_needed && src_w < size[0]) {
+            int pad_w = size[0] - src_w;
+            Pad(tmp, tmp, { 0, pad_w }, border_type, border_value);
+            src_w = tmp.Width();
+        }
+        if (pad_if_needed && src_h < size[1]) {
+            int pad_h = size[1] - src_h;
+            Pad(tmp, tmp, { pad_h, 0 }, border_type, border_value);
+            src_h = tmp.Height();
+        }
+
+        if (!pad_if_needed && size[0] > src_w || !pad_if_needed && size[1] > src_h) {
+            throw runtime_error(ECVL_ERROR_MSG "Size in RandomCrop must be smaller than (width, height) or pad_if_needed must be true");
+        }
+
+        default_random_engine re(random_device{}());
+        if (seed != re.default_seed) {
+            re.seed(seed);
+        }
+
+        uniform_int_distribution<> dist_w(0, src_w - size[0]);
+        uniform_int_distribution<> dist_h(0, src_h - size[1]);
+
+        int start_w = dist_w(re);
+        int start_h = dist_h(re);
+
+        vector<int> view_start(3);
+        vector<int> view_size(3);
+
+        size_t y = tmp.channels_.find('y');
+        size_t x = tmp.channels_.find('x');
+        size_t c;
+
+        string channels = "czo";
+        for (auto ch : channels) {
+            c = tmp.channels_.find(ch);
+            if (c != string::npos) {
+                break;
+            }
+        }
+
+        view_start[x] = start_w;
+        view_start[y] = start_h;
+        view_start[c] = 0;
+        view_size[x] = size[0];
+        view_size[y] = size[1];
+        view_size[c] = -1;
+
+        ConstView<SDT> src_v(tmp, view_start, view_size);
+        dst = src_v;
+    }
+};
+
+void CpuHal::Pad(const Image& src, Image& dst, const vector<int>& padding, BorderType border_type, const int& border_value)
+{
+    OpenCVAlwaysCheck(src);
+
+    int top, bottom, left, right;
+    if (vsize(padding) == 1) {
+        top = bottom = left = right = padding[0];
+    }
+    else if (vsize(padding) == 2) {
+        top = bottom = padding[0];
+        left = right = padding[1];
+    }
+    else if (vsize(padding) == 4) {
+        top = padding[0];
+        bottom = padding[1];
+        left = padding[2];
+        right = padding[3];
+    }
+    else {
+        throw runtime_error(ECVL_ERROR_MSG "Padding must have 1, 2 or 4 values");
+    }
+
+    auto mat = ImageToMat(src);
+    cv::copyMakeBorder(mat, mat, top, bottom, left, right, static_cast<int>(border_type), border_value);
+    dst = MatToImage(mat, src.colortype_, src.channels_);
+}
+
+void CpuHal::RandomCrop(const Image& src, Image& dst, const vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed)
+{
+    Table1D<RandomCropStruct> table;
+    table(src.elemtype_)(src, dst, size, pad_if_needed, border_type, border_value, seed);
+}
 } // namespace ecvl

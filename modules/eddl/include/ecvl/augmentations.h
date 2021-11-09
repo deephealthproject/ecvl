@@ -365,6 +365,7 @@ public:
 };
 
 InterpolationType StrToInterpolationType(const std::string& interp, const std::string& aug_name);
+BorderType StrToBorderType(const std::string& interp, const std::string& aug_name);
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Augmentations
@@ -1471,7 +1472,7 @@ public:
     AugDivBy255(std::istream& is) {}
 };
 
-/** @brief Augmentation wrapper for ecvl::AugScaleTo.
+/** @brief Augmentation wrapper for ecvl::ScaleTo.
 
 @anchor AugScaleTo
 */
@@ -1502,6 +1503,59 @@ public:
 
         m.Get("new_max", param::type::number, true, p);
         new_max_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::RandomCrop.
+
+@anchor AugRandomCrop
+*/
+class AugRandomCrop : public Augmentation
+{
+    std::vector<int> size_;
+    BorderType border_type_;
+    int border_value_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        const auto seed = params_["seed"].value_;
+        RandomCrop(img, img, size_, true, border_type_, border_value_, static_cast<unsigned>(seed));
+        if (!gt.IsEmpty()) {
+            RandomCrop(gt, const_cast<Image&>(gt), size_, true, border_type_, border_value_, static_cast<unsigned>(seed));
+        }
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugRandomCrop)
+
+    /** @brief AugRandomCrop constructor
+
+     @param[in] size Desired size of the output Image.
+     @param[in] border_type Flag used to specify the pixel extrapolation method if the desired size is bigger than the src Image. Default is BorderType::BORDER_CONSTANT
+     @param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT. Default is 0.
+     */
+    AugRandomCrop(const std::vector<int>& size, BorderType border_type = BorderType::BORDER_CONSTANT, const int& border_value = 0) : 
+        size_{ size }, border_type_{ border_type }, border_value_{ border_value } 
+    {
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+    }
+
+    AugRandomCrop(std::istream& is)
+    {
+        auto m = param::read(is, "AugRandomCrop");
+        param p;
+
+        m.Get("size", param::type::vector, true, p);
+        for (const auto& x : p.vals_) {
+            size_.emplace_back(static_cast<int>(x));
+        }
+
+        m.Get("border_type", param::type::string, false, p);
+        border_type_ = StrToBorderType(p.str_, "AugRandomCrop");
+
+        m.Get("border_value", param::type::number, false, p);
+        border_value_ = static_cast<int>(p.vals_[0]);
+
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
     }
 };
 } // namespace ecvl

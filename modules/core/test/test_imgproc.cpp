@@ -799,6 +799,42 @@ TEST_F(Imgproc, GammaContrast_##type) \
     EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 1,0,0 }) / 255.),3)))); \
     EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 0,1,0 }) / 255.),3)))); \
     EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 1,1,0 }) / 255.),3)))); \
+}\
+\
+TEST_F(Imgproc, Pad_##type) \
+{ \
+    if (DataType::type != DataType::int64) { \
+        Pad(g2_##type, out, { 3 }); \
+        View<DataType::type> out_v(out); \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(8, 8, 1)); \
+        Pad(g1_##type, out, { 1, 1 }); \
+        out_v = out; \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(3, 3, 1)); \
+        Pad(rgb2_##type, out, { 2, 1, 3, 1 }); \
+        out_v = out; \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(6, 5, 3)); \
+    } \
+    else { \
+        EXPECT_THROW(Pad(g2_##type, out, { 3 }), std::runtime_error); \
+    } \
+}\
+\
+TEST_F(Imgproc, RandomCrop_##type) \
+{ \
+    RandomCrop(g2_##type, out, { 1, 1 }); \
+    View<DataType::type> out_v(out); \
+    EXPECT_THAT(out_v.dims_, testing::ElementsAre(1, 1, 1)); \
+    RandomCrop(rgb2_##type, out, { 1, 1 }); \
+    out_v = out; \
+    EXPECT_THAT(out_v.dims_, testing::ElementsAre(1, 1, 3)); \
+    if (DataType::type != DataType::int64) { \
+        RandomCrop(rgb2_##type, out, { 4, 4 }, true); \
+        out_v = out; \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(4, 4, 3)); \
+    } \
+    else { \
+        EXPECT_THROW(RandomCrop(rgb2_##type, out, {4, 4}, true), std::runtime_error); \
+    } \
 }
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"

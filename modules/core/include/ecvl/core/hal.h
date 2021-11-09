@@ -172,6 +172,8 @@ public:
     virtual void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Pad(const Image& src, Image& dst, const std::vector<int>& padding, BorderType border_type, const int& border_value) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void RandomCrop(const Image& src, Image& dst, const std::vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual bool IsOwner() const { return true; };
 

@@ -52,6 +52,31 @@ InterpolationType StrToInterpolationType(const std::string& interp, const std::s
     }
 }
 
+BorderType StrToBorderType(const std::string& border_type, const std::string& aug_name)
+{
+    if (border_type == "constant") {
+        return BorderType::BORDER_CONSTANT;
+    }
+    else if (border_type == "reflect") {
+        return BorderType::BORDER_REFLECT;
+    }
+    else if (border_type == "reflect101") {
+        return BorderType::BORDER_REFLECT_101;
+    }
+    else if (border_type == "replicate") {
+        return BorderType::BORDER_REPLICATE;
+    }
+    else if (border_type == "transparent") {
+        return BorderType::BORDER_TRANSPARENT;
+    }
+    else if (border_type == "wrap") {
+        return BorderType::BORDER_WRAP;
+    }
+    else {
+        throw std::runtime_error(aug_name + ": invalid border type");
+    }
+}
+
 // This factory must be manually populated! Don't forget to do it, otherwise no creation from streams
 
 #define AUG(x) if (name == #x) return std::make_shared<x>(is)
@@ -82,6 +107,7 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugToFloat32);
     AUG(AugDivBy255);
     AUG(AugScaleTo);
+    AUG(AugRandomCrop);
 
     return nullptr; // Maybe throw?
 }

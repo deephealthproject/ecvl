@@ -682,6 +682,29 @@ The function linearly rescale the Image having values in [min,max] into a new ar
 */
 void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max);
 
+/** @brief Pad an Image.
+
+A border is added to the 4 sides of the Image. It can be specified equal for all the sides, equal for top and bottom and for left and right or different for all the sides.
+
+@param[in] src The input Image.
+@param[out] dst The output padded Image.
+@param[in] padding vector<int> that can have size 1 (pad is equal for all the sides of the Image), 2 (top/bottom, left/right) or 4 (top, bottom, left, right).
+@param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_CONSTANT.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT. Default is 0.
+*/
+void Pad(const Image& src, Image& dst, const std::vector<int>& padding, BorderType border_type = BorderType::BORDER_CONSTANT, const int& border_value = 0);
+
+/** @brief Crop the source Image at a random location with the size specified.
+
+@param[in] src The input Image. It must be xy[czo] (in any order).
+@param[out] dst The output cropped Image.
+@param[in] size vector<int> with the desired (width, height) of the output Image.
+@param[in] pad_if_needed If the desired size is bigger than the src Image and pad_if_needed is true, the Image will be padded. Otherwise, an exception will be thrown.
+@param[in] border_type If pad_if_needed is true, this flag is used to specify the pixel extrapolation method. Default is BorderType::BORDER_CONSTANT.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT and if pad_if_needed is true. Default is 0.
+*/
+void RandomCrop(const Image& src, Image& dst, const std::vector<int>& size, bool pad_if_needed = false, BorderType border_type = BorderType::BORDER_CONSTANT, const int& border_value = 0, const unsigned seed = std::default_random_engine::default_seed);
+
 /** @example example_moments.cpp
 This is an example application of the raw and central moments.
 */
