@@ -11,7 +11,10 @@
 * All rights reserved.
 */
 
+#include <ecvl/core/image.h>
 #include "ecvl/core/fpga_hal.h"
+
+#define ECVL_FPGA
 
 namespace ecvl
 {
@@ -19,7 +22,7 @@ namespace ecvl
 FpgaHal* FpgaHal::GetInstance()
 {
 #ifndef ECVL_FPGA
-//    ECVL_ERROR_DEVICE_UNAVAILABLE(FPGA)
+    ECVL_ERROR_DEVICE_UNAVAILABLE(FPGA)
 #endif // ECVL_FPGA
 
   printf("FPGA getinstance\n");
@@ -27,6 +30,21 @@ FpgaHal* FpgaHal::GetInstance()
     static FpgaHal instance; 	// Guaranteed to be destroyed.
                                // Instantiated on first use.
     return &instance;
+}
+
+void FpgaHal::CopyImage(const Image& src, Image& dst)
+{
+    printf("FpgaHal::CopyImage not implemented\n"); exit(1);
+}
+
+void FpgaHal::ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate)
+{
+    printf("FpgaHal::ConvertTo not implemented\n"); exit(1);
+}
+
+void FpgaHal::RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings)
+{
+    printf("FpgaHal::RearrangeChannels not implemented\n"); exit(1);
 }
 
 } // namespace ecvl

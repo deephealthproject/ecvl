@@ -15,8 +15,6 @@
 #define ECVL_FPGA_HAL_H_
 
 #include "ecvl/core/hal.h"
-#include "ecvl/core/image.h"
-
 
 namespace ecvl
 {
@@ -51,8 +49,11 @@ public:
     }
     void ToCpu(Image& src) override
     {
+        printf("ToCPU de FpgaHal\n");
         ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::ToCpu")
     }
+
+
 
     void CopyImage(const Image& src, Image& dst) override;
     void RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings) override;
@@ -93,7 +94,9 @@ public:
     void Salt(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
     void Pepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
     void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed) override;
+  
     void SliceTimingCorrection(const Image& src, Image& dst, bool odd, bool down) override;
+    
     // void Moments(const Image& src, Image& moments, int order, DataType type) override;
     void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type) override;
     void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness) override;
@@ -129,6 +132,7 @@ public:
 
 #include "datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE
+
 };
 
 } // namespace ecvl
