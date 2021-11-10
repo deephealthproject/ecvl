@@ -15,29 +15,41 @@
 #define ECVL_FPGA_HAL_H_
 
 #include "ecvl/core/hal.h"
+#include "ecvl/core/image.h"
+#include <iostream>
+#include "../../../../../3rdparty/xfopencv/examples_sdaccel/resize/xcl2.hpp"
+
+extern cl::Context context;
+extern cl::CommandQueue q;
 
 namespace ecvl
 {
 /** @brief FPGA specific Hardware Abstraction Layer
 
 */
+
+void fpga_init();
+//void ReturnBuffer(cv::Mat& src,  ecvl::Image& dst);
+
 class FpgaHal : public HardwareAbstractionLayer
 {
 public:
     uint8_t* MemAllocate(size_t nbytes) override
     {
-        printf("FPGA: MemAllocate %d bytes\n", nbytes);
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::MemAllocate")
+        printf("FPGA: MemAllocate\n");
+        cl::Buffer *imageToDevice = new cl::Buffer(context, CL_MEM_READ_ONLY, nbytes);
+        return (uint8_t*) imageToDevice;
     }
     void MemDeallocate(uint8_t* data) override
     {
         printf("FPGA: MemDeallocate\n");
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::MemDeallocate")
+        delete[] data;
     }
     uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
     {
         printf("FPGA: MemCopy %d bytes\n", nbytes);
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::MemCopy")
+        cl::Buffer *buffer_a = (cl::Buffer*) dst;
+        return (uint8_t*) q.enqueueWriteBuffer(*buffer_a, CL_TRUE, 0, nbytes, src);
     }
 
     static FpgaHal* GetInstance();
