@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.4
-* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -29,10 +29,10 @@ namespace ecvl
 
 HardwareAbstractionLayer* HardwareAbstractionLayer::Factory(Device dev, bool shallow)
 {
-	printf("Entro en factory\n");
-	if (dev == ecvl::Device::NONE) printf("NONE\n");
-	if (dev == ecvl::Device::CPU) printf("CPU\n");
-	exit(1);
+	//printf("Entro en factory\n");
+	//if (dev == ecvl::Device::NONE) printf("NONE\n");
+	//if (dev == ecvl::Device::CPU) printf("CPU\n");
+	//exit(1);
     switch (dev) {
     case ecvl::Device::NONE:
         throw std::runtime_error("This is a big problem. You should never try to obtain a HAL from NONE device.");

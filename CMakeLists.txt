@@ -257,7 +257,7 @@ find_package(Git QUIET)
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: ECVL optional libraries
 #--------------------------------------------------------------------------------------------------------
-set(ECVL_BUILD_EXAMPLES OFF CACHE BOOL "Whether to build ECVL examples or not")
+set(ECVL_BUILD_EXAMPLES ON CACHE BOOL "Whether to build ECVL examples or not")
 set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
 set(ECVL_BUILD_EDDL ON CACHE BOOL "Whether to build ECVL_EDDL or not (requires eddl)")
 

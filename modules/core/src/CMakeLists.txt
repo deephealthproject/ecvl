@@ -24,6 +24,9 @@ target_sources(ECVL_CORE
         imgproc.cpp
         support_opencv.cpp
         support_nifti.cpp
+	fpga_hal_arithmetic.cpp
+	fpga_hal_imgproc.cpp
+	fpga_hal_volproc.cpp
 )
 
 

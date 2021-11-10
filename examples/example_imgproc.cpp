@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.4
-* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -20,11 +20,15 @@ using namespace std;
 int main()
 {
     // Open an Image
-    Image img1(Device::FPGA), img2(Device::FPGA), tmp(Device::FPGA);
+    Image img1, img2, tmp;
+   
 
     if (!ImRead("../examples/data/test.jpg", img1)) {
         return EXIT_FAILURE;
     }
+    img1.To(Device::FPGA);
+    img2.To(Device::FPGA);
+    tmp.To(Device::FPGA);
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
     int new_width = 225;

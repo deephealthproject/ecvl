@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.4
-* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -276,25 +276,6 @@ public:
         dev_{ Device::NONE }
     {
     }
-
-    Image( Device dev ) :
-        elemtype_{ DataType::none },
-        elemsize_{ DataTypeSize(elemtype_) },
-        dims_{},
-        spacings_{},
-        strides_{},
-        channels_{},
-        colortype_{ ColorType::none },
-        data_{ nullptr },
-        datasize_{ 0 },
-        contiguous_{ true },
-        meta_{ nullptr },
-        hal_{ nullptr },
-        dev_{ Device::FPGA }
-    {
-	    printf("a FPGA\n");
-    }
-
 
     /** @brief Initializing constructor
 
