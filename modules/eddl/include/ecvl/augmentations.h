@@ -335,6 +335,7 @@ public:
         for (const auto& a : other.augs_) {
             augs_.emplace_back(a->Clone());
         }
+        p_ = other.p_;
     }
 
     OneOfAugmentationContainer(std::istream& is)
