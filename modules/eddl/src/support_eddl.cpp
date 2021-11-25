@@ -23,6 +23,7 @@
 
 using namespace eddl;
 using namespace ecvl::filesystem;
+using namespace std;
 
 namespace ecvl
 {
@@ -341,38 +342,52 @@ Image MakeGrid(Tensor*& t, int cols, bool normalize)
     return image_t;
 }
 
+void DLDataset::ToTensorPlane(const vector<int>& label, Tensor*& tensor)
+{
+    tensor = new Tensor({ vsize(classes_) });
+
+    vector<float> lab(vsize(classes_), 0);
+    for (int j = 0; j < vsize(label); ++j) {
+        lab[label[j]] = 1;
+    }
+    std::copy(lab.data(), lab.data() + lab.size(), tensor->ptr);
+}
+
 void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
 {
     Image img = elem.LoadImage(ctype_, false);
+    Tensor* label_tensor = nullptr, *image_tensor = nullptr;
+
     switch (task_) {
     case Task::classification:
     {
-        shared_ptr<LabelClass> label = nullptr;
         // Read the label
         if (!split_[current_split_].no_label_) {
-            label = make_shared<LabelClass>();
-            label->label = elem.label_.value();
+            auto label = elem.label_.value();
+            ToTensorPlane(label, label_tensor);
         }
         // Apply chain of augmentations only to sample image
         augs.Apply(current_split_, img);
-        queue_.Push(elem, img, label);
+        ImageToTensor(img, image_tensor);
+
+        queue_.Push(elem, image_tensor, label_tensor);
     }
     break;
     case Task::segmentation:
     {
-        shared_ptr<LabelImage> label = nullptr;
         // Read the ground truth
         if (!split_[current_split_].no_label_) {
-            label = make_shared<LabelImage>();
             Image gt = elem.LoadImage(ctype_gt_, true);
             // Apply chain of augmentations to sample image and corresponding ground truth
             augs.Apply(current_split_, img, gt);
-            label->gt = gt;
+            ImageToTensor(gt, label_tensor);
         }
         else {
             augs.Apply(current_split_, img);
         }
-        queue_.Push(elem, img, label);
+        ImageToTensor(img, image_tensor);
+
+        queue_.Push(elem, image_tensor, label_tensor);
     }
     break;
     }
@@ -442,25 +457,30 @@ tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> DLDataset::GetBatc
     // If current split has no labels (e.g., test split could have no labels) set y as empty tensor
     tensors_shape.second = (s.no_label_) ? vector<int>{} : tensors_shape.second;
 
-    shared_ptr<Tensor> x = make_shared<Tensor>(tensors_shape.first);
-    shared_ptr<Tensor> y = make_shared<Tensor>(tensors_shape.second);
+    Tensor* x = new Tensor(tensors_shape.first);
+    Tensor* y = new Tensor(tensors_shape.second);
 
-    const int batch_len = x->shape[0];
-    Image img;
+    Tensor* image;
+    Tensor* label;
+
+    const int batch_len = tensors_shape.first[0];
     vector<Sample> samples(batch_len);
     for (int i = 0; i < batch_len; ++i) {
-        queue_.Pop(samples[i], img, label_); // Consumer get samples from the queue
+        queue_.Pop(samples[i], image, label); // Consumer get samples from the queue
+        image->unsqueeze_();
+        label->unsqueeze_();
 
-        // Copy sample image into tensor
-        auto lhs = x.get();
-        ImageToTensor(img, lhs, i);
-
-        if (label_ != nullptr) { // Label nullptr means no label at all for this sample (example: test split with no labels)
-            label_->ToTensorPlane(y.get(), i); // Copy label into tensor at position i
-        }
+        memcpy(x->ptr + i * image->size, image->ptr, image->size * sizeof(float));
+        memcpy(y->ptr + i * label->size, label->ptr, label->size * sizeof(float));
+        delete image;
+        delete label;
     }
 
-    return make_tuple(move(samples), move(x), move(y));
+    // wrap raw pointers in shared ptr, don't need to delete them
+    shared_ptr<Tensor> x_shared(x);
+    shared_ptr<Tensor> y_shared(y);
+
+    return make_tuple(move(samples), move(x_shared), move(y_shared));
 }
 
 void DLDataset::Start(int split_index)

@@ -94,9 +94,9 @@ This is just a shallow container for the Augmentations
 */
 class DatasetAugmentations
 {
-    std::vector<shared_ptr<Augmentation>> augs_;
+    std::vector<std::shared_ptr<Augmentation>> augs_;
 public:
-    DatasetAugmentations(const std::vector<shared_ptr<Augmentation>>& augs) : augs_(augs) {}
+    DatasetAugmentations(const std::vector<std::shared_ptr<Augmentation>>& augs) : augs_(augs) {}
 
     // This makes a deep copy of the Augmentations
     DatasetAugmentations(const DatasetAugmentations& other)
@@ -134,67 +134,6 @@ public:
     }
 };
 
-/** @brief Label class representing the Sample labels, which may have different representations depending on the task.
-
-@anchor Label
-*/
-class Label
-{
-public:
-    /** @brief Abstract function which copies the sample labels into the batch tensor.
-
-    @param[in] tensor EDDL Tensor in which to copy the labels
-    @param[in] offset Position of the tensor from which to insert the sample labels
-    */
-    virtual void ToTensorPlane(Tensor* tensor, int offset) = 0;
-    virtual ~Label() {};
-};
-
-/** @brief Label for classification task.
-
-@anchor LabelClass
-*/
-class LabelClass : public Label
-{
-public:
-    vector<int> label; /**< @brief Vector of the sample labels. */
-
-    /** @brief Convert the sample labels in a one-hot encoded tensor and copy it to the batch tensor.
-
-    @param[in] tensor EDDL Tensor in which to copy the labels (dimensions: [batch_size, num_classes])
-    @param[in] offset Position of the tensor from which to insert the sample labels
-    */
-    void ToTensorPlane(Tensor* tensor, int offset) override
-    {
-        vector<float> lab(tensor->shape[1], 0);
-        for (int j = 0; j < vsize(label); ++j) {
-            lab[label[j]] = 1;
-        }
-        //memcpy(tensor->ptr + lab.size() * offset, lab.data(), lab.size() * sizeof(float));
-        std::copy(lab.data(), lab.data() + lab.size(), tensor->ptr + lab.size() * offset);
-    }
-};
-
-/** @brief Label for segmentation task.
-
-@anchor LabelImage
-*/
-class LabelImage : public Label
-{
-public:
-    Image gt; /**< @brief Ground truth image. */
-
-    /** @brief Convert the sample ground truth Image into a tensor and copy it to the batch tensor.
-
-    @param[in] tensor EDDL Tensor in which to copy the ground truth (dimensions: [batch_size, num_channels, height, width])
-    @param[in] offset Position of the tensor from which to insert the sample ground truth
-    */
-    void ToTensorPlane(Tensor* tensor, int offset) override
-    {
-        ImageToTensor(gt, tensor, offset);
-    }
-};
-
 /** @brief Class that manages the producers-consumer queue of samples.
 * The queue stores pairs of image and label, pushing and popping them in an exclusive way.
 * The queue also has a maximum size (`max_size_` attribute) to avoid memory overflows.
@@ -206,7 +145,7 @@ class ProducersConsumerQueue
     std::condition_variable cond_notempty_;     /**< @brief Condition variable that wait if the queue is empty. */
     std::condition_variable cond_notfull_;      /**< @brief Condition variable that wait if the queue is full. */
     mutable std::mutex mutex_;                  /**< @brief Mutex to grant exclusive access to the queue. */
-    std::queue<std::tuple<Sample, Image, std::shared_ptr<Label>>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Image and Label pointer. */
+    std::queue<std::tuple<Sample, Tensor*, Tensor*>> cpq_;  /**< @brief Queue of samples, stored as tuple of Sample, Tensor* for the image and Tensor* for its label. */
     unsigned max_size_;                         /**< @brief Maximum size of the queue. */
     unsigned threshold_;                        /**< @brief Threshold from which restart to produce samples. If not specified, it's set to the half of maximum size. */
 
@@ -224,30 +163,30 @@ public:
 
     /** @brief Push a sample in the queue.
 
-    Take the lock of the queue and wait if the queue is full. Otherwise, push the tuple Sample, Image, Label into the queue.
+    Take the lock of the queue and wait if the queue is full. Otherwise, push the tuple sample, image and label into the queue.
 
     @param[in] sample Sample to push in queue.
-    @param[in] image Image to push in the queue.
-    @param[in] label Label to push in the queue.
+    @param[in] image Tensor* to the image to push in the queue.
+    @param[in] label Tensor* to the label to push in the queue.
     */
-    void Push(const Sample& sample, const Image& image, std::shared_ptr<Label> const label)
+    void Push(const Sample& sample, Tensor* const image, Tensor* const label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cond_notfull_.wait(lock, [this]() { return cpq_.size() < max_size_; });
-        cpq_.push(make_tuple(sample, image, label));
+        cpq_.push(std::make_tuple(sample, image, label));
         cond_notempty_.notify_one();
     }
 
     /** @brief Pop a sample from the queue.
 
-    Take the lock of the queue and wait if the queue is empty. Otherwise, pop a Sample, Image and its Label from the queue.
+    Take the lock of the queue and wait if the queue is empty. Otherwise, pop a sample, an image and its label from the queue.
     If the queue size is still bigger than the half of the maximum size, don't notify the Push to avoid an always-full queue.
 
-    @param[in] sample Sample to pop in queue.
-    @param[in] image Image to pop from the queue.
-    @param[in] label Label to pop from the queue.
+    @param[in] sample Sample to pop from the queue.
+    @param[in] image Tensor* of the image to pop from the queue.
+    @param[in] label Tensor* of the label to pop from the queue.
     */
-    void Pop(Sample& sample, Image& image, std::shared_ptr<Label>& label)
+    void Pop(Sample& sample, Tensor*& image, Tensor*& label)
     {
         std::unique_lock<std::mutex> lock(mutex_);
         cond_notempty_.wait(lock, [this]() { return !cpq_.empty(); });
@@ -350,7 +289,6 @@ protected:
     bool active_ = false;                       /**< @brief Whether the threads have already been launched or not. */
     std::mutex active_mutex_;                   /**< @brief Mutex for active_ variable. */
     static std::default_random_engine re_;      /**< @brief Engine used for random number generation. */
-    std::shared_ptr<Label> label_ = nullptr;                    /**< @brief Label pointer which will be specialized based on the dataset task. */
 
     /** @brief Set which are the indices of the samples managed by each thread.
 
@@ -363,12 +301,12 @@ protected:
     {
         switch (task_) {
         case Task::classification:
-            tensors_shape_ = make_pair<vector<int>, vector<int>>(
+            tensors_shape_ = std::make_pair<std::vector<int>, std::vector<int>>(
                 { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
                 { batch_size_, vsize(classes_) });
             break;
         case Task::segmentation:
-            tensors_shape_ = make_pair<vector<int>, vector<int>>(
+            tensors_shape_ = std::make_pair<std::vector<int>, std::vector<int>>(
                 { batch_size_, n_channels_, resize_dims_[0], resize_dims_[1] },
                 { batch_size_, n_channels_gt_, resize_dims_[0], resize_dims_[1] });
             break;
@@ -398,7 +336,7 @@ public:
         const ColorType ctype_gt = ColorType::GRAY,
         const unsigned num_workers = 1,
         const double queue_ratio_size = 1.,
-        const vector<bool>& drop_last = {},
+        const std::vector<bool>& drop_last = {},
         bool verify = false) :
 
         Dataset{ filename, verify },
@@ -420,7 +358,7 @@ public:
             current_split_ = 0;
             // Initialize resize_dims_ after that augmentations on the first image are performed
             if (augs_.IsEmpty()) {
-                cout << ECVL_WARNING_MSG << "Augmentations are empty!" << endl;
+                std::cout << ECVL_WARNING_MSG << "Augmentations are empty!" << std::endl;
             }
             else {
                 while (!augs_.Apply(current_split_, tmp)) {
@@ -438,7 +376,7 @@ public:
             }
         }
         else {
-            cout << ECVL_WARNING_MSG << "Missing splits in the dataset file." << endl;
+            std::cout << ECVL_WARNING_MSG << "Missing splits in the dataset file." << std::endl;
         }
 
         // Set drop_last parameter for each split
@@ -449,7 +387,7 @@ public:
                 }
             }
             else {
-                cout << ECVL_WARNING_MSG << "drop_last is not empty but the provided size is different from the size of the splits. The default value 'false' is set for all the splits" << endl;
+                std::cout << ECVL_WARNING_MSG << "drop_last is not empty but the provided size is different from the size of the splits. The default value 'false' is set for all the splits" << std::endl;
             }
         }
 
@@ -527,7 +465,7 @@ public:
 
     @return tuples of Samples and EDDL Tensors, the first with the image and the second with the label.
     */
-    std::tuple<std::vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> GetBatch();
+    std::tuple<std::vector<Sample>, std::shared_ptr<Tensor>, std::shared_ptr<Tensor>> GetBatch();
 
     /** @brief Spawn num_workers thread.
 
@@ -557,6 +495,13 @@ public:
     @return number of batches of the specified split.
     */
     const int GetNumBatches(const ecvl::any& split = -1);
+
+    /** @brief Convert the sample labels in a one-hot encoded tensor and copy it to the batch tensor.
+
+    @param[in] label vector of the sample labels
+    @param[out] tensor EDDL Tensor in which to copy the labels (dimensions: [batch_size, num_classes])
+    */
+    void ToTensorPlane(const std::vector<int>& label, Tensor*& tensor);
 
     /** @brief Change the number of workers.
 

@@ -19,6 +19,7 @@
 #include "ecvl/augmentations.h"
 
 using namespace ecvl;
+using namespace std;
 using std::stringstream;
 using std::unique_ptr;
 using std::runtime_error;
