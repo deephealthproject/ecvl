@@ -1,6 +1,6 @@
 ﻿/*
 * ECVL - European Computer Vision Library
-* Version: 0.3.4
+* Version: 1.0.0
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
