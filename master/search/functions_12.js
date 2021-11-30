@@ -11,6 +11,6 @@ var searchData=
   ['to',['To',['../classecvl_1_1_image.html#a5e97f965d2525e2a8312a25da4a07eb2',1,'ecvl::Image']]],
   ['to_5fstring',['to_string',['../classecvl_1_1param.html#a9b913225b75f25dd9e20d7cc14d104b2',1,'ecvl::param']]],
   ['tocpu',['ToCpu',['../classecvl_1_1_gpu_hal.html#a4e36d461785e93cd5b8941bf00bc159f',1,'ecvl::GpuHal::ToCpu()'],['../classecvl_1_1_fpga_hal.html#a593a413c0d4c793f9162b33b41b58ee6',1,'ecvl::FpgaHal::ToCpu()']]],
-  ['totensorplane',['ToTensorPlane',['../classecvl_1_1_label.html#a360676862fa2aafa69948d921ddca81f',1,'ecvl::Label::ToTensorPlane()'],['../classecvl_1_1_label_class.html#a8479918301adbac656b06cd029c80640',1,'ecvl::LabelClass::ToTensorPlane()'],['../classecvl_1_1_label_image.html#a58ff1afdc8f98b6e7d68bb13d0b32354',1,'ecvl::LabelImage::ToTensorPlane()']]],
+  ['totensorplane',['ToTensorPlane',['../classecvl_1_1_d_l_dataset.html#ac7678b2e78190bf2b567e3a590a83d5e',1,'ecvl::DLDataset']]],
   ['transpose',['Transpose',['../namespaceecvl.html#aeb20ecb4f245bbd530c845e96d4b5c59',1,'ecvl']]]
 ];

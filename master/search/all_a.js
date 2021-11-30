@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['label',['Label',['../classecvl_1_1_label.html',1,'ecvl::Label'],['../classecvl_1_1_label_class.html#af9bc3a8996a7e484d7bafd345dc8609a',1,'ecvl::LabelClass::label()']]],
-  ['label_5f',['label_',['../classecvl_1_1_sample.html#aaf66ba7bc86ad56998f6ab22124cbd9c',1,'ecvl::Sample::label_()'],['../classecvl_1_1_d_l_dataset.html#a85f11b3b0c818f39e4fd2e8b73b30f1c',1,'ecvl::DLDataset::label_()']]],
+  ['label_5f',['label_',['../classecvl_1_1_sample.html#aaf66ba7bc86ad56998f6ab22124cbd9c',1,'ecvl::Sample']]],
   ['label_5fpath_5f',['label_path_',['../classecvl_1_1_sample.html#abe44b09e2becd0c50c369f7037792a1b',1,'ecvl::Sample']]],
-  ['labelclass',['LabelClass',['../classecvl_1_1_label_class.html',1,'ecvl']]],
-  ['labelimage',['LabelImage',['../classecvl_1_1_label_image.html',1,'ecvl']]],
   ['lanczos4',['lanczos4',['../namespaceecvl.html#ac69b90ce1163b068f47b77b19ae0d54ca2ca585e095de2243c923fe4224eaed57',1,'ecvl']]],
   ['larger_5farithmetic_5ftype',['larger_arithmetic_type',['../structecvl_1_1larger__arithmetic__type.html',1,'ecvl']]],
   ['larger_5farithmetic_5ftype_5ft',['larger_arithmetic_type_t',['../namespaceecvl.html#a0b1d568c55db655cdf97d744af726563',1,'ecvl']]],

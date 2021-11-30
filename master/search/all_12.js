@@ -22,7 +22,7 @@ var searchData=
   ['to_5fstring',['to_string',['../classecvl_1_1param.html#a9b913225b75f25dd9e20d7cc14d104b2',1,'ecvl::param']]],
   ['tocpu',['ToCpu',['../classecvl_1_1_gpu_hal.html#a4e36d461785e93cd5b8941bf00bc159f',1,'ecvl::GpuHal::ToCpu()'],['../classecvl_1_1_fpga_hal.html#a593a413c0d4c793f9162b33b41b58ee6',1,'ecvl::FpgaHal::ToCpu()']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
-  ['totensorplane',['ToTensorPlane',['../classecvl_1_1_label.html#a360676862fa2aafa69948d921ddca81f',1,'ecvl::Label::ToTensorPlane()'],['../classecvl_1_1_label_class.html#a8479918301adbac656b06cd029c80640',1,'ecvl::LabelClass::ToTensorPlane()'],['../classecvl_1_1_label_image.html#a58ff1afdc8f98b6e7d68bb13d0b32354',1,'ecvl::LabelImage::ToTensorPlane()']]],
+  ['totensorplane',['ToTensorPlane',['../classecvl_1_1_d_l_dataset.html#ac7678b2e78190bf2b567e3a590a83d5e',1,'ecvl::DLDataset']]],
   ['training',['training',['../namespaceecvl.html#ad4c37278cb980c0477ef2ab5b2740569ac185ddac8b5a8f5aa23c5b80bc12d214',1,'ecvl']]],
   ['transpose',['Transpose',['../namespaceecvl.html#aeb20ecb4f245bbd530c845e96d4b5c59',1,'ecvl']]],
   ['type',['type',['../classecvl_1_1param.html#ab26477048bcf50edf3627da6e66b85c4',1,'ecvl::param::type()'],['../structecvl_1_1larger__arithmetic__type.html#a8485e207768685bd677933ab3797a7bf',1,'ecvl::larger_arithmetic_type::type()'],['../structecvl_1_1arithmetic__superior__type.html#ab9ce300e0fcd75bdc8b7a37abcec1c99',1,'ecvl::arithmetic_superior_type::type()'],['../structecvl_1_1promote__superior__type.html#a1a95e68158acc7c5180f26faea9f5c9e',1,'ecvl::promote_superior_type::type()']]],

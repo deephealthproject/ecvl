@@ -112,12 +112,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a50d2e774ed35ad81ae2ef5f286128f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4178fcfb6a85a51d09ad4ee6c08a40a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a4178fcfb6a85a51d09ad4ee6c08a40a8">ProducersConsumerQueue</a> (unsigned mxsz, unsigned thresh)</td></tr>
 <tr class="separator:a4178fcfb6a85a51d09ad4ee6c08a40a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69a931137c8f848b488fb458d6c999c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a69a931137c8f848b488fb458d6c999c5">Push</a> (const <a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;image, std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; const label)</td></tr>
-<tr class="memdesc:a69a931137c8f848b488fb458d6c999c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a sample in the queue.  <a href="#a69a931137c8f848b488fb458d6c999c5">More...</a><br /></td></tr>
-<tr class="separator:a69a931137c8f848b488fb458d6c999c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c3fdbb6517136d068c8a53852257e3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a7c3fdbb6517136d068c8a53852257e3f">Pop</a> (<a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;image, std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; &amp;label)</td></tr>
-<tr class="memdesc:a7c3fdbb6517136d068c8a53852257e3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a sample from the queue.  <a href="#a7c3fdbb6517136d068c8a53852257e3f">More...</a><br /></td></tr>
-<tr class="separator:a7c3fdbb6517136d068c8a53852257e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51d74138d38ae4b2133efcc62804166c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a51d74138d38ae4b2133efcc62804166c">Push</a> (const <a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, Tensor *const image, Tensor *const label)</td></tr>
+<tr class="memdesc:a51d74138d38ae4b2133efcc62804166c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a sample in the queue.  <a href="#a51d74138d38ae4b2133efcc62804166c">More...</a><br /></td></tr>
+<tr class="separator:a51d74138d38ae4b2133efcc62804166c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18b7873eec26abdf556a4ea0a1a17b07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#a18b7873eec26abdf556a4ea0a1a17b07">Pop</a> (<a class="el" href="classecvl_1_1_sample.html">Sample</a> &amp;sample, Tensor *&amp;image, Tensor *&amp;label)</td></tr>
+<tr class="memdesc:a18b7873eec26abdf556a4ea0a1a17b07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a sample from the queue.  <a href="#a18b7873eec26abdf556a4ea0a1a17b07">More...</a><br /></td></tr>
+<tr class="separator:a18b7873eec26abdf556a4ea0a1a17b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfeced419b8af2a920651fd8dcd87e9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_producers_consumer_queue.html#acfeced419b8af2a920651fd8dcd87e9f">IsFull</a> () const</td></tr>
 <tr class="memdesc:acfeced419b8af2a920651fd8dcd87e9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the queue is full.  <a href="#acfeced419b8af2a920651fd8dcd87e9f">More...</a><br /></td></tr>
 <tr class="separator:acfeced419b8af2a920651fd8dcd87e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,7 +137,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Class that manages the producers-consumer queue of samples. The queue stores pairs of image and label, pushing and popping them in an exclusive way. The queue also has a maximum size (<code>max_size_</code> attribute) to avoid memory overflows. </p>
 <p><a class="anchor" id="ProducersConsumerQueue"></a></p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00204">204</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00143">143</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3685660bf333e0c26aa20acd37169adf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3685660bf333e0c26aa20acd37169adf">&#9670;&nbsp;</a></span>ProducersConsumerQueue() <span class="overload">[1/3]</span></h2>
@@ -162,7 +162,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00214">214</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00153">153</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +196,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00218">218</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00157">157</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -241,7 +241,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00223">223</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00162">162</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -269,7 +269,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00302">302</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00241">241</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -299,7 +299,7 @@ Public Member Functions</h2></td></tr>
 <p>Check if the queue is empty. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if the queue is empty, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00275">275</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00214">214</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -329,7 +329,7 @@ Public Member Functions</h2></td></tr>
 <p>Check if the queue is full. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if the queue is full, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00265">265</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00204">204</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -359,12 +359,12 @@ Public Member Functions</h2></td></tr>
 <p>Calculate the current size of the queue. </p>
 <dl class="section return"><dt>Returns</dt><dd>the current size of the queue. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00285">285</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00224">224</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
-<a id="a7c3fdbb6517136d068c8a53852257e3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c3fdbb6517136d068c8a53852257e3f">&#9670;&nbsp;</a></span>Pop()</h2>
+<a id="a18b7873eec26abdf556a4ea0a1a17b07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18b7873eec26abdf556a4ea0a1a17b07">&#9670;&nbsp;</a></span>Pop()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -381,13 +381,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramtype">Tensor *&amp;&#160;</td>
           <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; &amp;&#160;</td>
+          <td class="paramtype">Tensor *&amp;&#160;</td>
           <td class="paramname"><em>label</em>&#160;</td>
         </tr>
         <tr>
@@ -404,22 +404,22 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Pop a sample from the queue. </p>
-<p>Take the lock of the queue and wait if the queue is empty. Otherwise, pop a <a class="el" href="classecvl_1_1_sample.html" title="Sample image in a dataset.">Sample</a>, <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> and its <a class="el" href="classecvl_1_1_label.html" title="Label class representing the Sample labels, which may have different representations depending on the...">Label</a> from the queue. If the queue size is still bigger than the half of the maximum size, don't notify the Push to avoid an always-full queue.</p>
+<p>Take the lock of the queue and wait if the queue is empty. Otherwise, pop a sample, an image and its label from the queue. If the queue size is still bigger than the half of the maximum size, don't notify the Push to avoid an always-full queue.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">sample</td><td><a class="el" href="classecvl_1_1_sample.html" title="Sample image in a dataset.">Sample</a> to pop in queue. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">image</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> to pop from the queue. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">label</td><td><a class="el" href="classecvl_1_1_label.html" title="Label class representing the Sample labels, which may have different representations depending on the...">Label</a> to pop from the queue. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sample</td><td><a class="el" href="classecvl_1_1_sample.html" title="Sample image in a dataset.">Sample</a> to pop from the queue. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">image</td><td>Tensor* of the image to pop from the queue. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">label</td><td>Tensor* of the label to pop from the queue. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00250">250</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00189">189</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
-<a id="a69a931137c8f848b488fb458d6c999c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69a931137c8f848b488fb458d6c999c5">&#9670;&nbsp;</a></span>Push()</h2>
+<a id="a51d74138d38ae4b2133efcc62804166c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51d74138d38ae4b2133efcc62804166c">&#9670;&nbsp;</a></span>Push()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -436,13 +436,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramtype">Tensor *const&#160;</td>
           <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classecvl_1_1_label.html">Label</a> &gt; const&#160;</td>
+          <td class="paramtype">Tensor *const&#160;</td>
           <td class="paramname"><em>label</em>&#160;</td>
         </tr>
         <tr>
@@ -459,17 +459,17 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Push a sample in the queue. </p>
-<p>Take the lock of the queue and wait if the queue is full. Otherwise, push the tuple <a class="el" href="classecvl_1_1_sample.html" title="Sample image in a dataset.">Sample</a>, <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>, <a class="el" href="classecvl_1_1_label.html" title="Label class representing the Sample labels, which may have different representations depending on the...">Label</a> into the queue.</p>
+<p>Take the lock of the queue and wait if the queue is full. Otherwise, push the tuple sample, image and label into the queue.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">sample</td><td><a class="el" href="classecvl_1_1_sample.html" title="Sample image in a dataset.">Sample</a> to push in queue. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">image</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> to push in the queue. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">label</td><td><a class="el" href="classecvl_1_1_label.html" title="Label class representing the Sample labels, which may have different representations depending on the...">Label</a> to push in the queue. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">image</td><td>Tensor* to the image to push in the queue. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">label</td><td>Tensor* to the label to push in the queue. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00233">233</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00172">172</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -516,7 +516,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00296">296</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00235">235</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
