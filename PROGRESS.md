@@ -6,17 +6,17 @@
 ## Image Read
 | Functionality | CPU | GPU | FPGA |
 |--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
+| Standard Formats | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| NIfTI | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| DICOM | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Image Write
 | Functionality | CPU | GPU | FPGA |
 |--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
+| Standard Formats | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| NIfTI | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| DICOM | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
