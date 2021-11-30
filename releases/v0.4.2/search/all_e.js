@@ -6,7 +6,12 @@ var searchData=
   ['pepper',['Pepper',['../namespaceecvl.html#a407f4c64587b11deccebc131a4a2975c',1,'ecvl']]],
   ['point2d',['Point2d',['../namespaceecvl.html#af59e621440952b9bf0a386a16d0ca760',1,'ecvl']]],
   ['point2i',['Point2i',['../namespaceecvl.html#ac60a2f087e03fdac8ad7969eaf351616',1,'ecvl']]],
+  ['pointer',['pointer',['../structecvl_1_1_iterator.html#a5e46ef474a2636a2ef7b9a8121feae93',1,'ecvl::Iterator::pointer()'],['../structecvl_1_1_const_iterator.html#ae9123c3713dafd6e3e08fc3fc167b0a6',1,'ecvl::ConstIterator::pointer()'],['../structecvl_1_1_contiguous_iterator.html#a08b110c2fd86e539c61a4138328f7d39',1,'ecvl::ContiguousIterator::pointer()'],['../structecvl_1_1_const_contiguous_iterator.html#ada628ff957903f4dcb13cb4975146eba',1,'ecvl::ConstContiguousIterator::pointer()']]],
+  ['pop',['Pop',['../classecvl_1_1_producers_consumer_queue.html#a7c3fdbb6517136d068c8a53852257e3f',1,'ecvl::ProducersConsumerQueue']]],
   ['pos_5f',['pos_',['../structecvl_1_1_iterator.html#a285723d83335822c0f234d507d5c3240',1,'ecvl::Iterator::pos_()'],['../structecvl_1_1_const_iterator.html#af965848d217ca61630d07367b312082f',1,'ecvl::ConstIterator::pos_()']]],
+  ['produceimagelabel',['ProduceImageLabel',['../classecvl_1_1_d_l_dataset.html#a65aac3364ffac59bb805813c66df83fd',1,'ecvl::DLDataset']]],
+  ['producers_5f',['producers_',['../classecvl_1_1_d_l_dataset.html#ad1a166e86b3ebc75fd9ace4309625755',1,'ecvl::DLDataset']]],
+  ['producersconsumerqueue',['ProducersConsumerQueue',['../classecvl_1_1_producers_consumer_queue.html',1,'ecvl::ProducersConsumerQueue'],['../classecvl_1_1_producers_consumer_queue.html#a3685660bf333e0c26aa20acd37169adf',1,'ecvl::ProducersConsumerQueue::ProducersConsumerQueue()'],['../classecvl_1_1_producers_consumer_queue.html#a50d2e774ed35ad81ae2ef5f286128f2b',1,'ecvl::ProducersConsumerQueue::ProducersConsumerQueue(unsigned mxsz)'],['../classecvl_1_1_producers_consumer_queue.html#a4178fcfb6a85a51d09ad4ee6c08a40a8',1,'ecvl::ProducersConsumerQueue::ProducersConsumerQueue(unsigned mxsz, unsigned thresh)']]],
   ['promote_5foperation',['PROMOTE_OPERATION',['../type__promotion_8h.html#aefaf8768cf307c30202832763a4ee62e',1,'type_promotion.h']]],
   ['promote_5fsuperior_5ftype',['promote_superior_type',['../structecvl_1_1promote__superior__type.html',1,'ecvl']]],
   ['promote_5fsuperior_5ftype_5fdt',['promote_superior_type_dt',['../namespaceecvl.html#a71a580ad8eb9aa148a1dcd5f53ec350b',1,'ecvl']]],
@@ -16,5 +21,6 @@ var searchData=
   ['promotemul',['PromoteMul',['../namespaceecvl.html#adddcd90b14645b1af617e95bece4137e',1,'ecvl']]],
   ['promotesub',['PromoteSub',['../namespaceecvl.html#a491fbdb0ca0a6b0e130b48ba2a3013ef',1,'ecvl']]],
   ['ptr',['Ptr',['../classecvl_1_1_image.html#ac666790c7b5bcdb955c7d32938b1f0f9',1,'ecvl::Image::Ptr(const std::vector&lt; int &gt; &amp;coords)'],['../classecvl_1_1_image.html#a8ea863e2e0573571b5cdf863061d1ec3',1,'ecvl::Image::Ptr(const std::vector&lt; int &gt; &amp;coords) const']]],
-  ['ptr_5f',['ptr_',['../structecvl_1_1_iterator.html#a38624954c3ff86d6226725c68da56695',1,'ecvl::Iterator::ptr_()'],['../structecvl_1_1_const_iterator.html#ad504595264be73ea7bbe2f2d415237e8',1,'ecvl::ConstIterator::ptr_()'],['../structecvl_1_1_contiguous_iterator.html#a73470b9730fb7c8b9226d4cb1132dc34',1,'ecvl::ContiguousIterator::ptr_()'],['../structecvl_1_1_const_contiguous_iterator.html#a7fc97bbdfa3a75db88f3c793511677ca',1,'ecvl::ConstContiguousIterator::ptr_()']]]
+  ['ptr_5f',['ptr_',['../structecvl_1_1_iterator.html#a38624954c3ff86d6226725c68da56695',1,'ecvl::Iterator::ptr_()'],['../structecvl_1_1_const_iterator.html#ad504595264be73ea7bbe2f2d415237e8',1,'ecvl::ConstIterator::ptr_()'],['../structecvl_1_1_contiguous_iterator.html#a73470b9730fb7c8b9226d4cb1132dc34',1,'ecvl::ContiguousIterator::ptr_()'],['../structecvl_1_1_const_contiguous_iterator.html#a7fc97bbdfa3a75db88f3c793511677ca',1,'ecvl::ConstContiguousIterator::ptr_()']]],
+  ['push',['Push',['../classecvl_1_1_producers_consumer_queue.html#a69a931137c8f848b488fb458d6c999c5',1,'ecvl::ProducersConsumerQueue']]]
 ];
