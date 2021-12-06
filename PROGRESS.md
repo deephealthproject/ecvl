@@ -6,17 +6,17 @@
 ## Image Read
 | Functionality | CPU | GPU | FPGA |
 |--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
-| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :x: | :x: |
+| Standard Formats | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| NIfTI | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| DICOM | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Whole-slide image <br>(Hamamatsu, Aperio, MIRAX, ...) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Image Write
 | Functionality | CPU | GPU | FPGA |
 |--|--|--|--|
-| Standard Formats | :heavy_check_mark: | :x: | :x: |
-| NIfTI | :heavy_check_mark: | :x: | :x: |
-| DICOM | :heavy_check_mark: | :x: | :x: |
+| Standard Formats | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| NIfTI | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| DICOM | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Image Arithmetics
 | Functionality | CPU | GPU | FPGA |
@@ -41,6 +41,10 @@
 | Stack | :heavy_check_mark: | :x: | :x: |
 | Transpose | :heavy_check_mark: | :x: | :x: |
 | VConcat | :heavy_check_mark: | :x: | :x: |
+| SetTo | :heavy_check_mark: | :x: | :x: |
+| ConvertTo | :heavy_check_mark: | :x: | :x: |
+| ScaleTo | :heavy_check_mark: | :x: | :x: |
+| DropColorChannel | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Pre- Post-processing and Augmentation
 | Functionality | CPU | GPU | FPGA |
@@ -70,3 +74,12 @@
 | SeparableFilter2D | :heavy_check_mark: | :x: | :x: |
 | SliceTimingCorrection | :heavy_check_mark: | :x: | :x: |
 | Threshold | :heavy_check_mark: | :x: | :x: |
+| MultiThreshold | :heavy_check_mark: | :x: | :x: |
+
+## Property Calculation 
+| Functionality | CPU | GPU | FPGA |
+|--|--|--|--|
+| Otsu | :heavy_check_mark: | :x: | :x: |
+| Otsu Multi Threshold | :heavy_check_mark: | :x: | :x: |
+| Moments | :heavy_check_mark: | :x: | :x: |
+| CentralMoments | :heavy_check_mark: | :x: | :x: |

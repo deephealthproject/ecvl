@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -26,11 +26,11 @@ using namespace ecvl;
 #ifdef ECVL_WITH_EXAMPLES
 TEST(DatasetParser, LoadExistingDataset)
 {
-    Dataset d(CMAKE_CURRENT_SOURCE_DIR "/examples/data/mnist/mnist.yml");
+    Dataset d(CMAKE_CURRENT_SOURCE_DIR "/examples/data/mnist/mnist_reduced.yml");
     EXPECT_EQ(d.name_, "MNIST");
     EXPECT_EQ(d.classes_.size(), 10);
     EXPECT_THAT(d.classes_, testing::ElementsAre("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"));
-    EXPECT_EQ(d.samples_.size(), 70000);
+    EXPECT_EQ(d.samples_.size(), 1000);
 }
 #endif
 

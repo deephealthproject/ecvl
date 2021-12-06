@@ -1,6 +1,6 @@
 # ECVL - European Computer Vision Library
-# Version: 0.2.1
-# copyright (c) 2020, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# Version: 1.0.0
+# copyright (c) 2021, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
@@ -16,9 +16,13 @@ project (ecvl CXX)
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
+# Add Find*.cmake in Modules dir
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON) # To always generate position independent code
+set(CMAKE_VERBOSE_MAKEFILE ON)
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
@@ -70,7 +74,6 @@ if(NOT COMPILER_SUPPORTS_CXX17)
 endif()
 
 set(CMAKE_CXX_EXTENSIONS OFF)
-
 #--------------------------------------------------------------------------------------------------------
 # END: Check for c++17 support
 #--------------------------------------------------------------------------------------------------------
@@ -80,7 +83,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # BEGIN: Check for CUDA support
 #--------------------------------------------------------------------------------------------------------
 set(ECVL_GPU_AVAILABLE OFF) # ON if GPU support is chosen AND actually available
-option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" ON)
+option(ECVL_GPU "Build for GPU hardware (requires the NVIDIA CUDA toolkit)" OFF)
 if(ECVL_GPU)
     if(${CMAKE_VERSION} VERSION_LESS "3.17.0")
         message(WARNING "Build for GPU hardware is only supported with CMake 3.17 or later.")
@@ -182,8 +185,14 @@ if(ECVL_GPU_AVAILABLE)
     else()
         target_link_libraries(ECVL_CORE PUBLIC CUDA::cudart_static)
     endif()
+
     # Enable cuda14 features
     target_compile_features(ECVL_CORE PUBLIC cuda_std_14)
+
+    set_target_properties(ECVL_CORE PROPERTIES
+        CUDA_SEPARABLE_COMPILATION ON
+        CUDA_RESOLVE_DEVICE_SYMBOLS ON
+    )
 endif()
 
 # Enable c++17 features
@@ -235,6 +244,7 @@ target_compile_definitions(ECVL_CORE PRIVATE OpenCV_VERSION_MAJOR=${OpenCV_VERSI
 #--------------------------------------------------------------------------------------------------------
 # BEGIN: 3rdparty
 #--------------------------------------------------------------------------------------------------------
+set(ECVL_BUILD_DEPS ON CACHE BOOL "Whether to build 3rdparty dependencies or looks for them on the system")
 set(ECVL_WITH_DICOM OFF CACHE BOOL "Whether to build DICOM support or not")
 set(ECVL_WITH_OPENGL OFF CACHE BOOL "Whether to build OPENGL support or not (requires ECVL_GUI)")
 set(ECVL_DATASET OFF CACHE BOOL "Whether to build yaml support or not")
@@ -251,10 +261,12 @@ set(ECVL_BUILD_EXAMPLES OFF CACHE BOOL "Whether to build ECVL examples or not")
 set(ECVL_BUILD_GUI OFF CACHE BOOL "Whether to build ECVL_GUI or not (requires wxWidgets)")
 set(ECVL_BUILD_EDDL ON CACHE BOOL "Whether to build ECVL_EDDL or not (requires eddl)")
 
+set(ECVL_BUILD_GUI_AVAILABLE OFF)
 if(ECVL_BUILD_GUI)
     if(ECVL_BUILD_CORE)
         find_package(wxWidgets COMPONENTS gl core base OPTIONAL_COMPONENTS net)
         if(wxWidgets_FOUND)
+            set(ECVL_BUILD_GUI_AVAILABLE ON)
             include(${wxWidgets_USE_FILE})
             add_library(ECVL_GUI ${ecvl-type} "")
             add_subdirectory("modules/gui")
@@ -289,10 +301,12 @@ macro(F_BUILD_DATASET)
     list(APPEND ECVL_MODULES_DIRS "dataset")
 endmacro()
 
+set(ECVL_BUILD_EDDL_AVAILABLE OFF)
 if(ECVL_BUILD_EDDL)
     if(ECVL_BUILD_CORE)
         find_package(eddl NAMES eddl EDDL)
         if(eddl_FOUND)
+            set(ECVL_BUILD_EDDL_AVAILABLE ON)
             set(ECVL_DATASET ON CACHE BOOL "Whether to build ECVL_DATASET or not" FORCE)
             F_BUILD_DATASET()
             add_library(ECVL_EDDL ${ecvl-type} "")

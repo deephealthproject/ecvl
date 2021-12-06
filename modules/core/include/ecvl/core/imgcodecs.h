@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -27,11 +27,11 @@ namespace ecvl
  */
 enum class ImReadMode
 {
-//IMREAD_UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
+    UNCHANGED = -1, //!< If set, return the loaded image as is (with alpha channel, otherwise it gets cropped).
     GRAYSCALE = 0,       //!< If set, always convert image to the single channel grayscale image (codec internal conversion).
     COLOR = 1,           //!< If set, always convert image to the 3 channel BGR color image.
     //IMREAD_ANYDEPTH = 2,  //!< If set, return 16-bit/32-bit image when the input has the corresponding depth, otherwise convert it to 8-bit.
-    //IMREAD_ANYCOLOR = 4,  //!< If set, the image is read in any possible color format.
+    ANYCOLOR = 4,  //!< If set, the image color format is deduced from file format.
 };
 
 /** @brief Loads an image from a file.
@@ -43,11 +43,38 @@ be read for any reason, the function creates an empty Image and returns false.
 
 @param[in] filename A std::filesystem::path identifying the file name.
 @param[out] dst Image in which data will be stored.
-@param[in] flags An ImReadMode indicating how to read the image.
+@param[in] flags \ref ImReadMode indicating how to read the image.
 
 @return true if the image is correctly read, false otherwise.
 */
-bool ImRead(const ecvl::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::COLOR);
+bool ImRead(const ecvl::filesystem::path& filename, Image& dst, ImReadMode flags = ImReadMode::ANYCOLOR);
+
+/**
+@brief Loads an image from a buffer in memory. This is an overloaded function, provided for convenience.
+
+The buffer must be a raw encoded image (png, jpg).
+If the image cannot be read for any reason, the function creates an empty Image and returns false.
+
+@param[in] buffer A char* identifying the input buffer.
+@param[in] size Dimension of the input buffer.
+@param[out] dst Image in which data will be stored.
+@param[in] flags \ref ImReadMode indicating how to read the image.
+
+@return true if the image is correctly read, false otherwise.
+*/
+bool ImRead(const char* buffer, const int size, Image& dst, ImReadMode flags = ImReadMode::ANYCOLOR);
+
+/** @brief Loads an image from a buffer in memory. This is an overloaded function, provided for convenience. 
+
+It differs from the above function only because it accepts a std::vector<char> instead of a char*.
+
+@param[in] buffer A std::vector<char> identifying the input buffer.
+@param[out] dst Image in which data will be stored.
+@param[in] flags \ref ImReadMode indicating how to read the image.
+
+@return true if the image is correctly read, false otherwise.
+*/
+bool ImRead(const std::vector<char>& buffer, Image& dst, ImReadMode flags = ImReadMode::ANYCOLOR);
 
 /** @brief Loads a multi-page image from a file.
 

@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <iterator>
 #include <unordered_map>
+#include <vector>
 
 namespace ecvl
 {
@@ -97,18 +98,15 @@ public:
             is.ignore();
             type_ = type::range;
             read_vals(is, ']');
-        }
-        else if (next_char == '(') { // vector
+        } else if (next_char == '(') { // vector
             is.ignore();
             type_ = type::vector;
             read_vals(is, ')');
-        }
-        else if (next_char == '"') { // string
+        } else if (next_char == '"') { // string
             is.ignore();
             type_ = type::string;
             std::getline(is, str_, '"');
-        }
-        else {
+        } else {
             type_ = type::number;
             vals_.resize(1);
             is >> vals_[0];
@@ -143,6 +141,20 @@ public:
             if (p.type_ != type) {
                 throw std::runtime_error(fn_name_ + ": " + name + " parameter must be a " + param::to_string(type));
             }
+            value = p;
+            return true;
+        }
+        if (required) {
+            throw std::runtime_error(fn_name_ + ": " + name + " is a required parameter");
+        }
+        return false;
+    }
+
+    bool GenericGet(const std::string& name, bool required, param& value)
+    {
+        auto it = m_.find(name);
+        if (it != end(m_)) {
+            auto& p = it->second;
             value = p;
             return true;
         }
@@ -207,11 +219,13 @@ public:
         }
         RealApply(img, gt);
     }
+    virtual std::shared_ptr<Augmentation> Clone() const = 0;
     virtual ~Augmentation() = default;
 
 private:
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) = 0;
 };
+#define DEFINE_AUGMENTATION_CLONE(class_name) std::shared_ptr<Augmentation> Clone() const override { return std::make_shared<class_name>(*this); }
 
 struct AugmentationFactory
 {
@@ -236,11 +250,11 @@ This class represents a container for multiple augmentations which will be seque
 */
 class SequentialAugmentationContainer : public Augmentation
 {
-/** @brief Call the specialized augmentation functions.
+    /** @brief Call the specialized augmentation functions.
 
-@param[in] img Image on which apply the augmentations.
-@param[in] gt Ground truth image on which apply the augmentations.
-*/
+    @param[in] img Image on which apply the augmentations.
+    @param[in] gt Ground truth image on which apply the augmentations.
+    */
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         for (auto& x : augs_) {
@@ -249,10 +263,19 @@ class SequentialAugmentationContainer : public Augmentation
     }
     std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
 public:
+    DEFINE_AUGMENTATION_CLONE(SequentialAugmentationContainer)
+
     template<typename ...Ts>
     SequentialAugmentationContainer(Ts&&... t) : augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... }) {}
 
     SequentialAugmentationContainer(std::vector<std::shared_ptr<Augmentation>> augs) : augs_(augs) {}
+
+    SequentialAugmentationContainer(const SequentialAugmentationContainer& other) : Augmentation(other)
+    {
+        for (const auto& a : other.augs_) {
+            augs_.emplace_back(a->Clone());
+        }
+    }
 
     SequentialAugmentationContainer(std::istream& is)
     {
@@ -279,11 +302,11 @@ The chosen augmentation will be applied with a probability that must be specifie
 */
 class OneOfAugmentationContainer : public Augmentation
 {
-/** @brief Call the specialized augmentation functions.
+    /** @brief Call the specialized augmentation functions.
 
-@param[in] img Image on which apply the augmentations.
-@param[in] gt Ground truth image on which apply the augmentations.
-*/
+    @param[in] img Image on which apply the augmentations.
+    @param[in] gt Ground truth image on which apply the augmentations.
+    */
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         int index = std::uniform_int_distribution<>(0, vsize(augs_) - 1)(AugmentationParam::re_);
@@ -294,6 +317,8 @@ class OneOfAugmentationContainer : public Augmentation
     std::vector<std::shared_ptr<Augmentation>> augs_;   /**< @brief vector containing the Augmentation to be applied */
     double p_;
 public:
+    DEFINE_AUGMENTATION_CLONE(OneOfAugmentationContainer)
+
     template<typename ...Ts>
     OneOfAugmentationContainer(double p, Ts&&... t) : p_(p), augs_({ std::make_shared<Ts>(std::forward<Ts>(t))... })
     {
@@ -305,6 +330,14 @@ public:
         params_["p"] = AugmentationParam(0, 1);
     }
 
+    OneOfAugmentationContainer(const OneOfAugmentationContainer& other) : Augmentation(other)
+    {
+        for (const auto& a : other.augs_) {
+            augs_.emplace_back(a->Clone());
+        }
+        p_ = other.p_;
+    }
+
     OneOfAugmentationContainer(std::istream& is)
     {
         param p;
@@ -313,9 +346,8 @@ public:
             if (m.Get("p", param::type::number, true, p)) {
                 p_ = p.vals_[0];
             }
-        }
-        catch (std::runtime_error&) {
-            std::cout << ECVL_ERROR_MSG "The first parameter in OneOfAugmentationContainer must be the probability p"<< std::endl;
+        } catch (std::runtime_error&) {
+            std::cout << ECVL_ERROR_MSG "The first parameter in OneOfAugmentationContainer must be the probability p" << std::endl;
             ECVL_ERROR_AUGMENTATION_FORMAT
         }
 
@@ -332,6 +364,10 @@ public:
         }
     }
 };
+
+InterpolationType StrToInterpolationType(const std::string& interp, const std::string& aug_name);
+BorderType StrToBorderType(const std::string& interp, const std::string& aug_name);
+
 ///////////////////////////////////////////////////////////////////////////////////
 // Augmentations
 ///////////////////////////////////////////////////////////////////////////////////
@@ -344,16 +380,19 @@ class AugRotate : public Augmentation
 {
     std::vector<double> center_;
     double scale_;
-    InterpolationType interp_;
+    InterpolationType interp_, gt_interp_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        Rotate2D(img, img, params_["angle"].value_, center_, scale_, interp_);
+        const auto angle = params_["angle"].value_;
+        Rotate2D(img, img, angle, center_, scale_, interp_);
         if (!gt.IsEmpty()) {
-            Rotate2D(gt, const_cast<Image&>(gt), params_["angle"].value_, center_, scale_, interp_);
+            Rotate2D(gt, const_cast<Image&>(gt), angle, center_, scale_, gt_interp_);
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugRotate)
+
     /** @brief AugRotate constructor
 
     @param[in] angle Parameter which determines the range of degrees [min,max] to randomly select from.
@@ -361,11 +400,14 @@ public:
                       If empty, the center of the image is used.
     @param[in] scale Optional scaling factor.
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] gt_interp InterpolationType to be used for ground truth. Default is InterpolationType::nearest.
     */
     AugRotate(const std::array<double, 2>& angle,
         const std::vector<double>& center = {},
         const double& scale = 1.,
-        const InterpolationType& interp = InterpolationType::linear) : center_(center), scale_(scale), interp_(interp)
+        const InterpolationType& interp = InterpolationType::linear,
+        const InterpolationType& gt_interp = InterpolationType::nearest)
+        : center_(center), scale_(scale), interp_(interp), gt_interp_(gt_interp)
     {
         params_["angle"] = AugmentationParam(angle[0], angle[1]);
     }
@@ -388,25 +430,13 @@ public:
         }
 
         interp_ = InterpolationType::linear;
+        gt_interp_ = InterpolationType::nearest;
+
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugRotate: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugRotate");
+        }
+        if (m.Get("gt_interp", param::type::string, false, p)) {
+            gt_interp_ = StrToInterpolationType(p.str_, "AugRotate");
         }
     }
 };
@@ -418,22 +448,28 @@ public:
 class AugResizeDim : public Augmentation
 {
     std::vector<int> dims_;
-    InterpolationType interp_;
+    InterpolationType interp_, gt_interp_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         ResizeDim(img, img, dims_, interp_);
         if (!gt.IsEmpty()) {
-            ResizeDim(gt, const_cast<Image&>(gt), dims_, interp_);
+            ResizeDim(gt, const_cast<Image&>(gt), dims_, gt_interp_);
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugResizeDim)
+
     /** @brief AugResizeDim constructor
 
     @param[in] dims std::vector<int> that specifies the new size of each dimension.
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] gt_interp InterpolationType to be used for ground truth. Default is InterpolationType::nearest.
     */
-    AugResizeDim(const std::vector<int>& dims, const InterpolationType& interp = InterpolationType::linear) : dims_{ dims }, interp_(interp) {}
+    AugResizeDim(const std::vector<int>& dims,
+        const InterpolationType& interp = InterpolationType::linear,
+        const InterpolationType& gt_interp = InterpolationType::nearest)
+        : dims_{ dims }, interp_(interp), gt_interp_(gt_interp) {}
 
     AugResizeDim(std::istream& is)
     {
@@ -446,25 +482,13 @@ public:
         }
 
         interp_ = InterpolationType::linear;
+        gt_interp_ = InterpolationType::nearest;
+
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugRotate: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "");
+        }
+        if (m.Get("gt_interp", param::type::string, false, p)) {
+            gt_interp_ = StrToInterpolationType(p.str_, "AugResizeDim");
         }
     }
 };
@@ -476,22 +500,28 @@ public:
 class AugResizeScale : public Augmentation
 {
     std::vector<double> scale_;
-    InterpolationType interp_;
+    InterpolationType interp_, gt_interp_;
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
         ResizeScale(img, img, scale_, interp_);
         if (!gt.IsEmpty()) {
-            ResizeScale(gt, const_cast<Image&>(gt), scale_, interp_);
+            ResizeScale(gt, const_cast<Image&>(gt), scale_, gt_interp_);
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugResizeScale)
+
     /** @brief AugResizeScale constructor
 
     @param[in] scale std::vector<double> that specifies the scale to apply to each dimension.
     @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
+    @param[in] gt_interp InterpolationType to be used for ground truth. Default is InterpolationType::nearest.
     */
-    AugResizeScale(const std::vector<double>& scale, const InterpolationType& interp = InterpolationType::linear) : scale_{ scale }, interp_(interp) {}
+    AugResizeScale(const std::vector<double>& scale,
+        const InterpolationType& interp = InterpolationType::linear,
+        const InterpolationType& gt_interp = InterpolationType::nearest
+    ) : scale_{ scale }, interp_(interp), gt_interp_(gt_interp){}
 
     AugResizeScale(std::istream& is)
     {
@@ -502,25 +532,13 @@ public:
         scale_ = p.vals_;
 
         interp_ = InterpolationType::linear;
+        gt_interp_ = InterpolationType::nearest;
+
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugRotate: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugResizeScale");
+        }
+        if (m.Get("gt_interp", param::type::string, false, p)) {
+            gt_interp_ = StrToInterpolationType(p.str_, "AugResizeScale");
         }
     }
 };
@@ -535,7 +553,8 @@ class AugFlip : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        if (params_["p"].value_ <= p_) {
+        const auto p = params_["p"].value_;
+        if (p <= p_) {
             Flip2D(img, img);
             if (!gt.IsEmpty()) {
                 Flip2D(gt, const_cast<Image&>(gt));
@@ -543,6 +562,8 @@ class AugFlip : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugFlip)
+
     /** @brief AugFlip constructor
 
     @param[in] p Probability of each image to get flipped.
@@ -573,7 +594,8 @@ class AugMirror : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        if (params_["p"].value_ <= p_) {
+        const auto p = params_["p"].value_;
+        if (p <= p_) {
             Mirror2D(img, img);
             if (!gt.IsEmpty()) {
                 Mirror2D(gt, const_cast<Image&>(gt));
@@ -581,6 +603,8 @@ class AugMirror : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugMirror)
+
     /** @brief AugMirror constructor
 
     @param[in] p Probability of each image to get mirrored.
@@ -609,9 +633,12 @@ class AugGaussianBlur : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GaussianBlur(img, img, params_["sigma"].value_);
+        const auto sigma = params_["sigma"].value_;
+        GaussianBlur(img, img, sigma);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugGaussianBlur)
+
     /** @brief AugGaussianBlur constructor
 
     @param[in] sigma Parameter which determines the range of sigma [min,max] to randomly select from.
@@ -639,9 +666,12 @@ class AugAdditiveLaplaceNoise : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        AdditiveLaplaceNoise(img, img, params_["std_dev"].value_);
+        const auto std_dev = params_["std_dev"].value_;
+        AdditiveLaplaceNoise(img, img, std_dev);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugAdditiveLaplaceNoise)
+
     /** @brief AugAdditiveLaplaceNoise constructor
 
     @param[in] std_dev Parameter which determines the range of values [min,max] to randomly select the standard deviation of the noise generating distribution.
@@ -670,9 +700,12 @@ class AugAdditivePoissonNoise : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        AdditivePoissonNoise(img, img, params_["lambda"].value_);
+        const auto lambda = params_["lambda"].value_;
+        AdditivePoissonNoise(img, img, lambda);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugAdditivePoissonNoise)
+
     /** @brief AugAdditivePoissonNoise constructor
 
     @param[in] lambda Parameter which determines the range of values [min,max] to randomly select the lambda of the noise generating distribution.
@@ -701,9 +734,12 @@ class AugGammaContrast : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GammaContrast(img, img, params_["gamma"].value_);
+        const auto gamma = params_["gamma"].value_;
+        GammaContrast(img, img, gamma);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugGammaContrast)
+
     /** @brief AugGammaContrast constructor
 
     @param[in] gamma Parameter which determines the range of values [min,max] to randomly select the exponent for the contrast adjustment.
@@ -734,10 +770,14 @@ class AugCoarseDropout : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        CoarseDropout(img, img, params_["p"].value_, params_["drop_size"].value_, per_channel);
+        const auto p = params_["p"].value_;
+        const auto drop_size = params_["drop_size"].value_;
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        CoarseDropout(img, img, p, drop_size, per_channel);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugCoarseDropout)
+
     /** @brief AugCoarseDropout constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any rectangle being set to zero.
@@ -778,7 +818,8 @@ class AugTranspose : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        if (params_["p"].value_ <= p_) {
+        const auto p = params_["p"].value_;
+        if (p <= p_) {
             Transpose(img, img);
             if (!gt.IsEmpty()) {
                 Transpose(gt, const_cast<Image&>(gt));
@@ -786,6 +827,8 @@ class AugTranspose : public Augmentation
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugTranspose)
+
     /** @brief AugTranspose constructor
 
     @param[in] p Probability of each image to get transposed.
@@ -814,9 +857,12 @@ class AugBrightness : public Augmentation
 {
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        Add(img, params_["beta"].value_, img);
+        const auto beta = params_["beta"].value_;
+        Add(img, beta, img);
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugBrightness)
+
     /** @brief AugBrightness constructor
 
     @param[in] beta Parameter which determines the range of values [min,max] to randomly select the value for the brightness adjustment.
@@ -851,14 +897,18 @@ class AugGridDistortion : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        GridDistortion(img, img, static_cast<int>(params_["num_steps"].value_), distort_limit_, interp_, border_type_,
-            border_value_, static_cast<unsigned>(params_["seed"].value_));
+        const auto num_steps = params_["num_steps"].value_;
+        const auto seed = params_["seed"].value_;
+        GridDistortion(img, img, static_cast<int>(num_steps), distort_limit_, interp_, border_type_,
+            border_value_, static_cast<unsigned>(seed));
         if (!gt.IsEmpty()) {
-            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(params_["num_steps"].value_), distort_limit_,
-                interp_, border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
+            GridDistortion(gt, const_cast<Image&>(gt), static_cast<int>(num_steps), distort_limit_,
+                interp_, border_type_, border_value_, static_cast<unsigned>(seed));
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugGridDistortion)
+
     /** @brief AugGridDistortion constructor
 
     @param[in] num_steps Parameter which determines the range of values [min,max] to randomly select the number of grid cells on each side.
@@ -895,47 +945,24 @@ public:
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugGridDistortion");
         }
 
         border_type_ = BorderType::BORDER_REFLECT_101;
         if (m.Get("border_type", param::type::string, false, p)) {
             if (p.str_ == "constant") {
                 border_type_ = BorderType::BORDER_CONSTANT;
-            }
-            else if (p.str_ == "replicate") {
+            } else if (p.str_ == "replicate") {
                 border_type_ = BorderType::BORDER_REPLICATE;
-            }
-            else if (p.str_ == "reflect") {
+            } else if (p.str_ == "reflect") {
                 border_type_ = BorderType::BORDER_REFLECT;
-            }
-            else if (p.str_ == "wrap") {
+            } else if (p.str_ == "wrap") {
                 border_type_ = BorderType::BORDER_WRAP;
-            }
-            else if (p.str_ == "reflect_101") {
+            } else if (p.str_ == "reflect_101") {
                 border_type_ = BorderType::BORDER_REFLECT_101;
-            }
-            else if (p.str_ == "transparent") {
+            } else if (p.str_ == "transparent") {
                 border_type_ = BorderType::BORDER_TRANSPARENT;
-            }
-            else {
+            } else {
                 throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
             }
         }
@@ -958,14 +985,18 @@ class AugElasticTransform : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        ElasticTransform(img, img, params_["alpha"].value_, params_["sigma"].value_, interp_, border_type_,
-            border_value_, static_cast<unsigned>(params_["seed"].value_));
+        const auto alpha = params_["alpha"].value_;
+        const auto sigma = params_["sigma"].value_;
+        const auto seed = params_["seed"].value_;
+        ElasticTransform(img, img, alpha, sigma, interp_, border_type_, border_value_, static_cast<unsigned>(seed));
         if (!gt.IsEmpty()) {
-            ElasticTransform(gt, const_cast<Image&>(gt), params_["alpha"].value_, params_["sigma"].value_, interp_,
-                border_type_, border_value_, static_cast<unsigned>(params_["seed"].value_));
+            ElasticTransform(gt, const_cast<Image&>(gt), alpha, sigma, interp_,
+                border_type_, border_value_, static_cast<unsigned>(seed));
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugElasticTransform)
+
     /** @brief AugElasticTransform constructor
 
     @param[in] alpha Parameter which determines the range of values [min,max] to randomly select the scaling factor that controls the intensity of the deformation.
@@ -1003,47 +1034,24 @@ public:
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugElasticTransform");
         }
 
         border_type_ = BorderType::BORDER_REFLECT_101;
         if (m.Get("border_type", param::type::string, false, p)) {
             if (p.str_ == "constant") {
                 border_type_ = BorderType::BORDER_CONSTANT;
-            }
-            else if (p.str_ == "replicate") {
+            } else if (p.str_ == "replicate") {
                 border_type_ = BorderType::BORDER_REPLICATE;
-            }
-            else if (p.str_ == "reflect") {
+            } else if (p.str_ == "reflect") {
                 border_type_ = BorderType::BORDER_REFLECT;
-            }
-            else if (p.str_ == "wrap") {
+            } else if (p.str_ == "wrap") {
                 border_type_ = BorderType::BORDER_WRAP;
-            }
-            else if (p.str_ == "reflect_101") {
+            } else if (p.str_ == "reflect_101") {
                 border_type_ = BorderType::BORDER_REFLECT_101;
-            }
-            else if (p.str_ == "transparent") {
+            } else if (p.str_ == "transparent") {
                 border_type_ = BorderType::BORDER_TRANSPARENT;
-            }
-            else {
+            } else {
                 throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
             }
         }
@@ -1068,14 +1076,17 @@ class AugOpticalDistortion : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
+        const auto seed = params_["seed"].value_;
         OpticalDistortion(img, img, distort_limit_, shift_limit_, interp_, border_type_,
-            border_value_, static_cast<unsigned>(params_["seed"].value_));
+            border_value_, static_cast<unsigned>(seed));
         if (!gt.IsEmpty()) {
             OpticalDistortion(gt, const_cast<Image&>(gt), distort_limit_, shift_limit_, interp_, border_type_,
-                border_value_, static_cast<unsigned>(params_["seed"].value_));
+                border_value_, static_cast<unsigned>(seed));
         }
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugOpticalDistortion)
+
     /** @brief AugOpticalDistortion constructor
 
     @param[in] distort_limit Parameter which determines the range of values [min,max] to randomly select the distortion steps.
@@ -1111,47 +1122,24 @@ public:
 
         interp_ = InterpolationType::linear;
         if (m.Get("interp", param::type::string, false, p)) {
-            if (p.str_ == "linear") {
-                interp_ = InterpolationType::linear;
-            }
-            else if (p.str_ == "area") {
-                interp_ = InterpolationType::area;
-            }
-            else if (p.str_ == "cubic") {
-                interp_ = InterpolationType::cubic;
-            }
-            else if (p.str_ == "lanczos4") {
-                interp_ = InterpolationType::lanczos4;
-            }
-            else if (p.str_ == "nearest") {
-                interp_ = InterpolationType::nearest;
-            }
-            else {
-                throw std::runtime_error("AugGridDistortion: invalid interpolation type"); // TODO: standardize
-            }
+            interp_ = StrToInterpolationType(p.str_, "AugOpticalDistortion");
         }
 
         border_type_ = BorderType::BORDER_REFLECT_101;
         if (m.Get("border_type", param::type::string, false, p)) {
             if (p.str_ == "constant") {
                 border_type_ = BorderType::BORDER_CONSTANT;
-            }
-            else if (p.str_ == "replicate") {
+            } else if (p.str_ == "replicate") {
                 border_type_ = BorderType::BORDER_REPLICATE;
-            }
-            else if (p.str_ == "reflect") {
+            } else if (p.str_ == "reflect") {
                 border_type_ = BorderType::BORDER_REFLECT;
-            }
-            else if (p.str_ == "wrap") {
+            } else if (p.str_ == "wrap") {
                 border_type_ = BorderType::BORDER_WRAP;
-            }
-            else if (p.str_ == "reflect_101") {
+            } else if (p.str_ == "reflect_101") {
                 border_type_ = BorderType::BORDER_REFLECT_101;
-            }
-            else if (p.str_ == "transparent") {
+            } else if (p.str_ == "transparent") {
                 border_type_ = BorderType::BORDER_TRANSPARENT;
-            }
-            else {
+            } else {
                 throw std::runtime_error("AugGridDistortion: invalid border type"); // TODO: standardize
             }
         }
@@ -1172,10 +1160,14 @@ class AugSalt : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        Salt(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+        const auto p = params_["p"].value_;
+        const auto seed = params_["seed"].value_;
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        Salt(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugSalt)
+
     /** @brief AugSalt constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to white.
@@ -1215,10 +1207,14 @@ class AugPepper : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        Pepper(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+        const auto p = params_["p"].value_;
+        const auto seed = params_["seed"].value_;
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        Pepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugPepper)
+
     /** @brief AugPepper constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to black.
@@ -1258,10 +1254,14 @@ class AugSaltAndPepper : public Augmentation
 
     virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
     {
-        bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
-        SaltAndPepper(img, img, params_["p"].value_, per_channel, static_cast<unsigned>(params_["seed"].value_));
+        const auto p = params_["p"].value_;
+        const auto seed = params_["seed"].value_;
+        const bool per_channel = params_["per_channel"].value_ <= per_channel_ ? true : false;
+        SaltAndPepper(img, img, p, per_channel, static_cast<unsigned>(seed));
     }
 public:
+    DEFINE_AUGMENTATION_CLONE(AugSaltAndPepper)
+
     /** @brief AugSaltAndPepper constructor
 
     @param[in] p Parameter which determines the range of values [min,max] to randomly select the probability of any pixel being set to white or black.
@@ -1276,7 +1276,7 @@ public:
     }
     AugSaltAndPepper(std::istream& is)
     {
-        auto m = param::read(is, "AugSalt");
+        auto m = param::read(is, "AugSaltAndPepper");
         param p;
 
         // seed is managed by AugmentationParam
@@ -1288,6 +1288,275 @@ public:
         m.Get("per_channel", param::type::number, true, p);
         params_["per_channel"] = AugmentationParam(0, 1);
         per_channel_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::Normalize.
+
+@anchor AugNormalize
+*/
+class AugNormalize : public Augmentation
+{
+    double mean_ = 0., std_ = 1.;
+
+    std::vector<double> ch_mean_;
+    std::vector<double> ch_std_;
+
+    bool per_channel_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        if (per_channel_) {
+            Normalize(img, img, ch_mean_, ch_std_);
+        } else {
+            Normalize(img, img, mean_, std_);
+        }
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugNormalize)
+
+    /** @brief AugNormalize constructor
+
+    @param[in] mean Mean to substract from all pixel.
+    @param[in] std Standard deviation to use for normalization.
+    */
+    AugNormalize(const double& mean, const double& std) : mean_(mean), std_(std), per_channel_(false) {}
+
+    /** @brief AugNormalize constructor with separate statistics for each channel
+
+    @param[in] mean Per channel mean to substract from all pixel.
+    @param[in] std Per channel standard deviation to use for normalization.
+    */
+    AugNormalize(const std::vector<double>& mean, const std::vector<double>& std) : ch_mean_(mean), ch_std_(std), per_channel_(true) {}
+
+    AugNormalize(std::istream& is)
+    {
+        auto m = param::read(is, "AugNormalize");
+        param p;
+
+        m.GenericGet("mean", true, p);
+        if (p.type_ == param::type::number) {
+            mean_ = p.vals_[0];
+            per_channel_ = false;
+        } else if (p.type_ == param::type::vector) {
+            ch_mean_ = p.vals_;
+            per_channel_ = true;
+        } else {
+            throw std::runtime_error("AugNormalize: invalid mean type");
+        }
+
+        if (per_channel_ == false) {
+            m.Get("std", param::type::number, true, p);
+            std_ = p.vals_[0];
+        } else {
+            m.Get("std", param::type::vector, true, p);
+            ch_std_ = p.vals_;
+        }
+    }
+};
+
+/** @brief Augmentation CenterCrop wrapper for ecvl::CenterCrop.
+
+@anchor AugCenterCrop
+*/
+class AugCenterCrop : public Augmentation
+{
+    std::vector<int> size_;
+    bool infer_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        std::vector<int> new_size = size_;
+        if (infer_) {
+            // TODO: 3D implementation
+            new_size = std::vector<int>(2, std::min(img.Width(), img.Height()));
+        }
+        CenterCrop(img, img, new_size);
+        if (!gt.IsEmpty()) {
+            CenterCrop(gt, const_cast<Image&>(gt), new_size);
+        }
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugCenterCrop)
+
+    /** @brief AugCenterCrop constructor. Crop size is inferred from the minimum image dimension.
+    \f$
+       crop\_size = min(Image_{cols}, Image_{rows})
+    \f$
+    */
+    AugCenterCrop() : infer_{ true } {}
+
+    /** @brief AugCenterCrop constructor
+
+    @param[in] size std::vector<int> that specifies the new size of each dimension [w,h].
+    */
+    AugCenterCrop(const std::vector<int>& size) : size_{ size }, infer_{ false } {}
+
+    AugCenterCrop(std::istream& is)
+    {
+        auto m = param::read(is, "AugCenterCrop");
+        param p;
+
+        if (m.Get("size", param::type::vector, false, p)) {
+            for (const auto& x : p.vals_) {
+                size_.emplace_back(static_cast<int>(x));
+            }
+            infer_ = false;
+        } else {
+            infer_ = true;
+        }
+    }
+};
+
+/** @brief Augmentation ToFloat32
+
+This augmentation converts an Image (and ground truth) to DataType::float32 dividing it by divisor (or divisor_gt) parameter.
+
+@anchor AugToFloat32
+*/
+class AugToFloat32 : public Augmentation
+{
+    double divisor_, divisor_gt_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        img.ConvertTo(DataType::float32);
+        img.Div(divisor_);
+
+        if (!gt.IsEmpty()) {
+            const_cast<Image&>(gt).ConvertTo(DataType::float32);
+            const_cast<Image&>(gt).Div(divisor_gt_);
+        }
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugToFloat32)
+
+    /** @brief AugToFloat32 constructor
+
+    @param[in] divisor Value used to divide the img Image.
+    @param[in] divisor_gt Value used to divide the gt Image.
+    */
+    AugToFloat32(const double& divisor = 1., const double& divisor_gt = 1.) : divisor_{ divisor }, divisor_gt_{ divisor_gt } {}
+    AugToFloat32(std::istream& is)
+    {
+        auto m = param::read(is, "AugToFloat32");
+        param p;
+
+        m.Get("divisor", param::type::number, false, p);
+        divisor_ = p.vals_[0];
+        m.Get("divisor_gt", param::type::number, false, p);
+        divisor_gt_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation DivBy255
+
+This augmentation divides an Image (and ground truth if provided) by 255.
+
+@anchor AugDivBy255
+*/
+class AugDivBy255 : public Augmentation
+{
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        img.Div(255);
+
+        if (!gt.IsEmpty()) {
+            const_cast<Image&>(gt).Div(255);
+        }
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugDivBy255)
+
+    /** @brief AugDivBy255 constructor */
+    AugDivBy255() {}
+    AugDivBy255(std::istream& is) {}
+};
+
+/** @brief Augmentation wrapper for ecvl::ScaleTo.
+
+@anchor AugScaleTo
+*/
+class AugScaleTo : public Augmentation
+{
+    double new_min_, new_max_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        ScaleTo(img, img, new_min_, new_max_);
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugScaleTo)
+
+    /** @brief AugScaleTo constructor
+
+     @param[in] new_min double which indicates the new minimum value.
+     @param[in] new_max double which indicates the new maximum value.
+     */
+    AugScaleTo(const double& new_min, const double& new_max) : new_min_{ new_min }, new_max_{ new_max } {}
+    AugScaleTo(std::istream& is)
+    {
+        auto m = param::read(is, "AugScaleTo");
+        param p;
+
+        m.Get("new_min", param::type::number, true, p);
+        new_min_ = p.vals_[0];
+
+        m.Get("new_max", param::type::number, true, p);
+        new_max_ = p.vals_[0];
+    }
+};
+
+/** @brief Augmentation wrapper for ecvl::RandomCrop.
+
+@anchor AugRandomCrop
+*/
+class AugRandomCrop : public Augmentation
+{
+    std::vector<int> size_;
+    BorderType border_type_;
+    int border_value_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        const auto seed = params_["seed"].value_;
+        RandomCrop(img, img, size_, true, border_type_, border_value_, static_cast<unsigned>(seed));
+        if (!gt.IsEmpty()) {
+            RandomCrop(gt, const_cast<Image&>(gt), size_, true, border_type_, border_value_, static_cast<unsigned>(seed));
+        }
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugRandomCrop)
+
+    /** @brief AugRandomCrop constructor
+
+     @param[in] size Desired size of the output Image.
+     @param[in] border_type Flag used to specify the pixel extrapolation method if the desired size is bigger than the src Image. Default is BorderType::BORDER_CONSTANT
+     @param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT. Default is 0.
+     */
+    AugRandomCrop(const std::vector<int>& size, BorderType border_type = BorderType::BORDER_CONSTANT, const int& border_value = 0) : 
+        size_{ size }, border_type_{ border_type }, border_value_{ border_value } 
+    {
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
+    }
+
+    AugRandomCrop(std::istream& is)
+    {
+        auto m = param::read(is, "AugRandomCrop");
+        param p;
+
+        m.Get("size", param::type::vector, true, p);
+        for (const auto& x : p.vals_) {
+            size_.emplace_back(static_cast<int>(x));
+        }
+
+        m.Get("border_type", param::type::string, false, p);
+        border_type_ = StrToBorderType(p.str_, "AugRandomCrop");
+
+        m.Get("border_value", param::type::number, false, p);
+        border_value_ = static_cast<int>(p.vals_[0]);
+
+        params_["seed"] = AugmentationParam(AugmentationParam::seed_min, AugmentationParam::seed_max);
     }
 };
 } // namespace ecvl

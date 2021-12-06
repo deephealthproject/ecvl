@@ -15,7 +15,7 @@ pipeline {
                             steps {
                                 timeout(60) {
                                     echo 'Building..'
-                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                    cmakeBuild buildDir: 'build', buildType: 'Release', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DECVL_GPU=OFF', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
                                         [args: '--parallel 4', withCmake: true]
                                     ]
                                 }
@@ -25,7 +25,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Testing..'
-                                    ctest arguments: '-C Debug -VV', installation: 'InSearchPath', workingDir: 'build'
+                                    ctest arguments: '-C Release -VV', installation: 'InSearchPath', workingDir: 'build'
                                 }
                             }
                         }
@@ -46,8 +46,8 @@ pipeline {
                                 timeout(60) {
                                     echo 'Building..'
                                     bat 'powershell ../../ecvl_dependencies/ecvl_dependencies.ps1'
-                                    cmakeBuild buildDir: 'build', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=C:/Library/openslide-win32-20171122/lib/libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
-                                        [args: '--parallel 4', withCmake: true]
+                                    cmakeBuild buildDir: 'build', buildType: 'Release', cmakeArgs: '-DECVL_TESTS=ON -DECVL_BUILD_EDDL=ON -DECVL_DATASET=ON -DECVL_WITH_DICOM=ON -DECVL_WITH_OPENSLIDE=ON -DOPENSLIDE_LIBRARIES=C:/Library/openslide-win32-20171122/lib/libopenslide.lib', installation: 'InSearchPath', sourceDir: '.', cleanBuild: true, steps: [
+                                        [args: '--config Release --parallel 4', withCmake: true]
                                     ]
                                 }
                             }
@@ -56,7 +56,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Testing..'
-                                    bat 'cd build && ctest -C Debug -VV'
+                                    bat 'cd build && ctest -C Release -VV'
                                 }
                             }
                         }
@@ -64,7 +64,7 @@ pipeline {
                             steps {
                                 timeout(15) {
                                     echo 'Calculating coverage..'
-                                    bat '"C:/Program Files/OpenCppCoverage/OpenCppCoverage.exe" --source %cd% --export_type=cobertura --excluded_sources=3rdparty -- "build/bin/Debug/ECVL_TESTS.exe"'
+                                    bat '"C:/Program Files/OpenCppCoverage/OpenCppCoverage.exe" --source %cd% --export_type=cobertura --excluded_sources=3rdparty -- "build/bin/Release/ECVL_TESTS.exe"'
                                     cobertura coberturaReportFile: 'ECVL_TESTSCoverage.xml'
                                     bat 'codecov -f ECVL_TESTSCoverage.xml -t 7635bd2e-51cf-461e-bb1b-fc7ba9fb26d1'
                                 }

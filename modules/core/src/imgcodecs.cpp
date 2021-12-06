@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -50,6 +50,21 @@ bool ImRead(const path& filename, Image& dst, ImReadMode flags)
         std::cerr << ECVL_ERROR_MSG "File " << filename << " does not exist" << std::endl;
         ECVL_ERROR_FILE_DOES_NOT_EXIST
     }
+}
+
+bool ImRead(const std::vector<char>& buffer, Image& dst, ImReadMode flags)
+{
+    cv::InputArray ia(buffer);
+    dst = MatToImage(cv::imdecode(ia, (int)flags));
+
+    // TODO: Nifti and Dicom version?
+    return !dst.IsEmpty();
+}
+
+bool ImRead(const char* buffer, const int size, Image& dst, ImReadMode flags)
+{
+    const std::vector<char> buf(buffer, buffer + size);
+    return ImRead(buf, dst, flags);
 }
 
 bool ImReadMulti(const path& filename, Image& dst)

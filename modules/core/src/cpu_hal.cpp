@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -29,7 +29,7 @@ CpuHal* CpuHal::GetInstance()
 template<DataType SDT, DataType DDT>
 struct StructCopyImage
 {
-    static void _(const Image& src, Image& dst)
+    static void _(const Image& src, Image& dst, bool saturate)
     {
         using dsttype = typename TypeInfo<DDT>::basetype;
 
@@ -38,18 +38,32 @@ struct StructCopyImage
         auto is = vsrc.Begin(), es = vsrc.End();
         auto id = vdst.Begin();
         for (; is != es; ++is, ++id) {
-            *id = static_cast<dsttype>(*is);
+            if (saturate) {
+                *id = saturate_cast<dsttype>(*is);
+            }
+            else {
+                *id = static_cast<dsttype>(*is);
+            }
         }
     }
 };
+
 void CpuHal::CopyImage(const Image& src, Image& dst)
 {
     static constexpr Table2D<StructCopyImage> table;
-    table(src.elemtype_, dst.elemtype_)(src, dst);
+    table(src.elemtype_, dst.elemtype_)(src, dst, false);
 
     if (!src.meta_.map_.empty()) {
         dst.meta_ = src.meta_;
     }
+}
+
+void CpuHal::ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate)
+{
+    Image tmp{ src.dims_, dtype, src.channels_, src.colortype_, src.spacings_, src.dev_ };
+    static constexpr Table2D<StructCopyImage> table;
+    table(src.elemtype_, tmp.elemtype_)(src, tmp, saturate);
+    dst = std::move(tmp);
 }
 
 /** @brief Rearrange channels between Images of different DataTypes. */

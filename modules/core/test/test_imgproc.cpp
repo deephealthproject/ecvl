@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -10,6 +10,8 @@
 *    Stefano Allegretti (stefano.allegretti@unimore.it)
 * All rights reserved.
 */
+
+#include <vector>
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -40,7 +42,7 @@ protected:
     {
         out = Image();
 
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
         g1_##type##_v = g1_##type; \
         g1_##type##_v({ 0,0,0 }) = 50; \
         \
@@ -56,8 +58,8 @@ protected:
         rgb2_##type##_v({ 0,0,2 }) = 50; rgb2_##type##_v({ 1,0,2 }) = 32; \
         rgb2_##type##_v({ 0,1,2 }) = 14; rgb2_##type##_v({ 1,1,2 }) = 60; \
 
-#include "ecvl/core/datatype_existing_tuples.inc.h"
-#undef ECVL_TUPLE
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
+    #undef ECVL_TUPLE
     }
 };
 
@@ -697,6 +699,141 @@ TEST_F(Imgproc, CCLSameDst##type) \
     } \
     else { \
         EXPECT_THROW(ConnectedComponentsLabeling(g1_##type, g1_##type), std::runtime_error); \
+    } \
+} \
+\
+TEST_F(Imgproc, Normalize##type) \
+{ \
+    constexpr double mean = 39.0; \
+    constexpr double std = 17.5783958312469; \
+    Normalize(g1_##type, out, mean, std); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g1_##type##_v({ 0,0,0 }) - mean) / std)); \
+    \
+    Normalize(g2_##type, out, mean, std); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,1,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,1,0 }) - mean) / std)); \
+    \
+    Normalize(rgb2_##type, out, mean, std); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,0 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,1 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,2 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,2 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean) / std)); \
+    EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean) / std)); \
+} \
+TEST_F(Imgproc, NormalizeChannels##type) \
+{ \
+    const std::vector<double> mean = { 39.0, 38.0, 33.0 }; \
+    const std::vector<double> std = { 17.5783958312469, 14.5783958312469, 23.5783958312469 }; \
+    Normalize(rgb2_##type, out, mean, std); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,0 }) - mean[0]) / std[0])); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 1,0,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 0,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 1,1,1 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,1 }) - mean[1]) / std[1])); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,0,2 }) - mean[2]) / std[2])); \
+    EXPECT_TRUE(out_v({ 1,0,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,0,2 }) - mean[2]) / std[2])); \
+    EXPECT_TRUE(out_v({ 0,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 0,1,2 }) - mean[2]) / std[2])); \
+    EXPECT_TRUE(out_v({ 1,1,2 }) == saturate_cast<TypeInfo_t<DataType::type>>((rgb2_##type##_v({ 1,1,2 }) - mean[2]) / std[2])); \
+    EXPECT_THROW(Normalize(g2_##type, out, mean, std), std::runtime_error); \
+} \
+\
+TEST_F(Imgproc, CenterCrop##type) \
+{ \
+    std::vector<int> size { 1,1 }; \
+    CenterCrop(g1_##type, out, size); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 1)); \
+    \
+    CenterCrop(g2_##type, out, size); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 1)); \
+    \
+    CenterCrop(rgb2_##type, out, size); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,0,1 }) == 50); \
+    EXPECT_TRUE(out_v({ 0,0,2 }) == 50); \
+    EXPECT_THAT(out.dims_, testing::ElementsAre(1, 1, 3)); \
+} \
+\
+TEST_F(Imgproc, ScaleTo_##type) \
+{ \
+    ScaleTo(g2_##type, out, 14, 60); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) == 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) == 60); \
+    ScaleTo(g2_##type, out, 0, 1); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+}\
+\
+TEST_F(Imgproc, GammaContrast_##type) \
+{ \
+    GammaContrast(g1_##type, out, 3); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((g1_##type##_v({ 0,0,0 }) / 255.),3)))); \
+    GammaContrast(rgb2_##type, out, 3); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 0,0,0 }) / 255.),3)))); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 1,0,0 }) / 255.),3)))); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 0,1,0 }) / 255.),3)))); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>(255 * (pow((rgb2_##type##_v({ 1,1,0 }) / 255.),3)))); \
+}\
+\
+TEST_F(Imgproc, Pad_##type) \
+{ \
+    if (DataType::type != DataType::int64) { \
+        Pad(g2_##type, out, { 3 }); \
+        View<DataType::type> out_v(out); \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(8, 8, 1)); \
+        Pad(g1_##type, out, { 1, 1 }); \
+        out_v = out; \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(3, 3, 1)); \
+        Pad(rgb2_##type, out, { 2, 1, 3, 1 }); \
+        out_v = out; \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(6, 5, 3)); \
+    } \
+    else { \
+        EXPECT_THROW(Pad(g2_##type, out, { 3 }), std::runtime_error); \
+    } \
+}\
+\
+TEST_F(Imgproc, RandomCrop_##type) \
+{ \
+    RandomCrop(g2_##type, out, { 1, 1 }); \
+    View<DataType::type> out_v(out); \
+    EXPECT_THAT(out_v.dims_, testing::ElementsAre(1, 1, 1)); \
+    RandomCrop(rgb2_##type, out, { 1, 1 }); \
+    out_v = out; \
+    EXPECT_THAT(out_v.dims_, testing::ElementsAre(1, 1, 3)); \
+    if (DataType::type != DataType::int64) { \
+        RandomCrop(rgb2_##type, out, { 4, 4 }, true); \
+        out_v = out; \
+        EXPECT_THAT(out_v.dims_, testing::ElementsAre(4, 4, 3)); \
+    } \
+    else { \
+        EXPECT_THROW(RandomCrop(rgb2_##type, out, {4, 4}, true), std::runtime_error); \
     } \
 }
 

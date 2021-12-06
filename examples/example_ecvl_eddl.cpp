@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <unordered_map>
 
 #include "ecvl/core.h"
 #include "ecvl/support_eddl.h"
@@ -26,21 +25,26 @@ using namespace std;
 int main()
 {
     // Open an Image
-    Image img;
+    Image img, tmp;
     if (!ImRead("../examples/data/test.jpg", img)) {
         return EXIT_FAILURE;
     }
+    tmp = img;
 
     // Create an augmentation sequence to be applied to the image
     auto augs = make_shared<SequentialAugmentationContainer>(
+        AugCenterCrop(), // Make image squared
         AugRotate({ -5, 5 }),
         AugMirror(.5),
         AugFlip(.5),
         AugGammaContrast({ 3, 5 }),
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
-        AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0.5),
+        AugCoarseDropout({ 0, 0.55 }, { 0.02, 0.1 }, 0.5),
         AugAdditivePoissonNoise({ 0, 40 }),
-        AugResizeDim({ 500, 500 })
+        AugResizeDim({ 500, 500 }),
+        AugCenterCrop({ 224, 224 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.485, 0.456, 0.406 }, { 0.229, 0.224, 0.225 })
         );
 
     // Replace the random seed with a fixed one
@@ -51,7 +55,7 @@ int main()
 
     // Convert an Image into tensor
     cout << "Executing ImageToTensor" << endl;
-    tensor t;
+    Tensor* t;
     ImageToTensor(img, t);
 
     // Apply eddl functions
@@ -67,39 +71,43 @@ int main()
     cout << "Executing TensorToView" << endl;
     TensorToView(t, view);
 
-	//SequentialAugmentationContainer
-	//	AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp="linear"
-	//	AugAdditiveLaplaceNoise std_dev=[0,51]
-	//	AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0
-	//	AugAdditivePoissonNoise lambda=[0,40]
-	//	AugResizeDim dims=(30,30) interp="linear"
-	//end
-	stringstream ss(
-		"SequentialAugmentationContainer\n"
-		"    AugRotate angle=[-5,5] center=(0,0) scale=0.5 interp=\"linear\"\n"
-		"    AugAdditiveLaplaceNoise std_dev=[0,0.51]\n"
-		"    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
-		"    AugAdditivePoissonNoise lambda=[0,40]\n"
-		"    AugResizeDim dims=(30,30) interp=\"linear\"\n"
-		"end\n"
-	);
-	auto newdeal_augs = AugmentationFactory::create(ss);
+    // Create an augmentation sequence from stream
+    stringstream ss(
+        "SequentialAugmentationContainer\n"
+        "    AugRotate angle=[-5,5] center=(0,0) interp=\"linear\"\n"
+        "    AugAdditiveLaplaceNoise std_dev=[0,0.51]\n"
+        "    AugCoarseDropout p=[0,0.55] drop_size=[0.02,0.1] per_channel=0\n"
+        "    AugAdditivePoissonNoise lambda=[0,40]\n"
+        "    AugResizeDim dims=(224,224) interp=\"linear\"\n"
+        "    AugToFloat32 divisor=255\n"
+        "    AugNormalize mean=(0.485, 0.456, 0.406) std=(0.229, 0.224, 0.225)\n"
+        "end\n"
+    );
+    auto newdeal_augs = AugmentationFactory::create(ss);
+    newdeal_augs->Apply(tmp);
+
+    /*--------------------------------------------------------------------------------------------*/
 
     // Create the augmentations to be applied to the dataset images during training and test.
-    // nullptr is given as augmentation for validation because this split doesn't exist in the mnist dataset.
     auto training_augs = make_shared<SequentialAugmentationContainer>(
         AugRotate({ -5, 5 }),
         AugAdditiveLaplaceNoise({ 0, 0.2 * 255 }),
         AugCoarseDropout({ 0, 0.55 }, { 0.02,0.1 }, 0),
         AugAdditivePoissonNoise({ 0, 40 }),
-        AugResizeDim({ 30, 30 })
+        AugResizeDim({ 30, 30 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
     auto test_augs = make_shared<SequentialAugmentationContainer>(
-        AugResizeDim({ 30, 30 })
+        AugResizeDim({ 30, 30 }),
+        AugToFloat32(255),
+        AugNormalize({ 0.449 }, { 0.226 }) // mean of imagenet stats
         );
 
-    DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
+    // OLD version: now the number of augmentations must match the number of splits in the yml file
+    // DatasetAugmentations dataset_augmentations{ {training_augs, nullptr, test_augs } };
+    DatasetAugmentations dataset_augmentations{ {training_augs, test_augs } };
 
     int batch_size = 64;
     cout << "Creating a DLDataset" << endl;
@@ -107,8 +115,8 @@ int main()
 
     // Allocate memory for x and y tensors
     cout << "Create x and y" << endl;
-    tensor x = new Tensor({ batch_size, d.n_channels_, d.resize_dims_[0], d.resize_dims_[1] });
-    tensor y = new Tensor({ batch_size, static_cast<int>(d.classes_.size()) });
+    Tensor* x = new Tensor({ batch_size, d.n_channels_, d.resize_dims_[0], d.resize_dims_[1] });
+    Tensor* y = new Tensor({ batch_size, static_cast<int>(d.classes_.size()) });
 
     // Load a batch of d.batch_size_ images into x and corresponding labels in y
     // Images are resized to the dimensions specified in the augmentations chain
@@ -128,8 +136,13 @@ int main()
     d.SetSplit(SplitType::test);
     d.LoadBatch(x, y);
 
+    // Save some input images
+    ImWrite("mnist_batch.png", MakeGrid(x, 8, false));
+    ImWrite("mnist_batch_normalized.png", MakeGrid(x, 8, true));
+
     delete x;
     delete y;
+    delete t;
 
     return EXIT_SUCCESS;
 }

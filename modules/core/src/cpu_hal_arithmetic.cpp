@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -371,6 +371,24 @@ static void DivImpl(T src1, const Image& src2, Image& dst, DataType dst_type, bo
     table(dst.elemtype_)(src1, dst, saturate);
 }
 
+template<DataType DT, typename T>
+struct StructSetTo
+{
+    static void _(Image& img, T value)
+    {
+        View<DT> v(img);
+        auto i = v.Begin(), e = v.End();
+        for (; i != e; ++i) {
+            *i = static_cast<typename TypeInfo<DT>::basetype>(value);
+        }
+    }
+};
+template<typename T>
+static void SetToImpl(Image& src, T value) {
+    static constexpr Table1D<StructSetTo, T> table;
+    table(src.elemtype_)(src, value);
+}
+
 #define ECVL_TUPLE(name, size, type, ...) \
 void CpuHal::Add(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { AddImpl(src1, src2, dst, dst_type, saturate); } \
 void CpuHal::Add(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { AddImpl(src1, src2, dst, dst_type, saturate); } \
@@ -383,6 +401,8 @@ void CpuHal::Mul(type src1, const Image& src2, Image& dst, DataType dst_type, bo
                                                                                                                                                \
 void CpuHal::Div(const Image& src1, type src2, Image& dst, DataType dst_type, bool saturate) { DivImpl(src1, src2, dst, dst_type, saturate); } \
 void CpuHal::Div(type src1, const Image& src2, Image& dst, DataType dst_type, bool saturate) { DivImpl(src1, src2, dst, dst_type, saturate); } \
+                                                                                                                                               \
+void CpuHal::SetTo(Image& src, type value) { SetToImpl(src, value); }                                                                          \
 
 #include "ecvl/core/datatype_existing_tuples.inc.h"
 #undef ECVL_TUPLE

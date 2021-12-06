@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -146,10 +146,13 @@ public:
                                                          in other libraries such as OpenCV. */
     ColorType                   colortype_;         /**< @brief Image ColorType.
 
-                                                         If this is different from ColorType::none
+                                                         If this is different from ColorType::none,
                                                          the channels_ string must contain a 'c' and the
                                                          corresponding dimension must have the appropriate
-                                                         value. See @ref ColorType for the possible values. */
+                                                         value. See @ref ColorType for the possible values.
+
+                                                         If colortype_ is ColorType::none, then the image
+                                                         should not have a 'c' in the channels_ string. */
 
     std::vector<float>          spacings_;          /**< @brief Space between pixels/voxels. */
                                                     /**< Vector with the same size as @ref dims_, storing the
@@ -425,7 +428,8 @@ public:
     @param[in] elemtype New Image DataType.
     @param[in] channels New Image channels.
     @param[in] colortype New Image colortype.
-    @param[in] spacings New Image spacings.
+    @param[in] spacings New Image spacings. Default is an empty vector.
+    @param[in] dev Device on which the Image is stored. Default is Device::CPU.
     */
     void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
         const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU);
@@ -536,6 +540,19 @@ public:
         hal_->Div(*this, rhs, *this, elemtype_, saturate);
     }
 
+    /** @brief Set Image value to rhs. */
+    template<typename T>
+    void SetTo(T value)
+    {
+        hal_->SetTo(*this, value);
+    }
+
+    /** @brief Convert Image to another DataType. */
+    void ConvertTo(DataType dtype, bool saturate = true)
+    {
+        hal_->ConvertTo(*this, *this, dtype, saturate);
+    }
+
     Image operator-() const;
 
     Image& operator+=(const Image& rhs);
@@ -554,6 +571,57 @@ public:
 
     friend Image operator/(Image lhs, const Image& rhs);
 };
+
+template <typename ViewType>
+static void CropViewInternal(ViewType& view, const std::vector<int>& start, const std::vector<int>& size)
+{
+    std::vector<int> new_dims;
+    int ssize = vsize(size);
+    for (int i = 0; i < ssize; ++i) {
+        if (start[i] < 0 || start[i] >= view.dims_[i])
+            throw std::runtime_error("Start of crop outside image limits");
+        new_dims.push_back(view.dims_[i] - start[i]);
+        if (size[i] > new_dims[i]) {
+            throw std::runtime_error("Crop outside image limits");
+        }
+        if (size[i] >= 0) {
+            new_dims[i] = size[i];
+        }
+    }
+
+    // Check if image has a color dimension
+    auto cpos = view.channels_.find('c');
+    if (cpos != std::string::npos) {
+        // If we are cropping the color channel, we fix the color information
+        if (new_dims[cpos] != view.dims_[cpos]) {
+            if (new_dims[cpos] == 1) {
+                view.colortype_ = ColorType::GRAY;
+            }
+            else {
+                view.channels_[cpos] = 'o';
+                view.colortype_ = ColorType::none;
+            }
+        }
+    }
+
+    view.data_ = view.Ptr(start);
+
+    if (view.contiguous_) {
+        for (int i = 0; i < view.dims_.size() - 1; ++i) {
+            if (new_dims[i] != view.dims_[i]) {
+                view.contiguous_ = false;
+            }
+        }
+    }
+    if (view.contiguous_) {
+        view.datasize_ = std::accumulate(std::begin(new_dims), std::end(new_dims), size_t(view.elemsize_), std::multiplies<size_t>());
+    }
+    else {
+        view.datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
+    }
+
+    view.dims_ = std::move(new_dims);
+}
 
 #include "iterators_impl.inc.h"
 template <DataType DT>
@@ -585,38 +653,7 @@ public:
 
     View(Image& img, const std::vector<int>& start, const std::vector<int>& size) : View(img)
     {
-        dims_.clear();
-        int ssize = vsize(size);
-        for (int i = 0; i < ssize; ++i) {
-            if (start[i] < 0 || start[i] >= img.dims_[i])
-                throw std::runtime_error("Start of crop outside image limits");
-            dims_.push_back(img.dims_[i] - start[i]);
-            if (size[i] > dims_[i]) {
-                throw std::runtime_error("Crop outside image limits");
-            }
-            if (size[i] >= 0) {
-                dims_[i] = size[i];
-            }
-        }
-
-        // Check if image has a color dimension
-        auto cpos = channels_.find('c');
-        if (cpos != std::string::npos) {
-            // If we are cropping the color channel, we fix the color information
-            if (dims_[cpos] != img.dims_[cpos]) {
-                if (dims_[cpos] == 1) {
-                    colortype_ = ColorType::GRAY;
-                }
-                else {
-                    channels_[cpos] = 'o';
-                    colortype_ = ColorType::none;
-                }
-            }
-        }
-
-        data_ = img.Ptr(start);
-        datasize_ = 0; // This is set to zero, because when the View is not contiguous, it's useless to relay on this information
-        contiguous_ = false;
+        CropViewInternal(*this, start, size);
     }
 
     basetype& operator()(const std::vector<int>& coords)
@@ -670,6 +707,11 @@ public:
         meta_ = img.meta_;
         hal_ = HardwareAbstractionLayer::Factory(img.dev_, true);
         dev_ = img.dev_;
+    }
+
+    ConstView(const Image& img, const std::vector<int>& start, const std::vector<int>& size) : ConstView(img)
+    {
+        CropViewInternal(*this, start, size);
     }
 
     const basetype& operator()(const std::vector<int>& coords)
@@ -903,6 +945,33 @@ void CopyImage(const Image& src, Image& dst, DataType new_type = DataType::none)
 @param[in] channels Desired order of Image channels.
 */
 void CopyImage(const Image& src, Image& dst, DataType new_type, const std::string& channels);
+
+/** @brief Performs a shallow copy of the source Image into the destination.
+
+The ShallowCopyImage() procedure takes an Image and copies the fields values into destination Image.
+This means that source and destination Image(s) will point to the same Image data in memory. The data ownership
+of the source Image will be preserved, <em>i.e.</em> the result of the IsOwner() method on the source Image
+will be the same before and after the execution of the ShallowCopyImage(). Destination Image will never
+be the owner of the data. Source and destination Image(s) cannot be the same.
+
+@param[in] src Source Image to be shallow copied into destination Image.
+@param[out] dst Destination Image that will hold a copy of the source Image field value. Cannot be the source Image.
+
+@anchor ShallowCopyImage
+*/
+void ShallowCopyImage(const Image& src, Image& dst);
+
+/** @brief Convert Image to another DataType. 
+* 
+@param[in] src Source Image to be converted into destination Image.
+@param[out] dst Destination Image that will hold a converted copy of the source Image.
+@param[in] dtype DataType Desired DataType of dst Image.
+@param[in] saturate Wheter to apply saturate_cast to avoid possible overflows.
+
+@anchor ConvertTo
+*/
+void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate = true);
+
 
 /** @example example_image_view.cpp
  Example of basic Image and View functions.

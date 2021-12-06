@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -31,11 +31,18 @@ using namespace std;
 
 namespace ecvl
 {
-bool DicomRead(const std::string& filename, Image& dst)
-{
-    bool return_value = true;
 
+InitDCMTK::InitDCMTK()
+{
     DJDecoderRegistration::registerCodecs();
+}
+InitDCMTK::~InitDCMTK()
+{
+    DJDecoderRegistration::cleanup();
+}bool DicomRead(const std::string& filename, Image& dst)
+{
+    static InitDCMTK init_dcmtk; // Created only first time DicomRead is called
+    bool return_value = true;
 
     DicomImage* image = new DicomImage(filename.c_str());
     if (image == NULL) {
@@ -71,7 +78,14 @@ bool DicomRead(const std::string& filename, Image& dst)
             }
 
             dst.Create({ x, y, planes }, dst_datatype, "xyc", color_type);
-            memcpy(dst.data_, dipixel_data, x * y * planes * DataTypeSize(dst_datatype));
+            if (planes == 1) {
+                memcpy(dst.data_, dipixel_data, x * y * DataTypeSize(dst_datatype));
+            }
+            else {
+                for (int i = 0; i < planes; i++) {
+                    memcpy(dst.data_ + x * y * DataTypeSize(dst_datatype) * i, reinterpret_cast<void* const*>(dipixel_data)[i], x * y * DataTypeSize(dst_datatype));
+                }
+            }
 
             // Read metadata, only of string type - not currently considered
             //DcmFileFormat fileformat;
@@ -133,8 +147,6 @@ bool DicomRead(const std::string& filename, Image& dst)
     if (!return_value) {
         dst = Image();
     }
-
-    DJDecoderRegistration::cleanup();
 
     return return_value;
 }

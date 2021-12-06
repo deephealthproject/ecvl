@@ -1,7 +1,7 @@
-/*
+﻿/*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Universit� degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -149,7 +149,7 @@ void ChangeColorSpace(const Image& src, Image& dst, ColorType new_type);
 
 /** @brief Applies a fixed threshold to an input Image.
 
-The Threshold function applies a fixed thresholding to an input Image. The function is useful to get a binary
+The Threshold() function applies a fixed thresholding to an input Image. The function is useful to get a binary
 image out of a grayscale (ColorType::GRAY) Image or to remove noise filtering out pixels with too small or too
 large values. Anyway, the function can be applied to any input Image. The pixels up to "thresh" value will be
 set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type" is ThresholdingType::BINARY
@@ -164,15 +164,43 @@ set to 0, the pixels above this value will be set to "maxvalue" if "thresh_type"
 */
 void Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type = ThresholdingType::BINARY);
 
+/** @brief Applies multiple thresholds to the input Image.
+
+The Threshold() function applies multiple thresholding to the input Image. The resulting Image is quantized based on the provided
+thresholds values. Output values will range uniformly from minval to maxval.
+
+@param[in] src Input Image on which to apply the threshold.
+@param[out] dst The output thresholded Image.
+@param[in] thresholds Threshold values.
+@param[in] minval The minimum value in the output Image. Default is 0.
+@param[in] maxval The maximum value in the output Image. Default is 255.
+*/
+void MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval = 0, int maxval = 255);
+
 /** @brief Calculates the Otsu thresholding value.
 
-The OtsuThreshold function calculates the Otsu threshold value over a given input Image. the Image must by ColorType::GRAY.
+The OtsuThreshold() function calculates the Otsu threshold value over a given input Image. The Image must be of ColorType::GRAY.
+This function implements the algorithm described in \cite Otsu1979.
 
 @param[in] src Input Image on which to calculate the Otsu threshold value.
 
 @return Otsu threshold value.
 */
 int OtsuThreshold(const Image& src);
+
+/** @brief Calculates the Otsu thresholding values.
+
+The OtsuThreshold() function calculates the Otsu threshold values over a given input Image.
+The source Image must be of ColorType::GRAY. The number of thresholds to be found is
+defined by the n_thresholds parameter (default is 2). This function implement the algorithm
+described in \cite Liao2001.
+
+@param[in] src Input Image on which to calculate the Otsu threshold value.
+@param[in] n_thresholds Number of thresholds to be found using the Otsu multi threshold algorithm variation.
+
+@return Otsu thresholds value in a vector of ints.
+*/
+std::vector<int> OtsuMultiThreshold(const Image& src, int n_thresholds = 2);
 
 /** @brief Convolves an Image with a kernel
 
@@ -268,12 +296,16 @@ void NonMaximaSuppression(const Image& src, Image& dst);
 */
 std::vector<ecvl::Point2i> GetMaxN(const Image& src, size_t n);
 
-/** @brief Labels connected components in an binary Image
+/** @brief Labels connected components in a binary Image
+
+The ConnectedComponentsLabeling() procedure implement the Spaghetti algorithm described in \cite Bolelli2019, an extremely
+efficient algorithm to label connected components inside binary images using 8-way connectivity.
 
 @param[in] src Input Image. It must be with channels "xyc", only one color channel and DataType::uint8.
 @param[out] dst Output Image.
+@return number of different objects, including background.
 */
-void ConnectedComponentsLabeling(const Image& src, Image& dst);
+int ConnectedComponentsLabeling(const Image& src, Image& dst);
 
 /** @brief Finds contours in a binary image
 
@@ -282,7 +314,7 @@ void ConnectedComponentsLabeling(const Image& src, Image& dst);
 */
 void FindContours(const Image& src, std::vector<std::vector<Point2i>>& contours);
 
-/** @brief Stack a sequence of Images along a new depth dimension (images dimensions must match)
+/** @brief Stack a sequence of Images along the depth dimension (images width and height must match)
 
 @param[in] src vector of input Images. It must be with channels "xyc".
 @param[out] dst Output Image.
@@ -424,7 +456,7 @@ Based on https://github.com/albumentations-team/albumentations/blob/master/album
 @param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT.
 @param[in] seed Seed to use for this function's random number generator.
 */
-void ElasticTransform(const Image& src, Image& dst, 
+void ElasticTransform(const Image& src, Image& dst,
     double alpha = 34.,
     double sigma = 4.,
     InterpolationType interp = InterpolationType::linear,
@@ -489,13 +521,200 @@ void SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel = fa
     TR relative to the middle of the TR period. The default slice order acquisition is from the bottom of the brain to the top.
 
 @param[in] src Input Image. It must be with channels "xyzt" and with spacings (distance between consecutive voxels on each dimensions).
-@param[out] dst Output Image.
+@param[out] dst Output Image. It will be with DataType::float32.
 @param[in] odd Slices were acquired with interleaved order (0, 2, 4... 1, 3, 5...)
 @param[in] down Slices were acquired from the top of the brain to the bottom
 */
 void SliceTimingCorrection(const Image& src, Image& dst, bool odd = false, bool down = false);
+
+/** @brief Calculate all raw image moments of the source Image up to the specified order.
+
+When working with a 2D image, naming the pixel intensities as \f$I(x,y)\f$, raw image moments \f$M_{ij}\f$ are calculated with the following formula:
+
+\f$
+M_{ij} = \sum_x{\sum_y{x^iy^jI(x,y)}}
+\f$
+
+The following properties can be derived from raw image moments:
+- Area (for binary images) or sum of grey level (for grayscale images): \f$M_{00} \f$, accessible through moments(0,0) <em>i.e.</em> moments(x,y);
+- Centroid: \f$\{\bar{x}, \bar{y}\} = \{\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}}\}\f$.
+
+The formula above can be accordingly extended when working with higher dimensions. <b>Note that raw moments are neither translation, scale nor rotation invariant</b>.
+Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image.
+
+@param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
+@param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
+@param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
+@param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
+*/
+void Moments(const Image& src, Image& moments, int order = 3, DataType type = DataType::float64);
+
+/** @brief Calculate all central image moments of the source Image up to the specified order.
+
+When working with a 2D image, naming \f$\bar{x} = \frac{M_{10}}{M_{00}}\f$ and \f$\bar{y} = \frac{M_{01}}{M_{00}}\f$
+the components of the centroid (see documentation of Moments() for more details) and \f$I(x,y)\f$ the pixel intensities,
+the central moments are calculated with the following formula:
+
+\f$
+\mu_{ij} = \sum_x{\sum_y{(x-\bar{x})^i(y-\bar{y})^jI(x,y)}}
+\f$
+
+The central moments up to order 3 are then:
+
+\f$\mu_{00} = M_{00}\f$,<br/>
+\f$\mu_{01} = 0\f$,<br/>
+\f$\mu_{10} = 0\f$,<br/>
+\f$\mu_{11} = M_{11} - \bar{x}M_{01} = M_{11} - \bar{y}M_{10}\f$,<br/>
+\f$\mu_{20} = M_{20} - \bar{x}M_{10}\f$,<br/>
+\f$\mu_{02} = M_{02} - \bar{y}M_{01}\f$,<br/>
+\f$\mu_{21} = M_{21} - 2\bar{x}M_{11} - \bar{y}M_{20} + 2\bar{x}^2M_{01}\f$,<br/>
+\f$\mu_{12} = M_{12} - 2\bar{y}M_{11} - \bar{x}M_{02} + 2\bar{y}^2M_{10}\f$,<br/>
+\f$\mu_{30} = M_{30} - 3\bar{x}M_{20} + 2\bar{x}^2M_{10}\f$,<br/>
+\f$\mu_{03} = M_{03} - 3\bar{y}M_{02} + 2\bar{y}^2M_{01}\f$<br/>
+
+The formula above can be accordingly extended when working with higher dimensions. <b>Note that central moments are translational invariant</b>.
+Moments are stored in the output moments Image in the same order as for source channels. The output moments Image will be on the same device of the source Image.
+
+Information about image orientation can be derived from the covariance matrix of the image \f$I(x,y)\f$, constructed with the second order central moments:
+
+\f$cov[I(x,y)] = \begin{bmatrix}\mu_{20}' & \mu_{11}'\\ \mu_{11}' & \mu_{02}'\end{bmatrix}\f$
+
+where
+
+\f$\mu_{20}' = \frac{\mu_{20}}{\mu_{00}} = \frac{M_{20}}{M_{00}} − \bar{x}^2\f$<br/>
+\f$\mu_{02}' = \frac{\mu_{02}}{\mu_{00}} = \frac{M_{02}}{M_{00}} − \bar{y}^2\f$<br/>
+\f$\mu_{11}' = \frac{\mu_{11}}{\mu_{00}} = \frac{M_{11}}{M_{00}} − \bar{x}\bar{y}\f$<br/>
+
+The <b>eigenvectors</b> of the \f$cov[I(x,y)]\f$ matrix correspond to the major and minor axes of the image intensity.
+The orientation can be extracted as:
+
+\f$\theta = \frac{1}{2}arctan(\frac{2\mu_{11}'}{\mu_{20}' - \mu_{02}'})\f$
+
+On the other hand, the <b>eigenvalues</b> of the \f$cov[I(x,y)]\f$ matrix are given by:
+
+\f$\lambda_i = \frac{\mu_{20}' + \mu_{02}'}{2} \pm \frac{\sqrt{4\mu_{11}'^2 + (\mu_{20}' - \mu_{02}')^2}}{2} \f$
+
+Eigenvalues are proportional to the square length of the eigenvector axes. The half-axes of the ellipse generated
+by the eigenvectors are given by \f$\frac{d}{\sqrt{\lambda_1}}\f$  and \f$\frac{d}{\sqrt{\lambda_2}}\f$ where \f$d\f$ is
+the proportional factor. Considering that the moment \f$\mu_{00} = M_{00}\f$ is the area (when the image is binary) of
+the image objects we can easily calculate \f$d\f$ using the following equation:
+
+\f$\mu_{00} = \pi \frac{d^2}{\sqrt{\lambda_1 \lambda_2}}\f$
+
+Additionally, the eccentricity of the image can be calculates as:
+
+\f$e = \sqrt{1 - \frac{\lambda_2}{\lambda_1}}\f$
+
+@param[in] src Input Image on which calculating row moments up to the specified order. It must be a grayscale (ColorType::GRAY) or a data (ColorType::none) Image.
+@param[out] moments Output data (ColorType:none) Image containing the computed raw image moments. The moments DataType is specified by the type parameter. The size of the Image will be (order + 1, order + 1)
+@param[in] center Vector (std::vector<double>) representing the center coordinates: they can be calculated from raw moments. As an example, for a 2d image center
+            coordinates are given by \f$(\frac{M_{10}}{M_{00}}, \frac{M_{01}}{M_{00}})\f$. See Moments() documentation for more details. center.size() and src.dims_
+            must match in size (except for the 'c' channel). The source axes order must be the same used to specify center coordinates.
+@param[in] order Raw image moments will be calculated up to the specified order. Default is 3.
+@param[in] type Specify the ecvl::DataType to be used for the moments Image. It could be either DataType::float32 or DataType::float64. Default is DataType::float64.
+*/
+void CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order = 3, DataType type = DataType::float64);
+
+
+/** @brief Draw an ellipse over the specified Image.
+
+@param[inout] src Image on which draw the ellipse.
+@param[in] center Center of the ellipse to be drawn.
+@param[in] axes Half of the size of the ellipse axes.
+@param[in] angle Ellipse rotation angle. It must be in degrees.
+@param[in] color Ellipse color. It can be either a number (e.g. {255}) or an RGB value (e.g. {40, 40, 40})
+@param[in] thickness Thickness of the ellipse border. If negative all the pixell of the ellipse will be filled with the specified color value.
+                        Default is 1.
+*/
+void DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness = 1);
+
+/** @brief Remove color channel from the input Image.
+
+The DropColorChannel() procedure remove the color channel ("c") from the specified input Image, modifying all the other attribute accordingly.
+This function can be only applied on Images with ColorType::GRAY, <em>i.e.</em> images having the color channel dimension equal to 1.
+
+@param[inout] src Image from which to drop the color channel.
+*/
+void DropColorChannel(Image& src);
+
+/** @brief Normalize Image image with mean and standard deviation.
+
+The Normalize creates an Image in which each pixel of the Image is subtracted by mean and divide by std.
+Useful to normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.
+
+@param[in] src Image to normalize.
+@param[out] dst Output normalized Image.
+@param[in] mean Mean to use for normalization.
+@param[in] std Standard deviation to use for normalization.
+*/
+void Normalize(const Image& src, Image& dst, const double& mean, const double& std);
+
+/** @brief Normalize xyc Image image with separate mean and standard deviation for each color channel.
+
+The Normalize creates an Image in which each pixel of the input xyc Image is subtracted by the mean and divide by the std for its channel.
+Useful to normalize a dataset, in fact normalization helps to get the data within a range and which helps in making training of neural networks a lot faster.
+
+@param[in] src Image to normalize.
+@param[out] dst Output normalized Image.
+@param[in] mean Vector of means to use for normalization.
+@param[in] std Vector of standard deviations to use for normalization.
+*/
+void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std);
+
+/** @brief Crops the given image at the center.
+
+The function crops Image src at the center and outputs the result in dst.
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] size std::vector<int> specifies the desired output size of the crop. Must be in the order [w,h].
+*/
+void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size);
+
+/** @brief Linearly scale an Image into a new range.
+
+The function linearly rescale the Image having values in [min,max] into a new arbitrary range [new_min,new_max].
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] new_min double which indicates the new minimum value.
+@param[in] new_max double which indicates the new maximum value.
+*/
+void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max);
+
+/** @brief Pad an Image.
+
+A border is added to the 4 sides of the Image. It can be specified equal for all the sides, equal for top and bottom and for left and right or different for all the sides.
+
+@param[in] src The input Image.
+@param[out] dst The output padded Image.
+@param[in] padding vector<int> that can have size 1 (pad is equal for all the sides of the Image), 2 (top/bottom, left/right) or 4 (top, bottom, left, right).
+@param[in] border_type Flag used to specify the pixel extrapolation method. Default is BorderType::BORDER_CONSTANT.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT. Default is 0.
+*/
+void Pad(const Image& src, Image& dst, const std::vector<int>& padding, BorderType border_type = BorderType::BORDER_CONSTANT, const int& border_value = 0);
+
+/** @brief Crop the source Image at a random location with the size specified.
+
+@param[in] src The input Image. It must be xy[czo] (in any order).
+@param[out] dst The output cropped Image.
+@param[in] size vector<int> with the desired (width, height) of the output Image.
+@param[in] pad_if_needed If the desired size is bigger than the src Image and pad_if_needed is true, the Image will be padded. Otherwise, an exception will be thrown.
+@param[in] border_type If pad_if_needed is true, this flag is used to specify the pixel extrapolation method. Default is BorderType::BORDER_CONSTANT.
+@param[in] border_value Padding value if border_type is BorderType::BORDER_CONSTANT and if pad_if_needed is true. Default is 0.
+*/
+void RandomCrop(const Image& src, Image& dst, const std::vector<int>& size, bool pad_if_needed = false, BorderType border_type = BorderType::BORDER_CONSTANT, const int& border_value = 0, const unsigned seed = std::default_random_engine::default_seed);
+
+/** @example example_moments.cpp
+This is an example application of the raw and central moments.
+*/
+
 /** @example example_imgproc.cpp
- Imgproc example.
+ Image processing examples.
+*/
+
+/** @example example_threshold.cpp
+This is an Otsu (single an multi-threshold) usage example.
 */
 } // namespace ecvl
 

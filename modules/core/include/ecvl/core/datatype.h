@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -18,11 +18,15 @@
 #include <cstddef>
 #include <limits>
 #include <array>
+#include <vector>
 
 namespace ecvl {
 
 typedef std::array<int, 2> Point2i;
 typedef std::array<double, 2> Point2d;
+typedef std::array<int, 2> Size2i;
+typedef std::array<double, 2> Size2d;
+typedef std::vector<double> Scalar;
 
 /** @brief Calculate the distance squared between two ecvl::Point2i.
 

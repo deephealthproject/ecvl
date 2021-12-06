@@ -1,6 +1,6 @@
 # ECVL - European Computer Vision Library
-# Version: 0.2.1
-# copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# Version: 1.0.0
+# copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
@@ -15,7 +15,9 @@ set(examples_sources
     example_image_view.cpp
     example_imgcodecs.cpp
     example_imgproc.cpp
+    example_moments.cpp
     example_performance.cpp
+	example_threshold.cpp
 )
 FOREACH(cur_file ${examples_sources})
     get_filename_component(exe_name ${cur_file} NAME_WE)
@@ -36,8 +38,11 @@ if(ECVL_DATASET)
 endif()
 if(ECVL_BUILD_EDDL AND eddl_FOUND)
     add_executable(example_ecvl_eddl "examples/example_ecvl_eddl.cpp")
+    add_executable(example_pipeline "examples/example_pipeline.cpp")
     set_target_properties(example_ecvl_eddl PROPERTIES FOLDER "Examples")
     target_link_libraries(example_ecvl_eddl ${ECVL_MODULES})
+    set_target_properties(example_pipeline PROPERTIES FOLDER "Examples")
+    target_link_libraries(example_pipeline ${ECVL_MODULES})
 endif()
 if(ECVL_BUILD_GUI AND wxWidgets_FOUND)
     add_executable(example_ecvl_gui "examples/example_ecvl_gui.cpp")

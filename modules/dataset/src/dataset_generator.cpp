@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -144,19 +144,10 @@ void GenerateDataset::LoadImagesAndSplits()
         }
 
         // load indexes of images for each split
+        d_.split_.resize(splits_.size());
         for (int i = 0; i < splits_.size(); ++i) {
-            if (splits_[i] == "training") {
-                d_.split_.training_.resize(num_samples_[i]);
-                iota(d_.split_.training_.begin(), d_.split_.training_.end(), img_index);
-            }
-            else if (splits_[i] == "validation") {
-                d_.split_.validation_.resize(num_samples_[i]);
-                iota(d_.split_.validation_.begin(), d_.split_.validation_.end(), img_index);
-            }
-            else if (splits_[i] == "test") {
-                d_.split_.test_.resize(num_samples_[i]);
-                iota(d_.split_.test_.begin(), d_.split_.test_.end(), img_index);
-            }
+            d_.split_[i] = Split(splits_[i], vector<int>(num_samples_[i]));
+            iota(d_.split_[i].samples_indices_.begin(), d_.split_[i].samples_indices_.end(), img_index);
             img_index += num_samples_[i];
         }
     }

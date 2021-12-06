@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -21,10 +21,12 @@ namespace ecvl {
 /** @brief Convert a cv::Mat into an ecvl::Image.
 
 @param[in] m Input OpenCV Mat.
+@param[in] ctype Input ColorType of the returned ecvl::Image. If not provided the ColorType is guessed from OpenCV Mat.
+@param[in] dst_channels Output Image channels order. Default value is empty string, meaning the OpenCV Mat channels order is preserved.
 
 @return ECVL image.
 */
-ecvl::Image MatToImage(const cv::Mat& m);
+ecvl::Image MatToImage(const cv::Mat& m, ColorType ctype = ColorType::none, const std::string& dst_channels = "");
 
 /** @brief Convert a std::vector<cv::Mat> into an ecvl::Image.
 

@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Universit‡ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Universit√† degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -13,6 +13,7 @@
 
 #include "ecvl/dataset_parser.h"
 
+#include <algorithm>
 #include <fstream>
 #include <regex>
 
@@ -77,12 +78,8 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_FILE_DOES_NOT_EXIST
         }
 
-        if (ctype == ColorType::GRAY) {
-            status = ImRead(location, img, ImReadMode::GRAYSCALE);
-        }
-        else {
-            status = ImRead(location, img);
-        }
+        // Read the image
+        status = ImRead(location, img);
 
         if (!status) {
             // Image not correctly loaded
@@ -90,9 +87,8 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
             ECVL_ERROR_CANNOT_LOAD_IMAGE
         }
 
-        // TODO is this needed?
-        if (img.colortype_ != ctype) {
-            ChangeColorSpace(img, img, ctype);
+        if (is_gt) {
+            break;
         }
 
         images.push_back(img);
@@ -100,6 +96,11 @@ Image Sample::LoadImage(ColorType ctype, const bool& is_gt)
 
     if (images.size() > 1) {
         Stack(images, img);
+    }
+
+    // ImRead always return BGR, so we have to change color space for other color type
+    if (img.colortype_ != ctype) {
+        ChangeColorSpace(img, img, ctype);
     }
 
     if (size_.empty()) {
@@ -227,35 +228,28 @@ void Dataset::Dump(const path& file_path)
         else if (s.label_path_ != nullopt) {
             os << tab + tab + "label: " << s.label_path_.value().generic_string() << endl;
         }
+        if (s.values_ != nullopt) {
+            os << tab + tab + "values: [";
+            for (auto& v : s.values_.value()) {
+                os << s.values_.value()[0] << "]" << endl;
+            }
+        }
     }
 
-    if (split_.training_.size() > 0 || split_.validation_.size() > 0 || split_.test_.size() > 0) {
+    if (split_.size() > 0) {
         os << "split:" << endl;
-    }
-
-    if (split_.training_.size() > 0) {
-        os << tab + "training:" << endl;
-        for (auto& i : split_.training_) {
-            os << tab + tab + "- " << i << endl;
-        }
-    }
-    if (split_.validation_.size() > 0) {
-        os << tab + "validation:" << endl;
-        for (auto& i : split_.validation_) {
-            os << tab + tab + "- " << i << endl;
-        }
-    }
-    if (split_.test_.size() > 0) {
-        os << tab + "test:" << endl;
-        for (auto& i : split_.test_) {
-            os << tab + tab + "- " << i << endl;
+        for (auto& s : split_) {
+            os << tab + s.split_name_ + ":" << endl;
+            for (auto& i : s.samples_indices_) {
+                os << tab + tab + "- " << i << endl;
+            }
         }
     }
 
     os.close();
 }
 
-Dataset::Dataset(const path& filename, bool verify)
+Dataset::Dataset(const filesystem::path& filename, bool verify)
 {
     path abs_filename = absolute(filename);
 
@@ -291,8 +285,92 @@ Dataset::Dataset(const path& filename, bool verify)
     }
 
     DecodeImages(config["images"], abs_filename.parent_path(), verify);
+
     if (config["split"].IsDefined()) {
-        this->split_ = config["split"].as<Split>();
+        for (YAML::const_iterator it = config["split"].begin(); it != config["split"].end(); ++it) {
+            // insert into the vector split_ the split name and the vector of image indices
+            Split s(it->first.as<string>(), it->second.as<vector<int>>());
+
+            if (!samples_[s.samples_indices_[0]].label_ && !samples_[s.samples_indices_[0]].label_path_) {
+                s.no_label_ = true;
+            }
+            split_.push_back(s);
+        }
     }
+
+    task_ = classes_.empty() ? Task::segmentation : Task::classification;
+}
+
+const int Dataset::GetSplitIndex(any split)
+{
+    if (split.type() == typeid(int)) {
+        auto s = any_cast<int>(split);
+        int index = s < 0 || s >= split_.size() ? current_split_ : s;
+        return index;
+    }
+    else {
+        return static_cast<const int>(distance(split_.begin(), GetSplitIt(split)));
+    }
+}
+
+vector<Split>::iterator Dataset::GetSplitIt(any split)
+{
+    if (split.type() == typeid(int)) {
+        try {
+            auto s = any_cast<int>(split);
+            const int index = s < 0 || s >= split_.size() ? current_split_ : s;
+            return split_.begin() + index;
+        }
+        catch (const out_of_range) {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+    }
+    auto func = [&](const auto& s) {
+        if (split.type() == typeid(string)) {
+            auto tmp = s.split_name_;
+            return tmp == any_cast<string>(split);
+        }
+        else if (split.type() == typeid(const char*)) {
+            auto tmp = s.split_name_;
+            return tmp == any_cast<const char*>(split);
+        }
+        else if (split.type() == typeid(SplitType)) {
+            auto tmp = s.split_type_;
+            return tmp == any_cast<SplitType>(split);
+        }
+        else {
+            ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+        }
+    };
+
+    auto it = std::find_if(split_.begin(), split_.end(), [&](const auto& s) { return func(s); });
+    if (it == this->split_.end()) {
+        ECVL_ERROR_SPLIT_DOES_NOT_EXIST
+    }
+    else {
+        return it;
+    }
+}
+
+vector<int>& Dataset::GetSplit(const any& split)
+{
+    auto it = GetSplitIt(split);
+    return it->samples_indices_;
+}
+
+void Dataset::SetSplit(const any& split)
+{
+    int index = GetSplitIndex(split);
+    this->current_split_ = index;
+}
+
+vector<vector<path>> Dataset::GetLocations() const
+{
+    const auto& size = vsize(samples_);
+    vector<vector<path>> locations(size);
+    for (int i = 0; i < size; ++i) {
+        locations[i] = samples_[i].location_;
+    }
+    return locations;
 }
 }

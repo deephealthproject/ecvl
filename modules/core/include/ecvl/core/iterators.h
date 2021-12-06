@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -24,6 +24,12 @@ class Image;
 template <typename T>
 struct Iterator
 {
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::forward_iterator_tag;
+
     std::vector<int> pos_;
     uint8_t* ptr_;
     Image* img_;
@@ -45,6 +51,12 @@ private:
 template <typename T>
 struct ConstIterator
 {
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using pointer = const value_type*;
+    using reference = const value_type&;
+    using iterator_category = std::forward_iterator_tag;
+
     std::vector<int> pos_;
     const uint8_t* ptr_;
     const Image* img_;
@@ -66,6 +78,12 @@ private:
 template <typename T>
 struct ContiguousIterator
 {
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::forward_iterator_tag;
+
     uint8_t* ptr_;
     Image* img_;
 
@@ -82,6 +100,12 @@ private:
 template <typename T>
 struct ConstContiguousIterator
 {
+    using difference_type = std::ptrdiff_t;
+    using value_type = T;
+    using pointer = const value_type*;
+    using reference = const value_type&;
+    using iterator_category = std::forward_iterator_tag;
+
     const uint8_t* ptr_;
     const Image* img_;
 

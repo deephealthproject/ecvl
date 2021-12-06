@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.1
-* copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* Version: 1.0.0
+* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -40,7 +40,7 @@ inline void RGB2GRAYGeneric(const uint8_t* r, const uint8_t* g, const uint8_t* b
 case DataType::type: DEREF(dst, type) = saturate_cast<DataType::type>(0.299 * CONST_DEREF(r, type) + 0.587 * CONST_DEREF(g, type) + 0.114 * CONST_DEREF(b, type));  break;
 
     switch (dt) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -61,7 +61,7 @@ void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vect
 
     cv::Mat m;
     cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
 }
 
 void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
@@ -73,12 +73,18 @@ void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>
 
     cv::Mat m;
     cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
 }
 
 void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     size_t c_pos = src.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
     size_t x_pos = src.channels_.find('x');
     size_t y_pos = src.channels_.find('y');
 
@@ -106,7 +112,6 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     int pivot = (src_height + 1) / 2;
     bool setup = false;
     int r_end;
-#pragma omp parallel for firstprivate(setup, r_end)
     for (int r = 0; r < pivot; ++r) {
         if (!setup) {
             r_end = src_height - 1 - r;
@@ -120,7 +125,7 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
             int p1 = r1 + src_stride_x * c;
             int p2 = r2 + src_stride_x * c;
 
-#define ECVL_TUPLE(type, ...) \
+        #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             for (int ch = 0; ch < src_channels; ++ch) { \
                 *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
@@ -129,10 +134,10 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
             break;
 
             switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+            #include "ecvl/core/datatype_existing_tuples.inc.h"
             }
 
-#undef ECVL_TUPLE
+        #undef ECVL_TUPLE
         }
         --r_end;
     }
@@ -142,6 +147,12 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 {
     size_t c_pos = src.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
     size_t x_pos = src.channels_.find('x');
     size_t y_pos = src.channels_.find('y');
 
@@ -167,7 +178,6 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 
     int pivot = (src_width + 1) / 2;
 
-#pragma omp parallel for
     for (int r = 0; r < src_height; ++r) {
         // Get the address of next row
         int pos = r * src_stride_y;
@@ -176,7 +186,7 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
             int p1 = pos + src_stride_x * c;
             int p2 = pos + src_stride_x * c_end;
 
-#define ECVL_TUPLE(type, ...) \
+        #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             for (int ch = 0; ch < src_channels; ++ch) { \
                 *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p2); \
@@ -185,10 +195,10 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
             break;
 
             switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+            #include "ecvl/core/datatype_existing_tuples.inc.h"
             }
 
-#undef ECVL_TUPLE
+        #undef ECVL_TUPLE
         }
     }
     dst = std::move(tmp);
@@ -210,7 +220,7 @@ void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, co
     rot_matrix = cv::getRotationMatrix2D(pt, -angle, scale);
     cv::Mat m;
     cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
 }
 
 void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp)
@@ -237,7 +247,7 @@ void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double 
 
     cv::Mat m;
     cv::warpAffine(ImageToMat(src), m, rot_matrix, { nw, nh }, GetOpenCVInterpolation(interp));
-    dst = ecvl::MatToImage(m);
+    dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
 }
 
 void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
@@ -384,6 +394,7 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
 {
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
+    // This implementation assumes that the Image is contiguous. TODO implement the non contiguous version.
     auto thresh_t = saturate_cast<T>(thresh);
     auto maxval_t = saturate_cast<T>(maxval);
     auto minval_t = static_cast<T>(0);
@@ -394,13 +405,11 @@ void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, T
 
     switch (thresh_type) {
     case ecvl::ThresholdingType::BINARY:
-#pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             tmp_data[i] = src_data[i] > thresh_t ? maxval_t : minval_t;
         }
         break;
     case ecvl::ThresholdingType::BINARY_INV:
-#pragma omp parallel for
         for (int i = 0; i < limit; ++i) {
             tmp_data[i] = src_data[i] <= thresh_t ? maxval_t : minval_t;
         }
@@ -415,7 +424,7 @@ void CpuHal::Threshold(const Image& src, Image& dst, double thresh, double maxva
 case DataType::type: ThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresh, maxval, thresh_type); break;
 
     switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -466,6 +475,108 @@ int CpuHal::OtsuThreshold(const Image& src)
     return threshold;
 }
 
+std::vector<int> CpuHal::OtsuMultiThreshold(const Image& src, int n_thresholds)
+{
+    std::vector<double> hist = Histogram(src);
+
+    static double P[256];
+    static double S[256];
+    static double H[256][256];
+    P[0] = hist[0];
+    S[0] = 0;
+    for (int v = 1; v < 256; ++v) {
+        P[v] = P[v - 1] + hist[v];
+        S[v] = S[v - 1] + v * hist[v];
+        H[0][v] = S[v] * S[v] / P[v];
+    }
+    for (int u = 1; u < 256; ++u) {
+        double Pu = P[u - 1];
+        double Su = S[u - 1];
+        for (int v = u; v < 256; ++v) {
+            double Puv = P[v] - Pu;
+            double Suv = S[v] - Su;
+            H[u][v] = Puv ? Suv * Suv / Puv : 0;
+        }
+    }
+    vector<int> thresholds(n_thresholds);
+    iota(thresholds.begin(), thresholds.end(), 1);
+    double max_sigma = 0;
+    vector<int> max_thresholds;
+    bool finish = false;
+    while (!finish) {
+        double sigma = H[0][thresholds[0]];
+        for (size_t i = 1, end = thresholds.size(); i < end; ++i) {
+            sigma += H[thresholds[i - 1]][thresholds[i]];
+        }
+        sigma += H[thresholds.back()][255];
+        if (max_sigma < sigma) {
+            max_sigma = sigma;
+            max_thresholds = thresholds;
+        }
+        finish = true;
+        for (size_t end = thresholds.size(), i = end - 1; i < end; --i) {
+            uint8_t limit = uint8_t(255 - end + i);
+            if (thresholds[i] < limit) {
+                ++thresholds[i];
+                for (size_t j = i + 1; j < end; ++j) {
+                    thresholds[j] = thresholds[j - 1] + 1;
+                }
+                finish = false;
+                break;
+            }
+        }
+    }
+    return max_thresholds;
+}
+
+template <typename T>
+void MultiThresholdImpl(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
+{
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+    std::vector<T> vals(thresholds.size() + 1);
+    for (int i = 0, end = vsize(vals); i < end; ++i) {
+        vals[i] = static_cast<T>(i * (maxval - minval) / (end - 1) + minval);
+    }
+
+    if (src.contiguous_) {
+        T* src_data = reinterpret_cast<T*>(src.data_);
+        T* tmp_data = reinterpret_cast<T*>(tmp.data_);
+        auto elemsize = src.elemsize_;
+        auto limit = tmp.datasize_ / elemsize;
+
+        for (int i = 0; i < limit; ++i) {
+            auto p = src_data[i];
+            int k = 0, e = vsize(thresholds);
+            for (; k < e && p > thresholds[k]; ++k) {}
+            tmp_data[i] = vals[k];
+        }
+    }
+    else {
+        auto out = dst.Begin<T>();
+        for (auto it = src.Begin<T>(), end = src.End<T>(); it != end; ++it, ++out) {
+            auto p = *it;
+            int i = 0, e = vsize(thresholds);
+            for (; i < e && p > thresholds[i]; ++i) {}
+            *out = static_cast<T>(vals[i]);
+        }
+    }
+
+    dst = std::move(tmp);
+}
+
+void CpuHal::MultiThreshold(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
+{
+#define ECVL_TUPLE(type, ...) \
+case DataType::type: MultiThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresholds, minval, maxval); break;
+
+    switch (src.elemtype_) {
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
+    }
+
+#undef ECVL_TUPLE
+}
+
 void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
 {
     Image tmp(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
@@ -500,14 +611,14 @@ void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType t
                     }
                 }
 
-#define ECVL_TUPLE(type, ...) \
+            #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
 
                 switch (type) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                #include "ecvl/core/datatype_existing_tuples.inc.h"
                 }
 
-#undef ECVL_TUPLE
+            #undef ECVL_TUPLE
 
                 tmp_ptr += tmp.elemsize_;
             }
@@ -522,6 +633,15 @@ void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double
 {
     Image tmp1(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
     Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+    int tmp1_stride_c = tmp1.strides_[2];
+    int tmp1_stride_y = tmp1.strides_[1];
+    int src_stride_y = src.strides_[1];
+
+    int width = tmp1.Width();
+    int height = tmp1.Height();
+    int channels = tmp1.Channels();
+
     int hlf_width = vsize(kerX) / 2;
     int hlf_height = vsize(kerY) / 2;
 
@@ -531,26 +651,26 @@ void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double
 case DataType::type: \
     { \
         TypeInfo_t<DataType::type>* src_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(src.data_); \
-        for (int chan = 0; chan < tmp1.dims_[2]; chan++) { \
-            for (int r = 0; r < tmp1.dims_[1]; r++) { \
-                for (int c = 0; c < tmp1.dims_[0]; c++) { \
+        for (int chan = 0; chan < channels; chan++) { \
+            for (int r = 0; r < height; r++) { \
+                for (int c = 0; c < width; c++) { \
                     double acc = 0; \
                     for (unsigned int ck = 0; ck < kerX.size(); ck++) { \
                         int x = c + ck - hlf_width; \
-                        if (x < 0) x = 0; else if (x >= tmp1.dims_[0]) x = tmp1.dims_[0] - 1; \
+                        if (x < 0) x = 0; else if (x >= width) x = width - 1; \
                         acc += kerX[ck] * src_data[x]; \
                     } \
                 *tmp1_it = acc; \
                 ++tmp1_it; \
                 } \
-                src_data += src.strides_[1] / sizeof(*src_data); \
+                src_data += src_stride_y / sizeof(*src_data); \
             } \
         } \
     } \
     break;
 
     switch (type) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+    #include "ecvl/core/datatype_existing_tuples.inc.h"
     }
 
 #undef ECVL_TUPLE
@@ -559,31 +679,31 @@ case DataType::type: \
 
     // Y direction
     TypeInfo_t<DataType::float64>* tmp1_data = reinterpret_cast<TypeInfo_t<DataType::float64>*>(tmp1.data_);
-    for (int chan = 0; chan < tmp2.dims_[2]; chan++) {
-        for (int r = 0; r < tmp2.dims_[1]; r++) {
-            for (int c = 0; c < tmp2.dims_[0]; c++) {
+    for (int chan = 0; chan < channels; chan++) {
+        for (int r = 0; r < height; r++) {
+            for (int c = 0; c < width; c++) {
                 double acc = 0;
                 for (unsigned int rk = 0; rk < kerY.size(); rk++) {
                     int y = r + rk - hlf_height;
-                    if (y < 0) y = 0; else if (y >= tmp2.dims_[1]) y = tmp2.dims_[1] - 1;
+                    if (y < 0) y = 0; else if (y >= height) y = height - 1;
 
-                    acc += kerY[rk] * tmp1_data[c + y * tmp1.strides_[1] / sizeof(*tmp1_data)];
+                    acc += kerY[rk] * tmp1_data[c + y * tmp1_stride_y / sizeof(*tmp1_data)];
                 }
 
-#define ECVL_TUPLE(type, ...) \
+            #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp2_ptr) = static_cast<TypeInfo_t<DataType::type>>(acc); break;
 
                 switch (type) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                #include "ecvl/core/datatype_existing_tuples.inc.h"
                 }
 
-#undef ECVL_TUPLE
+            #undef ECVL_TUPLE
 
                 tmp2_ptr += tmp2.elemsize_;
             }
         }
 
-        tmp1_data += tmp1.strides_[2] / sizeof(*tmp1_data);
+        tmp1_data += tmp1_stride_c / sizeof(*tmp1_data);
     }
     dst = std::move(tmp2);
 }
@@ -631,14 +751,14 @@ void CpuHal::AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)
 
         double noise = exp1 - exp2;
 
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
 
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     dst = std::move(tmp);
 }
@@ -654,14 +774,14 @@ void CpuHal::AdditivePoissonNoise(const Image& src, Image& dst, double lambda)
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
         double noise = dist(gen);
 
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(noise + *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr)); break;
 
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     dst = std::move(tmp);
 }
@@ -671,24 +791,31 @@ void CpuHal::GammaContrast(const Image& src, Image& dst, double gamma)
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
 case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = saturate_cast<TypeInfo_t<DataType::type>>(pow(*reinterpret_cast<TypeInfo_t<DataType::type>*>(src_ptr) / 255., gamma) * 255); break;
 
         switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     dst = std::move(tmp);
 }
 
 void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel)
 {
+    int width = src.Width();
+    int height = src.Height();
+    int channels = src.Channels();
+
     Image tmp = src;
 
-    int rectX = static_cast<int>(src.dims_[0] * drop_size);
-    int rectY = static_cast<int>(src.dims_[1] * drop_size);
+    int stride_x = tmp.strides_[0];
+    int stride_y = tmp.strides_[1];
+
+    int rectX = static_cast<int>(width * drop_size);
+    int rectY = static_cast<int>(height * drop_size);
 
     if (rectX == 0) {
         ++rectX;
@@ -702,22 +829,23 @@ void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_s
     discrete_distribution<> dist({ p, 1 - p });
 
     if (per_channel) {
-        for (int ch = 0; ch < src.dims_[2]; ch++) {
+        dist = discrete_distribution<>({ p / channels, 1 - p / channels });
+        for (int ch = 0; ch < channels; ch++) {
             uint8_t* tmp_ptr = tmp.Ptr({ 0, 0, ch });
 
-            for (int r = 0; r < src.dims_[1]; r += rectY) {
-                for (int c = 0; c < src.dims_[0]; c += rectX) {
+            for (int r = 0; r < height; r += rectY) {
+                for (int c = 0; c < width; c += rectX) {
                     if (dist(gen) == 0) {
-                        for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
-                            for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
-#define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+                        for (int rdrop = r; rdrop < r + rectY && rdrop < height; rdrop++) {
+                            for (int cdrop = c; cdrop < c + rectX && cdrop < width; cdrop++) {
+                            #define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rdrop * stride_y + cdrop * stride_x) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
                                 switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                                #include "ecvl/core/datatype_existing_tuples.inc.h"
                                 }
 
-#undef ECVL_TUPLE
+                            #undef ECVL_TUPLE
                             }
                         }
                     }
@@ -727,24 +855,24 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr + rd
     }
     else {
         vector<uint8_t*> channel_ptrs;
-        for (int ch = 0; ch < tmp.dims_[2]; ch++) {
+        for (int ch = 0; ch < channels; ch++) {
             channel_ptrs.push_back(tmp.Ptr({ 0, 0, ch }));
         }
 
-        for (int r = 0; r < src.dims_[1]; r += rectY) {
-            for (int c = 0; c < src.dims_[0]; c += rectX) {
+        for (int r = 0; r < height; r += rectY) {
+            for (int c = 0; c < width; c += rectX) {
                 if (dist(gen) == 0) {
-                    for (int ch = 0; ch < src.dims_[2]; ch++) {
-                        for (int rdrop = r; rdrop < r + rectY && rdrop < src.dims_[1]; rdrop++) {
-                            for (int cdrop = c; cdrop < c + rectX && cdrop < src.dims_[0]; cdrop++) {
-#define ECVL_TUPLE(type, ...) \
-case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * tmp.strides_[1] + cdrop * tmp.strides_[0]) = static_cast<TypeInfo_t<DataType::type>>(0); break;
+                    for (int ch = 0; ch < channels; ch++) {
+                        for (int rdrop = r; rdrop < r + rectY && rdrop < height; rdrop++) {
+                            for (int cdrop = c; cdrop < c + rectX && cdrop < width; cdrop++) {
+                            #define ECVL_TUPLE(type, ...) \
+case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs[ch] + rdrop * stride_y + cdrop * stride_x) = static_cast<TypeInfo_t<DataType::type>>(0); break;
 
                                 switch (tmp.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                                #include "ecvl/core/datatype_existing_tuples.inc.h"
                                 }
 
-#undef ECVL_TUPLE
+                            #undef ECVL_TUPLE
                             }
                         }
                     }
@@ -880,7 +1008,7 @@ struct UFPC
     }
 };
 
-void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
+int CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 {
     Image tmp(src.dims_, DataType::int32, "xyc", ColorType::GRAY, src.spacings_, src.dev_);
 
@@ -927,58 +1055,58 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
 // Define Conditions and Actions
     {
-#define CONDITION_B img_row_prev_prev[c-1]>0
-#define CONDITION_C img_row_prev_prev[c]>0
-#define CONDITION_D img_row_prev_prev[c+1]>0
-#define CONDITION_E img_row_prev_prev[c+2]>0
+    #define CONDITION_B img_row_prev_prev[c-1]>0
+    #define CONDITION_C img_row_prev_prev[c]>0
+    #define CONDITION_D img_row_prev_prev[c+1]>0
+    #define CONDITION_E img_row_prev_prev[c+2]>0
 
-#define CONDITION_G img_row_prev[c-2]>0
-#define CONDITION_H img_row_prev[c-1]>0
-#define CONDITION_I img_row_prev[c]>0
-#define CONDITION_J img_row_prev[c+1]>0
-#define CONDITION_K img_row_prev[c+2]>0
+    #define CONDITION_G img_row_prev[c-2]>0
+    #define CONDITION_H img_row_prev[c-1]>0
+    #define CONDITION_I img_row_prev[c]>0
+    #define CONDITION_J img_row_prev[c+1]>0
+    #define CONDITION_K img_row_prev[c+2]>0
 
-#define CONDITION_M img_row[c-2]>0
-#define CONDITION_N img_row[c-1]>0
-#define CONDITION_O img_row[c]>0
-#define CONDITION_P img_row[c+1]>0
+    #define CONDITION_M img_row[c-2]>0
+    #define CONDITION_N img_row[c-1]>0
+    #define CONDITION_O img_row[c]>0
+    #define CONDITION_P img_row[c+1]>0
 
-#define CONDITION_R img_row_fol[c-1]>0
-#define CONDITION_S img_row_fol[c]>0
-#define CONDITION_T img_row_fol[c+1]>0
+    #define CONDITION_R img_row_fol[c-1]>0
+    #define CONDITION_S img_row_fol[c]>0
+    #define CONDITION_T img_row_fol[c+1]>0
 
         // Action 1: No action
-#define ACTION_1 img_labels_row[c] = 0;
-                               // Action 2: New label (the block has foreground pixels and is not connected to anything else)
-#define ACTION_2 img_labels_row[c] = ufpc.NewLabel();
-                               //Action 3: Assign label of block P
-#define ACTION_3 img_labels_row[c] = img_labels_row_prev_prev[c - 2];
-                               // Action 4: Assign label of block Q
-#define ACTION_4 img_labels_row[c] = img_labels_row_prev_prev[c];
-                               // Action 5: Assign label of block R
-#define ACTION_5 img_labels_row[c] = img_labels_row_prev_prev[c + 2];
-                               // Action 6: Assign label of block S
-#define ACTION_6 img_labels_row[c] = img_labels_row[c - 2];
-                               // Action 7: Merge labels of block P and Q
-#define ACTION_7 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]);
-                               //Action 8: Merge labels of block P and R
-#define ACTION_8 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]);
-                               // Action 9 Merge labels of block P and S
-#define ACTION_9 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row[c - 2]);
-                               // Action 10 Merge labels of block Q and R
-#define ACTION_10 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]);
-                               // Action 11: Merge labels of block Q and S
-#define ACTION_11 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row[c - 2]);
-                               // Action 12: Merge labels of block R and S
-#define ACTION_12 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c + 2], img_labels_row[c - 2]);
-                               // Action 13: Merge labels of block P, Q and R
-#define ACTION_13 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row_prev_prev[c + 2]);
-                               // Action 14: Merge labels of block P, Q and S
-#define ACTION_14 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row[c - 2]);
-                               //Action 15: Merge labels of block P, R and S
-#define ACTION_15 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
-                               //Action 16: labels of block Q, R and S
-#define ACTION_16 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
+    #define ACTION_1 img_labels_row[c] = 0;
+                                   // Action 2: New label (the block has foreground pixels and is not connected to anything else)
+    #define ACTION_2 img_labels_row[c] = ufpc.NewLabel();
+                                   //Action 3: Assign label of block P
+    #define ACTION_3 img_labels_row[c] = img_labels_row_prev_prev[c - 2];
+                                   // Action 4: Assign label of block Q
+    #define ACTION_4 img_labels_row[c] = img_labels_row_prev_prev[c];
+                                   // Action 5: Assign label of block R
+    #define ACTION_5 img_labels_row[c] = img_labels_row_prev_prev[c + 2];
+                                   // Action 6: Assign label of block S
+    #define ACTION_6 img_labels_row[c] = img_labels_row[c - 2];
+                                   // Action 7: Merge labels of block P and Q
+    #define ACTION_7 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]);
+                                   //Action 8: Merge labels of block P and R
+    #define ACTION_8 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]);
+                                   // Action 9 Merge labels of block P and S
+    #define ACTION_9 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row[c - 2]);
+                                   // Action 10 Merge labels of block Q and R
+    #define ACTION_10 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]);
+                                   // Action 11: Merge labels of block Q and S
+    #define ACTION_11 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row[c - 2]);
+                                   // Action 12: Merge labels of block R and S
+    #define ACTION_12 img_labels_row[c] = ufpc.Merge(img_labels_row_prev_prev[c + 2], img_labels_row[c - 2]);
+                                   // Action 13: Merge labels of block P, Q and R
+    #define ACTION_13 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row_prev_prev[c + 2]);
+                                   // Action 14: Merge labels of block P, Q and S
+    #define ACTION_14 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c]), img_labels_row[c - 2]);
+                                   //Action 15: Merge labels of block P, R and S
+    #define ACTION_15 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c - 2], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
+                                   //Action 16: labels of block Q, R and S
+    #define ACTION_16 img_labels_row[c] = ufpc.Merge(ufpc.Merge(img_labels_row_prev_prev[c], img_labels_row_prev_prev[c + 2]), img_labels_row[c - 2]);
     }
 
     if (h == 1) {
@@ -987,7 +1115,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
         const unsigned char* const img_row = src.Ptr({ 0, 0, 0 });
         unsigned* const img_labels_row = reinterpret_cast<unsigned*>(tmp.Ptr({ 0, 0, 0 }));
         int c = -2;
-#include "labeling_bolelli_2019_forest_singleline.inc"
+    #include "labeling_bolelli_2019_forest_singleline.inc"
     }
     else {
         // More than one line
@@ -1001,7 +1129,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
             int c = -2;
 
-#include "labeling_bolelli_2019_forest_firstline.inc"
+        #include "labeling_bolelli_2019_forest_firstline.inc"
         }
 
         // Every other line but the last one if image has an odd number of rows
@@ -1017,7 +1145,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
             int c = -2;
             goto tree_0;
 
-#include "labeling_bolelli_2019_forest.inc"
+        #include "labeling_bolelli_2019_forest.inc"
         }
 
         // Last line (in case the rows are odd)
@@ -1030,48 +1158,48 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
             unsigned* const img_labels_row_prev_prev = reinterpret_cast<unsigned*>((reinterpret_cast<uint8_t*>(img_labels_row) - 2 * tmp.strides_[1]));
 
             int c = -2;
-#include "labeling_bolelli_2019_forest_lastline.inc"
+        #include "labeling_bolelli_2019_forest_lastline.inc"
         }
     }
 
     // Undef Conditions and Actions
     {
-#undef ACTION_1
-#undef ACTION_2
-#undef ACTION_3
-#undef ACTION_4
-#undef ACTION_5
-#undef ACTION_6
-#undef ACTION_7
-#undef ACTION_8
-#undef ACTION_9
-#undef ACTION_10
-#undef ACTION_11
-#undef ACTION_12
-#undef ACTION_13
-#undef ACTION_14
-#undef ACTION_15
-#undef ACTION_16
+    #undef ACTION_1
+    #undef ACTION_2
+    #undef ACTION_3
+    #undef ACTION_4
+    #undef ACTION_5
+    #undef ACTION_6
+    #undef ACTION_7
+    #undef ACTION_8
+    #undef ACTION_9
+    #undef ACTION_10
+    #undef ACTION_11
+    #undef ACTION_12
+    #undef ACTION_13
+    #undef ACTION_14
+    #undef ACTION_15
+    #undef ACTION_16
 
-#undef CONDITION_B
-#undef CONDITION_C
-#undef CONDITION_D
-#undef CONDITION_E
+    #undef CONDITION_B
+    #undef CONDITION_C
+    #undef CONDITION_D
+    #undef CONDITION_E
 
-#undef CONDITION_G
-#undef CONDITION_H
-#undef CONDITION_I
-#undef CONDITION_J
-#undef CONDITION_K
+    #undef CONDITION_G
+    #undef CONDITION_H
+    #undef CONDITION_I
+    #undef CONDITION_J
+    #undef CONDITION_K
 
-#undef CONDITION_M
-#undef CONDITION_N
-#undef CONDITION_O
-#undef CONDITION_P
+    #undef CONDITION_M
+    #undef CONDITION_N
+    #undef CONDITION_O
+    #undef CONDITION_P
 
-#undef CONDITION_R
-#undef CONDITION_S
-#undef CONDITION_T
+    #undef CONDITION_R
+    #undef CONDITION_S
+    #undef CONDITION_T
     }
 
     // Flatten
@@ -1190,6 +1318,7 @@ void CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 
     delete[] P;
     dst = std::move(tmp);
+    return n_labels_;
 }
 
 void CpuHal::FindContours(const Image& src, vector<vector<ecvl::Point2i>>& contours)
@@ -1216,14 +1345,18 @@ void CpuHal::Stack(const vector<Image>& src, Image& dst)
 {
     const int n_images = vsize(src);
     const auto& src_0 = src[0];
+    int total_channels = 0;
+    for (int i = 0; i < n_images; ++i) {
+        total_channels += src[i].Channels();
+    }
 
     // If src is a vector of xyc Image
     if (src_0.channels_ == "xyc") {
-        Image tmp({ src_0.dims_[0], src_0.dims_[1], n_images * src_0.dims_[2] }, src_0.elemtype_, "xyo", src_0.colortype_, src_0.spacings_, src_0.dev_);
+        Image tmp({ src_0.dims_[0], src_0.dims_[1], total_channels }, src_0.elemtype_, "xyo", ColorType::none, src_0.spacings_, src_0.dev_);
 
-        for (int i = 0; i < n_images; ++i) {
-            for (int j = 0; j < src[i].Channels(); ++j) {
-                memcpy(tmp.data_ + src[i].strides_[2] * (i + j * n_images), src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
+        for (int i = 0, n = 0; i < n_images; ++i) {
+            for (int j = 0; j < src[i].Channels(); ++j, ++n) {
+                memcpy(tmp.data_ + src[i].strides_[2] * n, src[i].data_ + src[i].strides_[2] * j, src[i].strides_[2]);
             }
         }
         dst = std::move(tmp);
@@ -1261,7 +1394,6 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
         // 4x time faster than generic version below
         // Fill each tmp color plane by row
         for (int i = 0; i < src_0.Channels(); ++i) {
-#pragma omp parallel for
             for (int r = 0; r < src_0.dims_[1]; ++r) {
                 for (int c = 0; c < n_images; ++c) {
                     memcpy(tmp.data_ + cumul_strides[c] + r * tmp.strides_[1] + i * tmp.strides_[2], src[c].data_ + r * src[c].strides_[1] + i * src[c].strides_[2], src[c].strides_[1]);
@@ -1292,7 +1424,7 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
                 for (int c_i = 0; c_i < src[i].Width(); ++c_i) {
                     int p_tmp = tmp_pos + src_stride_x * counter++;
                     int p_src = src_pos + src_stride_x * c_i;
-#define ECVL_TUPLE(type, ...) \
+                #define ECVL_TUPLE(type, ...) \
                 case DataType::type: \
                     for (int ch = 0; ch < src_channels; ++ch) { \
                         *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
@@ -1300,10 +1432,10 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
                     break;
 
                     switch (src_0.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                    #include "ecvl/core/datatype_existing_tuples.inc.h"
                     }
 
-#undef ECVL_TUPLE
+                #undef ECVL_TUPLE
                 }
             }
         }
@@ -1365,7 +1497,7 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
                 for (int c = 0; c < src_width; ++c) {
                     int p_tmp = tmp_pos + src_stride_x * c;
                     int p_src = src_pos + src_stride_x * c;
-#define ECVL_TUPLE(type, ...) \
+                #define ECVL_TUPLE(type, ...) \
                 case DataType::type: \
                     for (int ch = 0; ch < src_channels; ++ch) { \
                         *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p_tmp) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch][i] + p_src); \
@@ -1373,10 +1505,10 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
                     break;
 
                     switch (src_0.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                    #include "ecvl/core/datatype_existing_tuples.inc.h"
                     }
 
-#undef ECVL_TUPLE
+                #undef ECVL_TUPLE
                 }
             }
         }
@@ -1397,7 +1529,7 @@ void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kerne
     int op_ = static_cast<int>(op);
     morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, static_cast<int>(border_type), border_value);
 
-    dst = MatToImage(dst_);
+    dst = MatToImage(dst_, src.colortype_, src.channels_);
 }
 
 void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag)
@@ -1412,7 +1544,7 @@ void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, dou
 
     cv::inpaint(src_, inpaintMask_, dst_, inpaintRadius, flag_);
 
-    dst = MatToImage(dst_);
+    dst = MatToImage(dst_, src.colortype_, src.channels_);
 }
 
 void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev)
@@ -1435,6 +1567,12 @@ void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector
 void CpuHal::Transpose(const Image& src, Image& dst)
 {
     size_t c_pos = src.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
     size_t x_pos = src.channels_.find('x');
     size_t y_pos = src.channels_.find('y');
 
@@ -1475,7 +1613,7 @@ void CpuHal::Transpose(const Image& src, Image& dst)
             int p1 = pos + r * src_stride_y;
             int p2 = pos_dst + r * tmp_stride_x;
 
-#define ECVL_TUPLE(type, ...) \
+        #define ECVL_TUPLE(type, ...) \
             case DataType::type: \
                 for (int ch = 0; ch < src_channels; ++ch) { \
                     *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_vch[ch] + p2) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
@@ -1483,10 +1621,10 @@ void CpuHal::Transpose(const Image& src, Image& dst)
                 break;
 
             switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+            #include "ecvl/core/datatype_existing_tuples.inc.h"
             }
 
-#undef ECVL_TUPLE
+        #undef ECVL_TUPLE
         }
     }
 
@@ -1571,10 +1709,7 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
 
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
-    dst = MatToImage(tmp);
-    if (dst.colortype_ != src.colortype_) {
-        ChangeColorSpace(dst, dst, src.colortype_);
-    }
+    dst = MatToImage(tmp, src.colortype_, src.channels_);
 }
 
 void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp,
@@ -1630,10 +1765,7 @@ void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double
 
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
-    dst = MatToImage(tmp);
-    if (dst.colortype_ != src.colortype_) {
-        ChangeColorSpace(dst, dst, src.colortype_);
-    }
+    dst = MatToImage(tmp, src.colortype_, src.channels_);
 }
 
 void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit,
@@ -1673,10 +1805,7 @@ void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<fl
 
     cv::remap(ImageToMat(src), tmp, map1, map2, GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
 
-    dst = MatToImage(tmp);
-    if (dst.colortype_ != src.colortype_) {
-        ChangeColorSpace(dst, dst, src.colortype_);
-    }
+    dst = MatToImage(tmp, src.colortype_, src.channels_);
 }
 
 enum class NoiseType
@@ -1699,6 +1828,12 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     size_t x_pos = tmp.channels_.find('x');
     size_t y_pos = tmp.channels_.find('y');
     size_t c_pos = tmp.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = tmp.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = src.channels_.find('o');
+    }
 
     if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
         ECVL_ERROR_WRONG_PARAMS("Malformed src image")
@@ -1728,11 +1863,10 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
     }
 
     if (per_channel) {
-#define ECVL_TUPLE(type, ...) \
+    #define ECVL_TUPLE(type, ...) \
         case DataType::type: \
             { \
                 TypeInfo_t<DataType::type>* tmp_data = reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp.data_); \
-                OMP_PAR_FOR \
                 for (int i = 0; i < tmp.datasize_ / tmp.elemsize_; ++i) { \
                     if (dist(re) == 0) { \
                         tmp_data[i] = static_cast<TypeInfo_t<DataType::type>>(color()); \
@@ -1741,18 +1875,17 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
             } \
             break;
         switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
         }
 
-#undef ECVL_TUPLE
+    #undef ECVL_TUPLE
     }
     else {
-#pragma omp parallel for
         for (int r = 0; r < src_height; ++r) {
             int row_pos = r * tmp_stride_y;
             for (int c = 0; c < src_width; ++c) {
                 int pos = row_pos + tmp_stride_x * c;
-#define ECVL_TUPLE(type, ...) \
+            #define ECVL_TUPLE(type, ...) \
             case DataType::type: \
                 if (dist(re) == 0) { \
                     int col = color(); \
@@ -1763,10 +1896,10 @@ void SaltOrPepper(const Image& src, Image& dst, double p, bool per_channel, cons
                 break;
 
                 switch (src.elemtype_) {
-#include "ecvl/core/datatype_existing_tuples.inc.h"
+                #include "ecvl/core/datatype_existing_tuples.inc.h"
                 }
 
-#undef ECVL_TUPLE
+            #undef ECVL_TUPLE
             }
         }
     }
@@ -1786,5 +1919,377 @@ void CpuHal::Pepper(const Image& src, Image& dst, double p, bool per_channel, co
 void CpuHal::SaltAndPepper(const Image& src, Image& dst, double p, bool per_channel, const unsigned seed)
 {
     SaltOrPepper(src, dst, p, per_channel, seed, NoiseType::SaltAndPepper);
+}
+
+//template<typename SDT, typename MDT>
+//void MomentsImpl(const Image& src, Image& out, int order)
+//{
+//    for (auto it = src.Begin<SDT>(), et = src.End<SDT>(); it != et; ++it) {
+//        auto& voxel_val = *it;
+//        auto& voxel_pos = it.pos_;
+//        for (auto io = out.Begin<MDT>(), eo = out.End<MDT>(); io != eo; ++io) {
+//            auto& moment_val = *io;
+//            auto& moment_pos = io.pos_;
+//            double powers = 1;
+//            for (int d = 0; d < vsize(src.dims_); ++d) {
+//                powers *= pow(voxel_pos[d], moment_pos[d]);
+//            }
+//            moment_val += static_cast<MDT>(powers * voxel_val);
+//        }
+//    }
+//}
+//
+//void CpuHal::Moments(const Image& src, Image& moments, int order, DataType type)
+//{
+//    // Let's drop color channel from a shallow copy of the source ...
+//    Image tmp;
+//    ShallowCopyImage(src, tmp);
+//    DropColorChannel(tmp);
+//
+//    // and prepare the output data matrix that will be on the same device as the source
+//    auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
+//    Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
+//    out.SetTo(0);
+//
+//    // Disable contiguousness in order to force the update of the position indexes
+//    // when using iterators
+//    tmp.contiguous_ = false;
+//    out.contiguous_ = false;
+//
+//    switch (type) {
+//    case DataType::float32:
+//#define ECVL_TUPLE(type, ...) \
+//        case DataType::type: MomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, order); break;
+//        switch (tmp.elemtype_) {
+//#include "ecvl/core/datatype_existing_tuples.inc.h"
+//        }
+//#undef ECVL_TUPLE
+//        break;
+//    case DataType::float64:
+//        // Implementation (output float64)
+//#define ECVL_TUPLE(type, ...) \
+//        case DataType::type: MomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, order); break;
+//        switch (tmp.elemtype_) {
+//#include "ecvl/core/datatype_existing_tuples.inc.h"
+//        }
+//#undef ECVL_TUPLE
+//        break;
+//    }
+//
+//    out.contiguous_ = true; // Restore contiguousness
+//    moments = std::move(out);
+//}
+
+template<typename SDT, typename MDT>
+void CentralMomentsImpl(const Image& src, Image& out, std::vector<double> center, int order)
+{
+    for (auto it = src.Begin<SDT>(), et = src.End<SDT>(); it != et; ++it) {
+        auto& voxel_val = *it;
+        auto& voxel_pos = it.pos_;
+        for (auto io = out.Begin<MDT>(), eo = out.End<MDT>(); io != eo; ++io) {
+            auto& moment_val = *io;
+            auto& moment_pos = io.pos_;
+            double powers = 1;
+            for (int d = 0; d < vsize(src.dims_); ++d) {
+                powers *= pow(voxel_pos[d] - center[d], moment_pos[d]);
+            }
+            moment_val += static_cast<MDT>(powers * voxel_val);
+        }
+    }
+}
+
+void CpuHal::CentralMoments(const Image& src, Image& moments, std::vector<double> center, int order, DataType type)
+{
+    // Let's drop color channel from a shallow copy of the source ...
+    Image tmp;
+    ShallowCopyImage(src, tmp);
+    DropColorChannel(tmp);
+
+    // and prepare the output data matrix that will be on the same device as the source
+    auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
+    Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
+    out.SetTo(0);
+
+    // Disable contiguousness in order to force the update of the position indexes
+    // when using iterators
+    tmp.contiguous_ = false;
+    out.contiguous_ = false;
+
+    switch (type) {
+    case DataType::float32:
+    #define ECVL_TUPLE(type, ...) \
+        case DataType::type: CentralMomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float32>>(tmp, out, center, order); break;
+        switch (tmp.elemtype_) {
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
+        }
+    #undef ECVL_TUPLE
+        break;
+    case DataType::float64:
+        // Implementation (output float64)
+    #define ECVL_TUPLE(type, ...) \
+        case DataType::type: CentralMomentsImpl<TypeInfo_t<DataType::type>, TypeInfo_t<DataType::float64>>(tmp, out, center, order); break;
+        switch (tmp.elemtype_) {
+        #include "ecvl/core/datatype_existing_tuples.inc.h"
+        }
+    #undef ECVL_TUPLE
+        break;
+    }
+
+    out.contiguous_ = true; // Restore contiguousness
+    moments = std::move(out);
+}
+
+void CpuHal::DrawEllipse(Image& src, ecvl::Point2i center, ecvl::Size2i axes, double angle, const ecvl::Scalar& color, int thickness)
+{
+    OpenCVAlwaysCheck(src);
+
+    cv::Mat m = ImageToMat(src);
+    cv::Scalar opencv_color = vsize(color) == 1 ? cv::Scalar(color[0]) : cv::Scalar(color[0], color[1], color[2]);
+    cv::ellipse(m, cv::Point2i{ center[0], center[1] }, cv::Size{ axes[0], axes[1] }, angle, 0, 360, opencv_color, thickness);
+    src = ecvl::MatToImage(m, src.colortype_, src.channels_);
+}
+
+template <DataType SDT>
+struct NormalizeStruct
+{
+    static void _(const Image& src, Image& dst, const double& mean, const double& std)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(tmp);
+
+        auto tmp_it = dst_v.Begin();
+        auto src_it = src_v.Begin();
+        auto src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++tmp_it) {
+            *tmp_it = saturate_cast<srctype>((*src_it - mean) / std);
+        }
+        dst = std::move(tmp);
+    }
+};
+
+// Only works for channels xyc
+template <DataType SDT>
+struct NormalizeChannelsStruct
+{
+    static void _(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+
+        for (int c = 0; c < src.channels_.size(); ++c) {
+            ConstView<SDT> src_v(src, { 0, 0, c }, { src.dims_[0], src.dims_[1], 1 });
+            View<SDT> dst_v(tmp, { 0, 0, c }, { src.dims_[0], src.dims_[1], 1 });
+
+            auto tmp_it = dst_v.Begin();
+            auto src_it = src_v.Begin();
+            auto src_end = src_v.End();
+            for (; src_it != src_end; ++src_it, ++tmp_it) {
+                *tmp_it = saturate_cast<srctype>((*src_it - mean[c]) / std[c]);
+            }
+        }
+
+        dst = std::move(tmp);
+    }
+};
+
+void CpuHal::Normalize(const Image& src, Image& dst, const double& mean, const double& std)
+{
+    Table1D<NormalizeStruct> table;
+    table(src.elemtype_)(src, dst, mean, std);
+}
+
+void CpuHal::Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std)
+{
+    if (src.channels_ != "xyc") {
+        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("CpuHal::Normalize with multiple means and stds require xyc channels\n")
+    }
+
+    Table1D<NormalizeChannelsStruct> table;
+    table(src.elemtype_)(src, dst, mean, std);
+}
+
+template <DataType SDT>
+struct CenterCropStruct
+{
+    static void _(const Image& src, Image& dst, const std::vector<int>& size)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+
+        const int src_height = src.Height();
+        const int src_width = src.Width();
+        const int channels = src.Channels();
+
+        const int new_width = size[0];
+        const int new_height = size[1];
+        const int offset_w = (src_width - new_width) / 2;
+        const int offset_h = (src_height - new_height) / 2;
+
+        size_t c_pos = src.channels_.find('c');
+        if (c_pos == string::npos) {
+            c_pos = src.channels_.find('z');
+        }
+        if (c_pos == string::npos) {
+            c_pos = src.channels_.find('o');
+        }
+        size_t x_pos = src.channels_.find('x');
+        size_t y_pos = src.channels_.find('y');
+
+        if (c_pos == string::npos || x_pos == string::npos || y_pos == string::npos) {
+            ECVL_ERROR_WRONG_PARAMS("Malformed src image")
+        }
+
+        vector<int> v_start(src.dims_.size(), 0);
+        v_start[x_pos] = offset_w;
+        v_start[y_pos] = offset_h;
+
+        vector<int> v_size(src.dims_.size(), -1);
+        v_size[x_pos] = new_width;
+        v_size[y_pos] = new_height;
+        v_size[c_pos] = channels;
+
+        Image tmp(v_size, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        View<SDT> src_v(const_cast<Image&>(src), v_start, v_size);
+        dst = src_v;
+    }
+};
+
+void CpuHal::CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size)
+{
+    Table1D<CenterCropStruct> table;
+    table(src.elemtype_)(src, dst, size);
+}
+
+template<DataType SDT>
+struct ScaleToStruct
+{
+    static void _(const Image& src, Image& dst, const double& new_min, const double& new_max)
+    {
+        // Formula
+        // newvalue = (new_max - new_min)/(max - min)*(value - max) + new_max
+        // or
+        // newvalue = a * value + b
+        // a = (new_max - new_min)/(max - min)
+        // b = new_max - a * max
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(dst);
+
+        TypeInfo_t<SDT> max = *std::max_element(src_v.Begin(), src_v.End());
+        TypeInfo_t<SDT> min = *std::min_element(src_v.Begin(), src_v.End());
+        double a = (new_max - new_min) / (max - min);
+        double b = new_max - a * max;
+
+        auto dst_it = dst_v.Begin();
+        auto src_it = src_v.Begin(), src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++dst_it) {
+            *dst_it = saturate_cast<TypeInfo_t<SDT>>(*src_it * a + b);
+        }
+    }
+};
+
+void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max)
+{
+    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_ };
+    static constexpr Table1D<ScaleToStruct> table;
+    table(src.elemtype_)(src, tmp, new_min, new_max);
+    dst = std::move(tmp);
+}
+
+template <DataType SDT>
+struct RandomCropStruct
+{
+    static void _(const Image& src, Image& dst, const vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed)
+    {
+        using srctype = typename TypeInfo<SDT>::basetype;
+
+        int src_w = src.Width();
+        int src_h = src.Height();
+        Image tmp = src;
+
+        if (pad_if_needed && src_w < size[0]) {
+            int pad_w = size[0] - src_w;
+            Pad(tmp, tmp, { 0, pad_w }, border_type, border_value);
+            src_w = tmp.Width();
+        }
+        if (pad_if_needed && src_h < size[1]) {
+            int pad_h = size[1] - src_h;
+            Pad(tmp, tmp, { pad_h, 0 }, border_type, border_value);
+            src_h = tmp.Height();
+        }
+
+        if (!pad_if_needed && size[0] > src_w || !pad_if_needed && size[1] > src_h) {
+            throw runtime_error(ECVL_ERROR_MSG "Size in RandomCrop must be smaller than (width, height) or pad_if_needed must be true");
+        }
+
+        default_random_engine re(random_device{}());
+        if (seed != re.default_seed) {
+            re.seed(seed);
+        }
+
+        uniform_int_distribution<> dist_w(0, src_w - size[0]);
+        uniform_int_distribution<> dist_h(0, src_h - size[1]);
+
+        int start_w = dist_w(re);
+        int start_h = dist_h(re);
+
+        vector<int> view_start(3);
+        vector<int> view_size(3);
+
+        size_t y = tmp.channels_.find('y');
+        size_t x = tmp.channels_.find('x');
+        size_t c;
+
+        string channels = "czo";
+        for (auto ch : channels) {
+            c = tmp.channels_.find(ch);
+            if (c != string::npos) {
+                break;
+            }
+        }
+
+        view_start[x] = start_w;
+        view_start[y] = start_h;
+        view_start[c] = 0;
+        view_size[x] = size[0];
+        view_size[y] = size[1];
+        view_size[c] = -1;
+
+        ConstView<SDT> src_v(tmp, view_start, view_size);
+        dst = src_v;
+    }
+};
+
+void CpuHal::Pad(const Image& src, Image& dst, const vector<int>& padding, BorderType border_type, const int& border_value)
+{
+    OpenCVAlwaysCheck(src);
+
+    int top, bottom, left, right;
+    if (vsize(padding) == 1) {
+        top = bottom = left = right = padding[0];
+    }
+    else if (vsize(padding) == 2) {
+        top = bottom = padding[0];
+        left = right = padding[1];
+    }
+    else if (vsize(padding) == 4) {
+        top = padding[0];
+        bottom = padding[1];
+        left = padding[2];
+        right = padding[3];
+    }
+    else {
+        throw runtime_error(ECVL_ERROR_MSG "Padding must have 1, 2 or 4 values");
+    }
+
+    auto mat = ImageToMat(src);
+    cv::copyMakeBorder(mat, mat, top, bottom, left, right, static_cast<int>(border_type), border_value);
+    dst = MatToImage(mat, src.colortype_, src.channels_);
+}
+
+void CpuHal::RandomCrop(const Image& src, Image& dst, const vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed)
+{
+    Table1D<RandomCropStruct> table;
+    table(src.elemtype_)(src, dst, size, pad_if_needed, border_type, border_value, seed);
 }
 } // namespace ecvl
