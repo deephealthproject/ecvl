@@ -650,21 +650,21 @@ bool NiftiRead(const path& filename, Image& dst)
         }
 
         dst.Create(dims, data_type, channels, color_type, spacings);
-        dst.meta_.map_.insert({ "xyzt_units", make_shared<MetaSingle<char>>(header.xyzt_units) });
-        dst.meta_.map_.insert({ "dim_info", make_shared<MetaSingle<char>>(header.dim_info) });
-        dst.meta_.map_.insert({ "slice_duration", make_shared<MetaSingle<float>>(header.slice_duration) });
-        dst.meta_.map_.insert({ "toffset", make_shared<MetaSingle<float>>(header.toffset) });
-        dst.meta_.map_.insert({ "qform_code", make_shared<MetaSingle<short>>(header.qform_code) });
-        dst.meta_.map_.insert({ "sform_code", make_shared<MetaSingle<short>>(header.sform_code) });
-        dst.meta_.map_.insert({ "quatern_b", make_shared<MetaSingle<float>>(header.quatern_b) });
-        dst.meta_.map_.insert({ "quatern_c", make_shared<MetaSingle<float>>(header.quatern_c) });
-        dst.meta_.map_.insert({ "quatern_d", make_shared<MetaSingle<float>>(header.quatern_d) });
-        dst.meta_.map_.insert({ "qoffset_x", make_shared<MetaSingle<float>>(header.qoffset_x) });
-        dst.meta_.map_.insert({ "qoffset_y", make_shared<MetaSingle<float>>(header.qoffset_y) });
-        dst.meta_.map_.insert({ "qoffset_z", make_shared<MetaSingle<float>>(header.qoffset_z) });
-        dst.meta_.map_.insert({ "srow_x", make_shared<MetaSingle<array<float, 4>>>(header.srow_x) });
-        dst.meta_.map_.insert({ "srow_y", make_shared<MetaSingle<array<float, 4>>>(header.srow_y) });
-        dst.meta_.map_.insert({ "srow_z", make_shared<MetaSingle<array<float, 4>>>(header.srow_z) });
+        dst.meta_.insert({ "xyzt_units", MetaData(header.xyzt_units) });
+        dst.meta_.insert({ "dim_info", MetaData(header.dim_info) });
+        dst.meta_.insert({ "slice_duration", MetaData(header.slice_duration) });
+        dst.meta_.insert({ "toffset", MetaData(header.toffset) });
+        dst.meta_.insert({ "qform_code", MetaData(header.qform_code) });
+        dst.meta_.insert({ "sform_code", MetaData(header.sform_code) });
+        dst.meta_.insert({ "quatern_b", MetaData(header.quatern_b) });
+        dst.meta_.insert({ "quatern_c", MetaData(header.quatern_c) });
+        dst.meta_.insert({ "quatern_d", MetaData(header.quatern_d) });
+        dst.meta_.insert({ "qoffset_x", MetaData(header.qoffset_x) });
+        dst.meta_.insert({ "qoffset_y", MetaData(header.qoffset_y) });
+        dst.meta_.insert({ "qoffset_z", MetaData(header.qoffset_z) });
+        dst.meta_.insert({ "srow_x", MetaData(header.srow_x) });
+        dst.meta_.insert({ "srow_y", MetaData(header.srow_y) });
+        dst.meta_.insert({ "srow_z", MetaData(header.srow_z) });
 
         // Read data
         char* data;
@@ -798,7 +798,12 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr.Fill(35);
 
-        wr(img.meta_.map_.at("dim_info")->Query<char>());
+        try {
+            wr(any_cast<char>(img.GetMeta("dim_info").Get()));
+        }
+        catch(const exception&) {
+            wr.Fill(1);
+        }
 
         short dims = static_cast<short>(img.dims_.size());
         if (img.channels_.find('c') != string::npos) {
@@ -876,24 +881,29 @@ bool NiftiWrite(const path& filename, const Image& src)
 
         wr.Fill(11);
 
-        wr(img.meta_.map_.at("xyzt_units")->Query<char>());
+        try {
+            wr(any_cast<char>(img.GetMeta("xyzt_units").Get()));
 
-        wr.Fill(8);
-        wr(img.meta_.map_.at("slice_duration")->Query<float>());
-        wr(img.meta_.map_.at("toffset")->Query<float>());
+            wr.Fill(8);
+            wr(any_cast<float>(img.GetMeta("slice_duration").Get()));
+            wr(any_cast<float>(img.GetMeta("toffset").Get()));
 
-        wr.Fill(112);   // I don't use those fields for now
-        wr(img.meta_.map_.at("qform_code")->Query<short>());
-        wr(img.meta_.map_.at("sform_code")->Query<short>());
-        wr(img.meta_.map_.at("quatern_b")->Query<float>());
-        wr(img.meta_.map_.at("quatern_c")->Query<float>());
-        wr(img.meta_.map_.at("quatern_d")->Query<float>());
-        wr(img.meta_.map_.at("qoffset_x")->Query<float>());
-        wr(img.meta_.map_.at("qoffset_y")->Query<float>());
-        wr(img.meta_.map_.at("qoffset_z")->Query<float>());
-        wr(img.meta_.map_.at("srow_x")->Query<array<float, 4>>());
-        wr(img.meta_.map_.at("srow_y")->Query<array<float, 4>>());
-        wr(img.meta_.map_.at("srow_z")->Query<array<float, 4>>());
+            wr.Fill(112);   // We don't use those fields for now
+            wr(any_cast<short>(img.GetMeta("qform_code").Get()));
+            wr(any_cast<short>(img.GetMeta("sform_code").Get()));
+            wr(any_cast<float>(img.GetMeta("quatern_b").Get()));
+            wr(any_cast<float>(img.GetMeta("quatern_c").Get()));
+            wr(any_cast<float>(img.GetMeta("quatern_d").Get()));
+            wr(any_cast<float>(img.GetMeta("qoffset_x").Get()));
+            wr(any_cast<float>(img.GetMeta("qoffset_y").Get()));
+            wr(any_cast<float>(img.GetMeta("qoffset_z").Get()));
+            wr(any_cast<array<float, 4>>(img.GetMeta("srow_x").Get()));
+            wr(any_cast<array<float, 4>>(img.GetMeta("srow_y").Get()));
+            wr(any_cast<array<float, 4>>(img.GetMeta("srow_z").Get()));
+        }
+        catch (const exception&) {
+            wr.Fill(205);
+        }
 
         wr.Fill(16);
 

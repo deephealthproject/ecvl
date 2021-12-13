@@ -39,7 +39,103 @@ InitDCMTK::InitDCMTK()
 InitDCMTK::~InitDCMTK()
 {
     DJDecoderRegistration::cleanup();
-}bool DicomRead(const std::string& filename, Image& dst)
+}
+
+void InsertTagValue(DcmElement* elem, Image& dst)
+{
+    auto tag = elem->getTag();
+    string name = tag.getTagName();
+
+    switch (tag.getVR().getEVR()) {
+    case EVR_AE:
+    case EVR_AS:
+    case EVR_AT:
+    case EVR_CS:
+    case EVR_DA:
+    case EVR_DS:
+    case EVR_DT:
+    case EVR_IS:
+    case EVR_LO:
+    case EVR_LT:
+    case EVR_PN:
+    case EVR_SH:
+    case EVR_ST:
+    case EVR_TM:
+    case EVR_UI:
+    case EVR_UT:
+    {
+        char* specific_val;
+        elem->getString(specific_val);
+        if (specific_val) {
+            dst.meta_.insert({ name, MetaData(static_cast<string>(specific_val)) });
+        }
+        else {
+            dst.meta_.insert({ name, MetaData("") });
+        }
+        break;
+    }
+    case EVR_OB:
+    case EVR_OW:
+    case EVR_OD:
+    case EVR_OF:
+    {
+        dst.meta_.insert({ name, MetaData("") });
+        break;
+    }
+    case EVR_FL:
+    {
+        float specific_val;
+        elem->getFloat32(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val) });
+        break;
+    }
+    case EVR_FD:
+    {
+        double specific_val;
+        elem->getFloat64(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val) });
+        break;
+    }
+    case EVR_SL:
+    {
+        long long specific_val;
+        elem->getSint64(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val) });
+        break;
+    }
+    case EVR_SS:
+    {
+        short specific_val;
+        elem->getSint16(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val) });
+        break;
+    }
+    case EVR_UL:
+    {
+        unsigned specific_val;
+        elem->getUint32(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val) });
+        break;
+    }
+    case EVR_US:
+    {
+        unsigned short specific_val;
+        elem->getUint16(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val) });
+        break;
+    }
+    case EVR_SQ:
+    case EVR_UN:
+    {
+        ECVL_ERROR_NOT_IMPLEMENTED
+            break;
+    }
+    default:
+        ECVL_ERROR_NOT_REACHABLE_CODE
+    }
+}
+
+bool DicomRead(const std::string& filename, Image& dst)
 {
     static InitDCMTK init_dcmtk; // Created only first time DicomRead is called
     bool return_value = true;
@@ -88,40 +184,26 @@ InitDCMTK::~InitDCMTK()
             }
 
             // Read metadata, only of string type - not currently considered
-            //DcmFileFormat fileformat;
-            //OFCondition status = fileformat.loadFile(filename.c_str());
-            //if (status.good())
-            //{
-            //    // Unique pointer in the image?
-            //    DicomMetaData* metadata = new DicomMetaData;
+            DcmFileFormat fileformat;
+            OFCondition status = fileformat.loadFile(filename.c_str());
+            if (status.good()) {
+                DcmObject* object = nullptr;
+                DcmElement* elem = nullptr;
+                DcmDataset* dataset = fileformat.getDataset();
+                DcmTag tag;
+                // Check the amount of string copy. They can probably be reduced.
+                string name, value;
 
-            //    DcmStack stack;
-            //    DcmObject* object = nullptr;
-            //    DcmElement* elem = nullptr;
-            //    DcmDataset* dataset = fileformat.getDataset();
+                while (true) {
+                    object = dataset->nextInContainer(object);
+                    if (object == nullptr)
+                        break;
 
-            //    // Check the amount of string copy. They can probably be reduced.
-            //    string name, value;
+                    elem = dynamic_cast<DcmElement*>(object);
 
-            //    while (true) {
-            //        object = dataset->nextInContainer(object);
-            //        if (object == nullptr)
-            //            break;
-
-            //        elem = dynamic_cast<DcmElement*>(object);
-
-            //        char* s;
-            //        status = elem->getString(s);
-            //        if (status.good() && s != nullptr) {
-            //            name = elem->getTag().toString().c_str();
-            //            value = s;
-            //            metadata->Add(name, value);
-            //        }
-
-            //    }
-
-            //    dst.meta_ = metadata;
-            //}
+                    InsertTagValue(elem, dst);
+                }
+            }
 
             // Read possible overlays - not currently considered
             //unsigned int overlay_count = image->getOverlayCount();
@@ -312,9 +394,9 @@ bool DicomWrite(const std::string& filename, const Image& src)
     }
 
     // Insert overlay if present in Image MetaData, under the name "overlay"
-    if (!src.meta_.map_.empty()) {
+    if (!src.meta_.empty()) {
         try {
-            Image overlay = src.meta_.map_.at("overlay")->Query<Image>();
+            Image overlay = any_cast<Image>(src.GetMeta("overlay").Get());
             string overlay_str;
             overlay_str.resize(overlay.datasize_);
             memcpy(const_cast<char*>(overlay_str.data()), overlay.data_, overlay.datasize_);
@@ -342,8 +424,8 @@ bool DicomWrite(const std::string& filename, const Image& src)
             tag_key.setElement(0x3000);
             dataset->putAndInsertUint8Array(tag_key, compressed_overlay.data(), static_cast<const unsigned long>(compressed_overlay.size()));
         }
-        catch (std::exception) {
-            cerr << ECVL_ERROR_MSG "Overlay not present in source Image." << endl;
+        catch (const exception&) {
+            // Overlay not present in source Image
         }
     }
 
