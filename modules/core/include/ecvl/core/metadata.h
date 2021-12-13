@@ -14,36 +14,38 @@
 #ifndef ECVL_METADATA_H_
 #define ECVL_METADATA_H_
 
-#include <unordered_map>
-#include <memory>
+#include <typeindex>
+#include "ecvl/core/any.h"
 
 namespace ecvl
 {
-class MetaSingleBase
-{
-public:
-    virtual ~MetaSingleBase() {}
-    template<class T> const T& Query() const;
-};
-
-template <typename T>
-class MetaSingle : public MetaSingleBase
-{
-    T value_;
-public:
-    MetaSingle(const T& value) : value_(value) {}
-    const T& Query() const { return value_; }
-};
-
-template<class T> const T& MetaSingleBase::Query() const
-{
-    return static_cast<const MetaSingle<T>&>(*this).Query();
-}
-
 class MetaData
 {
+    std::any value_;
+    std::string value_str_ = "";
+
+    static inline std::unordered_map<std::type_index, std::function<void(const std::any& value, std::string& s)>> anytype_to_string{
+    {std::type_index(typeid(std::string)), [](const std::any& x, std::string& s) {s = std::any_cast<std::string>(x); }},
+    {std::type_index(typeid(int)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<int>(x)); }},
+    {std::type_index(typeid(float)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<float>(x)); }},
+    {std::type_index(typeid(double)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<double>(x)); }},
+    {std::type_index(typeid(long long)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<long long>(x)); }},
+    {std::type_index(typeid(short)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<short>(x)); }},
+    {std::type_index(typeid(unsigned)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<unsigned>(x)); }},
+    {std::type_index(typeid(unsigned short)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<unsigned short>(x)); }},
+    };
+
 public:
-    std::unordered_map<std::string, std::shared_ptr<MetaSingleBase>> map_;
+    MetaData(const std::any& value) : value_(value) {}
+    std::any Get() const { return value_; }
+    std::string GetStr()
+    {
+        if (const auto it = anytype_to_string.find(std::type_index(value_.type())); it != anytype_to_string.cend()) {
+            it->second(value_, value_str_);
+        }
+
+        return value_str_;
+    }
 };
 } // namespace ecvl
 
