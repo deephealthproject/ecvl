@@ -87,6 +87,15 @@ bool OpenSlideRead(const path& filename, Image& dst, const int level, const vect
         dst.data_[++i] = g;
         dst.data_[++i] = r;
     }
+
+    const char* const* prop_names = openslide_get_property_names(osr);
+    int pc = 0;
+    while (prop_names[pc] != NULL) {
+        string pval = openslide_get_property_value(osr, prop_names[pc]);
+        dst.meta_.insert({ prop_names[pc], MetaData(pval) });
+        ++pc;
+    }
+
     openslide_close(osr);
     return !dst.IsEmpty();
 }
