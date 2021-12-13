@@ -336,7 +336,7 @@ public:
         const ColorType ctype_gt = ColorType::GRAY,
         const unsigned num_workers = 1,
         const double queue_ratio_size = 1.,
-        const std::vector<bool>& drop_last = {},
+        const std::unordered_map<std::string, bool>& drop_last = std::unordered_map<std::string, bool>{},
         bool verify = false) :
 
         Dataset{ filename, verify },
@@ -381,9 +381,9 @@ public:
 
         // Set drop_last parameter for each split
         if (!drop_last.empty()) {
-            if (vsize(drop_last) == vsize(split_)) {
-                for (int i = 0; i < vsize(drop_last); ++i) {
-                    split_[i].drop_last_ = drop_last[i];
+            if (drop_last.size() == vsize(split_)) {
+                for (int i = 0; i < vsize(split_); ++i) {
+                    split_[i].drop_last_ = drop_last.at(split_[i].split_name_);
                 }
             }
             else {
