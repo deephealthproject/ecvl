@@ -31,7 +31,6 @@ using namespace std;
 
 namespace ecvl
 {
-
 InitDCMTK::InitDCMTK()
 {
     DJDecoderRegistration::registerCodecs();
@@ -67,10 +66,10 @@ void InsertTagValue(DcmElement* elem, Image& dst)
         char* specific_val;
         elem->getString(specific_val);
         if (specific_val) {
-            dst.meta_.insert({ name, MetaData(static_cast<string>(specific_val)) });
+            dst.meta_.insert({ name, MetaData(static_cast<string>(specific_val), 0) });
         }
         else {
-            dst.meta_.insert({ name, MetaData("") });
+            dst.meta_.insert({ name, MetaData("", 0) });
         }
         break;
     }
@@ -79,49 +78,49 @@ void InsertTagValue(DcmElement* elem, Image& dst)
     case EVR_OD:
     case EVR_OF:
     {
-        dst.meta_.insert({ name, MetaData("") });
+        dst.meta_.insert({ name, MetaData("", 0) });
         break;
     }
     case EVR_FL:
     {
         float specific_val;
         elem->getFloat32(specific_val);
-        dst.meta_.insert({ name, MetaData(specific_val) });
+        dst.meta_.insert({ name, MetaData(specific_val, 0) });
         break;
     }
     case EVR_FD:
     {
         double specific_val;
         elem->getFloat64(specific_val);
-        dst.meta_.insert({ name, MetaData(specific_val) });
+        dst.meta_.insert({ name, MetaData(specific_val, 0) });
         break;
     }
     case EVR_SL:
     {
-        long long specific_val;
-        elem->getSint64(specific_val);
-        dst.meta_.insert({ name, MetaData(specific_val) });
+        int specific_val;
+        elem->getSint32(specific_val);
+        dst.meta_.insert({ name, MetaData(specific_val, 0) });
         break;
     }
     case EVR_SS:
     {
         short specific_val;
         elem->getSint16(specific_val);
-        dst.meta_.insert({ name, MetaData(specific_val) });
+        dst.meta_.insert({ name, MetaData(specific_val, 0) });
         break;
     }
     case EVR_UL:
     {
-        unsigned specific_val;
+        unsigned int specific_val;
         elem->getUint32(specific_val);
-        dst.meta_.insert({ name, MetaData(specific_val) });
+        dst.meta_.insert({ name, MetaData(specific_val, 0) });
         break;
     }
     case EVR_US:
     {
         unsigned short specific_val;
         elem->getUint16(specific_val);
-        dst.meta_.insert({ name, MetaData(specific_val) });
+        dst.meta_.insert({ name, MetaData(specific_val, 0) });
         break;
     }
     case EVR_SQ:

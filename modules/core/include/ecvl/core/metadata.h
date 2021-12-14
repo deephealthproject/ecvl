@@ -29,14 +29,17 @@ class MetaData
     {std::type_index(typeid(int)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<int>(x)); }},
     {std::type_index(typeid(float)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<float>(x)); }},
     {std::type_index(typeid(double)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<double>(x)); }},
+    {std::type_index(typeid(long)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<long>(x)); }},
     {std::type_index(typeid(long long)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<long long>(x)); }},
     {std::type_index(typeid(short)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<short>(x)); }},
     {std::type_index(typeid(unsigned)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<unsigned>(x)); }},
+    {std::type_index(typeid(unsigned int)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<unsigned int>(x)); }},
     {std::type_index(typeid(unsigned short)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<unsigned short>(x)); }},
     };
 
 public:
-    MetaData(const std::any& value) : value_(value) {}
+    // int is a workaround for some version of gcc bug: https://stackoverflow.com/questions/64744074/why-an-object-is-not-constructible?rq=1
+    MetaData(const std::any& value, int) : value_(value) {}
     std::any Get() const { return value_; }
     std::string GetStr()
     {

@@ -650,21 +650,21 @@ bool NiftiRead(const path& filename, Image& dst)
         }
 
         dst.Create(dims, data_type, channels, color_type, spacings);
-        dst.meta_.insert({ "xyzt_units", MetaData(header.xyzt_units) });
-        dst.meta_.insert({ "dim_info", MetaData(header.dim_info) });
-        dst.meta_.insert({ "slice_duration", MetaData(header.slice_duration) });
-        dst.meta_.insert({ "toffset", MetaData(header.toffset) });
-        dst.meta_.insert({ "qform_code", MetaData(header.qform_code) });
-        dst.meta_.insert({ "sform_code", MetaData(header.sform_code) });
-        dst.meta_.insert({ "quatern_b", MetaData(header.quatern_b) });
-        dst.meta_.insert({ "quatern_c", MetaData(header.quatern_c) });
-        dst.meta_.insert({ "quatern_d", MetaData(header.quatern_d) });
-        dst.meta_.insert({ "qoffset_x", MetaData(header.qoffset_x) });
-        dst.meta_.insert({ "qoffset_y", MetaData(header.qoffset_y) });
-        dst.meta_.insert({ "qoffset_z", MetaData(header.qoffset_z) });
-        dst.meta_.insert({ "srow_x", MetaData(header.srow_x) });
-        dst.meta_.insert({ "srow_y", MetaData(header.srow_y) });
-        dst.meta_.insert({ "srow_z", MetaData(header.srow_z) });
+        dst.meta_.insert({ "xyzt_units", MetaData(header.xyzt_units, 0) });
+        dst.meta_.insert({ "dim_info", MetaData(header.dim_info, 0) });
+        dst.meta_.insert({ "slice_duration", MetaData(header.slice_duration, 0) });
+        dst.meta_.insert({ "toffset", MetaData(header.toffset, 0) });
+        dst.meta_.insert({ "qform_code", MetaData(header.qform_code, 0) });
+        dst.meta_.insert({ "sform_code", MetaData(header.sform_code, 0) });
+        dst.meta_.insert({ "quatern_b", MetaData(header.quatern_b, 0) });
+        dst.meta_.insert({ "quatern_c", MetaData(header.quatern_c, 0) });
+        dst.meta_.insert({ "quatern_d", MetaData(header.quatern_d, 0) });
+        dst.meta_.insert({ "qoffset_x", MetaData(header.qoffset_x, 0) });
+        dst.meta_.insert({ "qoffset_y", MetaData(header.qoffset_y, 0) });
+        dst.meta_.insert({ "qoffset_z", MetaData(header.qoffset_z, 0) });
+        dst.meta_.insert({ "srow_x", MetaData(header.srow_x, 0) });
+        dst.meta_.insert({ "srow_y", MetaData(header.srow_y, 0) });
+        dst.meta_.insert({ "srow_z", MetaData(header.srow_z, 0) });
 
         // Read data
         char* data;

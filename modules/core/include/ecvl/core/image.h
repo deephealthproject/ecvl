@@ -562,7 +562,7 @@ public:
     /** @brief Update the metadata value if the key already exists (return false) or insert the pair if not found (return true). */
     bool SetMeta(const std::string& key, const std::any& value)
     {
-        return this->meta_.insert_or_assign(key, MetaData(value)).second;
+        return this->meta_.insert_or_assign(key, MetaData(value, 0)).second;
     }
 
     Image operator-() const;

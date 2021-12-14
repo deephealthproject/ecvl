@@ -92,7 +92,7 @@ bool OpenSlideRead(const path& filename, Image& dst, const int level, const vect
     int pc = 0;
     while (prop_names[pc] != NULL) {
         string pval = openslide_get_property_value(osr, prop_names[pc]);
-        dst.meta_.insert({ prop_names[pc], MetaData(pval) });
+        dst.meta_.insert({ prop_names[pc], MetaData(pval, 0) });
         ++pc;
     }
 
