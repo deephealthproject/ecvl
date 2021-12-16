@@ -15,6 +15,7 @@
 #define ECVL_METADATA_H_
 
 #include <typeindex>
+#include <unordered_map>
 #include "ecvl/core/any.h"
 
 namespace ecvl
@@ -24,7 +25,7 @@ class MetaData
     std::any value_;
     std::string value_str_ = "";
 
-    static inline std::unordered_map<std::type_index, std::function<void(const std::any& value, std::string& s)>> anytype_to_string{
+    std::unordered_map<std::type_index, std::function<void(const std::any& value, std::string& s)>> anytype_to_string{
     {std::type_index(typeid(std::string)), [](const std::any& x, std::string& s) {s = std::any_cast<std::string>(x); }},
     {std::type_index(typeid(int)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<int>(x)); }},
     {std::type_index(typeid(float)), [](const std::any& x, std::string& s) {s = std::to_string(std::any_cast<float>(x)); }},
