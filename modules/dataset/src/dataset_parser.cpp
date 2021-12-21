@@ -291,7 +291,11 @@ Dataset::Dataset(const filesystem::path& filename, bool verify)
             // insert into the vector split_ the split name and the vector of image indices
             Split s(it->first.as<string>(), it->second.as<vector<int>>());
 
-            if (!samples_[s.samples_indices_[0]].label_ && !samples_[s.samples_indices_[0]].label_path_) {
+            if (s.samples_indices_.empty()) {
+                cout << ECVL_WARNING_MSG << s.split_name_ << " split is empty." << endl;
+                s.no_label_ = true;
+            }
+            else if (!samples_[s.samples_indices_[0]].label_ && !samples_[s.samples_indices_[0]].label_path_) {
                 s.no_label_ = true;
             }
             split_.push_back(s);
