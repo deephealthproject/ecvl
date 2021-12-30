@@ -49,7 +49,7 @@ public:
     }
     uint8_t* MemCopy(uint8_t* dst, const uint8_t* src, size_t nbytes) override
     {
-        printf("FPGA: MemCopy %d bytes\n", nbytes);
+        printf("FPGA: MemCopy %zu bytes\n", nbytes);
         cl::Buffer *buffer_a = (cl::Buffer*) dst;
         return (uint8_t*) (*q).enqueueWriteBuffer(*buffer_a, CL_TRUE, 0, nbytes, src);
     }

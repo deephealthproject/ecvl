@@ -56,7 +56,7 @@ void FpgaHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vec
         //q.enqueueMigrateMemObjects({*src.buffer_},0);
 
     kernel_resize.setArg(0, *buffer_a);
-    kernel_resize.setArg(1, src.fpga_buffer);
+    kernel_resize.setArg(1, *src.fpga_buffer);
     kernel_resize.setArg(2, src.dims_[1]);
     kernel_resize.setArg(3, src.dims_[0]);
     kernel_resize.setArg(4, newdims[1]);

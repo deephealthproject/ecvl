@@ -75,7 +75,7 @@ void fpga_init(){
 
   printf("    - context created\n");
 
-  OCL_CHECK(err, q = new cl::CommandQueue(*context, device, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
+  OCL_CHECK(err, q = new cl::CommandQueue(*context, device, CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
 
   printf("    - command queue created\n");
 
@@ -92,51 +92,58 @@ void fpga_init(){
 
   OCL_CHECK(err, program = cl::Program(*context, devices, bins, NULL, &err));
   if (err != CL_SUCCESS) printf("Error creating program 3\n");
-
   printf("    - program created\n");
 
   OCL_CHECK(err, kernel_filter2d = cl::Kernel(program,"filter2d_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_filter2d \n");
-
   printf("    - filter2d kernel created\n");
 
-  OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_warp_transform 4\n");
+  //OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
+  //printf("    - warp_transfrom kernel created\n");
 
   OCL_CHECK(err, kernel_resize = cl::Kernel(program,"resize_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_resize \n");
+  printf("    - resize kernel created\n");
 
   OCL_CHECK(err, kernel_gaussian_blur = cl::Kernel(program,"gaussian_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_gaussian_blur \n");
+  printf("    - gaussian_blur kernel created\n");
 
   OCL_CHECK(err, kernel_rgb_2_gray = cl::Kernel(program,"rgb2gray_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_rgb_2_gray \n");
+  printf("    - rgb2gray kernel created\n");
 
   OCL_CHECK(err, kernel_flip2d = cl::Kernel(program,"flipvertical_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_flip2d \n");
+  printf("    - flip2d kernel created\n");
 
   OCL_CHECK(err, kernel_mirror2d = cl::Kernel(program,"mirror_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel 4\n");
+  printf("    - mirror2d kernel created\n");
 
   OCL_CHECK(err, kernel_threshold = cl::Kernel(program,"threshold_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_threshold\n");
+  printf("    - threshold kernel created\n");
 
   OCL_CHECK(err, kernel_otsu_threshold = cl::Kernel(program,"otsuThreshold_accel", &err));
-  if (err != CL_SUCCESS) printf("Error creating kernel_otsu_threshold\n");
+  printf("    - otsu_threshold kernel created\n");
 
   printf("END FPGA INIT\n");
 }
 
 void FpgaHal::FromCpu(Image& src)
 {
+    cl_int err;
+
     printf("  - FPGA: FromCpu\n");
     if (!src.contiguous_) {
         // The copy constructor creates a new contiguous image
         src = Image(src);
+        printf("unexpected hola\n");
     }
 
-    src.fpga_buffer = cl::Buffer(*context,CL_MEM_WRITE_ONLY, src.datasize_);
-    (*q).enqueueWriteBuffer(src.fpga_buffer, CL_TRUE, 0, src.datasize_, src.data_);
+    printf("    - Creating buffer\n");
+    OCL_CHECK(err, src.fpga_buffer = new cl::Buffer(*context, CL_MEM_READ_WRITE, src.datasize_, NULL, &err));
+    printf("    - Writing into buffer (cpu ptr %p, fpga ptr %p, datasize %zu)\n", src.data_, src.fpga_buffer, src.datasize_);
+    cl::Event blocking_event;
+    cl::Buffer *fpga_ptr = src.fpga_buffer;
+    void *cpu_ptr = src.data_;
+    OCL_CHECK(err, err = (*q).enqueueWriteBuffer(*fpga_ptr, CL_TRUE, 0, src.datasize_, cpu_ptr, nullptr, &blocking_event));
+
+    printf("    - end\n");
 
     src.hal_ = FpgaHal::GetInstance();
     src.dev_ = Device::FPGA;
@@ -213,7 +220,7 @@ struct StructRearrangeImage_fpga
 void FpgaHal::RearrangeChannels(const Image& src, Image& dst, const std::vector<int>& bindings)
 {
   printf("FPGAHal::RearrangeChannels cp1\n");
-  (*q).enqueueReadBuffer(src.fpga_buffer, CL_TRUE, 0, src.datasize_, src.data_);
+  (*q).enqueueReadBuffer(*src.fpga_buffer, CL_TRUE, 0, src.datasize_, src.data_);
   printf("FPGAHal::RearrangeChannels cp2\n");
   static constexpr Table2D<StructRearrangeImage_fpga> table;
   printf("FPGAHal::RearrangeChannels cp3\n");

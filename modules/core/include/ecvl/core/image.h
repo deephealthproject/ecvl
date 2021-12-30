@@ -192,7 +192,7 @@ public:
                                                          with the HAL pointer.*/
 
 
-    cl::Buffer fpga_buffer;
+    cl::Buffer *fpga_buffer;
 
     /** @brief Generic non-const Begin Iterator.
 
