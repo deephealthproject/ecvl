@@ -28,6 +28,8 @@
 #include "type_promotion.h"
 #include "standard_errors.h"
 
+#include "ecvl/core/xcl2.hpp"      // OpenCL header
+
 namespace ecvl
 {
 template<typename T>
@@ -188,6 +190,9 @@ public:
 
                                                          This is just informative and should be always synchronized
                                                          with the HAL pointer.*/
+
+
+    cl::Buffer fpga_buffer;
 
     /** @brief Generic non-const Begin Iterator.
 

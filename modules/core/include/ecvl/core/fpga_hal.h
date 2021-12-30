@@ -17,10 +17,12 @@
 #include "ecvl/core/hal.h"
 #include "ecvl/core/image.h"
 #include <iostream>
-#include "../../../../../3rdparty/xfopencv/examples_sdaccel/resize/xcl2.hpp"
+//#include "../../../../../3rdparty/xfopencv/examples_sdaccel/resize/xcl2.hpp"
 
-extern cl::Context context;
-extern cl::CommandQueue q;
+extern cl::Context *context;
+extern cl::CommandQueue *q;
+
+extern cl::Kernel kernel_otsu_threshold, kernel_threshold, kernel_mirror2d, kernel_flip2d, kernel_rgb_2_gray, kernel_gaussian_blur, kernel_resize, kernel_warp_transform, kernel_filter2d;
 
 namespace ecvl
 {
@@ -37,7 +39,7 @@ public:
     uint8_t* MemAllocate(size_t nbytes) override
     {
         printf("FPGA: MemAllocate\n");
-        cl::Buffer *imageToDevice = new cl::Buffer(context, CL_MEM_READ_ONLY, nbytes);
+        cl::Buffer *imageToDevice = new cl::Buffer(*context, CL_MEM_READ_ONLY, nbytes);
         return (uint8_t*) imageToDevice;
     }
     void MemDeallocate(uint8_t* data) override
@@ -49,22 +51,13 @@ public:
     {
         printf("FPGA: MemCopy %d bytes\n", nbytes);
         cl::Buffer *buffer_a = (cl::Buffer*) dst;
-        return (uint8_t*) q.enqueueWriteBuffer(*buffer_a, CL_TRUE, 0, nbytes, src);
+        return (uint8_t*) (*q).enqueueWriteBuffer(*buffer_a, CL_TRUE, 0, nbytes, src);
     }
 
     static FpgaHal* GetInstance();
 
-    void FromCpu(Image& src) override
-    {
-        printf("FromCPU de FpgaHal\n");
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::FromCpu")
-    }
-    void ToCpu(Image& src) override
-    {
-        printf("ToCPU de FpgaHal\n");
-        ECVL_ERROR_NOT_IMPLEMENTED_WHAT("FpgaHal::ToCpu")
-    }
-
+    void FromCpu(Image& src) override;
+    void ToCpu(Image& src) override;
 
 
     void CopyImage(const Image& src, Image& dst) override;

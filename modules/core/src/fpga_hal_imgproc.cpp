@@ -34,7 +34,53 @@ namespace ecvl
 
 void FpgaHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
-    printf("FpgaHal::ResizeDim not implemented\n"); exit(1);
+   /* The interp parameter is ignored at the moment.
+     * The xfOpenCV generates an accelerator for the Area interpolator
+     * To change the accelerator interpolation strategy, its header needs to be changed,
+     * and the hardware resynthesized
+    */
+    (void) interp;
+
+        cout << "llega a imgprocFPGA" << endl;
+
+    //cl::Buffer imageToDevice(context,CL_MEM_READ_ONLY, src.rows * src.cols * src.channels()); // TODO check src datatype
+    //cl::Buffer imageFromDevice(context,CL_MEM_WRITE_ONLY, dst.rows * dst.cols * dst.channels());
+
+        //Cl buffer with the original imgdata
+        cl::Buffer *buffer_a = (cl::Buffer*) src.data_;
+
+
+    /* Copy input vectors to memory -> Now we create a cl buffer into the image, it is not necessary */
+    //q.enqueueWriteBuffer(imageToDevice, CL_TRUE, 0, src.rows * src.cols * src.channels(), src.data);
+        //cl::Event  event2;
+        //q.enqueueMigrateMemObjects({*src.buffer_},0);
+
+    kernel_resize.setArg(0, *buffer_a);
+    kernel_resize.setArg(1, src.fpga_buffer);
+    kernel_resize.setArg(2, src.dims_[1]);
+    kernel_resize.setArg(3, src.dims_[0]);
+    kernel_resize.setArg(4, newdims[1]);
+    kernel_resize.setArg(5, newdims[0]);
+
+    // Profiling Objects
+    cl_ulong start= 0;
+    cl_ulong end = 0;
+    double diff_prof = 0.0f;
+    cl::Event event_sp;
+
+    printf("Launching kernel: Resize \n");
+    (*q).enqueueTask(kernel_resize,NULL,&event_sp);
+    clWaitForEvents(1, (const cl_event*) &event_sp);
+    printf("Launched kernel: Resize \n");
+
+    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_START,&start);
+    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_END,&end);
+    diff_prof = end-start;
+    std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
+
+    //q.enqueueReadBuffer(imageFromDevice, CL_TRUE, 0, dst.rows * dst.cols * dst.channels(), dst.data);
+
+    (*q).finish();
 }
 
 void FpgaHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)

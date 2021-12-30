@@ -1,6 +1,6 @@
 # ECVL - European Computer Vision Library
 # Version: 0.3.4
-# copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+# copyright (c) 2021, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 # Authors:
 #    Costantino Grana (costantino.grana@unimore.it)
 #    Federico Bolelli (federico.bolelli@unimore.it)
@@ -403,13 +403,13 @@ endif()
 if(ECVL_WITH_FPGA)
     FIND_PACKAGE(OpenCL REQUIRED)
     target_compile_definitions(ECVL_CORE PUBLIC ECVL_WITH_FPGA)
-    target_include_directories(ECVL_CORE PUBLIC ${OpenCL_INCLUDE_DIRS})
+    target_include_directories(ECVL_CORE PUBLIC ${OpenCL_INCLUDE_DIRS} /opt/xilinx/xrt/include)
     target_link_libraries(ECVL_CORE PUBLIC ${OpenCL_LIBRARY})
     # include xcl2.{cpp,hpp}
-    target_sources(ECVL_CORE PRIVATE "../3rdparty/xfopencv/examples_sdaccel/resize/xcl2.cpp")
-    target_include_directories(ECVL_CORE PRIVATE "3rdparty/xfopencv/examples_sdaccel/resize")
+    target_sources(ECVL_CORE PRIVATE "modules/core/src/xcl2.cpp")
+    #target_include_directories(ECVL_CORE PRIVATE "3rdparty/xfopencv/examples_sdaccel/resize")
     # include Vivado HLS types
-    #target_include_directories(ECVL_CORE PRIVATE "${VIVADO_DIR}/include")
+    target_include_directories(ECVL_CORE PRIVATE "${VIVADO_DIR}/include")
     message(STATUS "OpenCL added FPGA")
 endif()
 
