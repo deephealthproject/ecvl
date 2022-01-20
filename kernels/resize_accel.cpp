@@ -38,8 +38,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NO 			1	 // Normal Operation (1-pixel implementation)
 
 // port widths
-#define INPUT_PTR_WIDTH  256
-#define OUTPUT_PTR_WIDTH 256
+#define INPUT_PTR_WIDTH  128
+#define OUTPUT_PTR_WIDTH 128
 
 //max down scale factor 2 for all 1-pixel modes, and for upscale in x direction
 #define MAXDOWNSCALE 3
@@ -55,13 +55,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* Input image Dimensions */
 
-#define WIDTH 			1920	// Maximum Input image width
-#define HEIGHT 			1800   	// Maximum Input image height
+#define WIDTH 			1000	// Maximum Input image width
+#define HEIGHT 			1000   	// Maximum Input image height
 
 /* Output image Dimensions */
 
-#define NEWWIDTH 		1920  // Maximum output image width
-#define NEWHEIGHT 		1800  // Maximum output image height
+#define NEWWIDTH 		1000  // Maximum output image width
+#define NEWHEIGHT 		1000  // Maximum output image height
 
 /* Interface types*/
 #if RO

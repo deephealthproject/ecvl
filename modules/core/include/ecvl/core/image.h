@@ -193,7 +193,8 @@ public:
 
 
     cl::Buffer *fpga_buffer;
-
+    bool isOrigin = true;
+    cv::Mat mat;
     /** @brief Generic non-const Begin Iterator.
 
     This function gives you a non-const generic Begin Iterator that can be used both for contiguous and

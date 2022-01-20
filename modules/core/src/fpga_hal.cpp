@@ -68,26 +68,26 @@ void fpga_init(){
   devices = xcl::get_xil_devices();
   device = devices[0];
   cl_int err;
-
+  
   printf("    - device found\n");
-
+  
   OCL_CHECK(err, context = new cl::Context(device, NULL, NULL, NULL, &err));
-
+  
   printf("    - context created\n");
-
+  
   OCL_CHECK(err, q = new cl::CommandQueue(*context, device, CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
-
+  
   printf("    - command queue created\n");
 
   device_name = device.getInfo<CL_DEVICE_NAME>();
-  std::string xcl_file = "ecvl_kernels.xclbin";
+  std::string xcl_file = "xclbin/ecvl_kernels.xclbin";
   auto fileBuf = xcl::read_binary_file(xcl_file);
-
+  
   printf("    - binary file found\n");
-
+  
   bins = cl::Program::Binaries{{fileBuf.data(), fileBuf.size()}};
   devices.resize(1);
-
+  
   printf("    - binary file imported\n");
 
   OCL_CHECK(err, program = cl::Program(*context, devices, bins, NULL, &err));
@@ -97,8 +97,8 @@ void fpga_init(){
   OCL_CHECK(err, kernel_filter2d = cl::Kernel(program,"filter2d_accel", &err));
   printf("    - filter2d kernel created\n");
 
-  //OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
-  //printf("    - warp_transfrom kernel created\n");
+  OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
+  printf("    - warp_transfrom kernel created\n");
 
   OCL_CHECK(err, kernel_resize = cl::Kernel(program,"resize_accel", &err));
   printf("    - resize kernel created\n");
@@ -127,7 +127,7 @@ void fpga_init(){
 void FpgaHal::FromCpu(Image& src)
 {
     cl_int err;
-
+    cl::Event blocking_event;
     printf("  - FPGA: FromCpu\n");
     if (!src.contiguous_) {
         // The copy constructor creates a new contiguous image
@@ -135,14 +135,31 @@ void FpgaHal::FromCpu(Image& src)
         printf("unexpected hola\n");
     }
 
-    printf("    - Creating buffer\n");
-    OCL_CHECK(err, src.fpga_buffer = new cl::Buffer(*context, CL_MEM_READ_WRITE, src.datasize_, NULL, &err));
-    printf("    - Writing into buffer (cpu ptr %p, fpga ptr %p, datasize %zu)\n", src.data_, src.fpga_buffer, src.datasize_);
-    cl::Event blocking_event;
-    cl::Buffer *fpga_ptr = src.fpga_buffer;
-    void *cpu_ptr = src.data_;
-    OCL_CHECK(err, err = (*q).enqueueWriteBuffer(*fpga_ptr, CL_TRUE, 0, src.datasize_, cpu_ptr, nullptr, &blocking_event));
+    
+    if(src.isOrigin){
+        src.mat = ImageToMat(src);
+        printf("    - Creating buffer 1\n");
 
+        OCL_CHECK(err, src.fpga_buffer = new cl::Buffer (*context, CL_MEM_READ_WRITE, src.mat.rows * src.mat.cols * src.mat.channels(), nullptr, &err));
+	    if (err != CL_SUCCESS) printf("Error creating cl buffer\n");
+
+        OCL_CHECK(err, err = (*q).enqueueWriteBuffer(*src.fpga_buffer, CL_TRUE, 0, src.mat.rows * src.mat.cols * src.mat.channels(), src.mat.data, nullptr, &blocking_event));
+        if (err != CL_SUCCESS) printf("Error creating buffer image src\n");
+
+        printf("    - Writing into buffer (cpu ptr %p, fpga ptr %p, datasize %zu)\n", src.data_, src.fpga_buffer, src.datasize_);
+
+    }
+/*     else{
+
+        src.mat = cv::Mat::zeros({ src.dims_[0], src.dims_[1] }, CV_8UC(3));
+        printf("    - Creating buffer 2\n");
+
+        OCL_CHECK(err, src.fpga_buffer = new cl::Buffer (*context, CL_MEM_READ_WRITE, src.mat.rows * src.mat.cols * src.mat.channels(), nullptr, &err));
+	    if (err != CL_SUCCESS) printf("Error creating cl buffer\n");
+
+        printf("    - Writing into buffer (cpu ptr %p, fpga ptr %p, datasize %zu)\n", src.data_, src.fpga_buffer, src.datasize_);
+
+    } */
     printf("    - end\n");
 
     src.hal_ = FpgaHal::GetInstance();

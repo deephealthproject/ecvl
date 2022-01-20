@@ -28,14 +28,18 @@ int main()
     }
     printf("APP: Sending img1 to FPGA\n");
     img1.To(Device::FPGA);
-
+    for (int i = 0; i < img1.dims_.size(); i++) {
+        std::cout << img1.dims_.at(i) << ' ';
+    }
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
     printf("APP: Creating tmp image directly on FPGA\n");
     int new_width = 225;
     int new_height = 300;
-    Image tmp({new_height, new_width, 3}, DataType::uint8, "xyc", ColorType::RGB, {}, Device::CPU);
+    Image tmp({new_height, new_width, 3}, img1.elemtype_, img1.channels_, img1.colortype_, img1.spacings_, Device::CPU);
+    tmp.isOrigin = false;
     tmp.To(Device::FPGA);
+    
     
     printf("APP: Launching ResizeDim img1 -> tmp\n");
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
