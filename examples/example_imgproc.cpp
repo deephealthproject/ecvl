@@ -19,40 +19,29 @@ using namespace std;
 
 int main()
 {
-    fpga_init();
-    // Open an Image
-    printf("APP: Creating img1 image in CPU and reading from file\n");
     Image img1;
-    if (!ImRead("../examples/data/test.jpg", img1)) {
-        return EXIT_FAILURE;
-    }
-    printf("APP: Sending img1 to FPGA\n");
+    Image img2;
+
+    // Open an Image
+    if (!ImRead("../examples/data/test.jpg", img1)) {return EXIT_FAILURE;}
     img1.To(Device::FPGA);
-    for (int i = 0; i < img1.dims_.size(); i++) {
-        std::cout << img1.dims_.at(i) << ' ';
-    }
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
-    printf("APP: Creating tmp image directly on FPGA\n");
+    printf("APP: ResizeDim\n");
     int new_width = 225;
     int new_height = 300;
-    Image tmp({new_height, new_width, 3}, img1.elemtype_, img1.channels_, img1.colortype_, img1.spacings_, Device::CPU);
-    tmp.isOrigin = false;
+    Image tmp({new_width, new_height, 3}, img1.elemtype_, img1.channels_, img1.colortype_, img1.spacings_, Device::CPU);
     tmp.To(Device::FPGA);
     
-    
-    printf("APP: Launching ResizeDim img1 -> tmp\n");
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
 
-    printf("APP: Writing produced image into file\n");
     tmp.To(Device::CPU);
     ImWrite("img_resized.jpg", tmp);
 
-    printf("APP: end\n");
-
     // Resize an Image by scaling the dimensions to a given scale factor res_scale (optional: InterpolationType)
-/*    vector<double> res_scale = { 2,2 };
-    cout << "Executing ResizeScale" << endl;
+    printf("APP: ResizeScale\n");
+    tmp.To(Device::FPGA);
+    vector<double> res_scale = { 2,2 };
     ResizeScale(img1, tmp, res_scale, InterpolationType::cubic);
     ImWrite("img_resized_scale.jpg", tmp);
 
@@ -215,7 +204,7 @@ int main()
     cout << "Executing CenterCrop" << endl;
     CenterCrop(img1, tmp, { 225, 300 });
     ImWrite("img_centercrop.png", tmp);
-*/
+
 
     return EXIT_SUCCESS;
 }

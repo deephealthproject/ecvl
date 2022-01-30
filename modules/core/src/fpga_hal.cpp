@@ -126,6 +126,7 @@ void fpga_init(){
 
 void FpgaHal::FromCpu(Image& src)
 {
+    if (!fpga_initialized) {fpga_init(); fpga_initialized = 1;}
     cl_int err;
     cl::Event blocking_event;
     printf("  - FPGA: FromCpu\n");
@@ -136,9 +137,9 @@ void FpgaHal::FromCpu(Image& src)
     }
 
     
-    if(src.isOrigin){
+    if (src.isOrigin) {
         src.mat = ImageToMat(src);
-        printf("    - Creating buffer 1\n");
+        printf("    - Creating buffer 1, dims %d x %d x %d\n", src.mat.rows, src.mat.cols, src.mat.channels());
 
         OCL_CHECK(err, src.fpga_buffer = new cl::Buffer (*context, CL_MEM_READ_WRITE, src.mat.rows * src.mat.cols * src.mat.channels(), nullptr, &err));
 	    if (err != CL_SUCCESS) printf("Error creating cl buffer\n");
@@ -148,8 +149,7 @@ void FpgaHal::FromCpu(Image& src)
 
         printf("    - Writing into buffer (cpu ptr %p, fpga ptr %p, datasize %zu)\n", src.data_, src.fpga_buffer, src.datasize_);
 
-    }
-/*     else{
+    } else {
 
         src.mat = cv::Mat::zeros({ src.dims_[0], src.dims_[1] }, CV_8UC(3));
         printf("    - Creating buffer 2\n");
@@ -159,7 +159,7 @@ void FpgaHal::FromCpu(Image& src)
 
         printf("    - Writing into buffer (cpu ptr %p, fpga ptr %p, datasize %zu)\n", src.data_, src.fpga_buffer, src.datasize_);
 
-    } */
+    } 
     printf("    - end\n");
 
     src.hal_ = FpgaHal::GetInstance();

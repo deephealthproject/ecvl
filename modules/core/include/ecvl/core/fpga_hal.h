@@ -54,6 +54,8 @@ public:
         return (uint8_t*) (*q).enqueueWriteBuffer(*buffer_a, CL_TRUE, 0, nbytes, src);
     }
 
+    int fpga_initialized = 0;
+
     static FpgaHal* GetInstance();
 
     void FromCpu(Image& src) override;
