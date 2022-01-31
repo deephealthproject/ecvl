@@ -19,8 +19,8 @@ using namespace std;
 
 int main()
 {
-    Image img1;
-    Image img2;
+    Image img1, img2;
+    Image tmp;
 
     // Open an Image
     if (!ImRead("../examples/data/test.jpg", img1)) {return EXIT_FAILURE;}
@@ -28,20 +28,14 @@ int main()
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
     printf("APP: ResizeDim\n");
-    int new_width = 225;
+    int new_width = 320;
     int new_height = 300;
-    Image tmp({new_width, new_height, 3}, img1.elemtype_, img1.channels_, img1.colortype_, img1.spacings_, Device::CPU);
-    tmp.To(Device::FPGA);
-    
     ResizeDim(img1, tmp, { new_width, new_height }, InterpolationType::nearest);
-
-    tmp.To(Device::CPU);
     ImWrite("img_resized.jpg", tmp);
 
     // Resize an Image by scaling the dimensions to a given scale factor res_scale (optional: InterpolationType)
     printf("APP: ResizeScale\n");
-    tmp.To(Device::FPGA);
-    vector<double> res_scale = { 2,2 };
+    vector<double> res_scale = { 0.5, 1 };
     ResizeScale(img1, tmp, res_scale, InterpolationType::cubic);
     ImWrite("img_resized_scale.jpg", tmp);
 

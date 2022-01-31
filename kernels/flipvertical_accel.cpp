@@ -107,13 +107,11 @@ void flipvertical_accel( ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_W
 	xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
   
 
-	printf("\n holaaaaaaaaaaaaaaaa: %d\n", rows_in);
 	for (int column = 0; column < cols_in; column++)
     {	
 			
         //FlipColumn(matriz,res, column, rows_in, cols_in);
 		int max = (rows_in * cols_in) - cols_in + column;
-		printf("\n max: %d\n", max);
 		for (int row = 0; row < rows_in; row++)
 		{
 			//out_mat[column + row * cols_in]= in_mat[max - (row * cols_in)];//comprobar con write de matrices de array2xfmat, intentar encontra run memcpy y preguntar jorge
@@ -123,6 +121,5 @@ void flipvertical_accel( ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_W
     }
 	
 	xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
-	printf("\n fin: %d\n", cols_in);
 }
 }

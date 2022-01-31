@@ -1,7 +1,7 @@
 /*
 * ECVL - European Computer Vision Library
 * Version: 0.3.4
-* copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
+* copyright (c) 2021, Universitï¿½ degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
 *    Federico Bolelli (federico.bolelli@unimore.it)
@@ -24,6 +24,8 @@ void AlwaysCheck(const ecvl::Image& src, const ecvl::Image& dst)
     if (src.IsEmpty()) {
         ECVL_ERROR_EMPTY_IMAGE
     }
+
+    if ((src.dev_ == Device::FPGA) && (dst.dev_ == Device::CPU)) return; // It is supported
 
     if (src.dev_ != dst.dev_ && dst.dev_ != Device::NONE) {
         ECVL_ERROR_DIFFERENT_DEVICES

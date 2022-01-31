@@ -30,64 +30,118 @@ using namespace cv;
 namespace ecvl
 {
 
-    
+cl_int err;
+cl::Event event_sp;
+
+#define RUN_KERNEL_FPGA(fn)                        \
+  (*q).enqueueTask(fn, NULL, &event_sp);           \
+  clWaitForEvents(1, (const cl_event*) &event_sp);
+
+#define KERNEL_RUNTIME_PRINT \
+  cl_ulong start   = 0;      \
+  cl_ulong end     = 0;      \
+  double diff_prof = 0.0f;   \
+  event_sp.getProfilingInfo(CL_PROFILING_COMMAND_START,&start); \
+  event_sp.getProfilingInfo(CL_PROFILING_COMMAND_END,&end);     \
+  diff_prof = end-start;                                        \
+  std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
+
 
 void FpgaHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
-    /* The interp parameter is ignored at the moment.
-     * The xfOpenCV generates an accelerator for the Area interpolator
-     * To change the accelerator interpolation strategy, its header needs to be changed,
-     * and the hardware resynthesized
-    */
-    (void) interp;
-    cl_int err;
+
+    int size = newdims[0] * newdims[1] * 3;
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(newdims[0], newdims[1]), CV_8UC(3));
+    cl::Buffer buff = cl::Buffer(*context,CL_MEM_WRITE_ONLY, size, nullptr, &err);
 
     kernel_resize.setArg(0, *src.fpga_buffer);
-    kernel_resize.setArg(1, *dst.fpga_buffer);
+    kernel_resize.setArg(1, buff);
     kernel_resize.setArg(2, src.dims_[1]);
     kernel_resize.setArg(3, src.dims_[0]);
     kernel_resize.setArg(4, newdims[1]);
     kernel_resize.setArg(5, newdims[0]);
 
-    // Profiling Objects
-    cl_ulong start= 0;
-    cl_ulong end = 0;
-    double diff_prof = 0.0f;
-    cl::Event event_sp;
+    RUN_KERNEL_FPGA(kernel_resize);
 
-    printf("Launching kernel: Resize \n");
-    (*q).enqueueTask(kernel_resize,NULL,&event_sp);
-    clWaitForEvents(1, (const cl_event*) &event_sp);
-    printf("Launched kernel: Resize \n");
+    KERNEL_RUNTIME_PRINT;
 
-    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_START,&start);
-    event_sp.getProfilingInfo(CL_PROFILING_COMMAND_END,&end);
-    diff_prof = end-start;
-    std::cout<<(diff_prof/1000000)<<"ms"<<std::endl;
-
-    OCL_CHECK(err, err = (*q).enqueueReadBuffer(*dst.fpga_buffer, CL_TRUE, 0, dst.mat.rows * dst.mat.cols * dst.mat.channels(), dst.mat.data));
-    if (err != CL_SUCCESS) printf("Error creating buffer image dst\n");
-
+    OCL_CHECK(err, err = (*q).enqueueReadBuffer(buff, CL_TRUE, 0, size, m.data));
+    if (err != CL_SUCCESS) printf("Error reading buffer\n");
     (*q).finish();
 
-    dst = ecvl::MatToImage(dst.mat);
-
-    cout << "saleee imgprocFPGA" << endl;
+    dst = ecvl::MatToImage(m);
 }
 
 void FpgaHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
 {
-    printf("FpgaHal::ResizeScale not implemented\n"); exit(1);
+    int new_rows = lround(src.dims_[1] * scales[1]);
+    int new_cols = lround(src.dims_[0] * scales[0]);
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(new_cols, new_rows), CV_8UC(3));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+
+    kernel_resize.setArg(0, *src.fpga_buffer);
+    kernel_resize.setArg(1, tmp_buff);
+    kernel_resize.setArg(2, src.dims_[1]);
+    kernel_resize.setArg(3, src.dims_[0]);
+    kernel_resize.setArg(4, new_rows);
+    kernel_resize.setArg(5, new_cols);
+
+    RUN_KERNEL_FPGA(kernel_resize);
+
+    KERNEL_RUNTIME_PRINT;
+
+    OCL_CHECK(err, err = (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, new_rows * new_cols * m.channels(), m.data));
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
 }
 
 void FpgaHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 {
-    printf("FpgaHal::Flip2D not implemented\n"); exit(1);
+    int rows = src.dims_[0];
+    int cols = src.dims_[1];
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+
+    kernel_flip2d.setArg(0, *src.fpga_buffer);
+    kernel_flip2d.setArg(1, tmp_buff);
+    kernel_flip2d.setArg(2, src.dims_[1]);
+    kernel_flip2d.setArg(3, src.dims_[0]);
+
+    RUN_KERNEL_FPGA(kernel_flip2d);
+
+    KERNEL_RUNTIME_PRINT;
+
+    OCL_CHECK(err, err = (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data));
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
 }
 
 void FpgaHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 {
-    printf("FpgaHal::Mirror2D not implemented\n"); exit(1);
+    int rows = src.dims_[1];
+    int cols = src.dims_[0];
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+
+    kernel_mirror2d.setArg(0, *src.fpga_buffer);
+    kernel_mirror2d.setArg(1, tmp_buff);
+    kernel_mirror2d.setArg(2, src.dims_[1]);
+    kernel_mirror2d.setArg(3, src.dims_[0]);
+
+    RUN_KERNEL_FPGA(kernel_mirror2d);
+   
+    KERNEL_RUNTIME_PRINT;
+
+    (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data);
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
 }
 
 void FpgaHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)

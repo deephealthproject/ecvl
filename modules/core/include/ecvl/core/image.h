@@ -192,7 +192,8 @@ public:
                                                          with the HAL pointer.*/
 
 
-    cl::Buffer *fpga_buffer;
+    cl::Buffer *fpga_buffer = nullptr;
+
     bool isOrigin = true;
     cv::Mat mat;
     /** @brief Generic non-const Begin Iterator.
