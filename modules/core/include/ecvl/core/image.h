@@ -25,6 +25,7 @@
 #include "hal.h"
 #include "iterators.h"
 #include "datatype_matrix.h"
+#include "metadata.h"
 #include "type_promotion.h"
 #include "standard_errors.h"
 
@@ -35,13 +36,6 @@ int vsize(const std::vector<T>& v)
 {
     return static_cast<int>(v.size());
 }
-
-class MetaData
-{
-public:
-    virtual bool Query(const std::string& name, std::string& value) const = 0;
-    virtual ~MetaData() {}
-};
 
 /** @brief Enum class representing the ECVL supported color spaces.
 
@@ -165,7 +159,7 @@ public:
                                                          distance in mm between consecutive pixels/voxels
                                                          on every axis. */
 
-    uint8_t* data_;              /**< @brief Pointer to Image data.
+    uint8_t*                    data_;              /**< @brief Pointer to Image data.
 
                                                          If the Image is not the owner
                                                          of data, for example when using Image views, this
@@ -175,8 +169,8 @@ public:
     size_t                      datasize_;          /**< @brief Size of Image data in bytes. */
     bool                        contiguous_;        /**< @brief Whether the image is stored contiguously or not in memory. */
 
-    MetaData* meta_;                                /**< @brief Pointer to Image MetaData. */
-    HardwareAbstractionLayer* hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
+    std::unordered_map<std::string, MetaData> meta_;/**< @brief Pointer to Image MetaData. */
+    HardwareAbstractionLayer*   hal_;               /**< @brief Pointer to the HardwareAbstractionLayer employed by the Image.
 
                                                          It can be CpuHal or ShallowCpuHal. The
                                                          former is responsible for allocating and deallocating data,
@@ -271,7 +265,7 @@ public:
         data_{ nullptr },
         datasize_{ 0 },
         contiguous_{ true },
-        meta_{ nullptr },
+        meta_{},
         hal_{ nullptr },
         dev_{ Device::NONE }
     {
@@ -282,7 +276,7 @@ public:
         The initializing constructor creates a proper image and allocates the data.
     */
     Image(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
-        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU) :
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU, const std::unordered_map<std::string, MetaData>& meta = {}) :
         elemtype_{ elemtype },
         elemsize_{ DataTypeSize(elemtype_) },
         dims_{ dims },
@@ -293,7 +287,7 @@ public:
         data_{ nullptr },
         datasize_{ 0 },
         contiguous_{ true },
-        meta_{ nullptr },
+        meta_{ meta },
         hal_{ HardwareAbstractionLayer::Factory(dev) },
         dev_{ dev }
     {
@@ -438,7 +432,7 @@ public:
     @param[in] dev Device on which the Image is stored. Default is Device::CPU.
     */
     void Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
-        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU);
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU, const std::unordered_map<std::string, MetaData>& meta = {});
 
     /** @brief Destructor
 
@@ -559,6 +553,18 @@ public:
         hal_->ConvertTo(*this, *this, dtype, saturate);
     }
 
+    /** @brief Return the metadata identified by key. */
+    MetaData GetMeta(const std::string& key) const
+    {
+        return this->meta_.at(key);
+    }
+
+    /** @brief Update the metadata value if the key already exists (return false) or insert the pair if not found (return true). */
+    bool SetMeta(const std::string& key, const std::any& value)
+    {
+        return this->meta_.insert_or_assign(key, MetaData(value, 0)).second;
+    }
+
     Image operator-() const;
 
     Image& operator+=(const Image& rhs);
@@ -668,7 +674,7 @@ public:
     }
 
     void Create(std::vector<int> dims, std::string channels, ColorType colortype, uint8_t* ptr,
-        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU)
+        const std::vector<float>& spacings = std::vector<float>(), Device dev = Device::CPU, const std::unordered_map<std::string, MetaData>& meta = {})
     {
         elemtype_ = DT;
         elemsize_ = DataTypeSize(elemtype_);
@@ -683,6 +689,7 @@ public:
         data_ = ptr;
         hal_ = HardwareAbstractionLayer::Factory(dev, true);
         dev_ = dev;
+        meta_ = meta;
         return;
     }
 

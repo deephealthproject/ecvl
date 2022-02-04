@@ -42,6 +42,19 @@ int main()
         if (!OpenSlideRead(filename, img, i, dims)) {
             return EXIT_FAILURE;
         }
+
+        // All the openslide metadata are stored in strings
+        for (auto& p : img.meta_) {
+            cout << p.first << " - " << any_cast<string>(p.second.Get()) << endl;
+        }
+
+        // save in variables specific metadata
+        auto mpp_x = img.GetMeta("openslide.mpp-x");
+        auto roi_slide_macro = img.GetMeta("hamamatsu.roi.slide.macro");
+
+        cout << "mpp-x - " << any_cast<string>(mpp_x.Get()) << endl;
+
+        // save levels as png, without format specific metadata
         ImWrite("hamamatsu_level_" + to_string(i) + ".png", img);
         cout << "Writing 'hamamatsu_level_" << i << ".png'\n";
     }

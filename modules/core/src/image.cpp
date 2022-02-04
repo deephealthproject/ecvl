@@ -19,10 +19,10 @@
 namespace ecvl
 {
 void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string channels, ColorType colortype,
-    const std::vector<float>& spacings, Device dev)
+    const std::vector<float>& spacings, Device dev, const std::unordered_map<std::string, MetaData>& meta)
 {
     if (IsEmpty() || !IsOwner() || dev_ != dev || !contiguous_) {
-        *this = Image(dims, elemtype, std::move(channels), colortype, spacings, dev);
+        *this = Image(dims, elemtype, std::move(channels), colortype, spacings, dev, meta);
     }
     else {
         elemtype_ = elemtype;
@@ -31,6 +31,7 @@ void Image::Create(const std::vector<int>& dims, DataType elemtype, std::string 
         spacings_ = spacings;
         channels_ = std::move(channels);
         colortype_ = colortype;
+        meta_ = meta;
 
         // Compute new datasize
         size_t new_datasize = GetDefaultDatasize();

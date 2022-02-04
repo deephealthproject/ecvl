@@ -33,6 +33,7 @@ target_sources(ECVL_CORE
     core/iterators_impl.inc.h
     core/saturate_cast.h
     core/macros.h
+    core/metadata.h
     core/optional.h
     core/standard_errors.h
     core/support_opencv.h

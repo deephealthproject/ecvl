@@ -42,6 +42,31 @@ int main()
         return EXIT_FAILURE;
     }
 
+    string key = "fake_meta";
+    int value = 8;
+    if (dicom_image.SetMeta(key, value)) {
+        // insert a new metadata
+        cout << "[" << key << "]" << " = " << value << " inserted" << endl;
+    }
+    else {
+        // the key is already present
+        cout << "[" << key << "]" << " = " << value << " updated" << endl;
+    }
+
+    // User searches for a specific metadata
+    auto rows = dicom_image.GetMeta("Rows");
+    // User knows what data type the metadata is
+    unsigned short r = any_cast<unsigned short>(rows.Get());
+    cout << "Rows: " << r << endl;
+    // User doesn't know what data type the metadata is. This call will return a string containing the metadata value if present otherwise an empty string.
+    string r_str = rows.GetStr();
+    cout << "Rows: " << r_str << endl;
+
+    // Loop over all the metadata and print them
+    for (auto& p : dicom_image.meta_) {
+        cout << p.first << " - " << p.second.GetStr() << endl;
+    }
+
     // Apply some processing
     cout << "Executing ChangeColorSpace" << endl;
     ChangeColorSpace(dicom_image, dicom_image, ColorType::GRAY);

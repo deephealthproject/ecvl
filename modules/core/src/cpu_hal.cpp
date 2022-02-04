@@ -52,6 +52,10 @@ void CpuHal::CopyImage(const Image& src, Image& dst)
 {
     static constexpr Table2D<StructCopyImage> table;
     table(src.elemtype_, dst.elemtype_)(src, dst, false);
+
+    if (!src.meta_.empty()) {
+        dst.meta_ = src.meta_;
+    }
 }
 
 void CpuHal::ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate)

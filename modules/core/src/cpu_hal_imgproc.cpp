@@ -58,15 +58,18 @@ void OpenCVAlwaysCheck(const ecvl::Image& src)
 void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     cv::Mat m;
     cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
     dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     int nw = lround(src.dims_[0] * scales[0]);
     int nh = lround(src.dims_[1] * scales[1]);
@@ -74,6 +77,7 @@ void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>
     cv::Mat m;
     cv::resize(ImageToMat(src), m, cv::Size(nw, nh), 0.0, 0.0, GetOpenCVInterpolation(interp));
     dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
@@ -95,7 +99,7 @@ void CpuHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
     int src_width = src.Width();
     int src_height = src.Height();
     int src_channels = src.Channels();
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     int src_stride_c = src.strides_[c_pos];
     int src_stride_x = src.strides_[x_pos];
@@ -163,7 +167,7 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
     int src_width = src.Width();
     int src_height = src.Height();
     int src_channels = src.Channels();
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     int src_stride_c = src.strides_[c_pos];
     int src_stride_x = src.strides_[x_pos];
@@ -201,12 +205,14 @@ void CpuHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
         #undef ECVL_TUPLE
         }
     }
+
     dst = std::move(tmp);
 }
 
 void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, const std::vector<double>& center, double scale, InterpolationType interp)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     cv::Point2f pt;
     if (center.empty()) {
@@ -221,11 +227,13 @@ void CpuHal::Rotate2D(const ecvl::Image& src, ecvl::Image& dst, double angle, co
     cv::Mat m;
     cv::warpAffine(ImageToMat(src), m, rot_matrix, { src.dims_[0], src.dims_[1] }, GetOpenCVInterpolation(interp));
     dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double angle, double scale, InterpolationType interp)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     cv::Point2f pt;
     pt = { src.dims_[0] / 2.0f, src.dims_[1] / 2.0f };
@@ -248,6 +256,7 @@ void CpuHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double 
     cv::Mat m;
     cv::warpAffine(ImageToMat(src), m, rot_matrix, { nw, nh }, GetOpenCVInterpolation(interp));
     dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
@@ -268,7 +277,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             if (src.channels_ == "xyc") {
                 auto dims = src.dims_;
                 dims[2] = 3;
-                tmp.Create(dims, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
+                tmp.Create(dims, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_, src.meta_);
                 auto plane0 = tmp.data_ + 0 * tmp.strides_[2];
                 auto plane1 = tmp.data_ + 1 * tmp.strides_[2];
                 auto plane2 = tmp.data_ + 2 * tmp.strides_[2];
@@ -292,7 +301,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             else if (src.channels_ == "cxy") {
                 auto dims = src.dims_;
                 dims[0] = 3;
-                tmp.Create(dims, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
+                tmp.Create(dims, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_, src.meta_);
                 auto plane0 = tmp.data_ + 0 * tmp.strides_[0];
                 auto plane1 = tmp.data_ + 1 * tmp.strides_[0];
                 auto plane2 = tmp.data_ + 2 * tmp.strides_[0];
@@ -323,7 +332,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         std::vector<int> tmp_dims = src.dims_;
         tmp_dims[c_pos] = 1;
 
-        tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_, src.dev_);
+        tmp.Create(tmp_dims, src.elemtype_, src.channels_, ColorType::GRAY, src.spacings_, src.dev_, src.meta_);
 
         const uint8_t* r = src.data_ + ((src.colortype_ == ColorType::RGB) ? 0 : 2) * src.strides_[c_pos];
         const uint8_t* g = src.data_ + 1 * src.strides_[c_pos];
@@ -350,7 +359,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
         ||
         src.colortype_ == ColorType::RGB && new_type == ColorType::BGR) {
         if (src.channels_ == "xyc") {
-            tmp.Create(src.dims_, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_);
+            tmp.Create(src.dims_, src.elemtype_, "xyc", new_type, src.spacings_, src.dev_, src.meta_);
             auto plane0 = tmp.data_ + 0 * tmp.strides_[2];
             auto plane1 = tmp.data_ + 1 * tmp.strides_[2];
             auto plane2 = tmp.data_ + 2 * tmp.strides_[2];
@@ -364,7 +373,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
             }
         }
         else if (src.channels_ == "cxy") {
-            tmp.Create(src.dims_, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_);
+            tmp.Create(src.dims_, src.elemtype_, "cxy", new_type, src.spacings_, src.dev_, src.meta_);
             auto plane0 = tmp.data_ + 0 * tmp.strides_[0];
             auto plane1 = tmp.data_ + 1 * tmp.strides_[0];
             auto plane2 = tmp.data_ + 2 * tmp.strides_[0];
@@ -392,7 +401,7 @@ void CpuHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 template <typename T>
 void ThresholdImpl(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
 {
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     // This implementation assumes that the Image is contiguous. TODO implement the non contiguous version.
     auto thresh_t = saturate_cast<T>(thresh);
@@ -532,7 +541,7 @@ std::vector<int> CpuHal::OtsuMultiThreshold(const Image& src, int n_thresholds)
 template <typename T>
 void MultiThresholdImpl(const Image& src, Image& dst, const std::vector<int>& thresholds, int minval, int maxval)
 {
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     std::vector<T> vals(thresholds.size() + 1);
     for (int i = 0, end = vsize(vals); i < end; ++i) {
@@ -579,7 +588,7 @@ case DataType::type: MultiThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, th
 
 void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
 {
-    Image tmp(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     int hlf_width = ker.dims_[0] / 2;
     int hlf_height = ker.dims_[1] / 2;
@@ -632,7 +641,7 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type)
 {
     Image tmp1(src.dims_, DataType::float64, src.channels_, src.colortype_, src.spacings_);
-    Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp2(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     int tmp1_stride_c = tmp1.strides_[2];
     int tmp1_stride_y = tmp1.strides_[1];
@@ -739,7 +748,7 @@ void CpuHal::GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, do
 
 void CpuHal::AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)
 {
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     random_device rd;
     mt19937 gen(rd());
@@ -765,7 +774,7 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
 void CpuHal::AdditivePoissonNoise(const Image& src, Image& dst, double lambda)
 {
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     random_device rd;
     mt19937 gen(rd());
@@ -788,7 +797,7 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
 void CpuHal::GammaContrast(const Image& src, Image& dst, double gamma)
 {
-    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
     #define ECVL_TUPLE(type, ...) \
@@ -885,7 +894,7 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs
 
 void CpuHal::IntegralImage(const Image& src, Image& dst, DataType dst_type)
 {
-    Image tmp({ src.dims_[0] + 1, src.dims_[1] + 1, src.dims_[2] }, dst_type, src.channels_, ColorType::GRAY, src.spacings_, src.dev_);
+    Image tmp({ src.dims_[0] + 1, src.dims_[1] + 1, src.dims_[2] }, dst_type, src.channels_, ColorType::GRAY, src.spacings_, src.dev_, src.meta_);
 
     ConstContiguousViewXYC<DataType::uint8> vsrc(src);
     ContiguousViewXYC<DataType::float64> vtmp(tmp);
@@ -1010,7 +1019,7 @@ struct UFPC
 
 int CpuHal::ConnectedComponentsLabeling(const Image& src, Image& dst)
 {
-    Image tmp(src.dims_, DataType::int32, "xyc", ColorType::GRAY, src.spacings_, src.dev_);
+    Image tmp(src.dims_, DataType::int32, "xyc", ColorType::GRAY, src.spacings_, src.dev_, src.meta_);
 
     const int h = src.dims_[1];
     const int w = src.dims_[0];
@@ -1352,7 +1361,7 @@ void CpuHal::Stack(const vector<Image>& src, Image& dst)
 
     // If src is a vector of xyc Image
     if (src_0.channels_ == "xyc") {
-        Image tmp({ src_0.dims_[0], src_0.dims_[1], total_channels }, src_0.elemtype_, "xyo", ColorType::none, src_0.spacings_, src_0.dev_);
+        Image tmp({ src_0.dims_[0], src_0.dims_[1], total_channels }, src_0.elemtype_, "xyo", ColorType::none, src_0.spacings_, src_0.dev_, src_0.meta_);
 
         for (int i = 0, n = 0; i < n_images; ++i) {
             for (int j = 0; j < src[i].Channels(); ++j, ++n) {
@@ -1387,7 +1396,7 @@ void CpuHal::HConcat(const vector<Image>& src, Image& dst)
 
     vector<int> new_dims(src_0.dims_);
     new_dims[x_pos] = new_width;
-    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_);
+    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_, src_0.meta_);
 
     // If src is a vector of xyc Image(s)
     if (src_0.channels_ == "xyc") {
@@ -1464,7 +1473,7 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
 
     vector<int> new_dims(src_0.dims_);
     new_dims[y_pos] = new_height;
-    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_);
+    Image tmp(new_dims, src_0.elemtype_, src_0.channels_, src_0.colortype_, src_0.spacings_, src_0.dev_, src_0.meta_);
 
     // If src is a vector of xyc Image(s)
     if (src_0.channels_ == "xyc") {
@@ -1519,6 +1528,7 @@ void CpuHal::VConcat(const vector<Image>& src, Image& dst)
 void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kernel, Point2i anchor, int iterations, BorderType border_type, const int& border_value)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     using namespace cv;
     Mat src_(ImageToMat(src));
@@ -1530,11 +1540,13 @@ void CpuHal::Morphology(const Image& src, Image& dst, MorphType op, Image& kerne
     morphologyEx(src_, dst_, op_, kernel_, anchor_, iterations, static_cast<int>(border_type), border_value);
 
     dst = MatToImage(dst_, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, double inpaintRadius, InpaintType flag)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     using namespace cv;
     Mat src_(ImageToMat(src));
@@ -1545,6 +1557,7 @@ void CpuHal::Inpaint(const Image& src, Image& dst, const Image& inpaintMask, dou
     cv::inpaint(src_, inpaintMask_, dst_, inpaintRadius, flag_);
 
     dst = MatToImage(dst_, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::MeanStdDev(const Image& src, std::vector<double>& mean, std::vector<double>& stddev)
@@ -1588,7 +1601,7 @@ void CpuHal::Transpose(const Image& src, Image& dst)
     new_dims[x_pos] = src_height;
     new_dims[y_pos] = src_width;
 
-    Image tmp(new_dims, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+    Image tmp(new_dims, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
     int src_stride_c = src.strides_[c_pos];
     int tmp_stride_c = tmp.strides_[c_pos];
@@ -1664,6 +1677,7 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
     InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     std::default_random_engine re(std::random_device{}());
     if (seed != re.default_seed) {
@@ -1710,11 +1724,13 @@ void CpuHal::GridDistortion(const Image& src, Image& dst, int num_steps, const s
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
     dst = MatToImage(tmp, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double sigma, InterpolationType interp,
     BorderType border_type, const int& border_value, const unsigned seed)
 {
+    auto meta = src.meta_;
     std::default_random_engine re(std::random_device{}());
     if (seed != re.default_seed) {
         re.seed(seed);
@@ -1766,12 +1782,14 @@ void CpuHal::ElasticTransform(const Image& src, Image& dst, double alpha, double
     cv::Mat tmp;
     cv::remap(ImageToMat(src), tmp, ImageToMat(map_x), ImageToMat(map_y), GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
     dst = MatToImage(tmp, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<float, 2>& distort_limit, const std::array<float, 2>& shift_limit,
     InterpolationType interp, BorderType border_type, const int& border_value, const unsigned seed)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     std::default_random_engine re(std::random_device{}());
     if (seed != re.default_seed) {
@@ -1806,6 +1824,7 @@ void CpuHal::OpticalDistortion(const Image& src, Image& dst, const std::array<fl
     cv::remap(ImageToMat(src), tmp, map1, map2, GetOpenCVInterpolation(interp), static_cast<int>(border_type), border_value);
 
     dst = MatToImage(tmp, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 enum class NoiseType
@@ -2007,7 +2026,7 @@ void CpuHal::CentralMoments(const Image& src, Image& moments, std::vector<double
 
     // and prepare the output data matrix that will be on the same device as the source
     auto out_dims = vector<int>(tmp.dims_.size(), order + 1);
-    Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_);
+    Image out(out_dims, type, tmp.channels_, ColorType::none, std::vector<float>(), tmp.dev_, src.meta_);
     out.SetTo(0);
 
     // Disable contiguousness in order to force the update of the position indexes
@@ -2055,7 +2074,7 @@ struct NormalizeStruct
     static void _(const Image& src, Image& dst, const double& mean, const double& std)
     {
         using srctype = typename TypeInfo<SDT>::basetype;
-        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
         ConstView<SDT> src_v(src);
         View<SDT> dst_v(tmp);
 
@@ -2076,7 +2095,7 @@ struct NormalizeChannelsStruct
     static void _(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std)
     {
         using srctype = typename TypeInfo<SDT>::basetype;
-        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
+        Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
 
         for (int c = 0; c < src.channels_.size(); ++c) {
             ConstView<SDT> src_v(src, { 0, 0, c }, { src.dims_[0], src.dims_[1], 1 });
@@ -2149,7 +2168,6 @@ struct CenterCropStruct
         v_size[y_pos] = new_height;
         v_size[c_pos] = channels;
 
-        Image tmp(v_size, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
         View<SDT> src_v(const_cast<Image&>(src), v_start, v_size);
         dst = src_v;
     }
@@ -2190,7 +2208,7 @@ struct ScaleToStruct
 
 void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max)
 {
-    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_ };
+    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_};
     static constexpr Table1D<ScaleToStruct> table;
     table(src.elemtype_)(src, tmp, new_min, new_max);
     dst = std::move(tmp);
@@ -2263,6 +2281,7 @@ struct RandomCropStruct
 void CpuHal::Pad(const Image& src, Image& dst, const vector<int>& padding, BorderType border_type, const int& border_value)
 {
     OpenCVAlwaysCheck(src);
+    auto meta = src.meta_;
 
     int top, bottom, left, right;
     if (vsize(padding) == 1) {
@@ -2285,6 +2304,7 @@ void CpuHal::Pad(const Image& src, Image& dst, const vector<int>& padding, Borde
     auto mat = ImageToMat(src);
     cv::copyMakeBorder(mat, mat, top, bottom, left, right, static_cast<int>(border_type), border_value);
     dst = MatToImage(mat, src.colortype_, src.channels_);
+    dst.meta_ = meta;
 }
 
 void CpuHal::RandomCrop(const Image& src, Image& dst, const vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed)

@@ -134,7 +134,7 @@ int main()
 
     cout << "Running tests with " << num_workers << endl;
     cout << "Creating a DLDataset" << endl;
-    DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { false, false });
+    DLDataset d("../examples/data/mnist/mnist_reduced.yml", batch_size, dataset_augmentations, ColorType::GRAY, ColorType::none, num_workers, queue_ratio, { {"training", false}, {"test", false} });
     //DLDataset d("D:/Data/isic_skin_lesion/isic_skin_lesion/isic_classification.yml", batch_size, dataset_augmentations, ColorType::RGB, ColorType::none, num_workers, queue_ratio);
     Run(d);
 
