@@ -95,34 +95,27 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classecvl_1_1_meta_data-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">ecvl::MetaData Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">ecvl::MetaData Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="image_8h_source.html">image.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for ecvl::MetaData:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classecvl_1_1_meta_data.png" usemap="#ecvl::MetaData_map" alt=""/>
-  <map id="ecvl::MetaData_map" name="ecvl::MetaData_map">
-<area href="classecvl_1_1_overlay_meta_data.html" alt="ecvl::OverlayMetaData" shape="rect" coords="0,56,142,80"/>
-  </map>
-</div></div>
+<p><code>#include &lt;<a class="el" href="metadata_8h_source.html">metadata.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5f12fad6548dfa7da9920957e68a5d70"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_meta_data.html#a5f12fad6548dfa7da9920957e68a5d70">Query</a> (const std::string &amp;name, std::string &amp;value) const =0</td></tr>
-<tr class="separator:a5f12fad6548dfa7da9920957e68a5d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53dd49f5c867029c23dcfab7a88709fa"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_meta_data.html#a53dd49f5c867029c23dcfab7a88709fa">~MetaData</a> ()</td></tr>
-<tr class="separator:a53dd49f5c867029c23dcfab7a88709fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd63c37f5a9ad936f3f312d478c97292"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_meta_data.html#afd63c37f5a9ad936f3f312d478c97292">MetaData</a> (const std::any &amp;value, int)</td></tr>
+<tr class="separator:afd63c37f5a9ad936f3f312d478c97292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a5c3179e765fdd283a3baae9bc27ce5"><td class="memItemLeft" align="right" valign="top">std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_meta_data.html#a4a5c3179e765fdd283a3baae9bc27ce5">Get</a> () const</td></tr>
+<tr class="separator:a4a5c3179e765fdd283a3baae9bc27ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa09f4c83db3b7b50007322a7099ce4c8"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_meta_data.html#aa09f4c83db3b7b50007322a7099ce4c8">GetStr</a> ()</td></tr>
+<tr class="separator:aa09f4c83db3b7b50007322a7099ce4c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00039">39</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="metadata_8h_source.html#l00023">23</a> of file <a class="el" href="metadata_8h_source.html">metadata.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a53dd49f5c867029c23dcfab7a88709fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53dd49f5c867029c23dcfab7a88709fa">&#9670;&nbsp;</a></span>~MetaData()</h2>
+<a id="afd63c37f5a9ad936f3f312d478c97292"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd63c37f5a9ad936f3f312d478c97292">&#9670;&nbsp;</a></span>MetaData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -131,7 +124,73 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual ecvl::MetaData::~MetaData </td>
+          <td class="memname">ecvl::MetaData::MetaData </td>
+          <td>(</td>
+          <td class="paramtype">const std::any &amp;&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="metadata_8h_source.html#l00043">43</a> of file <a class="el" href="metadata_8h_source.html">metadata.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4a5c3179e765fdd283a3baae9bc27ce5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a5c3179e765fdd283a3baae9bc27ce5">&#9670;&nbsp;</a></span>Get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::any ecvl::MetaData::Get </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="metadata_8h_source.html#l00044">44</a> of file <a class="el" href="metadata_8h_source.html">metadata.h</a>.</p>
+
+</div>
+</div>
+<a id="aa09f4c83db3b7b50007322a7099ce4c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa09f4c83db3b7b50007322a7099ce4c8">&#9670;&nbsp;</a></span>GetStr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ecvl::MetaData::GetStr </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -139,56 +198,19 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_nifti_dicom_8cpp-example.html#a7">example_nifti_dicom.cpp</a>.</dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00043">43</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5f12fad6548dfa7da9920957e68a5d70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f12fad6548dfa7da9920957e68a5d70">&#9670;&nbsp;</a></span>Query()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual bool ecvl::MetaData::Query </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string &amp;&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classecvl_1_1_overlay_meta_data.html#a934386ec0b78590db62ad015a9c15fb7">ecvl::OverlayMetaData</a>.</p>
+<p class="definition">Definition at line <a class="el" href="metadata_8h_source.html#l00045">45</a> of file <a class="el" href="metadata_8h_source.html">metadata.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li><a class="el" href="image_8h_source.html">image.h</a></li>
+<li><a class="el" href="metadata_8h_source.html">metadata.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -233,7 +233,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_one_of_augmentation_container.html">OneOfAugmentationContainer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_one_of_augmentation_container.html" title="OneOfAugmentationContainer.">OneOfAugmentationContainer</a>.  <a href="classecvl_1_1_one_of_augmentation_container.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_overlay_meta_data.html">OverlayMetaData</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_open_slide_image.html">OpenSlideImage</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1param.html">param</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -694,12 +694,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a1acfb7be8dd74703ac91f916339c464b"><td class="memItemLeft" align="right" valign="top">cv::Mat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a1acfb7be8dd74703ac91f916339c464b">ImageToMat</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;img)</td></tr>
 <tr class="memdesc:a1acfb7be8dd74703ac91f916339c464b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an ECVL <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> into OpenCV Mat.  <a href="#a1acfb7be8dd74703ac91f916339c464b">More...</a><br /></td></tr>
 <tr class="separator:a1acfb7be8dd74703ac91f916339c464b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63b1b4b994be5bda327aa849926f9ddc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a63b1b4b994be5bda327aa849926f9ddc">OpenSlideRead</a> (const ecvl::filesystem::path &amp;filename, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const int level, const std::vector&lt; int &gt; &amp;dims)</td></tr>
-<tr class="memdesc:a63b1b4b994be5bda327aa849926f9ddc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a region of a whole-slide image file.  <a href="#a63b1b4b994be5bda327aa849926f9ddc">More...</a><br /></td></tr>
-<tr class="separator:a63b1b4b994be5bda327aa849926f9ddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6736ca5f0334fe68bf80f3de78012d54"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6736ca5f0334fe68bf80f3de78012d54">OpenSlideGetLevels</a> (const ecvl::filesystem::path &amp;filename, std::vector&lt; std::array&lt; int, 2 &gt;&gt; &amp;levels)</td></tr>
-<tr class="memdesc:a6736ca5f0334fe68bf80f3de78012d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get width and height for each level of a whole-slide image.  <a href="#a6736ca5f0334fe68bf80f3de78012d54">More...</a><br /></td></tr>
-<tr class="separator:a6736ca5f0334fe68bf80f3de78012d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fe4f56be5197fb90c999611fcae2986"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
 <tr class="memitem:a9fe4f56be5197fb90c999611fcae2986"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#a7ee5ed6d32342065f2cd14d92698df95">promote_superior_type_t</a>&lt; T, U &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a9fe4f56be5197fb90c999611fcae2986">PromoteAdd</a> (T lhs, U rhs)</td></tr>
 <tr class="separator:a9fe4f56be5197fb90c999611fcae2986"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1045,7 +1039,7 @@ template&lt;ecvl::DataType DT&gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00050">50</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00044">44</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>
@@ -1857,7 +1851,7 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a9">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a8">example_image_view.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a12">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a3">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a5">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a2">example_threshold.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_gui_8cpp-example.html#a9">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a8">example_image_view.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a12">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a3">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a9">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a2">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -2314,7 +2308,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly written, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_nifti_dicom_8cpp-example.html#a9">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_nifti_dicom_8cpp-example.html#a13">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -3301,7 +3295,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly read, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a1">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a1">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a1">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a7">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a5">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a1">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a1">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a10">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a1">example_threshold.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a1">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a1">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a1">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a7">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a5">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a1">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a1">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a14">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a1">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -3508,7 +3502,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the image is correctly written, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a4">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a30">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a2">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a10">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a4">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a4">example_imgproc.cpp</a>, and <a class="el" href="example_openslide_8cpp-example.html#a3">example_openslide.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_core_iterators_8cpp-example.html#a4">example_core_iterators.cpp</a>, <a class="el" href="example_ecvl_eddl_8cpp-example.html#a30">example_ecvl_eddl.cpp</a>, <a class="el" href="example_ecvl_gui_8cpp-example.html#a2">example_ecvl_gui.cpp</a>, <a class="el" href="example_image_view_8cpp-example.html#a10">example_image_view.cpp</a>, <a class="el" href="example_imgcodecs_8cpp-example.html#a4">example_imgcodecs.cpp</a>, <a class="el" href="example_imgproc_8cpp-example.html#a4">example_imgproc.cpp</a>, and <a class="el" href="example_openslide_8cpp-example.html#a5">example_openslide.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -3814,7 +3808,7 @@ Output Tensor will be created with shape \(C\) x \(H\) x \(W\). <br />
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a8">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a11">example_nifti_dicom.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a8">example_imgproc.cpp</a>, and <a class="el" href="example_nifti_dicom_8cpp-example.html#a15">example_nifti_dicom.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -4463,101 +4457,6 @@ template&lt;typename ST1 &gt; </div>
 
 </div>
 </div>
-<a id="a6736ca5f0334fe68bf80f3de78012d54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6736ca5f0334fe68bf80f3de78012d54">&#9670;&nbsp;</a></span>OpenSlideGetLevels()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ecvl::OpenSlideGetLevels </td>
-          <td>(</td>
-          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; std::array&lt; int, 2 &gt;&gt; &amp;&#160;</td>
-          <td class="paramname"><em>levels</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get width and height for each level of a whole-slide image. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>A filesystem::path identifying the file name. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">levels</td><td>A std::vector of array containing two elements, width and height respectively. levels[k] are the dimensions of level k.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if the image is correctly read, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_openslide_8cpp-example.html#a1">example_openslide.cpp</a>.</dd>
-</dl>
-
-</div>
-</div>
-<a id="a63b1b4b994be5bda327aa849926f9ddc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63b1b4b994be5bda327aa849926f9ddc">&#9670;&nbsp;</a></span>OpenSlideRead()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ecvl::OpenSlideRead </td>
-          <td>(</td>
-          <td class="paramtype">const ecvl::filesystem::path &amp;&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
-          <td class="paramname"><em>dst</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const int&#160;</td>
-          <td class="paramname"><em>level</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; int &gt; &amp;&#160;</td>
-          <td class="paramname"><em>dims</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads a region of a whole-slide image file. </p>
-<p>Loads a region from the specified whole-slide image file. Supported formats are those supported by OpenSlide library. If the region cannot be read for any reason, the function creates an empty <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> and returns false.</p>
-<p><a class="anchor" id="openslideread_path"></a> </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>A filesystem::path identifying the file name. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> in which data will be stored. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td><a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> level to be extracted. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">dims</td><td>std::vector containing { x, y, w, h }. x and y are the top left x-coordinate and y-coordinate, in the level 0 reference frame. w and h are the width and height of the region.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if the image is correctly read, false otherwise. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_openslide_8cpp-example.html#a2">example_openslide.cpp</a>.</dd>
-</dl>
-
-</div>
-</div>
 <a id="af7e9ec15cba92409e1f55ed63dafee47"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af7e9ec15cba92409e1f55ed63dafee47">&#9670;&nbsp;</a></span>operator+()</h2>
 
@@ -4733,7 +4632,7 @@ template&lt;typename ST1 &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Otsu threshold value. </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a14">example_imgproc.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a7">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a4">example_threshold.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a14">example_imgproc.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a11">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a4">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -6212,7 +6111,7 @@ template&lt;typename ST1 &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a15">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a5">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a8">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a5">example_threshold.cpp</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_imgproc_8cpp-example.html#a15">example_imgproc.cpp</a>, <a class="el" href="example_moments_8cpp-example.html#a5">example_moments.cpp</a>, <a class="el" href="example_nifti_dicom_8cpp-example.html#a12">example_nifti_dicom.cpp</a>, and <a class="el" href="example_threshold_8cpp-example.html#a5">example_threshold.cpp</a>.</dd>
 </dl>
 
 </div>
@@ -6313,7 +6212,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00034">34</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image_8h_source.html#l00035">35</a> of file <a class="el" href="image_8h_source.html">image.h</a>.</p>
 
 </div>
 </div>

@@ -25,6 +25,7 @@ var searchData=
   ['setmat2',['setMat2',['../structecvl_1_1_shader.html#aa8dbe0609251046a224195e4b4ed2494',1,'ecvl::Shader']]],
   ['setmat3',['setMat3',['../structecvl_1_1_shader.html#a2b3acc67f782d50c24b1a74feab1aa26',1,'ecvl::Shader']]],
   ['setmat4',['setMat4',['../structecvl_1_1_shader.html#a6e5c01e45f12fbda248a42e4fd9c93fc',1,'ecvl::Shader']]],
+  ['setmeta',['SetMeta',['../classecvl_1_1_image.html#ae0108866e6120f83eb3c715c1bc59fff',1,'ecvl::Image']]],
   ['setnumbatches',['SetNumBatches',['../classecvl_1_1_split.html#a4810f8de0f523b48c94bb8b21d9f8ee3',1,'ecvl::Split']]],
   ['setnumchannels',['SetNumChannels',['../classecvl_1_1_d_l_dataset.html#a8476e9637060f430a94598b369a4c44c',1,'ecvl::DLDataset']]],
   ['setseed',['SetSeed',['../classecvl_1_1_augmentation_param.html#a9dd5b299c340a1e9912ddc4b0b4fecac',1,'ecvl::AugmentationParam']]],

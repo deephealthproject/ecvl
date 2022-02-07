@@ -1,8 +1,7 @@
 var searchData=
 [
   ['oneofaugmentationcontainer',['OneOfAugmentationContainer',['../classecvl_1_1_one_of_augmentation_container.html#a119f163ac689039e0e05b875ffb65421',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(double p, Ts &amp;&amp;... t)'],['../classecvl_1_1_one_of_augmentation_container.html#a4a9d7748eedd003ada85110b7d21926e',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(double p, std::vector&lt; std::shared_ptr&lt; Augmentation &gt;&gt; augs)'],['../classecvl_1_1_one_of_augmentation_container.html#a79f4ed11d91b3a6987c1a3d7ccd00e5e',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(const OneOfAugmentationContainer &amp;other)'],['../classecvl_1_1_one_of_augmentation_container.html#aad8cf3a57c98265de559555fc952c72e',1,'ecvl::OneOfAugmentationContainer::OneOfAugmentationContainer(std::istream &amp;is)']]],
-  ['openslidegetlevels',['OpenSlideGetLevels',['../namespaceecvl.html#a6736ca5f0334fe68bf80f3de78012d54',1,'ecvl']]],
-  ['openslideread',['OpenSlideRead',['../namespaceecvl.html#a63b1b4b994be5bda327aa849926f9ddc',1,'ecvl']]],
+  ['openslideimage',['OpenSlideImage',['../classecvl_1_1_open_slide_image.html#aee9f70a75c6aa32c53ee76cc2a13ca2e',1,'ecvl::OpenSlideImage']]],
   ['operator_20_2a',['operator *',['../structecvl_1_1_iterator.html#a8e9018d78d98fb4de366ede31a900234',1,'ecvl::Iterator::operator *()'],['../structecvl_1_1_const_iterator.html#a05b62e337f1a2b6cd66c3d8442306697',1,'ecvl::ConstIterator::operator *()'],['../structecvl_1_1_contiguous_iterator.html#ab2d2a80eebdf1669341143ecc175e184',1,'ecvl::ContiguousIterator::operator *()'],['../structecvl_1_1_const_contiguous_iterator.html#a86a82bb5a190a8ce0393a91a99aac4e4',1,'ecvl::ConstContiguousIterator::operator *()']]],
   ['operator_20_2a_3d',['operator *=',['../classecvl_1_1_image.html#a359ae7b39bb87087cad110e38b3e53fe',1,'ecvl::Image']]],
   ['operator_21_3d',['operator!=',['../structecvl_1_1_iterator.html#a227d158a7b1c820242d502cbbf3cb03e',1,'ecvl::Iterator::operator!=()'],['../structecvl_1_1_const_iterator.html#a5003173832ad4136df2865c75d14e11a',1,'ecvl::ConstIterator::operator!=()'],['../structecvl_1_1_contiguous_iterator.html#ae9952eb487cb8862ef392dbfd58540fd',1,'ecvl::ContiguousIterator::operator!=()'],['../structecvl_1_1_const_contiguous_iterator.html#a14c754b5b4118f3bbdd17011bd8f58ff',1,'ecvl::ConstContiguousIterator::operator!=()']]],
@@ -19,6 +18,5 @@ var searchData=
   ['operator_5b_5d',['operator[]',['../classecvl_1_1param__list.html#a27b976dcf79658e370c311f71b97d6c6',1,'ecvl::param_list']]],
   ['opticaldistortion',['OpticalDistortion',['../namespaceecvl.html#a371534ebd422c20d6905bc0013bca16b',1,'ecvl']]],
   ['otsumultithreshold',['OtsuMultiThreshold',['../namespaceecvl.html#af4781680fe96bf1231e6dd2a667bf459',1,'ecvl']]],
-  ['otsuthreshold',['OtsuThreshold',['../namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9',1,'ecvl']]],
-  ['overlaymetadata',['OverlayMetaData',['../classecvl_1_1_overlay_meta_data.html#aed676647a833c7e5eed537f2e62d5af1',1,'ecvl::OverlayMetaData::OverlayMetaData(const ecvl::Image &amp;overlay)'],['../classecvl_1_1_overlay_meta_data.html#ad8eb0957db60ed1525db801f32e1e1cd',1,'ecvl::OverlayMetaData::OverlayMetaData(ecvl::Image &amp;&amp;overlay)=delete']]]
+  ['otsuthreshold',['OtsuThreshold',['../namespaceecvl.html#ae40603a556ee0f3dca6b1c32a9e4eae9',1,'ecvl']]]
 ];
