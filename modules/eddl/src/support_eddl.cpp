@@ -356,7 +356,7 @@ void DLDataset::ToTensorPlane(const vector<int>& label, Tensor*& tensor)
 void DLDataset::ProduceImageLabel(DatasetAugmentations& augs, Sample& elem)
 {
     Image img = elem.LoadImage(ctype_, false);
-    Tensor* label_tensor = nullptr, *image_tensor = nullptr;
+    Tensor* label_tensor = nullptr, * image_tensor = nullptr;
 
     switch (task_) {
     case Task::classification:
@@ -468,12 +468,14 @@ tuple<vector<Sample>, shared_ptr<Tensor>, shared_ptr<Tensor>> DLDataset::GetBatc
     for (int i = 0; i < batch_len; ++i) {
         queue_.Pop(samples[i], image, label); // Consumer get samples from the queue
         image->unsqueeze_();
-        label->unsqueeze_();
-
         memcpy(x->ptr + i * image->size, image->ptr, image->size * sizeof(float));
-        memcpy(y->ptr + i * label->size, label->ptr, label->size * sizeof(float));
         delete image;
-        delete label;
+
+        if (label) {
+            label->unsqueeze_();
+            memcpy(y->ptr + i * label->size, label->ptr, label->size * sizeof(float));
+            delete label;
+        }
     }
 
     // wrap raw pointers in shared ptr, don't need to delete them
