@@ -21,7 +21,7 @@ void OpenSlideImage::GetLevelsDimensions(std::vector<std::array<int, 2>>& levels
 {
     levels.clear();
     levels.resize(n_levels_);
-    long long w, h;
+    int64_t w, h;
     for (int i = 0; i < n_levels_; ++i) {
         openslide_get_level_dimensions(osr_, i, &w, &h);
         levels[i] = std::array<int, 2>{ static_cast<int>(w), static_cast<int>(h) };
