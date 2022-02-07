@@ -16,36 +16,87 @@
 
 #include "ecvl/core/filesystem.h"
 #include "ecvl/core/image.h"
+#include "openslide.h"
 
 namespace ecvl
 {
-/** @brief Loads a region of a whole-slide image file.
+class OpenSlideImage
+{
+    openslide_t* osr_;
+    const ecvl::filesystem::path filename_;
+    int n_levels_;
 
-Loads a region from the specified whole-slide image file. Supported formats are those supported by OpenSlide library.
-If the region cannot be read for any reason, the function creates an empty Image and returns false.
+public:
+    OpenSlideImage(const ecvl::filesystem::path& filename) : filename_{ filename }
+    {
+        osr_ = openslide_open(filename.string().c_str());
+        if (osr_ == NULL || openslide_get_error(osr_) != NULL) {
+            ECVL_ERROR_CANNOT_LOAD_IMAGE;
+        }
+        n_levels_ = openslide_get_level_count(osr_);
+    }
 
-@anchor openslideread_path
+    /** @brief Get the number of levels in the image. */
+    int GetLevelCount() { return n_levels_; }
 
-@param[in] filename A filesystem::path identifying the file name.
-@param[out] dst Image in which data will be stored.
-@param[in] level Image level to be extracted.
-@param[in] dims std::vector containing { x, y, w, h }.
-            x and y are the top left x-coordinate and y-coordinate, in the level 0 reference frame.
-            w and h are the width and height of the region.
+    /** @brief Get width and height for each level of a whole-slide image.
 
-@return true if the image is correctly read, false otherwise.
-*/
-extern bool OpenSlideRead(const ecvl::filesystem::path& filename, Image& dst, const int level, const std::vector<int>& dims);
+    @param[out] levels A std::vector of array containing two elements, width and height respectively.
+                levels[k] are the dimensions of level k.
+    */
+    void GetLevelsDimensions(std::vector<std::array<int, 2>>& levels);
 
-/** @brief Get width and height for each level of a whole-slide image.
+    /** @brief Get the downsampling factor for each level, or -1.0 if an error occurred.
 
-@param[in] filename A filesystem::path identifying the file name.
-@param[out] levels A std::vector of array containing two elements, width and height respectively.
-            levels[k] are the dimensions of level k.
+    @param[out] levels It contains the downsampling factor for the corresponding level of that position.
+    */
+    void GetLevelDownsamples(std::vector<double>& levels);
 
-@return true if the image is correctly read, false otherwise.
-*/
-extern bool OpenSlideGetLevels(const ecvl::filesystem::path& filename, std::vector<std::array<int, 2>>& levels);
+    /** @brief Get the best level to use for displaying the given downsample.
+
+    @param[in] downsample The downsample desired factor.
+
+    @return level OpenSlide image level extracted, or -1 if an error occurred.
+    */
+    int GetBestLevelForDownsample(const double& downsample);
+
+    /** @brief Loads properties (metadata) from the OpenSlide file and saves them into an ECVL Image.
+
+    @param[out] dst Image in which metadata will be stored.
+    */
+    void GetProperties(Image& dst);
+
+    /** @brief Loads a region of a whole-slide image.
+
+    Supported formats are those supported by OpenSlide library.
+    If the region cannot be read for any reason, the function creates an empty Image and returns false.
+
+    @anchor openslideread_path
+
+    @param[out] dst Image in which data will be stored. It will be a RGB image stored in a "cxy" layout.
+    @param[in] level OpenSlide image level to be extracted.
+    @param[in] dims std::vector containing { x, y, w, h }.
+                x and y are the top left x-coordinate and y-coordinate, in the level 0 reference frame.
+                w and h are the width and height of the region.
+
+    @return true if the region is correctly read, false otherwise.
+    */
+    bool ReadRegion(Image& dst, const int level, const std::vector<int>& dims);
+
+    /** @brief Close the OpenSlide object. */
+    void Close()
+    {
+        openslide_close(osr_);
+        osr_ = nullptr;
+    }
+
+    ~OpenSlideImage()
+    {
+        if (osr_) {
+            Close();
+        }
+    }
+};
 
 /** @example example_openslide.cpp
  Openslide support example.
