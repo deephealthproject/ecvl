@@ -14,6 +14,7 @@
 #ifndef ECVL_METADATA_H_
 #define ECVL_METADATA_H_
 
+#include <functional>
 #include <typeindex>
 #include <unordered_map>
 #include "ecvl/core/any.h"
