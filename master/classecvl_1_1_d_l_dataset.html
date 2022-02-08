@@ -207,6 +207,27 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a6ff1fc9079de2bf56b3c82e3912e8612"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a6ff1fc9079de2bf56b3c82e3912e8612">resize_dims_</a></td></tr>
 <tr class="memdesc:a6ff1fc9079de2bf56b3c82e3912e8612"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dimensions (HxW) to which <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images must be resized.  <a href="#a6ff1fc9079de2bf56b3c82e3912e8612">More...</a><br /></td></tr>
 <tr class="separator:a6ff1fc9079de2bf56b3c82e3912e8612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81c93c2a0dca6c28c370e059963acaf2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a81c93c2a0dca6c28c370e059963acaf2">batch_size_</a></td></tr>
+<tr class="memdesc:a81c93c2a0dca6c28c370e059963acaf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of each dataset mini batch.  <a href="#a81c93c2a0dca6c28c370e059963acaf2">More...</a><br /></td></tr>
+<tr class="separator:a81c93c2a0dca6c28c370e059963acaf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b920aca07342e29404c5c6636bcefc7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a9b920aca07342e29404c5c6636bcefc7">current_batch_</a></td></tr>
+<tr class="memdesc:a9b920aca07342e29404c5c6636bcefc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of batches already loaded for each split.  <a href="#a9b920aca07342e29404c5c6636bcefc7">More...</a><br /></td></tr>
+<tr class="separator:a9b920aca07342e29404c5c6636bcefc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75feea2d9d8cf039cb2585a12137c549"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a75feea2d9d8cf039cb2585a12137c549">ctype_</a></td></tr>
+<tr class="memdesc:a75feea2d9d8cf039cb2585a12137c549"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images.  <a href="#a75feea2d9d8cf039cb2585a12137c549">More...</a><br /></td></tr>
+<tr class="separator:a75feea2d9d8cf039cb2585a12137c549"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5df606d050434b5f959b6a649bebf09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#ae5df606d050434b5f959b6a649bebf09">ctype_gt_</a></td></tr>
+<tr class="memdesc:ae5df606d050434b5f959b6a649bebf09"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> ground truth images.  <a href="#ae5df606d050434b5f959b6a649bebf09">More...</a><br /></td></tr>
+<tr class="separator:ae5df606d050434b5f959b6a649bebf09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0419df94e1f53c0376e00e7479ed8eff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a0419df94e1f53c0376e00e7479ed8eff">augs_</a></td></tr>
+<tr class="memdesc:a0419df94e1f53c0376e00e7479ed8eff"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split.  <a href="#a0419df94e1f53c0376e00e7479ed8eff">More...</a><br /></td></tr>
+<tr class="separator:a0419df94e1f53c0376e00e7479ed8eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_producers_consumer_queue.html">ProducersConsumerQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a642f5cf66d966fa954bdc8aba25e6cb7">queue_</a></td></tr>
+<tr class="memdesc:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Producers-consumer queue of the dataset.  <a href="#a642f5cf66d966fa954bdc8aba25e6cb7">More...</a><br /></td></tr>
+<tr class="separator:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a333ab0ab97171350a2ab5114e95ed7dc"><td class="memItemLeft" align="right" valign="top">std::pair&lt; std::vector&lt; int &gt;, std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a333ab0ab97171350a2ab5114e95ed7dc">tensors_shape_</a></td></tr>
+<tr class="memdesc:a333ab0ab97171350a2ab5114e95ed7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shape of sample and label tensors.  <a href="#a333ab0ab97171350a2ab5114e95ed7dc">More...</a><br /></td></tr>
+<tr class="separator:a333ab0ab97171350a2ab5114e95ed7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classecvl_1_1_dataset"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classecvl_1_1_dataset')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classecvl_1_1_dataset.html">ecvl::Dataset</a></td></tr>
 <tr class="memitem:af3d06d128f553e35b6df1f9f80b424ab inherit pub_attribs_classecvl_1_1_dataset"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab">name_</a> = &quot;DeepHealth dataset&quot;</td></tr>
 <tr class="memdesc:af3d06d128f553e35b6df1f9f80b424ab inherit pub_attribs_classecvl_1_1_dataset"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a>.  <a href="classecvl_1_1_dataset.html#af3d06d128f553e35b6df1f9f80b424ab">More...</a><br /></td></tr>
@@ -249,30 +270,9 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a81c93c2a0dca6c28c370e059963acaf2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a81c93c2a0dca6c28c370e059963acaf2">batch_size_</a></td></tr>
-<tr class="memdesc:a81c93c2a0dca6c28c370e059963acaf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of each dataset mini batch.  <a href="#a81c93c2a0dca6c28c370e059963acaf2">More...</a><br /></td></tr>
-<tr class="separator:a81c93c2a0dca6c28c370e059963acaf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b920aca07342e29404c5c6636bcefc7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a9b920aca07342e29404c5c6636bcefc7">current_batch_</a></td></tr>
-<tr class="memdesc:a9b920aca07342e29404c5c6636bcefc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of batches already loaded for each split.  <a href="#a9b920aca07342e29404c5c6636bcefc7">More...</a><br /></td></tr>
-<tr class="separator:a9b920aca07342e29404c5c6636bcefc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75feea2d9d8cf039cb2585a12137c549"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a75feea2d9d8cf039cb2585a12137c549">ctype_</a></td></tr>
-<tr class="memdesc:a75feea2d9d8cf039cb2585a12137c549"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images.  <a href="#a75feea2d9d8cf039cb2585a12137c549">More...</a><br /></td></tr>
-<tr class="separator:a75feea2d9d8cf039cb2585a12137c549"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5df606d050434b5f959b6a649bebf09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#ae5df606d050434b5f959b6a649bebf09">ctype_gt_</a></td></tr>
-<tr class="memdesc:ae5df606d050434b5f959b6a649bebf09"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> ground truth images.  <a href="#ae5df606d050434b5f959b6a649bebf09">More...</a><br /></td></tr>
-<tr class="separator:ae5df606d050434b5f959b6a649bebf09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0419df94e1f53c0376e00e7479ed8eff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a0419df94e1f53c0376e00e7479ed8eff">augs_</a></td></tr>
-<tr class="memdesc:a0419df94e1f53c0376e00e7479ed8eff"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split.  <a href="#a0419df94e1f53c0376e00e7479ed8eff">More...</a><br /></td></tr>
-<tr class="separator:a0419df94e1f53c0376e00e7479ed8eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e062c9c1438eb3d06abd4a2dcffe683"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a5e062c9c1438eb3d06abd4a2dcffe683">num_workers_</a></td></tr>
 <tr class="memdesc:a5e062c9c1438eb3d06abd4a2dcffe683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of parallel workers.  <a href="#a5e062c9c1438eb3d06abd4a2dcffe683">More...</a><br /></td></tr>
 <tr class="separator:a5e062c9c1438eb3d06abd4a2dcffe683"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classecvl_1_1_producers_consumer_queue.html">ProducersConsumerQueue</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a642f5cf66d966fa954bdc8aba25e6cb7">queue_</a></td></tr>
-<tr class="memdesc:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Producers-consumer queue of the dataset.  <a href="#a642f5cf66d966fa954bdc8aba25e6cb7">More...</a><br /></td></tr>
-<tr class="separator:a642f5cf66d966fa954bdc8aba25e6cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a333ab0ab97171350a2ab5114e95ed7dc"><td class="memItemLeft" align="right" valign="top">std::pair&lt; std::vector&lt; int &gt;, std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a333ab0ab97171350a2ab5114e95ed7dc">tensors_shape_</a></td></tr>
-<tr class="memdesc:a333ab0ab97171350a2ab5114e95ed7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shape of sample and label tensors.  <a href="#a333ab0ab97171350a2ab5114e95ed7dc">More...</a><br /></td></tr>
-<tr class="separator:a333ab0ab97171350a2ab5114e95ed7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7714055cdb7e71f2291c3db2281dfff6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classecvl_1_1_thread_counters.html">ThreadCounters</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_d_l_dataset.html#a7714055cdb7e71f2291c3db2281dfff6">splits_tc_</a></td></tr>
 <tr class="memdesc:a7714055cdb7e71f2291c3db2281dfff6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Each dataset split has its own vector of threads, each of which has its counters: &lt;counter,min,max&gt;.  <a href="#a7714055cdb7e71f2291c3db2281dfff6">More...</a><br /></td></tr>
 <tr class="separator:a7714055cdb7e71f2291c3db2281dfff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -846,7 +846,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Set internal EDDL tensors shape. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00300">300</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00293">293</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1018,7 +1018,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Whether the threads have already been launched or not. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00289">289</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00282">282</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1044,7 +1044,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Mutex for active_ variable. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00290">290</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00283">283</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1053,24 +1053,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classecvl_1_1_dataset_augmentations.html">DatasetAugmentations</a> ecvl::DLDataset::augs_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p><a class="el" href="classecvl_1_1_dataset_augmentations.html" title="Dataset Augmentations.">ecvl::DatasetAugmentations</a> to be applied to the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images (and ground truth if exist) for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00283">283</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00317">317</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1079,24 +1071,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">int ecvl::DLDataset::batch_size_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Size of each dataset mini batch. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00279">279</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00313">313</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1105,24 +1089,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> ecvl::DLDataset::ctype_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00281">281</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00315">315</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1131,24 +1107,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3">ColorType</a> ecvl::DLDataset::ctype_gt_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p><a class="el" href="namespaceecvl.html#a0bc0e1d73dcaf4593255a0c9d9325cb3" title="Enum class representing the ECVL supported color spaces.">ecvl::ColorType</a> of the <a class="el" href="classecvl_1_1_dataset.html" title="DeepHealth Dataset.">Dataset</a> ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00282">282</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00316">316</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1157,24 +1125,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;int&gt; ecvl::DLDataset::current_batch_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Number of batches already loaded for each split. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00280">280</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00314">314</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1194,7 +1154,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a22">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00317">317</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00310">310</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1212,7 +1172,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of channels of the ground truth images. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00318">318</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00311">311</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1238,7 +1198,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of parallel workers. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00284">284</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00279">279</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1264,7 +1224,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Vector of threads representing the samples producers. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00288">288</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00281">281</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1273,24 +1233,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classecvl_1_1_producers_consumer_queue.html">ProducersConsumerQueue</a> ecvl::DLDataset::queue_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Producers-consumer queue of the dataset. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00285">285</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00318">318</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1316,7 +1268,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Engine used for random number generation. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00291">291</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00284">284</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1336,7 +1288,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_ecvl_eddl_8cpp-example.html#a23">example_ecvl_eddl.cpp</a>.</dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00319">319</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00312">312</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1362,7 +1314,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Each dataset split has its own vector of threads, each of which has its counters: &lt;counter,min,max&gt;. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00287">287</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00280">280</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
@@ -1371,24 +1323,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::pair&lt; std::vector&lt;int&gt;, std::vector&lt;int&gt; &gt; ecvl::DLDataset::tensors_shape_</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Shape of sample and label tensors. </p>
 
-<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00286">286</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="support__eddl_8h_source.html#l00319">319</a> of file <a class="el" href="support__eddl_8h_source.html">support_eddl.h</a>.</p>
 
 </div>
 </div>
