@@ -34,6 +34,18 @@ The ECVL documentation is available [here](https://deephealthproject.github.io/e
     </thead>
     <tbody>
       <tr>
+        <td>1.0.1</td>
+        <td>1.0.4b</td>
+      </tr>
+      <tr>
+        <td>1.0.0</td>
+        <td>1.0.4b</td>
+      </tr>
+      <tr>
+        <td>0.4.2</td>
+        <td>1.0.3b</td>
+      </tr>
+      <tr>
         <td>0.4.1</td>
         <td>1.0.2a</td>
       </tr>
@@ -195,19 +207,12 @@ Contributions of any kind are welcome!
     <td style="text-align:center"><a href="https://jenkins-master-deephealth-unix01.ing.unimore.it/job/DeepHealth/job/ecvl/job/master"><img src="https://jenkins-master-deephealth-unix01.ing.unimore.it/badge/job/DeepHealth/job/ecvl/job/master/windows_end" alt="Workflow status badge" loading="lazy" height="20"></a></td>
   </tr>
   <tr>
-    <td style="text-align:center">Windows Server 2016</td>
-    <td style="text-align:center">VS 2017 15.9.28307</td>
-    <td style="text-align:center">3.4.14</td>
-    <td style="text-align:center">0.9.2b</td>
-    <td style="text-align:center">GitHub Actions</td>
-    <td style="text-align:center" rowspan="2"><a href="https://github.com/deephealthproject/ecvl/actions?query=workflow%3Awindows"><img src="https://github.com/deephealthproject/ecvl/workflows/windows/badge.svg" alt="Workflow status badge" loading="lazy" height="20"></a></td>
-  </tr>
-  <tr>
     <td style="text-align:center">Windows Server 2019</td>
     <td style="text-align:center">VS 2019 16.9.31229</td>
     <td style="text-align:center">3.4.14</td>
     <td style="text-align:center">0.9.2b</td>
     <td style="text-align:center">GitHub Actions</td>
+    <td style="text-align:center"><a href="https://github.com/deephealthproject/ecvl/actions?query=workflow%3Awindows"><img src="https://github.com/deephealthproject/ecvl/workflows/windows/badge.svg" alt="Workflow status badge" loading="lazy" height="20"></a></td>
   </tr>
 </table>
 
