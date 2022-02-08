@@ -276,14 +276,7 @@ class DLDataset : public Dataset
 {
     const unsigned processor_count_ = std::thread::hardware_concurrency();
 protected:
-    int batch_size_;                            /**< @brief Size of each dataset mini batch. */
-    std::vector<int> current_batch_;            /**< @brief Number of batches already loaded for each split. */
-    ColorType ctype_;                           /**< @brief ecvl::ColorType of the Dataset images. */
-    ColorType ctype_gt_;                        /**< @brief ecvl::ColorType of the Dataset ground truth images. */
-    DatasetAugmentations augs_;                 /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
     unsigned num_workers_;                      /**< @brief Number of parallel workers. */
-    ProducersConsumerQueue queue_;              /**< @brief Producers-consumer queue of the dataset. */
-    std::pair< std::vector<int>, std::vector<int>> tensors_shape_; /**< @brief Shape of sample and label tensors. */
     std::vector<std::vector<ThreadCounters>> splits_tc_; /**< @brief Each dataset split has its own vector of threads, each of which has its counters: <counter,min,max>. */
     std::vector<std::thread> producers_;        /**< @brief Vector of threads representing the samples producers. */
     bool active_ = false;                       /**< @brief Whether the threads have already been launched or not. */
@@ -317,6 +310,13 @@ public:
     int n_channels_;                            /**< @brief Number of channels of the images. */
     int n_channels_gt_ = -1;                    /**< @brief Number of channels of the ground truth images. */
     std::vector<int> resize_dims_;              /**< @brief Dimensions (HxW) to which Dataset images must be resized. */
+    int batch_size_;                            /**< @brief Size of each dataset mini batch. */
+    std::vector<int> current_batch_;            /**< @brief Number of batches already loaded for each split. */
+    ColorType ctype_;                           /**< @brief ecvl::ColorType of the Dataset images. */
+    ColorType ctype_gt_;                        /**< @brief ecvl::ColorType of the Dataset ground truth images. */
+    DatasetAugmentations augs_;                 /**< @brief ecvl::DatasetAugmentations to be applied to the Dataset images (and ground truth if exist) for each split. */
+    ProducersConsumerQueue queue_;              /**< @brief Producers-consumer queue of the dataset. */
+    std::pair< std::vector<int>, std::vector<int>> tensors_shape_; /**< @brief Shape of sample and label tensors. */
 
     /**
     @param[in] filename Path to the Dataset file.
