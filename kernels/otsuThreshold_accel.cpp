@@ -28,13 +28,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
 
-#include "common/xf_types.h"
-#include "imgproc/xf_otsuthreshold.hpp"
-#include "hls_stream.h"
 #include "ap_int.h"
-#include "common/xf_common.h"
-#include "common/xf_utility.h"
-#include "imgproc/xf_threshold.hpp"
+#include "hls_stream.h"
+#include "common/xf_common.hpp"
+#include "common/xf_utility.hpp"
+#include "imgproc/xf_otsuthreshold.hpp"
+
 
 
 //#include <time.h>
@@ -57,43 +56,42 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HEIGHT 			2160   	// Maximum Input image height
 
 
-#if RO
-#define NPC				XF_NPPC8
-#endif
+// Resolve optimization type:
 #if NO
-#define NPC				XF_NPPC1
+#define NPC1 XF_NPPC1
+#define PTR_WIDTH 8
 #endif
+
+#if RO
+#define NPC1 XF_NPPC8
+#define PTR_WIDTH 64
+#endif
+
+// Set the pixel depth:
+#define TYPE XF_8UC1
 
 
 extern "C" {
+static constexpr int __XF_DEPTH = (HEIGHT * WIDTH * (XF_PIXELWIDTH(TYPE, NPC1)) / 8) / (PTR_WIDTH / 8);
 void otsuThreshold_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, int rows_in, int cols_in, uint8_t *thresh)
 {
-#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
-#pragma HLS INTERFACE m_axi     port=thresh  offset=slave bundle=gmem2
-#pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
-#pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=thresh              bundle=control
-#pragma HLS INTERFACE s_axilite port=return                bundle=control
+#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem0 depth=__XF_DEPTH
+#pragma HLS INTERFACE m_axi     port=thresh  offset=slave bundle=gmem1          
+#pragma HLS INTERFACE s_axilite port=rows_in              
+#pragma HLS INTERFACE s_axilite port=cols_in                         
+#pragma HLS INTERFACE s_axilite port=return                
 
-	const int pROWS_INP = HEIGHT;
-	const int pCOLS_INP = WIDTH;
-  const int pNPC1 = NPC;
 
-  xf::Mat<XF_8UC1, HEIGHT, WIDTH, NPC> in_mat;
-
-#pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC1
-  	in_mat.rows = rows_in;
-  	in_mat.cols = cols_in;
+ xf::cv::Mat<XF_8UC1, HEIGHT, WIDTH, NPC1> in_mat;
 
 #pragma HLS DATAFLOW
 
 
 	//clock_t t;
 
-	xf::Array2xfMat<INPUT_PTR_WIDTH,XF_8UC1,HEIGHT,WIDTH,NPC>(img_inp,in_mat);
+	xf::cv::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(img_inp,in_mat);
 	//t = clock();
-  xf::OtsuThreshold<XF_8UC1, HEIGHT, WIDTH, NPC>(in_mat, *thresh);
+  	xf::cv::OtsuThreshold<TYPE, HEIGHT, WIDTH, NPC1>(in_mat, *thresh);
 	// t = clock() - t;
 	// double time_taken = ((double)t)/CLOCKS_PER_SEC; // calculate the elapsed time
 	// printf("Tiempo de ejecucion otsuThreshold_accel en FPGA: %f\n", time_taken);

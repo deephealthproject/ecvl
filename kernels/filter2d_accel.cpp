@@ -28,19 +28,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
 #include "hls_stream.h"
-#include <stdint.h>
-#include <stdio.h>
-#include "ap_int.h"
-#include "common/xf_common.h"
-#include <iostream>
-#include  "hls_video.h"
-
+#include <ap_int.h>
+#include "common/xf_common.hpp"
+#include "common/xf_structs.hpp"
+#include "common/xf_utility.hpp"
+#include "imgproc/xf_custom_convolution.hpp"
 
 
 /* Optimization type */
 
-#define RO 			0    // Resource Optimized (8-pixel implementation)
-#define NO 			1	 // Normal Operation (1-pixel implementation)
+#define RO 			1    // Resource Optimized (8-pixel implementation)
+#define NO 			0	 // Normal Operation (1-pixel implementation)
 
 // port widths
 #define INPUT_PTR_WIDTH  32
@@ -59,134 +57,123 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 1 - Bilinear Interpolation
 // 2 - AREA Interpolation
 
+/*  specify the shift parameter */
+#define SHIFT 15
+
 /* Input image Dimensions */
 
-#define WIDTH 			675	// Maximum Input image width
-#define HEIGHT 			900   	// Maximum Input image height
+#define WIDTH 			2160	// Maximum Input image width
+#define HEIGHT 			3840   	// Maximum Input image height
 
 /* Output image Dimensions */
 
 #define NEWWIDTH 		1920  // Maximum output image width
 #define NEWHEIGHT 		1800  // Maximum output image height
 
+/*  specify the shift parameter */
+#define SHIFT 15
+
+
+#define FILTER_HEIGHT 3
+#define FILTER_WIDTH 3
+
+
+#define OUT_8U 1
+#define OUT_16S 0
+
 /* Interface types*/
+// Resolve optimization type:
 #if RO
-#define NPC_T XF_NPPC8
-#else
-#define NPC_T XF_NPPC1
+#define NPC1 XF_NPPC8
+#endif
+#if NO
+#define NPC1 XF_NPPC1
 #endif
 
-#if RGB
-#define TYPE XF_8UC3
+#if GRAY
+// Resolve pixel depth:
+#if OUT_8U
+#define INTYPE XF_8UC1
+#define OUTTYPE XF_8UC1
+#if NO
+#define INPUT_PTR_WIDTH 8
+#define OUTPUT_PTR_WIDTH 8
 #else
-#define TYPE XF_8UC1
+#define INPUT_PTR_WIDTH 64
+#define OUTPUT_PTR_WIDTH 64
+#endif
+#endif
+
+#if OUT_16S
+#define INTYPE XF_8UC1
+#define OUTTYPE XF_16SC1
+#if NO
+#define INPUT_PTR_WIDTH 8
+#define OUTPUT_PTR_WIDTH 16
+#else
+#define INPUT_PTR_WIDTH 64
+#define OUTPUT_PTR_WIDTH 128
+#endif
+#endif
+
+#else
+// Resolve pixel depth:
+#if OUT_8U
+#define INTYPE XF_8UC3
+#define OUTTYPE XF_8UC3
+#if NO
+#define INPUT_PTR_WIDTH 32
+#define OUTPUT_PTR_WIDTH 32
+#else
+#define INPUT_PTR_WIDTH 256
+#define OUTPUT_PTR_WIDTH 256
+#endif
+#endif
+
+#if OUT_16S
+#define INTYPE XF_8UC3
+#define OUTTYPE XF_16SC3
+#if NO
+#define INPUT_PTR_WIDTH 64
+#define OUTPUT_PTR_WIDTH 64
+#else
+#define INPUT_PTR_WIDTH 512
+#define OUTPUT_PTR_WIDTH 512
+#endif
+#endif
+
 #endif
 
 
 extern "C" {
 	using namespace std;
-void filter2d_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out,int rows_in, int cols_in, float *filter)
+
+static constexpr int __XF_DEPTH_IN = (HEIGHT * WIDTH * (XF_PIXELWIDTH(INTYPE, NPC1)) / 8) / (INPUT_PTR_WIDTH / 8);
+static constexpr int __XF_DEPTH_OUT = (HEIGHT * WIDTH * (XF_PIXELWIDTH(OUTTYPE, NPC1)) / 8) / (OUTPUT_PTR_WIDTH / 8);
+static constexpr int __XF_DEPTH_FILTER = FILTER_HEIGHT * FILTER_WIDTH;
+void filter2d_accel(ap_uint<INPUT_PTR_WIDTH> *img_in, ap_uint<OUTPUT_PTR_WIDTH> *img_out,int rows, int cols, short int *filter)
 {
-#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
-#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
-#pragma HLS INTERFACE m_axi     port=filter  offset=slave bundle=gmem3
-#pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
-#pragma HLS INTERFACE s_axilite port=img_out               bundle=control
-#pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=filter              bundle=control
-#pragma HLS INTERFACE s_axilite port=return                bundle=control
+    #pragma HLS INTERFACE m_axi      port=img_in        offset=slave  bundle=gmem0 depth=__XF_DEPTH_IN 
+    #pragma HLS INTERFACE m_axi      port=filter        offset=slave  bundle=gmem1 depth=__XF_DEPTH_FILTER
+    #pragma HLS INTERFACE m_axi      port=img_out       offset=slave  bundle=gmem2 depth=__XF_DEPTH_OUT
+    #pragma HLS INTERFACE s_axilite  port=rows 			          
+    #pragma HLS INTERFACE s_axilite  port=cols 			          
+    #pragma HLS INTERFACE s_axilite  port=return 			          
 
-	const int pROWS_INP = HEIGHT;
-	const int pCOLS_INP = WIDTH;
-	const int pROWS_OUT = NEWHEIGHT;
-	const int pCOLS_OUT = NEWWIDTH;
-	const int pNPC = NPC_T;
+ 	xf::cv::Mat<INTYPE, HEIGHT, WIDTH, NPC1> imgInput(rows, cols);
+    xf::cv::Mat<OUTTYPE, HEIGHT, WIDTH, NPC1> imgOutput(rows, cols);
 
-/* 	xf::Mat<TYPE, HEIGHT, WIDTH, NPC_T> in_mat;
-#pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC
+    printf("cols dentro wrapper: %d\n", cols);
+	printf("rows dentro wrapper: %d\n", rows);
 
-	xf::Mat<TYPE, HEIGHT, WIDTH, NPC_T> out_mat;
-#pragma HLS stream variable=out_mat.data depth=pCOLS_OUT/pNPC
-
-	in_mat.rows = rows_in;  in_mat.cols = cols_in;
-	out_mat.rows = rows_in;  out_mat.cols = cols_in; */
-
-	//uint32_t image_in[HEIGHT*WIDTH] = {};
-
-#pragma HLS DATAFLOW
-	printf("holaaaaaaaaaaaaaaaaaaaa\n");
-
-
- 	hls::Mat<HEIGHT,WIDTH,HLS_8UC3> src(rows_in, cols_in);
-	#pragma HLS stream variable=src depth=pCOLS_INP/pNPC
-	hls::Mat<HEIGHT,WIDTH,HLS_8UC3> dst(rows_in, cols_in);
-	#pragma HLS stream variable=dst depth=pCOLS_OUT/pNPC
-/* 	src.rows = rows_in;  src.cols = cols_in;
-	dst.rows = rows_in;  dst.cols = cols_in; */
-
-	printf("cols in: %d\n", cols_in);
-	printf("rows in: %d\n", rows_in);
-
-	printf("holaaaaaaaaaaaaaaaaaaaa2\n");
-
-
-/* 	for (int i = 0; i < rows_in*cols_in; i++) {
-		#pragma HLS loop_flatten off
-		#pragma HLS pipeline II=1
-			image_in[i]=img_inp[i];
-	} */
-
-/* 	int fb_BitWidth = Type_BitWidth<ap_uint<INPUT_PTR_WIDTH>>::Value;
-    int depth = HLS_TBITDEPTH(HLS_8UC3);
-    int ch = HLS_MAT_CN(HLS_8UC3);
-	printf("%d >= %d * %d\n", fb_BitWidth, ch, depth); */
-	//::Array2Mat<WIDTH*3>(img_inp,src);
-
-
-	hls::Array2Mat<WIDTH,ap_uint<INPUT_PTR_WIDTH>,HEIGHT,WIDTH,HLS_8UC3>(img_inp,src);
-
-
-	printf("holaaaaaaaaaaaaaaaaaaaa3\n");
-	hls::Window<3,3,float> kernel;
-
-	for (int i=0;i<3;i++){
-      for (int j=0;j<3;j++){
-         kernel.val[i][j]=filter[i*3+j];
-      }
-	}
-
-	for (int i=0;i<3;i++){
-      for (int j=0;j<3;j++){
-         printf("%f\n", kernel.val[i][j]);
-      }
-	}
-
-
-	hls::Point_<int> anchor = hls::Point_<int>(-1,-1);
-	printf("holaaaaaaaaaaaaaaaaaaaa4\n");
-
-	std::cout << "cols: " << src.cols << std::endl;
-
-	std::cout << "rows: " << src.rows << std::endl;
-
-	hls::Filter2D(src,dst,kernel,anchor);
-	printf("holaaaaaaaaaaaaaaaaaaaa5\n");
-
-
-	hls::Mat2Array<WIDTH,ap_uint<OUTPUT_PTR_WIDTH>,HEIGHT,WIDTH,HLS_8UC3>(dst,img_out);
-	//hlsMat2cvMat<HEIGHT,WIDTH,HLS_8UC3>(dst,img_out);
-	// uint32_t res = img_out[0].to_int();
-	// printf("%d\n", res);
-	std::cout << "return: " << img_out[208000] << std::endl;
-	std::cout << "original: " << img_inp[607498] << std::endl;
-	std::cout << "cols: " << dst.cols << std::endl;
-	std::cout << "rows: " << dst.rows << std::endl;
-	printf("holaaaaaaaaaaaaaaaaaaaa6\n");
-/* 	xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
-	xf::GaussianBlur<FILTER_SIZE,XF_BORDER_CONSTANT,TYPE,HEIGHT,WIDTH,NPC_T> (in_mat, out_mat, sigma);
-	xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(out_mat,img_out); */
-
+ 	 // Retrieve xf::cv::Mat objects from img_in data:
+    xf::cv::Array2xfMat<INPUT_PTR_WIDTH, INTYPE, HEIGHT, WIDTH, NPC1>(img_in, imgInput);
+	xf::cv::filter2D<XF_BORDER_CONSTANT, FILTER_WIDTH, FILTER_HEIGHT, INTYPE, OUTTYPE, HEIGHT, WIDTH, NPC1>(
+        imgInput, imgOutput, filter, SHIFT);//if the filter is not float, shift is zero, in ascii value 48
+	// Convert _dst xf::cv::Mat object to output array:
+    
+    xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH, OUTTYPE, HEIGHT, WIDTH, NPC1>(imgOutput, img_out);
+printf("acaba\n");
 
 }
 }

@@ -108,8 +108,8 @@ void FpgaHal::Flip2D(const ecvl::Image& src, ecvl::Image& dst)
 
     kernel_flip2d.setArg(0, *src.fpga_buffer);
     kernel_flip2d.setArg(1, tmp_buff);
-    kernel_flip2d.setArg(2, src.dims_[1]);
-    kernel_flip2d.setArg(3, src.dims_[0]);
+    kernel_flip2d.setArg(2, rows);
+    kernel_flip2d.setArg(3, cols);
 
     RUN_KERNEL_FPGA(kernel_flip2d);
 
@@ -128,11 +128,11 @@ void FpgaHal::Mirror2D(const ecvl::Image& src, ecvl::Image& dst)
 
     cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
     cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
-
+    
     kernel_mirror2d.setArg(0, *src.fpga_buffer);
     kernel_mirror2d.setArg(1, tmp_buff);
-    kernel_mirror2d.setArg(2, src.dims_[1]);
-    kernel_mirror2d.setArg(3, src.dims_[0]);
+    kernel_mirror2d.setArg(2, rows);
+    kernel_mirror2d.setArg(3, cols);
 
     RUN_KERNEL_FPGA(kernel_mirror2d);
    
@@ -156,12 +156,50 @@ void FpgaHal::RotateFullImage2D(const ecvl::Image& src, ecvl::Image& dst, double
 
 void FpgaHal::ChangeColorSpace(const Image& src, Image& dst, ColorType new_type)
 {
-    printf("FpgaHal::ChangeColorSpace not implemented\n"); exit(1);
+    int rows = src.dims_[1];
+    int cols = src.dims_[0];
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(1));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+    
+    kernel_rgb_2_gray.setArg(0, *src.fpga_buffer);
+    kernel_rgb_2_gray.setArg(1, tmp_buff);
+    kernel_rgb_2_gray.setArg(2, rows);
+    kernel_rgb_2_gray.setArg(3, cols);
+
+    RUN_KERNEL_FPGA(kernel_rgb_2_gray);
+   
+    KERNEL_RUNTIME_PRINT;
+
+    (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data);
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
 }
 
 void FpgaHal::Threshold(const Image& src, Image& dst, double thresh, double maxval, ThresholdingType thresh_type)
 {
-    printf("FpgaHal::Threshold not implemented\n"); exit(1);
+    int rows = src.dims_[1];
+    int cols = src.dims_[0];
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(1));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+    
+    kernel_threshold.setArg(0, *src.fpga_buffer);
+    kernel_threshold.setArg(1, tmp_buff);
+    kernel_threshold.setArg(2, thresh);
+    kernel_threshold.setArg(3, maxval);
+    kernel_threshold.setArg(4, rows);
+    kernel_threshold.setArg(5, cols);
+
+    RUN_KERNEL_FPGA(kernel_threshold);
+   
+    KERNEL_RUNTIME_PRINT;
+
+    (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data);
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
 }
 
 std::vector<double> FpgaHal::Histogram(const Image& src)
@@ -171,7 +209,29 @@ std::vector<double> FpgaHal::Histogram(const Image& src)
 
 int FpgaHal::OtsuThreshold(const Image& src)
 {
-    printf("FpgaHal::OtsuThreshold not implemented\n"); exit(1);
+    int rows = src.dims_[1];
+    int cols = src.dims_[0];
+
+    int threshReturn;
+    
+    
+    
+    //buffer to pass the uint8t threshold to the kernel
+    cl::Buffer uintToDevice(*context,CL_MEM_READ_WRITE,sizeof(int));
+
+    kernel_threshold.setArg(0, *src.fpga_buffer);
+    kernel_threshold.setArg(4, rows);
+    kernel_threshold.setArg(5, cols);
+    kernel_threshold.setArg(3, uintToDevice);
+
+    RUN_KERNEL_FPGA(kernel_threshold);
+   
+    KERNEL_RUNTIME_PRINT;
+
+    (*q).enqueueReadBuffer(uintToDevice, CL_TRUE, 0, sizeof(int), &threshReturn);
+    (*q).finish();
+
+    return threshReturn;
 }
 
 std::vector<int> FpgaHal::OtsuMultiThreshold(const Image& src, int n_thresholds)
@@ -186,7 +246,36 @@ void FpgaHal::MultiThreshold(const Image& src, Image& dst, const std::vector<int
 
 void FpgaHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
 {
-    printf("FpgaHal::Filter2D not implemented\n"); exit(1);
+    int rows = src.dims_[1];
+    int cols = src.dims_[0];
+
+
+    short int* filter_ptr = (short int*)malloc(3 * 3 * sizeof(short int));
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            filter_ptr[i * 3 + j] = 3640;
+        }
+    }
+    cl::Buffer imageMapX(*context,CL_MEM_READ_ONLY,3  * 3 * sizeof(short int));
+    (*q).enqueueWriteBuffer(imageMapX, CL_TRUE, 0, 3 *3 * sizeof(short int), filter_ptr);
+    cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+
+    kernel_filter2d.setArg(0, *src.fpga_buffer);
+    kernel_filter2d.setArg(1, tmp_buff);
+    kernel_filter2d.setArg(2, rows);
+    kernel_filter2d.setArg(3, cols);
+    kernel_filter2d.setArg(4, imageMapX);
+
+    RUN_KERNEL_FPGA(kernel_filter2d);
+
+    KERNEL_RUNTIME_PRINT;
+
+    OCL_CHECK(err, err = (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data));
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
 }
 
 void FpgaHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type)
@@ -196,7 +285,27 @@ void FpgaHal::SeparableFilter2D(const Image& src, Image& dst, const vector<doubl
 
 void FpgaHal::GaussianBlur(const Image& src, Image& dst, int sizeX, int sizeY, double sigmaX, double sigmaY)
 {
-    printf("FpgaHal::GaussianBlur not implemented\n"); exit(1);
+    int rows = src.dims_[1];
+    int cols = src.dims_[0];
+
+    cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
+    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+  
+    kernel_gaussian_blur.setArg(0, *src.fpga_buffer);
+    kernel_gaussian_blur.setArg(1, tmp_buff);
+    kernel_gaussian_blur.setArg(2, rows);
+    kernel_gaussian_blur.setArg(3, cols);
+    kernel_gaussian_blur.setArg(4, (float)sigmaX);
+
+    RUN_KERNEL_FPGA(kernel_gaussian_blur);
+   
+    KERNEL_RUNTIME_PRINT;
+
+    (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data);
+    (*q).finish();
+
+    dst = ecvl::MatToImage(m);
+
 }
 
 void FpgaHal::AdditiveLaplaceNoise(const Image& src, Image& dst, double std_dev)

@@ -8,5 +8,6 @@ set(ECVL_KERNELS_SRC
 	"${CMAKE_CURRENT_SOURCE_DIR}/mirror_accel.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/warpTransform_accel.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/filter2d_accel.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/remap_accel.cpp"
 	PARENT_SCOPE
 )

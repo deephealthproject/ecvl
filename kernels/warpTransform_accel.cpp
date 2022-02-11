@@ -28,13 +28,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
 
-#include "ap_int.h"
-#include "hls_stream.h"
 #include "assert.h"
-#include "common/xf_common.h"
-#include "common/xf_utility.h"
-#include "imgproc/xf_warp_transform.hpp"
+#include <ap_int.h>
+#include <cmath>
 #include <iostream>
+#include <math.h>
+#include <iostream>
+#include "hls_stream.h"
+#include "common/xf_common.hpp"
+#include "common/xf_utility.hpp"
+#include "imgproc/xf_warp_transform.hpp"
 
 //Number of fractional bits used for interpolation
 #define INTER_BITS 5
@@ -62,8 +65,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*  set the optimisation type*/
 
-#define RGB 1
-
 #define NO  1  // Normal Operation
 #define RO  0 // Resource Optimized
 
@@ -78,71 +79,70 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NEWHEIGHT 		1800  // Maximum output image height
 
 
-#if NO
-#define NPC				XF_NPPC1
-#endif
+// Number of rows of input image to be stored
+#define NUM_STORE_ROWS 100
 
-#if RGB
+// Number of rows of input image after which output image processing must start
+#define START_PROC 50
+
+#define RGBA 0
+#define GRAY 1
+
+// transform type 0-NN 1-BILINEAR
+#define INTERPOLATION 1
+
+// transform type 0-AFFINE 1-PERSPECTIVE
+#define TRANSFORM_TYPE 0
+#define XF_USE_URAM false
+
+// Set the pixel depth:
+#if RGBA
 #define TYPE XF_8UC3
-#define CH_TYPE XF_RGB
 #else
 #define TYPE XF_8UC1
-#define CH_TYPE XF_GRAY
 #endif
+
+#define PTR_WIDTH 256
+
+// Set the optimization type:
+#define NPC1 XF_NPPC1
 
 extern "C" {
     //using namespace std;
+static constexpr int __XF_DEPTH = (NEWHEIGHT * NEWWIDTH * (XF_PIXELWIDTH(TYPE, NPC1)) / 8) / (PTR_WIDTH / 8);
 void warpTransform_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out, int rows_in, int cols_in, int rows_out, int cols_out, float *P_matrix)
 {
-  #pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
-  #pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
-  #pragma HLS INTERFACE m_axi     port=P_matrix  offset=slave bundle=gmem3
+  #pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem0 depth=__XF_DEPTH
+  #pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem1 depth=__XF_DEPTH
+  #pragma HLS INTERFACE m_axi     port=P_matrix  offset=slave bundle=gmem2 depth=9
   #pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
   #pragma HLS INTERFACE s_axilite port=img_out               bundle=control
+  #pragma HLS INTERFACE s_axilite port=P_matrix               bundle=control
   #pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
   #pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
   #pragma HLS INTERFACE s_axilite port=rows_out              bundle=control
   #pragma HLS INTERFACE s_axilite port=cols_out              bundle=control
-  #pragma HLS INTERFACE s_axilite port=P_matrix              bundle=control
-  //#pragma HLS INTERFACE s_axilite port=interp              bundle=control
   #pragma HLS INTERFACE s_axilite port=return                bundle=control
 
-
-const int pROWS_INP = HEIGHT;
-const int pCOLS_INP = WIDTH;
-const int pROWS_OUT = NEWHEIGHT;
-const int pCOLS_OUT = NEWWIDTH;
-const int pNPC1 = NPC;
-  //const int INTERPOLATION = interp;
 
   for (int i = 0; i < 9; i++)
       printf("%f\n", P_matrix[i]);
 
+  xf::cv::Mat<TYPE, NEWHEIGHT, NEWWIDTH, NPC1> in_mat(rows_in, cols_in);
 
+  xf::cv::Mat<TYPE, NEWHEIGHT, NEWWIDTH, NPC1> out_mat(rows_out, cols_out);
 
-//cout << "P_matrix = " << endl << " "  << &P_matrix << endl << endl;
-  xf::Mat<TYPE, NEWHEIGHT, NEWWIDTH, NPC> in_mat;
-
-#pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC1
-    in_mat.rows = rows_in;
-  	in_mat.cols = cols_in;
-
-    xf::Mat<TYPE, NEWHEIGHT, NEWWIDTH, NPC> out_mat;
-#pragma HLS stream variable=out_mat.data depth=pCOLS_OUT/pNPC1
-
-  	out_mat.rows = rows_out;
-    out_mat.cols = cols_out;
 
 
 #pragma HLS DATAFLOW
 	printf("fin1\n");
-    xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,NEWHEIGHT,NEWWIDTH,NPC>(img_inp,in_mat);
+    xf::cv::Array2xfMat<INPUT_PTR_WIDTH,TYPE,NEWHEIGHT,NEWWIDTH,NPC1>(img_inp,in_mat);
     //xf::warpTransform<HEIGHT,0,0,0,TYPE,HEIGHT,WIDTH,NPC, false>(in_mat, out_mat, P_matrix);
 	printf("fin2\n");
-    xf::warpTransform<300,150,0,0,TYPE,NEWHEIGHT,NEWWIDTH,NPC, false>(in_mat, out_mat, P_matrix);
+    xf::cv::warpTransform<NUM_STORE_ROWS,START_PROC,TRANSFORM_TYPE,INTERPOLATION,TYPE,NEWHEIGHT,NEWWIDTH,NPC1, XF_USE_URAM>(in_mat, out_mat, P_matrix);
 	
 	printf("fin3\n");
-    xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,NEWHEIGHT,NEWWIDTH,NPC>(out_mat,img_out);
+    xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,NEWHEIGHT,NEWWIDTH,NPC1>(out_mat,img_out);
 	 
 
 }

@@ -27,12 +27,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
+
+
 #include "hls_stream.h"
-#include "assert.h"
-#include "common/xf_common.h"
-#include "common/xf_utility.h"
-#include  "hls_video.h"
-#include "ap_int.h"
+#include <ap_int.h>
+#include "common/xf_common.hpp"
+#include "common/xf_structs.hpp"
+#include "common/xf_utility.hpp"
 
 /* Optimization type */
 
@@ -62,64 +63,69 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NEWHEIGHT 		1800  // Maximum output image height
 
 /* Interface types*/
+#if NO
+#define NPC1 XF_NPPC1
+#if GRAY
+#define PTR_WIDTH 8
+#else
+#define PTR_WIDTH 32
+#endif
+#endif
 #if RO
-#define NPC_T XF_NPPC8
+#define NPC1 XF_NPPC4
+#if GRAY
+#define PTR_WIDTH 32
 #else
-#define NPC_T XF_NPPC1
+#define PTR_WIDTH 128
+#endif
 #endif
 
-#if RGB
-#define TYPE XF_8UC3
-#else
+// Set the input and output pixel depth:
+#if GRAY
 #define TYPE XF_8UC1
+#else
+#define TYPE XF_8UC3
 #endif
-
 
 
 extern "C" {
-void flipvertical_accel( ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out, int rows_in, int cols_in)
-{
+	static constexpr int __XF_DEPTH = (HEIGHT * WIDTH * (XF_PIXELWIDTH(TYPE, NPC1)) / 8) / (INPUT_PTR_WIDTH / 8);
+
+	void flipvertical_accel(ap_uint<INPUT_PTR_WIDTH> *SrcPtr, ap_uint<INPUT_PTR_WIDTH> *DstPtr, int rows, int cols) {
+		// clang-format off
+		#pragma HLS INTERFACE m_axi port=SrcPtr offset=slave bundle=gmem0 depth=__XF_DEPTH
+		#pragma HLS INTERFACE m_axi port=DstPtr offset=slave bundle=gmem1 depth=__XF_DEPTH
+		#pragma HLS INTERFACE s_axilite port=SrcPtr               bundle=control
+		#pragma HLS INTERFACE s_axilite port=DstPtr               bundle=control
+		#pragma HLS INTERFACE s_axilite port=rows bundle=control
+		#pragma HLS INTERFACE s_axilite port=cols	bundle=control
+		#pragma HLS INTERFACE s_axilite port=return	bundle=control
+		// clang-format on
+
+		xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> imgInput(rows, cols);
+    	xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> imgOutput(rows, cols);
 	
-#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
-#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
-#pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
-#pragma HLS INTERFACE s_axilite port=img_out               bundle=control
-#pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=return                bundle=control
 
-	const int pROWS_INP = HEIGHT;
-	const int pCOLS_INP = WIDTH;
-	const int pROWS_OUT = NEWHEIGHT;
-	const int pCOLS_OUT = NEWWIDTH;
-	const int pNPC = NPC_T;
-
-	xf::Mat<TYPE, HEIGHT, WIDTH, NPC_T> in_mat;
-#pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC
-
-	xf::Mat<TYPE,HEIGHT, WIDTH, NPC_T> out_mat;
-#pragma HLS stream variable=out_mat.data depth=pCOLS_OUT/pNPC
-
-	in_mat.rows = rows_in;  in_mat.cols = cols_in;
-	out_mat.rows = rows_in;  out_mat.cols = cols_in;
-#pragma HLS DATAFLOW
+		#pragma HLS DATAFLOW
+		xf::cv::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(SrcPtr,imgInput);
 	
-	xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
-  
 
-	for (int column = 0; column < cols_in; column++)
-    {	
+		for (int column = 0; column < cols; column++)
+		{	
+				
+			//FlipColumn(matriz,res, column, rows_in, cols_in);
+			int max = (rows * cols) - cols + column;
+			for (int row = 0; row < rows; row++)
+			{
+				//out_mat[column + row * cols_in]= in_mat[max - (row * cols_in)];//comprobar con write de matrices de array2xfmat, intentar encontra run memcpy y preguntar jorge
+				imgOutput.write(column + row * cols,imgInput.read(max - (row * cols)));
+			}
 			
-        //FlipColumn(matriz,res, column, rows_in, cols_in);
-		int max = (rows_in * cols_in) - cols_in + column;
-		for (int row = 0; row < rows_in; row++)
-		{
-			//out_mat[column + row * cols_in]= in_mat[max - (row * cols_in)];//comprobar con write de matrices de array2xfmat, intentar encontra run memcpy y preguntar jorge
-			out_mat.write(column + row * cols_in,in_mat.data[max - (row * cols_in)]);
 		}
 		
-    }
-	
-	xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
-}
+		xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(imgOutput,DstPtr);
+		
+
+		return;
+	} 
 }

@@ -29,7 +29,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 #include "hls_stream.h"
 #include "ap_int.h"
-#include "common/xf_common.h"
+#include "common/xf_common.hpp"
 #include "imgproc/xf_resize.hpp"
 
 /* Optimization type */
@@ -42,7 +42,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OUTPUT_PTR_WIDTH 128
 
 //max down scale factor 2 for all 1-pixel modes, and for upscale in x direction
-#define MAXDOWNSCALE 3
+#define MAXDOWNSCALE 2
 
 #define RGB 1
 #define GRAY 0
@@ -65,7 +65,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* Interface types*/
 #if RO
+
+#if RGB
+#define NPC_T XF_NPPC4
+#else
 #define NPC_T XF_NPPC8
+#endif
+
 #else
 #define NPC_T XF_NPPC1
 #endif
@@ -78,38 +84,38 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CH_TYPE XF_GRAY
 #endif
 
+
 extern "C" {
-void resize_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out, int rows_in, int cols_in, int rows_out, int cols_out)
-{
-#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
-#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
-#pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
-#pragma HLS INTERFACE s_axilite port=img_out               bundle=control
-#pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
-#pragma HLS INTERFACE s_axilite port=rows_out              bundle=control
-#pragma HLS INTERFACE s_axilite port=cols_out              bundle=control
-#pragma HLS INTERFACE s_axilite port=return                bundle=control
+static constexpr int __XF_DEPTH = (HEIGHT * WIDTH * (XF_PIXELWIDTH(TYPE, NPC_T)) / 8) / (INPUT_PTR_WIDTH / 8);
+static constexpr int __XF_DEPTH_OUT =
+    (NEWHEIGHT * NEWWIDTH * (XF_PIXELWIDTH(TYPE, NPC_T)) / 8) / (OUTPUT_PTR_WIDTH / 8);
 
-	const int pROWS_INP = HEIGHT;
-	const int pCOLS_INP = WIDTH;
-	const int pROWS_OUT = NEWHEIGHT;
-	const int pCOLS_OUT = NEWWIDTH;
-	const int pNPC = NPC_T;
+void resize_accel(ap_uint<INPUT_PTR_WIDTH>* img_inp,
+                  ap_uint<OUTPUT_PTR_WIDTH>* img_out,
+                  int rows_in,
+                  int cols_in,
+                  int rows_out,
+                  int cols_out) {
+// clang-format off
+    #pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1 depth=__XF_DEPTH
+    #pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2 depth=__XF_DEPTH_OUT
+    #pragma HLS INTERFACE s_axilite port=rows_in              
+    #pragma HLS INTERFACE s_axilite port=cols_in              
+    #pragma HLS INTERFACE s_axilite port=rows_out              
+    #pragma HLS INTERFACE s_axilite port=cols_out              
+    #pragma HLS INTERFACE s_axilite port=return
+    // clang-format on
 
-	xf::Mat<TYPE, HEIGHT, WIDTH, NPC_T> in_mat;
-#pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC
+    xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC_T> in_mat(rows_in, cols_in);
 
-	xf::Mat<TYPE, NEWHEIGHT, NEWWIDTH, NPC_T> out_mat;
-#pragma HLS stream variable=out_mat.data depth=pCOLS_OUT/pNPC
+    xf::cv::Mat<TYPE, NEWHEIGHT, NEWWIDTH, NPC_T> out_mat(rows_out, cols_out);
 
-	in_mat.rows = rows_in;  in_mat.cols = cols_in;
-	out_mat.rows = rows_out;  out_mat.cols = cols_out;
+// clang-format off
+    #pragma HLS DATAFLOW
+    // clang-format on
 
-#pragma HLS DATAFLOW
-
-	xf::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
-	xf::resize<INTERPOLATION,TYPE,HEIGHT,WIDTH,NEWHEIGHT,NEWWIDTH,NPC_T,MAXDOWNSCALE> (in_mat, out_mat);
-	xf::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,NEWHEIGHT,NEWWIDTH,NPC_T>(out_mat,img_out);
+    xf::cv::Array2xfMat<INPUT_PTR_WIDTH, TYPE, HEIGHT, WIDTH, NPC_T>(img_inp, in_mat);
+    xf::cv::resize<INTERPOLATION, TYPE, HEIGHT, WIDTH, NEWHEIGHT, NEWWIDTH, NPC_T, MAXDOWNSCALE>(in_mat, out_mat);
+    xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH, TYPE, NEWHEIGHT, NEWWIDTH, NPC_T>(out_mat, img_out);
 }
 }

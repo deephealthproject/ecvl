@@ -27,10 +27,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
+
 #include "hls_stream.h"
 #include "ap_int.h"
-#include "common/xf_common.h"
+#include "common/xf_common.hpp"
+#include "common/xf_utility.hpp"
 #include "imgproc/xf_cvt_color.hpp"
+#include "imgproc/xf_cvt_color_1.hpp"
+//#include "imgproc/xf_rgb2hsv.hpp"
 
 /* Optimization type */
 
@@ -77,38 +81,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 extern "C" {
+
+static constexpr int __XF_DEPTH_INP_0 = ((HEIGHT) * (WIDTH) * (XF_PIXELWIDTH(XF_8UC3, NPC_T))) / (INPUT_PTR_WIDTH * NPC_T);
+static constexpr int __XF_DEPTH_OUT_0 = ((HEIGHT) * (WIDTH) * (XF_PIXELWIDTH(XF_8UC1, NPC_T))) / (OUTPUT_PTR_WIDTH * NPC_T);
 void rgb2gray_accel(ap_uint<INPUT_PTR_WIDTH> *img_inp, ap_uint<OUTPUT_PTR_WIDTH> *img_out,int rows_in, int cols_in)
 {
-#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
-#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
+#pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1  depth=__XF_DEPTH_INP_0
+#pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2  depth=__XF_DEPTH_OUT_0
 #pragma HLS INTERFACE s_axilite port=img_inp               bundle=control
 #pragma HLS INTERFACE s_axilite port=img_out               bundle=control
 #pragma HLS INTERFACE s_axilite port=rows_in              bundle=control
 #pragma HLS INTERFACE s_axilite port=cols_in              bundle=control
 #pragma HLS INTERFACE s_axilite port=return                bundle=control
 
-	const int pROWS_INP = HEIGHT;
-	const int pCOLS_INP = WIDTH;
-	const int pROWS_OUT = NEWHEIGHT;
-	const int pCOLS_OUT = NEWWIDTH;
-	const int pNPC = NPC_T;
 	
-	printf("cols dentro wrapper: %d\n", cols_in);
-	printf("rows dentro wrapper: %d\n", rows_in);
+	
 
-	xf::Mat<XF_8UC3, HEIGHT, WIDTH, NPC_T> in_mat;
-#pragma HLS stream variable=in_mat.data depth=pCOLS_INP/pNPC
+	xf::cv::Mat<XF_8UC3, HEIGHT, WIDTH, NPC_T> in_mat(rows_in, cols_in);
 
-	xf::Mat<XF_8UC1,HEIGHT, WIDTH, NPC_T> out_mat;
-#pragma HLS stream variable=out_mat.data depth=pCOLS_OUT/pNPC
 
-	in_mat.rows = rows_in;  in_mat.cols = cols_in;
-	out_mat.rows = rows_in;  out_mat.cols = cols_in;
+	xf::cv::Mat<XF_8UC1,HEIGHT, WIDTH, NPC_T> out_mat(rows_in, cols_in);
 
 #pragma HLS DATAFLOW
 
-	xf::Array2xfMat<INPUT_PTR_WIDTH,XF_8UC3,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
-	xf::rgb2gray<XF_8UC3,XF_8UC1,HEIGHT,WIDTH,NPC_T> (in_mat, out_mat);
-	xf::xfMat2Array<OUTPUT_PTR_WIDTH,XF_8UC1,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
+	xf::cv::Array2xfMat<INPUT_PTR_WIDTH,XF_8UC3,HEIGHT,WIDTH,NPC_T>(img_inp,in_mat);
+	xf::cv::rgb2gray<XF_8UC3,XF_8UC1,HEIGHT,WIDTH,NPC_T> (in_mat, out_mat);
+	xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH,XF_8UC1,HEIGHT,WIDTH,NPC_T>(out_mat,img_out);
 }
 }
