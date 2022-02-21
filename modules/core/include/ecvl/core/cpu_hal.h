@@ -60,6 +60,7 @@ public:
     void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate) override;
 
     void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) override;
+    void Resize3D(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) override;
     void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) override;
     void Flip2D(const ecvl::Image& src, ecvl::Image& dst) override;
     void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) override;

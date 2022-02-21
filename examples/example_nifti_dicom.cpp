@@ -26,6 +26,9 @@ int main()
         return EXIT_FAILURE;
     }
 
+    // Resize all the dimensions
+    ResizeDim(nifti_image, nifti_image, { 256, 256, 256 });
+
     // Apply some processing
     int gamma = 3;
     cout << "Executing GammaContrast" << endl;

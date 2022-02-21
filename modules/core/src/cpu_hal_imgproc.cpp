@@ -66,6 +66,107 @@ void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vect
     dst.meta_ = meta;
 }
 
+void CpuHal::Resize3D(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
+{
+    Image resized_2d;
+
+    ResizeDim(src, resized_2d, { newdims[0], newdims[1] }, interp);
+
+    size_t c_pos = resized_2d.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = resized_2d.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = resized_2d.channels_.find('o');
+    }
+    size_t x_pos = resized_2d.channels_.find('x');
+    size_t y_pos = resized_2d.channels_.find('y');
+
+    int src_width = resized_2d.Width();
+    int src_height = resized_2d.Height();
+    int src_channels = resized_2d.Channels();
+
+    if (src_channels == newdims[2]) {
+        dst = std::move(resized_2d);
+        return;
+    }
+
+    int src_stride_c = resized_2d.strides_[c_pos];
+    int src_stride_x = resized_2d.strides_[x_pos];
+    int src_stride_y = resized_2d.strides_[y_pos];
+
+    vector<int> dims(3);
+    dims[x_pos] = src_channels; dims[y_pos] = src_width * src_height; dims[c_pos] = 1;
+    Image tmp(dims, resized_2d.elemtype_, resized_2d.channels_, ColorType::none);
+    vector<uint8_t*> src_vch(src_channels);
+
+    for (int i = 0; i < src_channels; ++i) {
+        src_vch[i] = resized_2d.data_ + i * src_stride_c;
+    }
+    uint8_t* data = tmp.data_;
+
+    for (int r = 0; r < src_height; ++r) {
+        int r1 = r * src_stride_y;
+        for (int c = 0; c < src_width; ++c) {
+            int p1 = r1 + src_stride_x * c;
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: \
+            for (int ch = 0; ch < src_channels; ++ch) { \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(data) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
+                data += tmp.elemsize_; \
+            } \
+            break;
+
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+
+    ResizeDim(tmp, tmp, { newdims[2], tmp.Height() }, interp);
+    dims[x_pos] = newdims[0]; dims[y_pos] = newdims[1]; dims[c_pos] = newdims[2];
+    Image output(dims, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
+
+    int output_width = output.Width();
+    int output_height = output.Height();
+    int output_channels = output.Channels();
+
+    int output_stride_c = output.strides_[c_pos];
+    int output_stride_x = output.strides_[x_pos];
+    int output_stride_y = output.strides_[y_pos];
+
+    vector<uint8_t*> output_vch(output_channels);
+
+    for (int i = 0; i < output_channels; ++i) {
+        output_vch[i] = output.data_ + i * output_stride_c;
+    }
+    data = tmp.data_;
+
+    for (int r = 0; r < output_height; ++r) {
+        int r1 = r * output_stride_y;
+        for (int c = 0; c < output_width; ++c) {
+            int p1 = r1 + output_stride_x * c;
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: \
+            for (int ch = 0; ch < output_channels; ++ch) { \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(output_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(data); \
+                data += tmp.elemsize_;\
+            } \
+    break;
+
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+
+    dst = std::move(output);
+}
+
 void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
 {
     OpenCVAlwaysCheck(src);

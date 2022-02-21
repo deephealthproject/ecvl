@@ -61,7 +61,7 @@ The function resizes Image src and outputs the result in dst.
 @param[in] src The input Image.
 @param[out] dst The output resized Image.
 @param[in] newdims std::vector<int> that specifies the new size of each dimension.
-            The vector size must match the src Image dimensions, excluding the color channel.
+           The vector must be {new_width, new_height[, new_depth]}.
 @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
 
 */

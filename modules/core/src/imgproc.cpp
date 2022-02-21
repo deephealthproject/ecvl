@@ -36,7 +36,7 @@ bool ChannelsCheck(const Image& src, Image& tmp)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-     // check if channels_ starts with "xy"
+    // check if channels_ starts with "xy"
     if (src.channels_.rfind("xy", 0) != string::npos) {
         return true; // don't need to rearrange
     }
@@ -70,11 +70,15 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
 {
     AlwaysCheck(src, dst);
 
-    if (newdims.size() != 2) {
+    if (newdims.size() == 2) {
+        src.hal_->ResizeDim(src, dst, newdims, interp);
+    }
+    else if (newdims.size() == 3) {
+        src.hal_->Resize3D(src, dst, newdims, interp);
+    }
+    else {
         ECVL_ERROR_WRONG_PARAMS("Number of dimensions specified doesn't match image dimensions")
     }
-
-    src.hal_->ResizeDim(src, dst, newdims, interp);
 }
 
 void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
