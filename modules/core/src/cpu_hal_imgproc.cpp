@@ -432,8 +432,9 @@ case DataType::type: ThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, thresh,
 
 std::vector<double> CpuHal::Histogram(const Image& src)
 {
+    using namespace std::chrono;
     std::vector<double> hist(256, 0);
-
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     ConstView<DataType::uint8> view(src);
     for (auto it = view.Begin(); it != view.End(); ++it) {
         hist[*it]++;
@@ -444,6 +445,10 @@ std::vector<double> CpuHal::Histogram(const Image& src)
         *it /= total_pixels;
     }
 
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion Histogram en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
     return hist;
 }
 
@@ -579,6 +584,8 @@ case DataType::type: MultiThresholdImpl<TypeInfo_t<DataType::type>>(src, dst, th
 
 void CpuHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType type)
 {
+    using namespace std::chrono;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     Image tmp(src.dims_, type, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
     int hlf_width = ker.dims_[0] / 2;
@@ -626,7 +633,11 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
         src_data += src.strides_[2] / sizeof(*src_data);
     }
-    dst = std::move(tmp);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    dst = std::move(tmp);   
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion Filter2d en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
 }
 
 void CpuHal::SeparableFilter2D(const Image& src, Image& dst, const vector<double>& kerX, const vector<double>& kerY, DataType type)
@@ -788,6 +799,8 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
 void CpuHal::GammaContrast(const Image& src, Image& dst, double gamma)
 {
+    using namespace std::chrono;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     Image tmp(src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_);
 
     for (uint8_t* tmp_ptr = tmp.data_, *src_ptr = src.data_; tmp_ptr < tmp.data_ + tmp.datasize_; tmp_ptr += tmp.elemsize_, src_ptr += src.elemsize_) {
@@ -800,7 +813,11 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(tmp_ptr) = s
 
     #undef ECVL_TUPLE
     }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
     dst = std::move(tmp);
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion GammaContrast en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
 }
 
 void CpuHal::CoarseDropout(const Image& src, Image& dst, double p, double drop_size, bool per_channel)
@@ -885,6 +902,8 @@ case DataType::type: *reinterpret_cast<TypeInfo_t<DataType::type>*>(channel_ptrs
 
 void CpuHal::IntegralImage(const Image& src, Image& dst, DataType dst_type)
 {
+    using namespace std::chrono;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     Image tmp({ src.dims_[0] + 1, src.dims_[1] + 1, src.dims_[2] }, dst_type, src.channels_, ColorType::GRAY, src.spacings_, src.dev_);
 
     ConstContiguousViewXYC<DataType::uint8> vsrc(src);
@@ -904,7 +923,11 @@ void CpuHal::IntegralImage(const Image& src, Image& dst, DataType dst_type)
         }
         break;
     }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
     dst = std::move(tmp);
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion IntegralImg en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
 }
 
 void CpuHal::NonMaximaSuppression(const Image& src, Image& dst)
@@ -936,6 +959,9 @@ void CpuHal::NonMaximaSuppression(const Image& src, Image& dst)
 
 vector<ecvl::Point2i> CpuHal::GetMaxN(const Image& src, size_t n)
 {
+            
+    using namespace std::chrono;
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     ConstContiguousViewXYC<DataType::int32> vsrc(src);
     using pqt = pair<int32_t, Point2i>;
     vector<pqt> pq(n, make_pair(std::numeric_limits<int32_t>::min(), Point2i{ -1,-1 }));
@@ -949,12 +975,15 @@ vector<ecvl::Point2i> CpuHal::GetMaxN(const Image& src, size_t n)
             }
         }
     }
-
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
     vector<ecvl::Point2i> max_coords;
     max_coords.reserve(n);
     for (const auto& x : pq) {
         max_coords.push_back(x.second);
     }
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    std::cout << "Tiempo de ejecucion get max n en cpu: " << time_span.count() << " seconds.";
+    std::cout << std::endl;
     return max_coords;
 }
 

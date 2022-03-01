@@ -19,12 +19,13 @@ using namespace std;
 
 int main()
 {
+    printf("hiolaa");
     Image img1, img2;
     Image tmp;
 
     // Open an Image
-    if (!ImRead("../examples/data/test.jpg", img1)) {return EXIT_FAILURE;}
-    img1.To(Device::FPGA);
+    if (!ImRead("../examples/data/img0003.png", img1)) {return EXIT_FAILURE;}
+    //img1.To(Device::FPGA);
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
     // printf("APP: ResizeDim\n");
@@ -43,6 +44,24 @@ int main()
     // cout << "Executing Flip2D" << endl;
     // Flip2D(img1, tmp);
     // ImWrite("img_flipped.jpg", tmp);
+
+    Image kernelMAX({ 3072, 2048, 1 }, DataType::int32, "xyc", ColorType::GRAY);
+    //kernelMAX.To(Device::FPGA);
+    int A[3072*2048];
+    for (int i = 0; i  < 3072*2048; i++){
+        A[i] = rand() % 100 + 1;
+    }
+    int p = 0;
+    auto it = kernelMAX.Begin<int>(), et = kernelMAX.End<int>();
+    for (; it != et; ++it) {
+        *it = A[p++];
+    }
+    cout << "Executing GetMaxN" << endl;
+    vector<ecvl::Point2i> max_coords = GetMaxN(kernelMAX, 3);
+    // for(int i = 0;  i < max_coords.size(); i++){
+    //     ecvl::Point2i p  = max_coords[i];
+    //     printf("coords (%d,%d)\n", p.data()[0], p.data()[1]);
+    // }   
 
     // Mirror an Image
     // cout << "Executing Mirror2D" << endl;
@@ -66,11 +85,31 @@ int main()
     // RotateFullImage2D(img1, tmp, angle, rot_scale);
     // ImWrite("img_rotated_full.jpg", tmp);
 
-    // Change the color space of an Image from BGR to GRAY
-    // cout << "Executing ChangeColorSpace" << endl;
-    // ChangeColorSpace(img1, tmp, ColorType::GRAY);
-    // ImWrite("img_gray.jpg", tmp);
+     cout << "Executing Histogram" << endl;
+     std::vector<double> hist = img1.hal_->Histogram(img1);
+    //  for (int i = 0; i < hist.size(); i++)
+    //  {
+    //      cout << hist[i] << endl;
+    //  }
+     
 
+    //Change the color space of an Image from BGR to GRAY
+    cout << "Executing ChangeColorSpace" << endl;
+    ChangeColorSpace(img1, tmp, ColorType::GRAY);
+    ImWrite("img_gray.jpg", tmp);
+
+    if (!ImRead("img_gray.jpg", img2)) {return EXIT_FAILURE;}
+    // img2.To(Device::FPGA);
+    // //Change the color space of an Image from GRAY to BGR
+    //  cout << "Executing ChangeColorSpace" << endl;
+    //  ChangeColorSpace(img1, tmp, ColorType::RGB);
+    //  ImWrite("img_color.jpg", tmp);
+
+
+    cout << "Executing IntegralImage" << endl;
+    IntegralImage(img2, tmp, DataType::float64);
+    ImWrite("img_integral.jpg", tmp);
+    
     // Calculate the Otsu thresholding value (the Image must be GRAY)
     // cout << "Executing OtsuThreshold" << endl;
     // double thresh = OtsuThreshold(tmp);
@@ -91,9 +130,9 @@ int main()
     // FindContours(tmp, contours);
 
         // Blur an Image using a Gaussian kernel (optional: standard deviation in Y direction)
-    cout << "Executing GaussianBlur" << endl;
-    GaussianBlur(img1, tmp, 5, 5, 0.0);
-    ImWrite("img_gaussian_blur.jpg", tmp);
+    // cout << "Executing GaussianBlur" << endl;
+    // GaussianBlur(img1, tmp, 5, 5, 0.0);
+    // ImWrite("img_gaussian_blur.jpg", tmp);
 
     // Create and populate a kernel Image. Kernel must be float64, "xyc" and with one color channel
     Image kernel({ 3, 3, 1 }, DataType::float64, "xyc", ColorType::GRAY);
@@ -119,88 +158,88 @@ int main()
 
 
     // Add Laplace distributed noise to an Image
-    float stddev = 255 * 0.05;
-    cout << "Executing AdditiveLaplaceNoise" << endl;
-    AdditiveLaplaceNoise(img1, tmp, stddev);
-    ImWrite("img_laplacenoise.jpg", tmp);
+    // float stddev = 255 * 0.05;
+    // cout << "Executing AdditiveLaplaceNoise" << endl;
+    // AdditiveLaplaceNoise(img1, tmp, stddev);
+    // ImWrite("img_laplacenoise.jpg", tmp);
 
-    // Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma)
+    // // Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma)
     int gamma = 3;
     cout << "Executing GammaContrast" << endl;
     GammaContrast(img1, tmp, gamma);
     ImWrite("img_gammacontrast.jpg", tmp);
 
     // Set rectangular areas within an Image to zero
-    float prob = 0.5;
-    float drop_size = 0.1f;
-    bool per_channel = true;
-    cout << "Executing CoarseDropout" << endl;
-    CoarseDropout(img1, tmp, prob, drop_size, per_channel);
-    ImWrite("img_coarsedropout.jpg", tmp);
+    // float prob = 0.5;
+    // float drop_size = 0.1f;
+    // bool per_channel = true;
+    // cout << "Executing CoarseDropout" << endl;
+    // CoarseDropout(img1, tmp, prob, drop_size, per_channel);
+    // ImWrite("img_coarsedropout.jpg", tmp);
 
     //Horizontal concatenation of images
-    vector<Image> images;
-    if (!ImRead("../examples/data/img0003.png", img1)) {
-        return EXIT_FAILURE;
-    }
-    if (!ImRead("../examples/data/img0015.png", img2)) {
-        return EXIT_FAILURE;
-    }
-    images.push_back(img1);
-    images.push_back(img2);
-    images.push_back(img1);
-    images.push_back(img2);
+    // vector<Image> images;
+    // if (!ImRead("../examples/data/img0003.png", img1)) {
+    //     return EXIT_FAILURE;
+    // }
+    // if (!ImRead("../examples/data/img0015.png", img2)) {
+    //     return EXIT_FAILURE;
+    // }
+    // images.push_back(img1);
+    // images.push_back(img2);
+    // images.push_back(img1);
+    // images.push_back(img2);
 
-    ResizeDim(images[1], images[1], { images[1].dims_[0] / 2, images[1].dims_[1] });
-    cout << "Executing HConcat" << endl;
-    HConcat(images, tmp);
-    ImWrite("img_hconcat.jpg", tmp);
+    // ResizeDim(images[1], images[1], { images[1].dims_[0] / 2, images[1].dims_[1] });
+    // cout << "Executing HConcat" << endl;
+    // HConcat(images, tmp);
+    // ImWrite("img_hconcat.jpg", tmp);
 
-    images.erase(images.begin() + 1);
-    // Vertical concatenation of different images
-    ResizeDim(images[1], images[1], { images[1].dims_[0] , images[1].dims_[1] / 2 });
-    cout << "Executing VConcat" << endl;
-    VConcat(images, tmp);
-    ImWrite("img_vconcat.jpg", tmp);
-    images.erase(images.begin() + 1);
+    // images.erase(images.begin() + 1);
+    // // Vertical concatenation of different images
+    // ResizeDim(images[1], images[1], { images[1].dims_[0] , images[1].dims_[1] / 2 });
+    // cout << "Executing VConcat" << endl;
+    // VConcat(images, tmp);
+    // ImWrite("img_vconcat.jpg", tmp);
+    // images.erase(images.begin() + 1);
 
-    // Stack a sequence of Images along the channel dimension (xyc -> xyo)
-    cout << "Executing Stack of images xyc creating a xyo Image" << endl;
-    Stack(images, tmp);
+    // // Stack a sequence of Images along the channel dimension (xyc -> xyo)
+    // cout << "Executing Stack of images xyc creating a xyo Image" << endl;
+    // Stack(images, tmp);
 
-    cout << "Executing Salt" << endl;
-    Salt(img1, tmp, 0.5, true);
-    ImWrite("img_salt_perchannel.png", tmp);
-    Salt(img1, tmp, 0.5, false);
-    ImWrite("img_salt.png", tmp);
+    // cout << "Executing Salt" << endl;
+    // Salt(img1, tmp, 0.5, true);
+    // ImWrite("img_salt_perchannel.png", tmp);
+    // Salt(img1, tmp, 0.5, false);
+    // ImWrite("img_salt.png", tmp);
 
-    cout << "Executing Pepper" << endl;
-    Pepper(img1, tmp, 0.5, true);
-    ImWrite("img_pepper_perchannel.png", tmp);
-    Pepper(img1, tmp, 0.5, false);
-    ImWrite("img_pepper.png", tmp);
+    // cout << "Executing Pepper" << endl;
+    // Pepper(img1, tmp, 0.5, true);
+    // ImWrite("img_pepper_perchannel.png", tmp);
+    // Pepper(img1, tmp, 0.5, false);
+    // ImWrite("img_pepper.png", tmp);
 
-    cout << "Executing SaltAndPepper" << endl;
-    SaltAndPepper(img1, tmp, 0.5, true);
-    ImWrite("img_saltandpepper_perchannel.png", tmp);
-    SaltAndPepper(img1, tmp, 0.5, false);
-    ImWrite("img_saltandpepper.png", tmp);
+    // cout << "Executing SaltAndPepper" << endl;
+    // SaltAndPepper(img1, tmp, 0.5, true);
+    // ImWrite("img_saltandpepper_perchannel.png", tmp);
+    // SaltAndPepper(img1, tmp, 0.5, false);
+    // ImWrite("img_saltandpepper.png", tmp);
 
-    cout << "Executing OpticalDistortion" << endl;
-    OpticalDistortion(img1, tmp);
-    ImWrite("img_opticaldistortion.png", tmp);
+    // cout << "Executing OpticalDistortion" << endl;
+    // OpticalDistortion(img1, tmp);
+    // ImWrite("img_opticaldistortion.png", tmp);
 
-    cout << "Executing GridDistortion" << endl;
-    GridDistortion(img1, tmp);
-    ImWrite("img_griddistortion.png", tmp);
+    // cout << "Executing GridDistortion" << endl;
+    // GridDistortion(img1, tmp);
+    // ImWrite("img_griddistortion.png", tmp);
 
-    cout << "Executing ElasticTransform" << endl;
-    ElasticTransform(img1, tmp);
-    ImWrite("img_elastictransform.png", tmp);
+    // cout << "Executing ElasticTransform" << endl;
+    // ElasticTransform(img1, tmp);
+    // ImWrite("img_elastictransform.png", tmp);
 
-    cout << "Executing CenterCrop" << endl;
-    CenterCrop(img1, tmp, { 225, 300 });
-    ImWrite("img_centercrop.png", tmp);
+    // cout << "Executing CenterCrop" << endl;
+    // CenterCrop(img1, tmp, { 225, 300 });
+    // ImWrite("img_centercrop.png", tmp);
 
 
     return EXIT_SUCCESS;
