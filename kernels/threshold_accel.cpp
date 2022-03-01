@@ -38,6 +38,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "imgproc/xf_threshold.hpp"
 
 
+
 /*  set the optimisation type*/
 
 
@@ -66,6 +67,7 @@ typedef ap_uint<64>      ap_uint64_t;
 #if NO
 #define NPIX				XF_NPPC1
 #endif
+
 
 
 

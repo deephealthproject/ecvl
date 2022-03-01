@@ -54,7 +54,8 @@ std::vector<cl::Device> devices;
 std::string device_name;
 std::string binaryFile;
 
-cl::Kernel kernel_otsu_threshold, kernel_threshold, kernel_mirror2d, kernel_flip2d, kernel_rgb_2_gray, kernel_gaussian_blur, kernel_resize, kernel_warp_transform, kernel_filter2d;
+cl::Kernel kernel_otsu_threshold, kernel_threshold, kernel_mirror2d, kernel_flip2d, kernel_rgb_2_gray, kernel_gaussian_blur, kernel_resize, kernel_warp_transform;
+cl::Kernel kernel_integral_image, kernel_histogram, kernel_gamma_correction, kernel_filter2d, kernel_min_max, kernel_gray_2_rgb;
 
 #define ECVL_FPGA
 
@@ -97,29 +98,43 @@ void fpga_init(){
   OCL_CHECK(err, kernel_filter2d = cl::Kernel(program,"filter2d_accel", &err));
   printf("    - filter2d kernel created\n");
 
-  OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
-  printf("    - warp_transfrom kernel created\n");
+//   OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
+//   printf("    - warp_transfrom kernel created\n");
 
-  OCL_CHECK(err, kernel_resize = cl::Kernel(program,"resize_accel", &err));
-  printf("    - resize kernel created\n");
+//   OCL_CHECK(err, kernel_integral_image = cl::Kernel(program,"integral_image_accel", &err));
+//   printf("    - kernel_integral_image kernel created\n");
 
-  OCL_CHECK(err, kernel_gaussian_blur = cl::Kernel(program,"gaussian_accel", &err));
-  printf("    - gaussian_blur kernel created\n");
+  OCL_CHECK(err, kernel_histogram = cl::Kernel(program,"histogram_accel", &err));
+  printf("    - kernel_histogram kernel created\n");
 
-  OCL_CHECK(err, kernel_rgb_2_gray = cl::Kernel(program,"rgb2gray_accel", &err));
-  printf("    - rgb2gray kernel created\n");
+//   OCL_CHECK(err, kernel_gamma_correction = cl::Kernel(program,"gamma_correction_accel", &err));
+//   printf("    - kernel_gamma_correction kernel created\n");
 
-  OCL_CHECK(err, kernel_flip2d = cl::Kernel(program,"flipvertical_accel", &err));
-  printf("    - flip2d kernel created\n");
+  OCL_CHECK(err, kernel_min_max = cl::Kernel(program,"min_max_loc_accel", &err));
+  printf("    - kernel_min_max kernel created\n");
 
-  OCL_CHECK(err, kernel_mirror2d = cl::Kernel(program,"mirror_accel", &err));
-  printf("    - mirror2d kernel created\n");
+//   OCL_CHECK(err, kernel_resize = cl::Kernel(program,"resize_accel", &err));
+//   printf("    - resize kernel created\n");
 
-  OCL_CHECK(err, kernel_threshold = cl::Kernel(program,"threshold_accel", &err));
-  printf("    - threshold kernel created\n");
+//    OCL_CHECK(err, kernel_gaussian_blur = cl::Kernel(program,"gaussian_accel", &err));
+//    printf("    - gaussian_blur kernel created\n");
 
-  OCL_CHECK(err, kernel_otsu_threshold = cl::Kernel(program,"otsuThreshold_accel", &err));
-  printf("    - otsu_threshold kernel created\n");
+//   OCL_CHECK(err, kernel_rgb_2_gray = cl::Kernel(program,"rgb2gray_accel", &err));
+//   printf("    - rgb2gray kernel created\n");
+
+//   OCL_CHECK(err, kernel_rgb_2_gray = cl::Kernel(program,"gray2rgb_accel", &err));
+//   printf("    - gray2rgb_accel kernel created\n");
+//   OCL_CHECK(err, kernel_flip2d = cl::Kernel(program,"flipvertical_accel", &err));
+//   printf("    - flip2d kernel created\n");
+
+//   OCL_CHECK(err, kernel_mirror2d = cl::Kernel(program,"mirror_accel", &err));
+//   printf("    - mirror2d kernel created\n");
+
+//   OCL_CHECK(err, kernel_threshold = cl::Kernel(program,"threshold_accel", &err));
+//   printf("    - threshold kernel created\n");
+
+//   OCL_CHECK(err, kernel_otsu_threshold = cl::Kernel(program,"otsuThreshold_accel", &err));
+//   printf("    - otsu_threshold kernel created\n");
 
   printf("END FPGA INIT\n");
 }

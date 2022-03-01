@@ -37,14 +37,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* Optimization type */
 
-#define RO 			1    // Resource Optimized (8-pixel implementation)
-#define NO 			0	 // Normal Operation (1-pixel implementation)
+#define RO 			0    // Resource Optimized (8-pixel implementation)
+#define NO 			1	 // Normal Operation (1-pixel implementation)
 
 // port widths
 #define INPUT_PTR_WIDTH  32
 #define OUTPUT_PTR_WIDTH 32
 
 //Filter size. Filter size of 3 (XF_FILTER_3X3), 5 (XF_FILTER_5X5) and 7 (XF_FILTER_7X7) aresupported
+
 
 #define FILTER_SIZE 5
 
@@ -58,7 +59,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 2 - AREA Interpolation
 
 /*  specify the shift parameter */
-#define SHIFT 15
+#define SHIFT 48
 
 /* Input image Dimensions */
 
@@ -71,7 +72,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NEWHEIGHT 		1800  // Maximum output image height
 
 /*  specify the shift parameter */
-#define SHIFT 15
+#define SHIFT 48
 
 
 #define FILTER_HEIGHT 3
@@ -148,14 +149,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 	using namespace std;
 
-static constexpr int __XF_DEPTH_IN = (HEIGHT * WIDTH * (XF_PIXELWIDTH(INTYPE, NPC1)) / 8) / (INPUT_PTR_WIDTH / 8);
-static constexpr int __XF_DEPTH_OUT = (HEIGHT * WIDTH * (XF_PIXELWIDTH(OUTTYPE, NPC1)) / 8) / (OUTPUT_PTR_WIDTH / 8);
-static constexpr int __XF_DEPTH_FILTER = FILTER_HEIGHT * FILTER_WIDTH;
+//static constexpr int __XF_DEPTH_IN = (HEIGHT * WIDTH * (XF_PIXELWIDTH(INTYPE, NPC1)) / 8) / (INPUT_PTR_WIDTH / 8);
+//static constexpr int __XF_DEPTH_OUT = (HEIGHT * WIDTH * (XF_PIXELWIDTH(OUTTYPE, NPC1)) / 8) / (OUTPUT_PTR_WIDTH / 8);
+//static constexpr int __XF_DEPTH_FILTER = FILTER_HEIGHT * FILTER_WIDTH;
 void filter2d_accel(ap_uint<INPUT_PTR_WIDTH> *img_in, ap_uint<OUTPUT_PTR_WIDTH> *img_out,int rows, int cols, short int *filter)
 {
-    #pragma HLS INTERFACE m_axi      port=img_in        offset=slave  bundle=gmem0 depth=__XF_DEPTH_IN 
-    #pragma HLS INTERFACE m_axi      port=filter        offset=slave  bundle=gmem1 depth=__XF_DEPTH_FILTER
-    #pragma HLS INTERFACE m_axi      port=img_out       offset=slave  bundle=gmem2 depth=__XF_DEPTH_OUT
+    #pragma HLS INTERFACE m_axi      port=img_in        offset=slave  bundle=gmem0 
+    #pragma HLS INTERFACE m_axi      port=filter        offset=slave  bundle=gmem1
+    #pragma HLS INTERFACE m_axi      port=img_out       offset=slave  bundle=gmem2 
     #pragma HLS INTERFACE s_axilite  port=rows 			          
     #pragma HLS INTERFACE s_axilite  port=cols 			          
     #pragma HLS INTERFACE s_axilite  port=return 			          
@@ -163,9 +164,13 @@ void filter2d_accel(ap_uint<INPUT_PTR_WIDTH> *img_in, ap_uint<OUTPUT_PTR_WIDTH> 
  	xf::cv::Mat<INTYPE, HEIGHT, WIDTH, NPC1> imgInput(rows, cols);
     xf::cv::Mat<OUTTYPE, HEIGHT, WIDTH, NPC1> imgOutput(rows, cols);
 
+    #pragma HLS STREAM variable=imgInput.data depth=2
+    #pragma HLS STREAM variable=imgOutput.data depth=2
+
+
     printf("cols dentro wrapper: %d\n", cols);
 	printf("rows dentro wrapper: %d\n", rows);
-
+    #pragma HLS DATAFLOW
  	 // Retrieve xf::cv::Mat objects from img_in data:
     xf::cv::Array2xfMat<INPUT_PTR_WIDTH, INTYPE, HEIGHT, WIDTH, NPC1>(img_in, imgInput);
 	xf::cv::filter2D<XF_BORDER_CONSTANT, FILTER_WIDTH, FILTER_HEIGHT, INTYPE, OUTTYPE, HEIGHT, WIDTH, NPC1>(

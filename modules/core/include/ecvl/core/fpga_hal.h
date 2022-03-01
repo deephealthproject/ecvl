@@ -22,7 +22,8 @@
 extern cl::Context *context;
 extern cl::CommandQueue *q;
 
-extern cl::Kernel kernel_otsu_threshold, kernel_threshold, kernel_mirror2d, kernel_flip2d, kernel_rgb_2_gray, kernel_gaussian_blur, kernel_resize, kernel_warp_transform, kernel_filter2d;
+extern cl::Kernel kernel_otsu_threshold, kernel_threshold, kernel_mirror2d, kernel_flip2d, kernel_rgb_2_gray, kernel_gaussian_blur, kernel_resize, kernel_warp_transform;
+extern cl::Kernel kernel_integral_image, kernel_histogram, kernel_gamma_correction, kernel_filter2d, kernel_min_max, kernel_gray_2_rgb;
 
 namespace ecvl
 {

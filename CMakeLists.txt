@@ -345,7 +345,7 @@ if(ECVL_WITH_FPGA)
 
         add_custom_command(OUTPUT ${XO}
             COMMAND v++
-            ARGS -c  --kernel ${KERNEL_NAME} -I${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/Vitis_Libraries/vision/L1/include --xp prop:kernel.resize_accel.kernel_flags="-std=c++0x"  -o xclbin/${KERNEL_NAME}.xo -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${KERNEL_SRC} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
+            ARGS -c  --kernel ${KERNEL_NAME} -I${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/Vitis_Libraries/vision/L1/include --xp prop:kernel.resize_accel.kernel_flags="-std=c++0x" -o xclbin/${KERNEL_NAME}.xo -t ${ECVL_KERNELS_MODE} --platform xilinx_u200_xdma_201830_2 ${KERNEL_SRC} -DHLS_NO_XIL_FPO_LIB -D__SDSVHLS__
             COMMENT "Compiling ${KERNEL_NAME} kernel"
             DEPENDS ${KERNEL_SRC})
         list(APPEND XOS ${XO})

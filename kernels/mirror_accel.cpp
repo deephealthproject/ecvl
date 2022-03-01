@@ -98,8 +98,8 @@ static constexpr int __XF_DEPTH = (HEIGHT * WIDTH * (XF_PIXELWIDTH(TYPE, NPC1)) 
 void mirror_accel(ap_uint<INPUT_PTR_WIDTH> *SrcPtr, ap_uint<INPUT_PTR_WIDTH> *DstPtr, int rows, int cols)
 {
 		// clang-format off
-		#pragma HLS INTERFACE m_axi port=SrcPtr offset=slave bundle=gmem0 depth=__XF_DEPTH
-		#pragma HLS INTERFACE m_axi port=DstPtr offset=slave bundle=gmem1 depth=__XF_DEPTH
+		#pragma HLS INTERFACE m_axi port=SrcPtr offset=slave bundle=gmem1 depth=__XF_DEPTH
+		#pragma HLS INTERFACE m_axi port=DstPtr offset=slave bundle=gmem2 depth=__XF_DEPTH
 		#pragma HLS INTERFACE s_axilite port=SrcPtr               bundle=control
 		#pragma HLS INTERFACE s_axilite port=DstPtr               bundle=control
 		#pragma HLS INTERFACE s_axilite port=rows					bundle=control

@@ -35,6 +35,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common/xf_structs.hpp"
 #include "common/xf_utility.hpp"
 
+#include "imgproc/xf_flip.hpp"
+
 /* Optimization type */
 
 #define RO 			0    // Resource Optimized (8-pixel implementation)
@@ -46,6 +48,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define RGB 1
 #define GRAY 0
 /* Interpolation type*/
+
+#define HOR 1
+#define VER 1
 
 #define INTERPOLATION	0
 // 0 - Nearest Neighbor Interpolation
@@ -89,42 +94,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 extern "C" {
-	static constexpr int __XF_DEPTH = (HEIGHT * WIDTH * (XF_PIXELWIDTH(TYPE, NPC1)) / 8) / (INPUT_PTR_WIDTH / 8);
+	//static constexpr int __XF_DEPTH = (HEIGHT * WIDTH * (XF_PIXELWIDTH(TYPE, NPC1)) / 8) / (PTR_WIDTH / 8);
 
-	void flipvertical_accel(ap_uint<INPUT_PTR_WIDTH> *SrcPtr, ap_uint<INPUT_PTR_WIDTH> *DstPtr, int rows, int cols) {
+	void flipvertical_accel(ap_uint<PTR_WIDTH> *SrcPtr, ap_uint<PTR_WIDTH> *DstPtr, int rows, int cols) {
 		// clang-format off
-		#pragma HLS INTERFACE m_axi port=SrcPtr offset=slave bundle=gmem0 depth=__XF_DEPTH
-		#pragma HLS INTERFACE m_axi port=DstPtr offset=slave bundle=gmem1 depth=__XF_DEPTH
-		#pragma HLS INTERFACE s_axilite port=SrcPtr               bundle=control
-		#pragma HLS INTERFACE s_axilite port=DstPtr               bundle=control
-		#pragma HLS INTERFACE s_axilite port=rows bundle=control
-		#pragma HLS INTERFACE s_axilite port=cols	bundle=control
-		#pragma HLS INTERFACE s_axilite port=return	bundle=control
+		#pragma HLS INTERFACE m_axi port=SrcPtr offset=slave bundle=gmem1 
+		#pragma HLS INTERFACE m_axi port=DstPtr offset=slave bundle=gmem2         
+		#pragma HLS INTERFACE s_axilite port=rows					
+		#pragma HLS INTERFACE s_axilite port=cols					
+		#pragma HLS INTERFACE s_axilite port=return 				
 		// clang-format on
 
 		xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> imgInput(rows, cols);
+		  #pragma HLS STREAM variable=imgInput.data depth=2
     	xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> imgOutput(rows, cols);
+		  #pragma HLS STREAM variable=imgOutput.data depth=2
+	
+		printf("rows: %d, cols %d\n", rows, cols);
+		#pragma HLS DATAFLOW
+		xf::cv::Array2xfMat<PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(SrcPtr,imgInput);
 	
 
-		#pragma HLS DATAFLOW
-		xf::cv::Array2xfMat<INPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(SrcPtr,imgInput);
-	
 
 		for (int column = 0; column < cols; column++)
 		{	
 				
 			//FlipColumn(matriz,res, column, rows_in, cols_in);
 			int max = (rows * cols) - cols + column;
+		
 			for (int row = 0; row < rows; row++)
 			{
-				//out_mat[column + row * cols_in]= in_mat[max - (row * cols_in)];//comprobar con write de matrices de array2xfmat, intentar encontra run memcpy y preguntar jorge
+				//printf("dst[%d] = src[%d] -> %d\n", column + row * cols, max - (row * cols), *SrcPtr[max - (row * cols)]);
+				//DstPtr[column + row * cols]= SrcPtr[max - (row * cols)];//comprobar con write de matrices de array2xfmat, intentar encontra run memcpy y preguntar jorge
 				imgOutput.write(column + row * cols,imgInput.read(max - (row * cols)));
+				
+
 			}
 			
 		}
-		
-		xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(imgOutput,DstPtr);
-		
+		xf::cv::xfMat2Array<PTR_WIDTH,TYPE,HEIGHT,WIDTH,NPC1>(imgOutput,DstPtr);
+		//xf::cv::flip<OUTPUT_PTR_WIDTH, TYPE, HEIGHT, WIDTH, NPC1>(SrcPtr, DstPtr, rows, cols, 0);
 
 		return;
 	} 
