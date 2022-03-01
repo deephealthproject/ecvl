@@ -682,6 +682,20 @@ The function linearly rescale the Image having values in [min,max] into a new ar
 */
 void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max);
 
+/** @brief Linearly scale an Image from a specified range into a new range.
+
+The function linearly rescale the Image from the range [old_min,old_max] into a new arbitrary range [new_min,new_max].
+If the pixel value is less than old_min or greater than old_max it will be replaced with these range boundaries.
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] old_min double which indicates the old minimum value.
+@param[in] old_max double which indicates the old maximum value.
+@param[in] new_min double which indicates the new minimum value.
+@param[in] new_max double which indicates the new maximum value.
+*/
+void ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max);
+
 /** @brief Pad an Image.
 
 A border is added to the 4 sides of the Image. It can be specified equal for all the sides, equal for top and bottom and for left and right or different for all the sides.

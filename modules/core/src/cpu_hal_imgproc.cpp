@@ -2315,6 +2315,46 @@ void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const 
     dst = std::move(tmp);
 }
 
+template<DataType SDT>
+struct ScaleFromToStruct
+{
+    static void _(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max)
+    {
+        // Formula
+        // newvalue = (new_max - new_min)/(max - min)*(value - max) + new_max
+        // or
+        // newvalue = a * value + b
+        // a = (new_max - new_min)/(max - min)
+        // b = new_max - a * max
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(dst);
+
+        double a = (new_max - new_min) / (old_max - old_min);
+        double b = new_max - a * old_max;
+
+        auto dst_it = dst_v.Begin();
+        auto src_it = src_v.Begin(), src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++dst_it) {
+            TypeInfo_t<SDT> src_val = *src_it;
+            if (src_val < old_min) {
+                src_val = saturate_cast<TypeInfo_t<SDT>>(old_min);
+            }
+            else if (src_val > old_max) {
+                src_val = saturate_cast<TypeInfo_t<SDT>>(old_max);
+            }
+            *dst_it = saturate_cast<TypeInfo_t<SDT>>(src_val * a + b);
+        }
+    }
+};
+
+void CpuHal::ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max)
+{
+    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_ };
+    static constexpr Table1D<ScaleFromToStruct> table;
+    table(src.elemtype_)(src, tmp, old_min, old_max, new_min, new_max);
+    dst = std::move(tmp);
+}
+
 template <DataType SDT>
 struct RandomCropStruct
 {

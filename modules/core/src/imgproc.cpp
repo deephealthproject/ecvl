@@ -727,6 +727,12 @@ void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& 
     return src.hal_->ScaleTo(src, dst, new_min, new_max);
 }
 
+void ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max)
+{
+    AlwaysCheck(src, dst);
+    return src.hal_->ScaleFromTo(src, dst, old_min, old_max, new_min, new_max);
+}
+
 void Pad(const Image& src, Image& dst, const vector<int>& padding, BorderType border_type, const int& border_value)
 {
     AlwaysCheck(src, dst);

@@ -107,6 +107,7 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugToFloat32);
     AUG(AugDivBy255);
     AUG(AugScaleTo);
+    AUG(AugScaleFromTo);
     AUG(AugRandomCrop);
 
     return nullptr; // Maybe throw?

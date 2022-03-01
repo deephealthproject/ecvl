@@ -1507,6 +1507,48 @@ public:
     }
 };
 
+/** @brief Augmentation wrapper for ecvl::ScaleFromTo.
+
+@anchor AugScaleFromTo
+*/
+class AugScaleFromTo : public Augmentation
+{
+    double old_min_, old_max_, new_min_, new_max_;
+
+    virtual void RealApply(ecvl::Image& img, const ecvl::Image& gt = Image()) override
+    {
+        ScaleFromTo(img, img, old_min_, old_max_, new_min_, new_max_);
+    }
+public:
+    DEFINE_AUGMENTATION_CLONE(AugScaleFromTo)
+
+    /** @brief AugScaleTo constructor
+
+     @param[in] old_min double which indicates the old minimum value.
+     @param[in] old_max double which indicates the old maximum value.
+     @param[in] new_min double which indicates the new minimum value.
+     @param[in] new_max double which indicates the new maximum value.
+     */
+    AugScaleFromTo(const double& old_min, const double& old_max, const double& new_min, const double& new_max) : old_min_{ old_min }, old_max_{ old_max }, new_min_{ new_min }, new_max_{ new_max } {}
+    AugScaleFromTo(std::istream& is)
+    {
+        auto m = param::read(is, "AugScaleFromTo");
+        param p;
+
+        m.Get("old_min", param::type::number, true, p);
+        old_min_ = p.vals_[0];
+
+        m.Get("old_max", param::type::number, true, p);
+        old_max_ = p.vals_[0];
+
+        m.Get("new_min", param::type::number, true, p);
+        new_min_ = p.vals_[0];
+
+        m.Get("new_max", param::type::number, true, p);
+        new_max_ = p.vals_[0];
+    }
+};
+
 /** @brief Augmentation wrapper for ecvl::RandomCrop.
 
 @anchor AugRandomCrop
