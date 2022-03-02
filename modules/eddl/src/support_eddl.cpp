@@ -167,12 +167,12 @@ void DLDataset::ResetAllBatches(bool shuffle)
 {
     fill(current_batch_.begin(), current_batch_.end(), 0);
 
-    if (shuffle) {
-        for (int split_index = 0; split_index < vsize(split_); ++split_index) {
+    for (int split_index = 0; split_index < vsize(split_); ++split_index) {
+        if (shuffle) {
             std::shuffle(begin(GetSplit(split_index)), end(GetSplit(split_index)), re_);
-            for (auto& tc : splits_tc_[split_index]) {
-                tc.Reset();
-            }
+        }
+        for (auto& tc : splits_tc_[split_index]) {
+            tc.Reset();
         }
     }
 }
