@@ -8,6 +8,7 @@ var searchData=
   ['saturate_5fcast',['saturate_cast',['../namespaceecvl.html#afaa228c1d0b2e3eef2622ca7e4ffec10',1,'ecvl::saturate_cast(IDT v)'],['../namespaceecvl.html#a2079b9789abfbb37d389825269364c84',1,'ecvl::saturate_cast(const IDT &amp;v)']]],
   ['saturate_5fcast_2eh',['saturate_cast.h',['../saturate__cast_8h.html',1,'']]],
   ['scalar',['Scalar',['../namespaceecvl.html#a95a1d037461340fa937aeb2560f7b99c',1,'ecvl']]],
+  ['scalefromto',['ScaleFromTo',['../namespaceecvl.html#a57453bfaa877f12284f52d82de28f9ab',1,'ecvl']]],
   ['scaleto',['ScaleTo',['../namespaceecvl.html#a6ba1fce11624d83a13a15670344bade7',1,'ecvl']]],
   ['seed_5fmax',['seed_max',['../classecvl_1_1_augmentation_param.html#a3a01accc8367720b13d090411ec9e56c',1,'ecvl::AugmentationParam']]],
   ['seed_5fmin',['seed_min',['../classecvl_1_1_augmentation_param.html#ad115b77f421c25c6a7d8b61aa602d61a',1,'ecvl::AugmentationParam']]],

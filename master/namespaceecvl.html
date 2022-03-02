@@ -172,6 +172,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_salt_and_pepper.html">AugSaltAndPepper</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a7105a709b77f159fa91b7f09e2f449bf" title="Adds salt and pepper noise (white and black pixels) to an Image. White and black pixels are equally l...">ecvl::SaltAndPepper</a>.  <a href="classecvl_1_1_aug_salt_and_pepper.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_scale_from_to.html">AugScaleFromTo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a57453bfaa877f12284f52d82de28f9ab" title="Linearly scale an Image from a specified range into a new range.">ecvl::ScaleFromTo</a>.  <a href="classecvl_1_1_aug_scale_from_to.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classecvl_1_1_aug_scale_to.html">AugScaleTo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classecvl_1_1_augmentation.html" title="Abstract class which represent a generic Augmentation function.">Augmentation</a> wrapper for <a class="el" href="namespaceecvl.html#a6ba1fce11624d83a13a15670344bade7" title="Linearly scale an Image into a new range.">ecvl::ScaleTo</a>.  <a href="classecvl_1_1_aug_scale_to.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -659,6 +662,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6ba1fce11624d83a13a15670344bade7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a6ba1fce11624d83a13a15670344bade7">ScaleTo</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const double &amp;new_min, const double &amp;new_max)</td></tr>
 <tr class="memdesc:a6ba1fce11624d83a13a15670344bade7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linearly scale an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> into a new range.  <a href="#a6ba1fce11624d83a13a15670344bade7">More...</a><br /></td></tr>
 <tr class="separator:a6ba1fce11624d83a13a15670344bade7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57453bfaa877f12284f52d82de28f9ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a57453bfaa877f12284f52d82de28f9ab">ScaleFromTo</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const double &amp;old_min, const double &amp;old_max, const double &amp;new_min, const double &amp;new_max)</td></tr>
+<tr class="memdesc:a57453bfaa877f12284f52d82de28f9ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linearly scale an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> from a specified range into a new range.  <a href="#a57453bfaa877f12284f52d82de28f9ab">More...</a><br /></td></tr>
+<tr class="separator:a57453bfaa877f12284f52d82de28f9ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4547127ac1ff2f2c8d5646ea3bc8852d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceecvl.html#a4547127ac1ff2f2c8d5646ea3bc8852d">Pad</a> (const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;src, <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;dst, const std::vector&lt; int &gt; &amp;padding, <a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3">BorderType</a> border_type=<a class="el" href="namespaceecvl.html#ad5dbd126a6cf39db0ae8fa2b013931d3ad1804e8986353abb7167f1ea2bdb9660">BorderType::BORDER_CONSTANT</a>, const int &amp;border_value=0)</td></tr>
 <tr class="memdesc:a4547127ac1ff2f2c8d5646ea3bc8852d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pad an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>.  <a href="#a4547127ac1ff2f2c8d5646ea3bc8852d">More...</a><br /></td></tr>
 <tr class="separator:a4547127ac1ff2f2c8d5646ea3bc8852d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -5472,6 +5478,72 @@ template&lt;typename ODT , typename IDT &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>Input value after cast and saturation. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="saturate__cast_8h_source.html#l00064">64</a> of file <a class="el" href="saturate__cast_8h_source.html">saturate_cast.h</a>.</p>
+
+</div>
+</div>
+<a id="a57453bfaa877f12284f52d82de28f9ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57453bfaa877f12284f52d82de28f9ab">&#9670;&nbsp;</a></span>ScaleFromTo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ecvl::ScaleFromTo </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classecvl_1_1_image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double &amp;&#160;</td>
+          <td class="paramname"><em>old_min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double &amp;&#160;</td>
+          <td class="paramname"><em>old_max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double &amp;&#160;</td>
+          <td class="paramname"><em>new_min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double &amp;&#160;</td>
+          <td class="paramname"><em>new_max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Linearly scale an <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> from a specified range into a new range. </p>
+<p>The function linearly rescale the <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a> from the range [old_min,old_max] into a new arbitrary range [new_min,new_max]. If the pixel value is less than old_min or greater than old_max it will be replaced with these range boundaries.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">src</td><td>The input <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dst</td><td>The output resized <a class="el" href="classecvl_1_1_image.html" title="Image class.">Image</a>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">old_min</td><td>double which indicates the old minimum value. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">old_max</td><td>double which indicates the old maximum value. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">new_min</td><td>double which indicates the new minimum value. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">new_max</td><td>double which indicates the new maximum value. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

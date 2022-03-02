@@ -25,6 +25,7 @@ var searchData=
   ['augrotate',['AugRotate',['../classecvl_1_1_aug_rotate.html',1,'ecvl']]],
   ['augsalt',['AugSalt',['../classecvl_1_1_aug_salt.html',1,'ecvl']]],
   ['augsaltandpepper',['AugSaltAndPepper',['../classecvl_1_1_aug_salt_and_pepper.html',1,'ecvl']]],
+  ['augscalefromto',['AugScaleFromTo',['../classecvl_1_1_aug_scale_from_to.html',1,'ecvl']]],
   ['augscaleto',['AugScaleTo',['../classecvl_1_1_aug_scale_to.html',1,'ecvl']]],
   ['augtofloat32',['AugToFloat32',['../classecvl_1_1_aug_to_float32.html',1,'ecvl']]],
   ['augtranspose',['AugTranspose',['../classecvl_1_1_aug_transpose.html',1,'ecvl']]]
