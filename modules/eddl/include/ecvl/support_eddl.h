@@ -177,6 +177,19 @@ public:
         cond_notempty_.notify_one();
     }
 
+    /** @brief Free threads locked on a push operation.
+
+    Notifies all the locked threads on the condition variable cond_notfull_ that were waiting to retake the control in the
+    critical region of pushing new elements in to the queue.
+
+    This method is specific to be used in the Stop() operation when the data loading process needs to be stopped before all
+    the elements (batches) of the queue have been consumed.
+    */
+    void FreeLockedOnPush()
+    {
+        cond_notfull_.notify_all();
+    }
+
     /** @brief Pop a sample from the queue.
 
     Take the lock of the queue and wait if the queue is empty. Otherwise, pop a sample, an image and its label from the queue.

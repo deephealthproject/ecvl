@@ -518,7 +518,12 @@ void DLDataset::Stop()
         ECVL_ERROR_STOP_ALREADY_END
     }
 
-    active_ = false;
+    {
+        std::unique_lock<std::mutex> lock(active_mutex_);
+        active_ = false;
+        queue_.FreeLockedOnPush();
+    }
+
     for (auto i = 0u; i < num_workers_; ++i) {
         producers_[i].join();
     }
