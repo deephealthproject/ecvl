@@ -23,17 +23,14 @@
 #define WIDTH 			3840	// Maximum Input image width
 #define HEIGHT 			2160   	// Maximum Input image height
 
-#define NO 0
-#define RO 1
+#define NO 1
+#define RO 0
 
 #define GRAY 1
 
-#if NO
+
 #define NPC1 XF_NPPC1
-#endif
-#if RO
-#define NPC1 XF_NPPC8
-#endif
+
 
 #define IN_TYPE XF_8UC3
 #define OUT_TYPE XF_8UC3

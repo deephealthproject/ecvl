@@ -95,8 +95,8 @@ void fpga_init(){
   if (err != CL_SUCCESS) printf("Error creating program 3\n");
   printf("    - program created\n");
 
-  OCL_CHECK(err, kernel_filter2d = cl::Kernel(program,"filter2d_accel", &err));
-  printf("    - filter2d kernel created\n");
+//   OCL_CHECK(err, kernel_filter2d = cl::Kernel(program,"filter2d_accel", &err));
+//   printf("    - filter2d kernel created\n");
 
 //   OCL_CHECK(err, kernel_warp_transform = cl::Kernel(program,"warpTransform_accel", &err));
 //   printf("    - warp_transfrom kernel created\n");
@@ -104,8 +104,8 @@ void fpga_init(){
 //   OCL_CHECK(err, kernel_integral_image = cl::Kernel(program,"integral_image_accel", &err));
 //   printf("    - kernel_integral_image kernel created\n");
 
-  OCL_CHECK(err, kernel_histogram = cl::Kernel(program,"histogram_accel", &err));
-  printf("    - kernel_histogram kernel created\n");
+//   OCL_CHECK(err, kernel_histogram = cl::Kernel(program,"histogram_accel", &err));
+//   printf("    - kernel_histogram kernel created\n");
 
 //   OCL_CHECK(err, kernel_gamma_correction = cl::Kernel(program,"gamma_correction_accel", &err));
 //   printf("    - kernel_gamma_correction kernel created\n");

@@ -228,24 +228,39 @@ void FpgaHal::Threshold(const Image& src, Image& dst, double thresh, double maxv
 
 std::vector<double> FpgaHal::Histogram(const Image& src)
 {
+    
+    cl_int err;  
     std::vector<double> hist(256 * src.Channels(), 0);
     int rows = src.dims_[1];
     int cols = src.dims_[0];
     uint32_t *histogram = (uint32_t*)malloc(256 * src.Channels() * sizeof(uint32_t));
-    printf("canales %d", src.Channels());
-    cl::Buffer imageMapX(*context,CL_MEM_READ_WRITE, 256  * src.Channels() * sizeof(uint32_t));
+  
     
+    OCL_CHECK(err,  cl::Buffer imageMapX(*context,CL_MEM_READ_WRITE, 256  * src.Channels() * sizeof(uint32_t), nullptr, &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel imageMapX\n");
 
-    kernel_histogram.setArg(0, *src.fpga_buffer);
-    kernel_histogram.setArg(1, imageMapX);
-    kernel_histogram.setArg(2, rows);
-    kernel_histogram.setArg(3, cols);
+
+    // kernel_histogram.setArg(0, *src.fpga_buffer);
+    // kernel_histogram.setArg(1, imageMapX);
+    // kernel_histogram.setArg(2, rows);
+    // kernel_histogram.setArg(3, cols);
+
+    OCL_CHECK(err, err = kernel_histogram.setArg(0, *src.fpga_buffer));
+	if (err != CL_SUCCESS) printf("Error creating args 0\n");
+	OCL_CHECK(err, err = kernel_histogram.setArg(1, imageMapX));
+	if (err != CL_SUCCESS) printf("Error creating args 1\n");
+	OCL_CHECK(err, err = kernel_histogram.setArg(2, rows));
+	if (err != CL_SUCCESS) printf("Error creating args 2\n");
+	OCL_CHECK(err, err = kernel_histogram.setArg(3, cols));
+	if (err != CL_SUCCESS) printf("Error creating args 3\n");
 
     RUN_KERNEL_FPGA(kernel_histogram);
    
     KERNEL_RUNTIME_PRINT;
 
-    (*q).enqueueReadBuffer(imageMapX, CL_TRUE, 0, 256 * src.Channels() * sizeof(uint32_t), histogram);
+    //(*q).enqueueReadBuffer(imageMapX, CL_TRUE, 0, 256 * src.Channels() * sizeof(uint32_t), histogram);
+    OCL_CHECK(err, err= (*q).enqueueReadBuffer(imageMapX, CL_TRUE, 0, 256 * src.Channels() * sizeof(uint32_t), histogram));
+	if (err != CL_SUCCESS) printf("Error enqueueReadBuffer\n");
     (*q).finish();
 
     for (int i = 0; i < hist.size(); i++)
@@ -297,7 +312,7 @@ void FpgaHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType 
 {
     int rows = src.dims_[1];
     int cols = src.dims_[0];
-
+    cl_int err;  
 
     short int* filter_ptr = (short int*)malloc(3 * 3 * sizeof(short int));
 
@@ -306,23 +321,44 @@ void FpgaHal::Filter2D(const Image& src, Image& dst, const Image& ker, DataType 
             filter_ptr[i * 3 + j] = 3640;
         }
     }
-    cl::Buffer imageMapX(*context,CL_MEM_READ_ONLY,3  * 3 * sizeof(short int));
-    (*q).enqueueWriteBuffer(imageMapX, CL_TRUE, 0, 3 *3 * sizeof(short int), filter_ptr);
+    //cl::Buffer imageMapX(*context,CL_MEM_READ_ONLY,3  * 3 * sizeof(short int), nullptr, &err);
+    //(*q).enqueueWriteBuffer(imageMapX, CL_TRUE, 0, 3 *3 * sizeof(short int), filter_ptr);
     cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
-    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+    //cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
 
-    kernel_filter2d.setArg(0, *src.fpga_buffer);
-    kernel_filter2d.setArg(1, tmp_buff);
-    kernel_filter2d.setArg(2, rows);
-    kernel_filter2d.setArg(3, cols);
-    kernel_filter2d.setArg(4, imageMapX);
+    OCL_CHECK(err,  cl::Buffer imageMapX(*context,CL_MEM_READ_ONLY,3  * 3 * sizeof(short int), nullptr, &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel imageMapX\n");
+    OCL_CHECK(err, err= (*q).enqueueWriteBuffer(imageMapX, CL_TRUE, 0, 3 *3 * sizeof(short int), filter_ptr));
+	if (err != CL_SUCCESS) printf("Error enqueueWriteBuffer\n");
+	OCL_CHECK(err, cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel tmp_buff\n");
+    /* Copy input vectors to memory */
+
+    // kernel_filter2d.setArg(0, *src.fpga_buffer);
+    // kernel_filter2d.setArg(1, tmp_buff);
+    // kernel_filter2d.setArg(2, rows);
+    // kernel_filter2d.setArg(3, cols);
+    // kernel_filter2d.setArg(4, imageMapX);
+
+    OCL_CHECK(err, err = kernel_filter2d.setArg(0, *src.fpga_buffer));
+	if (err != CL_SUCCESS) printf("Error creating args 0\n");
+	OCL_CHECK(err, err = kernel_filter2d.setArg(1, tmp_buff));
+	if (err != CL_SUCCESS) printf("Error creating args 1\n");
+	OCL_CHECK(err, err = kernel_filter2d.setArg(2, rows));
+	if (err != CL_SUCCESS) printf("Error creating args 2\n");
+	OCL_CHECK(err, err = kernel_filter2d.setArg(3, cols));
+	if (err != CL_SUCCESS) printf("Error creating args 3\n");
+    OCL_CHECK(err, err =  kernel_filter2d.setArg(4, imageMapX));
+	if (err != CL_SUCCESS) printf("Error creating args 4\n");
 
     RUN_KERNEL_FPGA(kernel_filter2d);
 
     KERNEL_RUNTIME_PRINT;
 
     OCL_CHECK(err, err = (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data));
+    if (err != CL_SUCCESS) printf("Error enqueueReadBuffer\n");
     (*q).finish();
+
 
     dst = ecvl::MatToImage(m);
 }
@@ -437,7 +473,7 @@ void FpgaHal::GammaContrast(const Image& src, Image& dst, double gamma)
     int rows = src.dims_[1];
     int cols = src.dims_[0];
     //unsigned char gamma_lut[256 * 3];
-
+     cl_int err;  
  const uint8_t  gamma_lut[256 * 3] = {
      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
@@ -490,22 +526,41 @@ void FpgaHal::GammaContrast(const Image& src, Image& dst, double gamma)
   };
  
     cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_8UC(3));
-    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
-    cl::Buffer buffer_inVec(*context, CL_MEM_READ_ONLY, 256 * 3 * sizeof(uint8_t));
+    //cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err);
+    //cl::Buffer buffer_inVec(*context, CL_MEM_READ_ONLY, 256 * 3 * sizeof(uint8_t));
+
+    OCL_CHECK(err,  cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * m.channels(), nullptr, &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel tmp_buff\n");
+	OCL_CHECK(err, cl::Buffer buffer_inVec(*context, CL_MEM_READ_ONLY, 256 * 3 * sizeof(uint8_t), nullptr, &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel buffer_inVec\n");
+    OCL_CHECK(err, err= (*q).enqueueWriteBuffer(buffer_inVec, CL_TRUE, 0, 256 * 3 * sizeof(uint8_t), gamma_lut));
+	if (err != CL_SUCCESS) printf("Error enqueueWriteBuffer\n");
   
-    kernel_gamma_correction.setArg(0, *src.fpga_buffer);
-    kernel_gamma_correction.setArg(1, tmp_buff);
-    kernel_gamma_correction.setArg(2, buffer_inVec);
-    kernel_gamma_correction.setArg(3, rows);
-    kernel_gamma_correction.setArg(4, cols);
+    // kernel_gamma_correction.setArg(0, *src.fpga_buffer);
+    // kernel_gamma_correction.setArg(1, tmp_buff);
+    // kernel_gamma_correction.setArg(2, buffer_inVec);
+    // kernel_gamma_correction.setArg(3, rows);
+    // kernel_gamma_correction.setArg(4, cols);
     
+    OCL_CHECK(err, err = kernel_gamma_correction.setArg(0, *src.fpga_buffer));
+	if (err != CL_SUCCESS) printf("Error creating args 0\n");
+	OCL_CHECK(err, err = kernel_gamma_correction.setArg(1, tmp_buff));
+	if (err != CL_SUCCESS) printf("Error creating args 1\n");
+	OCL_CHECK(err, err = kernel_gamma_correction.setArg(2, buffer_inVec));
+	if (err != CL_SUCCESS) printf("Error creating args 2\n");
+	OCL_CHECK(err, err = kernel_gamma_correction.setArg(3, rows));
+	if (err != CL_SUCCESS) printf("Error creating args 3\n");
+    OCL_CHECK(err, err =  kernel_gamma_correction.setArg(4, cols));
+	if (err != CL_SUCCESS) printf("Error creating args 4\n");
 
     RUN_KERNEL_FPGA(kernel_gamma_correction);
    
     KERNEL_RUNTIME_PRINT;
 
-    (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data);
-    (*q).enqueueWriteBuffer(buffer_inVec, CL_TRUE, 0, 256 * 3 * sizeof(uint8_t), gamma_lut);
+    //(*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data);
+    OCL_CHECK(err, err= (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * m.channels(), m.data));
+	if (err != CL_SUCCESS) printf("Error enqueueReadBuffer\n");
+    //(*q).enqueueWriteBuffer(buffer_inVec, CL_TRUE, 0, 256 * 3 * sizeof(uint8_t), gamma_lut);
     (*q).finish();
 
     dst = ecvl::MatToImage(m);
@@ -523,19 +578,32 @@ void FpgaHal::IntegralImage(const Image& src, Image& dst, DataType dst_type)
     int cols = src.dims_[0];
 
     cv::Mat m = cv::Mat::zeros(cv::Size(cols, rows), CV_32S);
-    cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * 4, nullptr, &err);
+    //cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * 4, nullptr, &err);
+    OCL_CHECK(err,  cl::Buffer tmp_buff(*context,CL_MEM_WRITE_ONLY, m.rows * m.cols * 4, nullptr, &err));
+	if (err != CL_SUCCESS) printf("Error creating kernel tmp_buff\n");
   
-    kernel_integral_image.setArg(0, *src.fpga_buffer);
-    kernel_integral_image.setArg(1, tmp_buff);
-    kernel_integral_image.setArg(2, rows);
-    kernel_integral_image.setArg(3, cols);
+    // kernel_integral_image.setArg(0, *src.fpga_buffer);
+    // kernel_integral_image.setArg(1, tmp_buff);
+    // kernel_integral_image.setArg(2, rows);
+    // kernel_integral_image.setArg(3, cols);
+
+    OCL_CHECK(err, err = kernel_integral_image.setArg(0, *src.fpga_buffer));
+	if (err != CL_SUCCESS) printf("Error creating args 0\n");
+	OCL_CHECK(err, err = kernel_integral_image.setArg(1, tmp_buff));
+	if (err != CL_SUCCESS) printf("Error creating args 1\n");
+	OCL_CHECK(err, err = kernel_integral_image.setArg(2, rows));
+	if (err != CL_SUCCESS) printf("Error creating args 2\n");
+	OCL_CHECK(err, err = kernel_integral_image.setArg(3, cols));
+	if (err != CL_SUCCESS) printf("Error creating args 3\n");
 
 
     RUN_KERNEL_FPGA(kernel_integral_image);
    
     KERNEL_RUNTIME_PRINT;
 
-    (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * 4, m.data);
+    //(*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * 4, m.data);
+    OCL_CHECK(err, err= (*q).enqueueReadBuffer(tmp_buff, CL_TRUE, 0, rows * cols * 4, m.data));
+	if (err != CL_SUCCESS) printf("Error enqueueReadBuffer\n");
     (*q).finish();
 
     dst = ecvl::MatToImage(m);

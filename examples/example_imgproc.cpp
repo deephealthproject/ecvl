@@ -19,13 +19,12 @@ using namespace std;
 
 int main()
 {
-    printf("hiolaa");
     Image img1, img2;
     Image tmp;
 
     // Open an Image
-    if (!ImRead("../examples/data/img0003.png", img1)) {return EXIT_FAILURE;}
-    //img1.To(Device::FPGA);
+    // if (!ImRead("../examples/data/2048x1024.jpg", img1)) {return EXIT_FAILURE;}
+    // img1.To(Device::FPGA);
 
     // Resize an Image to new_width, new_height (optional: InterpolationType)
     // printf("APP: ResizeDim\n");
@@ -44,11 +43,12 @@ int main()
     // cout << "Executing Flip2D" << endl;
     // Flip2D(img1, tmp);
     // ImWrite("img_flipped.jpg", tmp);
-
-    Image kernelMAX({ 3072, 2048, 1 }, DataType::int32, "xyc", ColorType::GRAY);
-    //kernelMAX.To(Device::FPGA);
-    int A[3072*2048];
-    for (int i = 0; i  < 3072*2048; i++){
+    int height = 675;
+    int width = 900;
+    Image kernelMAX({ height, width, 1 }, DataType::int32, "xyc", ColorType::GRAY);
+    kernelMAX.To(Device::FPGA);
+    int *A = (int *)malloc(height*width*sizeof(int));
+    for (int i = 0; i  < height*width; i++){
         A[i] = rand() % 100 + 1;
     }
     int p = 0;
@@ -58,6 +58,9 @@ int main()
     }
     cout << "Executing GetMaxN" << endl;
     vector<ecvl::Point2i> max_coords = GetMaxN(kernelMAX, 3);
+
+     free(A);
+
     // for(int i = 0;  i < max_coords.size(); i++){
     //     ecvl::Point2i p  = max_coords[i];
     //     printf("coords (%d,%d)\n", p.data()[0], p.data()[1]);
@@ -85,30 +88,31 @@ int main()
     // RotateFullImage2D(img1, tmp, angle, rot_scale);
     // ImWrite("img_rotated_full.jpg", tmp);
 
-     cout << "Executing Histogram" << endl;
-     std::vector<double> hist = img1.hal_->Histogram(img1);
+    //  cout << "Executing Histogram" << endl;
+    //  std::vector<double> hist = img1.hal_->Histogram(img1);
     //  for (int i = 0; i < hist.size(); i++)
     //  {
     //      cout << hist[i] << endl;
     //  }
-     
+    
+    // Image img3;
+    // if (!ImRead("../examples/data/2048x1024.jpg", img3)) {return EXIT_FAILURE;}
+    // //Change the color space of an Image from BGR to GRAY
+    // cout << "Executing ChangeColorSpace" << endl;
+    // ChangeColorSpace(img3, tmp, ColorType::GRAY);
+    // ImWrite("img_gray.jpg", tmp);
 
-    //Change the color space of an Image from BGR to GRAY
-    cout << "Executing ChangeColorSpace" << endl;
-    ChangeColorSpace(img1, tmp, ColorType::GRAY);
-    ImWrite("img_gray.jpg", tmp);
-
-    if (!ImRead("img_gray.jpg", img2)) {return EXIT_FAILURE;}
-    // img2.To(Device::FPGA);
+    // if (!ImRead("img_gray.jpg", img2)) {return EXIT_FAILURE;}
+    //  img2.To(Device::FPGA);
     // //Change the color space of an Image from GRAY to BGR
     //  cout << "Executing ChangeColorSpace" << endl;
     //  ChangeColorSpace(img1, tmp, ColorType::RGB);
     //  ImWrite("img_color.jpg", tmp);
 
 
-    cout << "Executing IntegralImage" << endl;
-    IntegralImage(img2, tmp, DataType::float64);
-    ImWrite("img_integral.jpg", tmp);
+    // cout << "Executing IntegralImage" << endl;
+    // IntegralImage(img2, tmp, DataType::float64);
+    // ImWrite("img_integral.jpg", tmp);
     
     // Calculate the Otsu thresholding value (the Image must be GRAY)
     // cout << "Executing OtsuThreshold" << endl;
@@ -135,18 +139,18 @@ int main()
     // ImWrite("img_gaussian_blur.jpg", tmp);
 
     // Create and populate a kernel Image. Kernel must be float64, "xyc" and with one color channel
-    Image kernel({ 3, 3, 1 }, DataType::float64, "xyc", ColorType::GRAY);
-    kernel.To(Device::FPGA);
-    auto i = kernel.Begin<double>(), e = kernel.End<double>();
-    float c = 0.11f;
-    for (; i != e; ++i) {
-        *i = c;
-    }
+    // Image kernel({ 3, 3, 1 }, DataType::float64, "xyc", ColorType::GRAY);
+    // kernel.To(Device::FPGA);
+    // auto i = kernel.Begin<double>(), e = kernel.End<double>();
+    // float c = 0.11f;
+    // for (; i != e; ++i) {
+    //     *i = c;
+    // }
 
     // Convolves an Image with a kernel (optional: destination DataType)
-    cout << "Executing Filter2D" << endl;
-    Filter2D(img1, tmp, kernel);
-    ImWrite("img_filter.jpg", tmp);
+    // cout << "Executing Filter2D" << endl;
+    // Filter2D(img1, tmp, kernel);
+    // ImWrite("img_filter.jpg", tmp);
 
     // Convolves an Image with a couple of 1-dimensional kernels (optional: destination DataType)
     // vector<double> kernelX = { 1, 2, 1 };
@@ -164,10 +168,10 @@ int main()
     // ImWrite("img_laplacenoise.jpg", tmp);
 
     // // Adjust contrast by scaling each pixel value X to 255 * ((X/255) ** gamma)
-    int gamma = 3;
-    cout << "Executing GammaContrast" << endl;
-    GammaContrast(img1, tmp, gamma);
-    ImWrite("img_gammacontrast.jpg", tmp);
+    // int gamma = 3;
+    // cout << "Executing GammaContrast" << endl;
+    // GammaContrast(img1, tmp, gamma);
+    // ImWrite("img_gammacontrast.jpg", tmp);
 
     // Set rectangular areas within an Image to zero
     // float prob = 0.5;

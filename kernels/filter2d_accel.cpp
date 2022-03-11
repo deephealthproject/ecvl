@@ -47,7 +47,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //Filter size. Filter size of 3 (XF_FILTER_3X3), 5 (XF_FILTER_5X5) and 7 (XF_FILTER_7X7) aresupported
 
 
-#define FILTER_SIZE 5
+#define FILTER_SIZE 3
 
 #define RGB 1
 #define GRAY 0
@@ -59,7 +59,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 2 - AREA Interpolation
 
 /*  specify the shift parameter */
-#define SHIFT 48
+#define SHIFT 15
 
 /* Input image Dimensions */
 
@@ -71,8 +71,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NEWWIDTH 		1920  // Maximum output image width
 #define NEWHEIGHT 		1800  // Maximum output image height
 
-/*  specify the shift parameter */
-#define SHIFT 48
 
 
 #define FILTER_HEIGHT 3
@@ -123,8 +121,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INTYPE XF_8UC3
 #define OUTTYPE XF_8UC3
 #if NO
-#define INPUT_PTR_WIDTH 32
-#define OUTPUT_PTR_WIDTH 32
+#define INPUT_PTR_WIDTH 256
+#define OUTPUT_PTR_WIDTH 256
 #else
 #define INPUT_PTR_WIDTH 256
 #define OUTPUT_PTR_WIDTH 256
