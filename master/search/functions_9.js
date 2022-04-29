@@ -16,5 +16,5 @@ var searchData=
   ['isempty',['IsEmpty',['../classecvl_1_1_image.html#ab7dfe59beca83e189162378368dc4484',1,'ecvl::Image::IsEmpty()'],['../classecvl_1_1_dataset_augmentations.html#a0ab53f3984879fe30654423abe13e94d',1,'ecvl::DatasetAugmentations::IsEmpty()'],['../classecvl_1_1_producers_consumer_queue.html#aef0e5af915db8950cea9407ad2d9e5f6',1,'ecvl::ProducersConsumerQueue::IsEmpty()']]],
   ['isfull',['IsFull',['../classecvl_1_1_producers_consumer_queue.html#acfeced419b8af2a920651fd8dcd87e9f',1,'ecvl::ProducersConsumerQueue']]],
   ['isowner',['IsOwner',['../classecvl_1_1_image.html#ab66d2ad85e32f02cc05a8b6da12788cc',1,'ecvl::Image']]],
-  ['iterator',['Iterator',['../structecvl_1_1_iterator.html#a683c73c3643799cbf29fef92fe810d82',1,'ecvl::Iterator']]]
+  ['iterator',['Iterator',['../structecvl_1_1_iterator.html#af17a32aee84aa55a08cec76ded65955d',1,'ecvl::Iterator::Iterator()'],['../structecvl_1_1_iterator.html#ad7c4dfb25a5009d8b7448eb2a2e66ea5',1,'ecvl::Iterator::Iterator(Image &amp;img, std::vector&lt; int &gt; pos={})']]]
 ];
