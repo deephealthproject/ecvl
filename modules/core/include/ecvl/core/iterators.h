@@ -37,6 +37,7 @@ struct Iterator
     typedef Iterator& (Iterator::* IncrementMemFn)();
     IncrementMemFn incrementor = &Iterator<T>::IncrementPos;
 
+    Iterator() {}
     Iterator(Image& img, std::vector<int> pos = {});
     Iterator& operator++() /* prefix */ { return (this->*incrementor)(); }
     T& operator* () const { return *reinterpret_cast<T*>(ptr_); }
@@ -64,6 +65,7 @@ struct ConstIterator
     typedef ConstIterator& (ConstIterator::* IncrementMemFn)();
     IncrementMemFn incrementor = &ConstIterator<T>::IncrementPos;
 
+    ConstIterator() {}
     ConstIterator(const Image& img, std::vector<int> pos = {});
     ConstIterator& operator++() /* prefix */ { return (this->*incrementor)(); }
     const T& operator* () const { return *reinterpret_cast<const T*>(ptr_); }
@@ -87,6 +89,7 @@ struct ContiguousIterator
     uint8_t* ptr_;
     Image* img_;
 
+    ContiguousIterator() {}
     ContiguousIterator(Image& img, std::vector<int> pos = {});
     ContiguousIterator& operator++() /* prefix */ { return ContiguousIncrementPos(); }
     T& operator* () const { return *reinterpret_cast<T*>(ptr_); }
@@ -109,6 +112,7 @@ struct ConstContiguousIterator
     const uint8_t* ptr_;
     const Image* img_;
 
+    ConstContiguousIterator() {}
     ConstContiguousIterator(const Image& img, std::vector<int> pos = {});
     ConstContiguousIterator& operator++() /* prefix */ { return ContiguousIncrementPos(); }
     const T& operator* () const { return *reinterpret_cast<const T*>(ptr_); }
