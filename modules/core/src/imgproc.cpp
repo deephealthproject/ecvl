@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -36,7 +36,7 @@ bool ChannelsCheck(const Image& src, Image& tmp)
         ECVL_ERROR_NOT_IMPLEMENTED
     }
 
-     // check if channels_ starts with "xy"
+    // check if channels_ starts with "xy"
     if (src.channels_.rfind("xy", 0) != string::npos) {
         return true; // don't need to rearrange
     }
@@ -70,11 +70,15 @@ void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>&
 {
     AlwaysCheck(src, dst);
 
-    if (newdims.size() != 2) {
+    if (newdims.size() == 2) {
+        src.hal_->ResizeDim(src, dst, newdims, interp);
+    }
+    else if (newdims.size() == 3) {
+        src.hal_->Resize3D(src, dst, newdims, interp);
+    }
+    else {
         ECVL_ERROR_WRONG_PARAMS("Number of dimensions specified doesn't match image dimensions")
     }
-
-    src.hal_->ResizeDim(src, dst, newdims, interp);
 }
 
 void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
@@ -721,6 +725,12 @@ void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& 
 {
     AlwaysCheck(src, dst);
     return src.hal_->ScaleTo(src, dst, new_min, new_max);
+}
+
+void ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max)
+{
+    AlwaysCheck(src, dst);
+    return src.hal_->ScaleFromTo(src, dst, old_min, old_max, new_min, new_max);
 }
 
 void Pad(const Image& src, Image& dst, const vector<int>& padding, BorderType border_type, const int& border_value)

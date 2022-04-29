@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -107,6 +107,7 @@ std::shared_ptr<Augmentation> AugmentationFactory::create(const std::string& nam
     AUG(AugToFloat32);
     AUG(AugDivBy255);
     AUG(AugScaleTo);
+    AUG(AugScaleFromTo);
     AUG(AugRandomCrop);
 
     return nullptr; // Maybe throw?

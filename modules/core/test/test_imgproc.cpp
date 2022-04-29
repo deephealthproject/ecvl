@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -781,6 +781,19 @@ TEST_F(Imgproc, ScaleTo_##type) \
     EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) == 32); \
     EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) == 60); \
     ScaleTo(g2_##type, out, 0, 1); \
+    out_v = out; \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+    EXPECT_TRUE(out_v({ 1,1,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,1,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
+}\
+TEST_F(Imgproc, ScaleFromTo_##type) \
+{ \
+    ScaleFromTo(g2_##type, out, 14, 60, 14, 60); \
+    View<DataType::type> out_v(out); \
+    EXPECT_TRUE(out_v({ 0,0,0 }) == 50); EXPECT_TRUE(out_v({ 1,0,0 }) == 32); \
+    EXPECT_TRUE(out_v({ 0,1,0 }) == 14); EXPECT_TRUE(out_v({ 1,1,0 }) == 60); \
+    ScaleFromTo(g2_##type, out, 14, 60, 0, 1); \
     out_v = out; \
     EXPECT_TRUE(out_v({ 0,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 0,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \
     EXPECT_TRUE(out_v({ 1,0,0 }) == static_cast<TypeInfo_t<DataType::type>>((g2_##type##_v({ 1,0,0 }) * (1 / 46.) + (1 - ((1 / 46.) * 60))))); \

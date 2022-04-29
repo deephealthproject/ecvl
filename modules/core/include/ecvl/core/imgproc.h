@@ -1,6 +1,6 @@
 ﻿/*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -61,7 +61,7 @@ The function resizes Image src and outputs the result in dst.
 @param[in] src The input Image.
 @param[out] dst The output resized Image.
 @param[in] newdims std::vector<int> that specifies the new size of each dimension.
-            The vector size must match the src Image dimensions, excluding the color channel.
+           The vector must be {new_width, new_height[, new_depth]}.
 @param[in] interp InterpolationType to be used. Default is InterpolationType::linear.
 
 */
@@ -681,6 +681,20 @@ The function linearly rescale the Image having values in [min,max] into a new ar
 @param[in] new_max double which indicates the new maximum value.
 */
 void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max);
+
+/** @brief Linearly scale an Image from a specified range into a new range.
+
+The function linearly rescale the Image from the range [old_min,old_max] into a new arbitrary range [new_min,new_max].
+If the pixel value is less than old_min or greater than old_max it will be replaced with these range boundaries.
+
+@param[in] src The input Image.
+@param[out] dst The output resized Image.
+@param[in] old_min double which indicates the old minimum value.
+@param[in] old_max double which indicates the old maximum value.
+@param[in] new_min double which indicates the new minimum value.
+@param[in] new_max double which indicates the new maximum value.
+*/
+void ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max);
 
 /** @brief Pad an Image.
 

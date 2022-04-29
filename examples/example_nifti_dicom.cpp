@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -25,6 +25,9 @@ int main()
     if (!NiftiRead("../examples/data/nifti/LR_nifti.nii", nifti_image)) {
         return EXIT_FAILURE;
     }
+
+    // Resize all the dimensions
+    ResizeDim(nifti_image, nifti_image, { 256, 256, 256 });
 
     // Apply some processing
     int gamma = 3;

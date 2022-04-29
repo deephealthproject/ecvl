@@ -14,7 +14,6 @@ jobs:
     strategy:
       matrix:
         cfg:
-          - { os: windows-2016, c-version: vc15, cxx-version: vc15, generator: "Visual Studio 15 2017 Win64" }
           - { os: windows-2019, c-version: vc16, cxx-version: vc16, generator: "Visual Studio 16 2019" }
     steps:
       - uses: actions/checkout@v2

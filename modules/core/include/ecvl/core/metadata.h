@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 0.2.3
+* Version: 1.0.2
 * copyright (c) 2020, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -14,6 +14,7 @@
 #ifndef ECVL_METADATA_H_
 #define ECVL_METADATA_H_
 
+#include <functional>
 #include <typeindex>
 #include <unordered_map>
 #include "ecvl/core/any.h"

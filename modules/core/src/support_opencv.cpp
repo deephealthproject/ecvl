@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -47,6 +47,7 @@ Image MatToImage(const cv::Mat& m, ColorType ctype, const std::string& dst_chann
 
         // Channels and colors
         std::string channels;
+        char depth;
         if (m.dims < 2) {
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
         }
@@ -55,6 +56,7 @@ Image MatToImage(const cv::Mat& m, ColorType ctype, const std::string& dst_chann
         }
         else if (m.dims == 3) {
             channels = "xyz";
+            depth = 'z';
         }
         else {
             ECVL_ERROR_UNSUPPORTED_OPENCV_DIMS
@@ -63,25 +65,46 @@ Image MatToImage(const cv::Mat& m, ColorType ctype, const std::string& dst_chann
         ColorType colortype;
         if (m.type() == CV_8UC1 || m.type() == CV_16UC1 || m.type() == CV_32FC1 || m.type() == CV_64FC1
             || m.type() == CV_8SC1 || m.type() == CV_16SC1 || m.type() == CV_32SC1) { // Guess this is a gray level image
-            channels += "c";
+            depth = 'c';
             dims.push_back(1); // Add another dim for color planes (but it is one dimensional)
             colortype = ColorType::GRAY;
         }
         else if (m.type() == CV_8UC3 || m.type() == CV_16UC3 || m.type() == CV_32FC3 || m.type() == CV_64FC3
-            || m.type() == CV_8SC3 || m.type() == CV_16SC3 || m.type() == CV_32SC3) { // Guess this is a BGR image
-            channels += "c";
+                 || m.type() == CV_8SC3 || m.type() == CV_16SC3 || m.type() == CV_32SC3) { // Guess this is a BGR image
+            depth = 'c';
             dims.push_back(3); // Add another dim for color planes
             colortype = ColorType::BGR;
         }
         else if (m.channels() == 1) {
             colortype = ColorType::none;
         }
+        else if (dst_channels.find('z') != std::string::npos) {
+            if (channels.find('z') == std::string::npos) {
+                depth = 'z';
+            }
+            dims.push_back(m.channels()); // Add another dim for color planes
+            colortype = ColorType::none;
+        }
         else {
-            channels += "o";
+            depth = 'o';
             dims.push_back(m.channels()); // Add another dim for color planes
             colortype = ColorType::none;
         }
 
+        channels += depth;
+        auto channels_depth = channels.find(depth);
+        
+        auto dst_depth = dst_channels.find('c');
+        if (dst_depth == std::string::npos) {
+            dst_depth = dst_channels.find('z');
+            if (dst_depth == std::string::npos) {
+                dst_depth = dst_channels.find('o');
+            }
+        }
+
+        if (dst_depth != std::string::npos) {
+            channels[channels_depth] = dst_channels[dst_depth];
+        }
         img.Create(dims, elemtype, channels, colortype);
 
         // The following code copies the data twice. Should be improved!
@@ -233,7 +256,7 @@ Image MatVecToImage(const std::vector<cv::Mat>& v)
                 /*memcpy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
                     vchannels[i].data, img.strides_[img.strides_.size() - 2]);*/
                 img.hal_->MemCopy(img.data_ + i * img.strides_.back() + j * img.strides_[img.strides_.size() - 2],
-                    vchannels[i].data, img.strides_[img.strides_.size() - 2]);
+                                  vchannels[i].data, img.strides_[img.strides_.size() - 2]);
             }
         }
     }

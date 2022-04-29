@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -167,12 +167,12 @@ void DLDataset::ResetAllBatches(bool shuffle)
 {
     fill(current_batch_.begin(), current_batch_.end(), 0);
 
-    if (shuffle) {
-        for (int split_index = 0; split_index < vsize(split_); ++split_index) {
+    for (int split_index = 0; split_index < vsize(split_); ++split_index) {
+        if (shuffle) {
             std::shuffle(begin(GetSplit(split_index)), end(GetSplit(split_index)), re_);
-            for (auto& tc : splits_tc_[split_index]) {
-                tc.Reset();
-            }
+        }
+        for (auto& tc : splits_tc_[split_index]) {
+            tc.Reset();
         }
     }
 }
@@ -518,7 +518,12 @@ void DLDataset::Stop()
         ECVL_ERROR_STOP_ALREADY_END
     }
 
-    active_ = false;
+    {
+        std::unique_lock<std::mutex> lock(active_mutex_);
+        active_ = false;
+        queue_.FreeLockedOnPush();
+    }
+
     for (auto i = 0u; i < num_workers_; ++i) {
         producers_[i].join();
     }

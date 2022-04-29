@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -64,6 +64,107 @@ void CpuHal::ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vect
     cv::resize(ImageToMat(src), m, cv::Size(newdims[0], newdims[1]), 0.0, 0.0, GetOpenCVInterpolation(interp));
     dst = ecvl::MatToImage(m, src.colortype_, src.channels_);
     dst.meta_ = meta;
+}
+
+void CpuHal::Resize3D(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp)
+{
+    Image resized_2d;
+
+    ResizeDim(src, resized_2d, { newdims[0], newdims[1] }, interp);
+
+    size_t c_pos = resized_2d.channels_.find('c');
+    if (c_pos == string::npos) {
+        c_pos = resized_2d.channels_.find('z');
+    }
+    if (c_pos == string::npos) {
+        c_pos = resized_2d.channels_.find('o');
+    }
+    size_t x_pos = resized_2d.channels_.find('x');
+    size_t y_pos = resized_2d.channels_.find('y');
+
+    int src_width = resized_2d.Width();
+    int src_height = resized_2d.Height();
+    int src_channels = resized_2d.Channels();
+
+    if (src_channels == newdims[2]) {
+        dst = std::move(resized_2d);
+        return;
+    }
+
+    int src_stride_c = resized_2d.strides_[c_pos];
+    int src_stride_x = resized_2d.strides_[x_pos];
+    int src_stride_y = resized_2d.strides_[y_pos];
+
+    vector<int> dims(3);
+    dims[x_pos] = src_channels; dims[y_pos] = src_width * src_height; dims[c_pos] = 1;
+    Image tmp(dims, resized_2d.elemtype_, resized_2d.channels_, ColorType::none);
+    vector<uint8_t*> src_vch(src_channels);
+
+    for (int i = 0; i < src_channels; ++i) {
+        src_vch[i] = resized_2d.data_ + i * src_stride_c;
+    }
+    uint8_t* data = tmp.data_;
+
+    for (int r = 0; r < src_height; ++r) {
+        int r1 = r * src_stride_y;
+        for (int c = 0; c < src_width; ++c) {
+            int p1 = r1 + src_stride_x * c;
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: \
+            for (int ch = 0; ch < src_channels; ++ch) { \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(data) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(src_vch[ch] + p1); \
+                data += tmp.elemsize_; \
+            } \
+            break;
+
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+
+    ResizeDim(tmp, tmp, { newdims[2], tmp.Height() }, interp);
+    dims[x_pos] = newdims[0]; dims[y_pos] = newdims[1]; dims[c_pos] = newdims[2];
+    Image output(dims, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_);
+
+    int output_width = output.Width();
+    int output_height = output.Height();
+    int output_channels = output.Channels();
+
+    int output_stride_c = output.strides_[c_pos];
+    int output_stride_x = output.strides_[x_pos];
+    int output_stride_y = output.strides_[y_pos];
+
+    vector<uint8_t*> output_vch(output_channels);
+
+    for (int i = 0; i < output_channels; ++i) {
+        output_vch[i] = output.data_ + i * output_stride_c;
+    }
+    data = tmp.data_;
+
+    for (int r = 0; r < output_height; ++r) {
+        int r1 = r * output_stride_y;
+        for (int c = 0; c < output_width; ++c) {
+            int p1 = r1 + output_stride_x * c;
+#define ECVL_TUPLE(type, ...) \
+        case DataType::type: \
+            for (int ch = 0; ch < output_channels; ++ch) { \
+                *reinterpret_cast<TypeInfo_t<DataType::type>*>(output_vch[ch] + p1) = *reinterpret_cast<TypeInfo_t<DataType::type>*>(data); \
+                data += tmp.elemsize_;\
+            } \
+    break;
+
+            switch (src.elemtype_) {
+#include "ecvl/core/datatype_existing_tuples.inc.h"
+            }
+
+#undef ECVL_TUPLE
+        }
+    }
+
+    dst = std::move(output);
 }
 
 void CpuHal::ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp)
@@ -2211,6 +2312,46 @@ void CpuHal::ScaleTo(const Image& src, Image& dst, const double& new_min, const 
     Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_};
     static constexpr Table1D<ScaleToStruct> table;
     table(src.elemtype_)(src, tmp, new_min, new_max);
+    dst = std::move(tmp);
+}
+
+template<DataType SDT>
+struct ScaleFromToStruct
+{
+    static void _(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max)
+    {
+        // Formula
+        // newvalue = (new_max - new_min)/(max - min)*(value - max) + new_max
+        // or
+        // newvalue = a * value + b
+        // a = (new_max - new_min)/(max - min)
+        // b = new_max - a * max
+        ConstView<SDT> src_v(src);
+        View<SDT> dst_v(dst);
+
+        double a = (new_max - new_min) / (old_max - old_min);
+        double b = new_max - a * old_max;
+
+        auto dst_it = dst_v.Begin();
+        auto src_it = src_v.Begin(), src_end = src_v.End();
+        for (; src_it != src_end; ++src_it, ++dst_it) {
+            TypeInfo_t<SDT> src_val = *src_it;
+            if (src_val < old_min) {
+                src_val = saturate_cast<TypeInfo_t<SDT>>(old_min);
+            }
+            else if (src_val > old_max) {
+                src_val = saturate_cast<TypeInfo_t<SDT>>(old_max);
+            }
+            *dst_it = saturate_cast<TypeInfo_t<SDT>>(src_val * a + b);
+        }
+    }
+};
+
+void CpuHal::ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max)
+{
+    Image tmp{ src.dims_, src.elemtype_, src.channels_, src.colortype_, src.spacings_, src.dev_, src.meta_ };
+    static constexpr Table1D<ScaleFromToStruct> table;
+    table(src.elemtype_)(src, tmp, old_min, old_max, new_min, new_max);
     dst = std::move(tmp);
 }
 

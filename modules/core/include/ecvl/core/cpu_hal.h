@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -60,6 +60,7 @@ public:
     void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate) override;
 
     void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) override;
+    void Resize3D(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) override;
     void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) override;
     void Flip2D(const ecvl::Image& src, ecvl::Image& dst) override;
     void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) override;
@@ -104,6 +105,7 @@ public:
     void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) override;
     void CenterCrop(const Image& src, Image& dst, const std::vector<int>& size) override;
     void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max) override;
+    void ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max) override;
     void Pad(const Image& src, Image& dst, const std::vector<int>& padding, BorderType border_type, const int& border_value) override;
     void RandomCrop(const Image& src, Image& dst, const std::vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed) override;
 

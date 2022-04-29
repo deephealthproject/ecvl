@@ -1,6 +1,6 @@
 /*
 * ECVL - European Computer Vision Library
-* Version: 1.0.0
+* Version: 1.0.2
 * copyright (c) 2021, Università degli Studi di Modena e Reggio Emilia (UNIMORE), AImageLab
 * Authors:
 *    Costantino Grana (costantino.grana@unimore.it)
@@ -128,6 +128,7 @@ public:
     virtual void ConvertTo(const Image& src, Image& dst, DataType dtype, bool saturate) { ECVL_ERROR_NOT_IMPLEMENTED }
 
     virtual void ResizeDim(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void Resize3D(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& newdims, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ResizeScale(const Image& src, Image& dst, const std::vector<double>& scales, InterpolationType interp) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Flip2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Mirror2D(const ecvl::Image& src, ecvl::Image& dst) { ECVL_ERROR_NOT_IMPLEMENTED }
@@ -172,6 +173,7 @@ public:
     virtual void Normalize(const Image& src, Image& dst, const std::vector<double>& mean, const std::vector<double>& std) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void CenterCrop(const ecvl::Image& src, ecvl::Image& dst, const std::vector<int>& size) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void ScaleTo(const Image& src, Image& dst, const double& new_min, const double& new_max) { ECVL_ERROR_NOT_IMPLEMENTED }
+    virtual void ScaleFromTo(const Image& src, Image& dst, const double& old_min, const double& old_max, const double& new_min, const double& new_max) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void Pad(const Image& src, Image& dst, const std::vector<int>& padding, BorderType border_type, const int& border_value) { ECVL_ERROR_NOT_IMPLEMENTED }
     virtual void RandomCrop(const Image& src, Image& dst, const std::vector<int>& size, bool pad_if_needed, BorderType border_type, const int& border_value, const unsigned seed) { ECVL_ERROR_NOT_IMPLEMENTED }
 
